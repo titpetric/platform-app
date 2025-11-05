@@ -3,16 +3,16 @@ package user
 import (
 	"net/http"
 
+	"github.com/titpetric/platform/pkg/httpcontext"
 	"github.com/titpetric/platform/pkg/telemetry"
 
-	"github.com/titpetric/platform-app/internal"
 	"github.com/titpetric/platform-app/modules/user/model"
 	"github.com/titpetric/platform-app/modules/user/storage"
 )
 
 type userKey struct{}
 
-var userContext = internal.NewContextValue[*model.User](userKey{})
+var userContext = httpcontext.NewValue[*model.User](userKey{})
 
 // IsLoggedIn returns true or false. Any errors are swallowed, returning false.
 func IsLoggedIn(r *http.Request) bool {
@@ -37,11 +37,11 @@ func GetSessionUser(r *http.Request) (*model.User, error) {
 	r, span := telemetry.StartRequest(r, "user.GetSessionUser")
 	defer span.End()
 
-	if user := userContext.Get(r); user != nil {
+	ctx := r.Context()
+
+	if user := userContext.GetContext(ctx); user != nil {
 		return user, nil
 	}
-
-	ctx := r.Context()
 
 	db, err := storage.DB(ctx)
 	if err != nil {

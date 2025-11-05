@@ -5,9 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/titpetric/platform/pkg/httpcontext"
 	"github.com/titpetric/platform/pkg/telemetry"
-
-	"github.com/titpetric/platform-app/internal"
 )
 
 // errorMessageKey is a request context scoped value. If an error
@@ -15,7 +14,7 @@ import (
 // error to the request context, and then render a view to display.
 type errorMessageKey struct{}
 
-var errorMessageContext = internal.NewContextValue[string](errorMessageKey{})
+var errorMessageContext = httpcontext.NewValue[string](errorMessageKey{})
 
 func (h *Service) Error(r *http.Request, message string, err error) {
 	errorMessageContext.Set(r, message)

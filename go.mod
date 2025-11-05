@@ -5,7 +5,7 @@ go 1.25.3
 require (
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/titpetric/platform v0.0.1
+	github.com/titpetric/platform v0.0.2
 	golang.org/x/crypto v0.43.0
 )
 

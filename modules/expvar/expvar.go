@@ -1,6 +1,7 @@
 package expvar
 
 import (
+	"context"
 	"expvar"
 	"sync"
 	"time"
@@ -18,7 +19,7 @@ func NewHandler() *Handler {
 	return &Handler{}
 }
 
-func (m *Handler) Start() error {
+func (m *Handler) Start(context.Context) error {
 	publishMu.Lock()
 	defer publishMu.Unlock()
 
