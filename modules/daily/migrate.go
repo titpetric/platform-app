@@ -11,7 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-//go:embed model/*.up.sql
+//go:embed schema/*.up.sql
 var schema embed.FS
 
 func Migrate(ctx context.Context, db *sqlx.DB) error {
@@ -31,7 +31,7 @@ func Migrate(ctx context.Context, db *sqlx.DB) error {
 }
 
 func loadMigrations(filesystem fs.FS) (migrate.FS, error) {
-	entries, err := fs.Glob(schema, "model/*.up.sql")
+	entries, err := fs.Glob(schema, "schema/*.up.sql")
 	if err != nil {
 		return nil, err
 	}
