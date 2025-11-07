@@ -19,18 +19,18 @@ The storage packages have integration tests.
 | ✅      | titpetric/platform-app/autoload              | 100.00%  | 0         | 3     |
 | ✅      | titpetric/platform-app/cmd                   | 100.00%  | 0         | 23    |
 | ✅      | titpetric/platform-app/cmd/app               | 0.00%    | 0         | 3     |
-| ✅      | titpetric/platform-app/internal              | 50.00%   | 1         | 17    |
 | ✅      | titpetric/platform-app/modules/assets        | 63.60%   | 2         | 21    |
 | ❌      | titpetric/platform-app/modules/daily         | 57.30%   | 12        | 90    |
 | ✅      | titpetric/platform-app/modules/daily/model   | 15.38%   | 0         | 26    |
 | ✅      | titpetric/platform-app/modules/daily/storage | 63.06%   | 5         | 96    |
-| ❌      | titpetric/platform-app/modules/daily/view    | 0.00%    | 99        | 147   |
+| ❌      | titpetric/platform-app/modules/daily/view    | 0.00%    | 99        | 145   |
 | ✅      | titpetric/platform-app/modules/expvar        | 57.40%   | 3         | 29    |
-| ❌      | titpetric/platform-app/modules/theme         | 50.00%   | 32        | 71    |
-| ❌      | titpetric/platform-app/modules/user          | 54.76%   | 13        | 104   |
+| ❌      | titpetric/platform-app/modules/theme         | 50.00%   | 16        | 47    |
+| ❌      | titpetric/platform-app/modules/user          | 47.62%   | 12        | 86    |
 | ✅      | titpetric/platform-app/modules/user/model    | 10.53%   | 3         | 88    |
-| ❌      | titpetric/platform-app/modules/user/service  | 22.28%   | 27        | 273   |
+| ❌      | titpetric/platform-app/modules/user/service  | 11.11%   | 21        | 187   |
 | ❌      | titpetric/platform-app/modules/user/storage  | 44.01%   | 24        | 211   |
+| ❌      | titpetric/platform-app/modules/user/view     | 0.00%    | 134       | 279   |
 
 ## Functions
 
@@ -40,8 +40,6 @@ The storage packages have integration tests.
 | ✅      | titpetric/platform-app/cmd                   | Main                           | 100.00%  | 0         |
 | ✅      | titpetric/platform-app/cmd                   | Register                       | 100.00%  | 0         |
 | ✅      | titpetric/platform-app/cmd/app               | main                           | 0.00%    | 0         |
-| ✅      | titpetric/platform-app/internal              | NewTemplate                    | 100.00%  | 0         |
-| ❌      | titpetric/platform-app/internal              | Template.Render                | 0.00%    | 1         |
 | ✅      | titpetric/platform-app/modules/assets        | Module.Mount                   | 63.60%   | 2         |
 | ✅      | titpetric/platform-app/modules/daily         | Migrate                        | 75.00%   | 1         |
 | ❌      | titpetric/platform-app/modules/daily         | Module.Mount                   | 17.40%   | 6         |
@@ -72,18 +70,17 @@ The storage packages have integration tests.
 | ❌      | titpetric/platform-app/modules/daily/storage | Storage.Update                 | 0.00%    | 1         |
 | ❌      | titpetric/platform-app/modules/daily/storage | boolToInt                      | 0.00%    | 1         |
 | ❌      | titpetric/platform-app/modules/daily/view    | Daily                          | 0.00%    | 12        |
-| ❌      | titpetric/platform-app/modules/daily/view    | DailyIndex                     | 0.00%    | 86        |
+| ❌      | titpetric/platform-app/modules/daily/view    | DailyResponse                  | 0.00%    | 86        |
 | ❌      | titpetric/platform-app/modules/daily/view    | printTime                      | 0.00%    | 1         |
 | ✅      | titpetric/platform-app/modules/expvar        | Handler.Mount                  | 50.00%   | 1         |
 | ✅      | titpetric/platform-app/modules/expvar        | Handler.Start                  | 22.20%   | 2         |
 | ✅      | titpetric/platform-app/modules/expvar        | NewHandler                     | 100.00%  | 0         |
-| ❌      | titpetric/platform-app/modules/theme         | Layout                         | 0.00%    | 32        |
+| ❌      | titpetric/platform-app/modules/theme         | Layout                         | 0.00%    | 16        |
 | ✅      | titpetric/platform-app/modules/theme         | NewOptions                     | 100.00%  | 0         |
 | ❌      | titpetric/platform-app/modules/user          | GetSessionUser                 | 0.00%    | 8         |
 | ✅      | titpetric/platform-app/modules/user          | Handler.Mount                  | 100.00%  | 0         |
 | ✅      | titpetric/platform-app/modules/user          | Handler.Name                   | 0.00%    | 0         |
-| ✅      | titpetric/platform-app/modules/user          | Handler.Start                  | 83.30%   | 2         |
-| ✅      | titpetric/platform-app/modules/user          | Handler.Stop                   | 100.00%  | 0         |
+| ✅      | titpetric/platform-app/modules/user          | Handler.Start                  | 85.70%   | 1         |
 | ❌      | titpetric/platform-app/modules/user          | IsLoggedIn                     | 0.00%    | 3         |
 | ✅      | titpetric/platform-app/modules/user          | NewHandler                     | 100.00%  | 0         |
 | ✅      | titpetric/platform-app/modules/user/model    | NewUser                        | 100.00%  | 0         |
@@ -124,8 +121,7 @@ The storage packages have integration tests.
 | ✅      | titpetric/platform-app/modules/user/model    | UserSession.GetUserID          | 0.00%    | 0         |
 | ✅      | titpetric/platform-app/modules/user/model    | UserSession.SetCreatedAt       | 0.00%    | 0         |
 | ✅      | titpetric/platform-app/modules/user/model    | UserSession.SetExpiresAt       | 0.00%    | 0         |
-| ✅      | titpetric/platform-app/modules/user/service  | NewService                     | 75.00%   | 1         |
-| ✅      | titpetric/platform-app/modules/user/service  | Service.Close                  | 100.00%  | 0         |
+| ✅      | titpetric/platform-app/modules/user/service  | NewService                     | 100.00%  | 0         |
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Error                  | 0.00%    | 2         |
 | ✅      | titpetric/platform-app/modules/user/service  | Service.GetError               | 0.00%    | 0         |
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Login                  | 0.00%    | 5         |
@@ -134,8 +130,6 @@ The storage packages have integration tests.
 | ✅      | titpetric/platform-app/modules/user/service  | Service.LogoutView             | 0.00%    | 0         |
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Register               | 0.00%    | 4         |
 | ✅      | titpetric/platform-app/modules/user/service  | Service.RegisterView           | 0.00%    | 0         |
-| ❌      | titpetric/platform-app/modules/user/service  | Service.View                   | 0.00%    | 3         |
-| ✅      | titpetric/platform-app/modules/user/service  | Service.initTemplates          | 92.30%   | 2         |
 | ✅      | titpetric/platform-app/modules/user/storage  | DB                             | 100.00%  | 0         |
 | ✅      | titpetric/platform-app/modules/user/storage  | NewSessionStorage              | 100.00%  | 0         |
 | ✅      | titpetric/platform-app/modules/user/storage  | NewUserStorage                 | 100.00%  | 0         |
@@ -147,4 +141,10 @@ The storage packages have integration tests.
 | ❌      | titpetric/platform-app/modules/user/storage  | UserStorage.Get                | 0.00%    | 1         |
 | ❌      | titpetric/platform-app/modules/user/storage  | UserStorage.GetGroups          | 0.00%    | 1         |
 | ❌      | titpetric/platform-app/modules/user/storage  | UserStorage.Update             | 0.00%    | 1         |
+| ❌      | titpetric/platform-app/modules/user/view     | Login                          | 0.00%    | 12        |
+| ❌      | titpetric/platform-app/modules/user/view     | LoginResponse                  | 0.00%    | 34        |
+| ❌      | titpetric/platform-app/modules/user/view     | Logout                         | 0.00%    | 12        |
+| ❌      | titpetric/platform-app/modules/user/view     | LogoutResponse                 | 0.00%    | 18        |
+| ❌      | titpetric/platform-app/modules/user/view     | Register                       | 0.00%    | 12        |
+| ❌      | titpetric/platform-app/modules/user/view     | RegisterResponse               | 0.00%    | 46        |
 
