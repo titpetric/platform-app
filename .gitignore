@@ -3,3 +3,4 @@
 *.cov
 *.cov.json
 go-fsck.json
+docs/.flatnotes
