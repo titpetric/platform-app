@@ -6,8 +6,7 @@ import (
 
 	"github.com/titpetric/platform/pkg/telemetry"
 
-	"github.com/titpetric/platform-app/modules/theme"
-	"github.com/titpetric/platform-app/modules/user/model"
+	"github.com/titpetric/platform-app/modules/user/view"
 )
 
 // LoginView renders login.tpl when no valid session exists,
@@ -18,31 +17,11 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 
-	type templateData struct {
-		Theme   *theme.Options
-		User    *model.User
-		Session *model.UserSession
-
-		ErrorMessage string
-		Form         map[string]string
-	}
-
-	var data templateData = templateData{
-		Theme:        theme.NewOptions(),
-		ErrorMessage: h.GetError(r),
-		Form: map[string]string{
-			"email": r.FormValue("email"),
-		},
-	}
-
 	cookie, err := r.Cookie("session_id")
 	if err == nil && cookie.Value != "" {
 		if session, err := h.SessionStorage.Get(ctx, cookie.Value); err == nil {
 			if user, err := h.UserStorage.Get(ctx, session.UserID); err == nil {
-				data.User = user
-				data.Session = session
-
-				h.View(w, r, "logout.tpl", data)
+				view.Logout(user).Render(ctx, w)
 				return
 			}
 			log.Println(err)
@@ -51,5 +30,8 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	h.View(w, r, "login.tpl", data)
+	view.Login(view.LoginData{
+		ErrorMessage: h.GetError(r),
+		Email:        r.FormValue("email"),
+	}).Render(ctx, w)
 }

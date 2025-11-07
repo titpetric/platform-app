@@ -1,11 +1,15 @@
 package view
 
+import "time"
 import "github.com/titpetric/platform-app/modules/theme"
 import "github.com/titpetric/platform-app/modules/daily/model"
 
-// The component wraps the theme layout
-templ Daily(title string, tasks []model.Todo) {
-	@theme.Layout(title, DailyIndex(title, tasks))
+type DailyData struct {
+	Tasks []model.Todo
+}
+
+templ Daily(data DailyData) {
+	@theme.Layout(DailyResponse(data))
 }
 
 func printTime(t *time.Time) string {
@@ -16,8 +20,7 @@ func printTime(t *time.Time) string {
 	return t.Format(time.DateOnly)
 }
 
-// The component expects: title string, tasks []model.Todo
-templ DailyIndex(title string, tasks []model.Todo) {
+templ DailyResponse(data DailyData) {
 	<div class="app-root daily-app">
 	<div class="panel">
 	<div class="header-row">
@@ -43,8 +46,8 @@ templ DailyIndex(title string, tasks []model.Todo) {
 </div>
 
 <div class="task-list" id="task-list">
-  if len(tasks) > 0 {
-    for _, t := range tasks {
+  if len(data.Tasks) > 0 {
+    for _, t := range data.Tasks {
       <div class="task-item d-flex align-items-center justify-content-between" data-task-id={t.ID}>
         <div class="form-check task-meta">
           <input class="form-check-input task-checkbox" type="checkbox" id={"task-"+t.ID}/>

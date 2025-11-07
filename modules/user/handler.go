@@ -5,14 +5,15 @@ import (
 
 	"github.com/titpetric/platform"
 
-	"github.com/titpetric/platform-app/modules/theme"
 	"github.com/titpetric/platform-app/modules/user/service"
 	"github.com/titpetric/platform-app/modules/user/storage"
 )
 
 // Handler implements a module contract.
 type Handler struct {
-	Service *service.Service
+	platform.UnimplementedModule
+
+	*service.Service
 }
 
 // Verify contract.
@@ -30,23 +31,10 @@ func (h *Handler) Start(ctx context.Context) error {
 		return err
 	}
 
-	themeFS := theme.TemplateFS
 	userStorage := storage.NewUserStorage(db)
 	sessionStorage := storage.NewSessionStorage(db)
 
-	options := &service.Options{
-		UserStorage:    userStorage,
-		SessionStorage: sessionStorage,
-		ThemeFS:        themeFS,
-		ModuleFS:       TemplateFS,
-	}
-
-	svc, err := service.NewService(options)
-	if err != nil {
-		return err
-	}
-
-	h.Service = svc
+	h.Service = service.NewService(userStorage, sessionStorage)
 	return nil
 }
 
@@ -57,17 +45,11 @@ func (h *Handler) Name() string {
 
 // Mount registers login, logout, and register routes.
 func (h *Handler) Mount(r platform.Router) error {
-	r.Get("/login", h.Service.LoginView)
-	r.Post("/login", h.Service.Login)
-	r.Get("/logout", h.Service.LogoutView)
-	r.Post("/logout", h.Service.Logout)
-	r.Get("/register", h.Service.RegisterView)
-	r.Post("/register", h.Service.Register)
-	return nil
-}
-
-// Stop implements a closer for graceful shutdown.
-func (h *Handler) Stop() error {
-	h.Service.Close()
+	r.Get("/login", h.LoginView)
+	r.Post("/login", h.Login)
+	r.Get("/logout", h.LogoutView)
+	r.Post("/logout", h.Logout)
+	r.Get("/register", h.RegisterView)
+	r.Post("/register", h.Register)
 	return nil
 }

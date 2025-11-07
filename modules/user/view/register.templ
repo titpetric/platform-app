@@ -1,3 +1,20 @@
+package view
+
+import "github.com/titpetric/platform-app/modules/theme"
+
+type RegisterData struct {
+	ErrorMessage string
+
+	Email string
+	FirstName string
+	LastName string
+}
+
+templ Register(data RegisterData) {
+	@theme.Layout(RegisterResponse(data))
+}
+
+templ RegisterResponse(data RegisterData) {
 <div class="row justify-content-center my-5">
   <div class="col-md-6 col-lg-4">
     <div class="card shadow-sm rounded-4">
@@ -17,7 +34,7 @@
                     name="first_name"
                     id="first_name"
                     class="form-control"
-                    value="{{.Form.first_name}}"
+                    value={data.FirstName}
                     required
                   />
                 </td>
@@ -32,7 +49,7 @@
                     name="last_name"
                     id="last_name"
                     class="form-control"
-                    value="{{.Form.last_name}}"
+                    value={data.LastName}
                     required
                   />
                 </td>
@@ -48,7 +65,7 @@
                     id="email"
                     class="form-control"
                     required
-                    value="{{.Form.email}}"
+                    value={data.Email}
                   />
                 </td>
               </tr>
@@ -69,11 +86,11 @@
             </tbody>
           </table>
 
-          {{ if .ErrorMessage }}
+          if data.ErrorMessage != "" {
           <div class="alert alert-warning text-center mt-3">
-            {{.ErrorMessage}}
+            {data.ErrorMessage}
           </div>
-          {{ end }}
+          }
 
           <div class="d-grid mt-4">
             <button type="submit" class="btn btn-success btn-lg rounded-3">
@@ -90,3 +107,4 @@
     </div>
   </div>
 </div>
+}

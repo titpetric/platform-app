@@ -1,3 +1,21 @@
+package view
+
+import "github.com/titpetric/platform-app/modules/theme"
+import "github.com/titpetric/platform-app/modules/user/model"
+
+type LoginData struct {
+	User    *model.User
+	Session *model.UserSession
+
+	ErrorMessage string
+	Email string
+}
+
+templ Login(data LoginData) {
+	@theme.Layout(LoginResponse(data))
+}
+
+templ LoginResponse(data LoginData) {
 <div class="row justify-content-center my-5">
   <div class="col-md-6 col-lg-4">
     <div class="card shadow-sm rounded-4">
@@ -17,7 +35,7 @@
                     name="email"
                     id="email"
                     class="form-control"
-                    value="{{.Form.email}}"
+                    value={data.Email}
                     required
                   />
                 </td>
@@ -39,11 +57,11 @@
             </tbody>
           </table>
 
-          {{ if .ErrorMessage }}
+        if data.ErrorMessage != "" {
           <div class="alert alert-warning text-center mt-3">
-            {{.ErrorMessage}}
+            {data.ErrorMessage}
           </div>
-          {{ end }}
+	}
 
           <div class="d-grid mt-4">
             <button type="submit" class="btn btn-primary btn-lg rounded-3">
@@ -60,3 +78,5 @@
     </div>
   </div>
 </div>
+
+}

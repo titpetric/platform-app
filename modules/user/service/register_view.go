@@ -5,7 +5,7 @@ import (
 
 	"github.com/titpetric/platform/pkg/telemetry"
 
-	"github.com/titpetric/platform-app/modules/theme"
+	"github.com/titpetric/platform-app/modules/user/view"
 )
 
 // RegisterView renders the registration page.
@@ -13,22 +13,10 @@ func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
 	r, span := telemetry.StartRequest(r, "user.service.RegisterView")
 	defer span.End()
 
-	type templateData struct {
-		Theme *theme.Options
-
-		ErrorMessage string
-		Form         map[string]string
-	}
-
-	data := templateData{
-		Theme:        theme.NewOptions(),
+	view.Register(view.RegisterData{
 		ErrorMessage: h.GetError(r),
-		Form: map[string]string{
-			"first_name": r.FormValue("first_name"),
-			"last_name":  r.FormValue("last_name"),
-			"email":      r.FormValue("email"),
-		},
-	}
-
-	h.View(w, r, "register.tpl", data)
+		FirstName:    r.FormValue("first_name"),
+		LastName:     r.FormValue("last_name"),
+		Email:        r.FormValue("email"),
+	}).Render(r.Context(), w)
 }

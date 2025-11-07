@@ -49,7 +49,7 @@ func (m *Module) Mount(r platform.Router) error {
 		if err != nil {
 			platform.Error(w, r, 503, err)
 		}
-		view.Daily("Hello...", tasks).Render(ctx, w)
+		view.Daily(view.DailyData{Tasks: tasks}).Render(ctx, w)
 	})
 
 	r.Post("/daily/save", func(w http.ResponseWriter, r *http.Request) {
