@@ -1,4 +1,5 @@
 /app
-/*.db
-/*.cov
-/*.json
+*.db
+*.cov
+*.cov.json
+go-fsck.json

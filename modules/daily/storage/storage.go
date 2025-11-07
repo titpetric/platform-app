@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"time"
 
@@ -21,6 +20,8 @@ type Storage struct {
 func NewStorage(db *sqlx.DB) *Storage {
 	return &Storage{db: db}
 }
+
+var empty model.Todo
 
 // List returns all non-deleted todos
 func (s *Storage) List(ctx context.Context) ([]model.Todo, error) {
@@ -49,63 +50,49 @@ func (s *Storage) Get(ctx context.Context, id string) (model.Todo, error) {
 // Add inserts a new todo
 func (s *Storage) Add(ctx context.Context, t model.Todo) (model.Todo, error) {
 	now := time.Now().UTC()
+	t.ID = ulid.String()
 	t.SetCreatedAt(now)
 	t.SetUpdatedAt(now)
-	t.ID = ulid.String()
 
 	_, err := s.db.ExecContext(ctx, `
 		INSERT INTO `+model.TodoTable+` (id, title, completed, created_at, updated_at, deleted_at)
 		VALUES (?, ?, ?, ?, ?, ?)
 	`, t.ID, t.Title, t.Completed, t.CreatedAt, t.UpdatedAt, t.DeletedAt)
 	if err != nil {
-		return model.Todo{}, err
+		return empty, err
 	}
 	return s.Get(ctx, t.ID)
 }
 
 // Update modifies title/completed/updated_at for a todo
-func (s *Storage) Update(ctx context.Context, id string, t model.Todo) (model.Todo, error) {
-	if id == "" {
-		return model.Todo{}, errors.New("id required")
+func (s *Storage) Update(ctx context.Context, t model.Todo) error {
+	if t.ID == "" {
+		return errors.New("id required")
 	}
 	now := time.Now().UTC()
 	t.SetUpdatedAt(now)
 
-	res, err := s.db.ExecContext(ctx, `
+	_, err := s.db.ExecContext(ctx, `
 		UPDATE `+model.TodoTable+`
 		SET title = ?, completed = ?, updated_at = ?
 		WHERE id = ? AND deleted_at IS NULL
-	`, t.Title, t.Completed, t.UpdatedAt, id)
-	if err != nil {
-		return model.Todo{}, err
-	}
-	aff, _ := res.RowsAffected()
-	if aff == 0 {
-		return model.Todo{}, sql.ErrNoRows
-	}
-	return s.Get(ctx, id)
+	`, t.Title, t.Completed, t.UpdatedAt, t.ID)
+	return err
 }
 
 // Complete marks a todo completed and updates updated_at
-func (s *Storage) Complete(ctx context.Context, id string) (model.Todo, error) {
+func (s *Storage) Complete(ctx context.Context, id string) error {
 	if id == "" {
-		return model.Todo{}, errors.New("id required")
+		return errors.New("id required")
 	}
 	now := time.Now().UTC()
 
-	res, err := s.db.ExecContext(ctx, `
+	_, err := s.db.ExecContext(ctx, `
 		UPDATE `+model.TodoTable+`
 		SET completed = 1, updated_at = ?
 		WHERE id = ? AND deleted_at IS NULL
 	`, now, id)
-	if err != nil {
-		return model.Todo{}, err
-	}
-	aff, _ := res.RowsAffected()
-	if aff == 0 {
-		return model.Todo{}, sql.ErrNoRows
-	}
-	return s.Get(ctx, id)
+	return err
 }
 
 // Delete soft-deletes a todo by setting deleted_at
@@ -119,10 +106,7 @@ func (s *Storage) Delete(ctx context.Context, id string) error {
 		SET deleted_at = ?
 		WHERE id = ? AND deleted_at IS NULL
 	`, now, id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // helper: bool -> int for sqlite

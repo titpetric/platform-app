@@ -26,7 +26,6 @@ func Migrate(ctx context.Context, db *sqlx.DB) error {
 		&migrate.Options{
 			Project: "daily",
 			Apply:   true,
-			Verbose: true,
 		},
 	)
 }

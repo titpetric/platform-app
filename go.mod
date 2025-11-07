@@ -7,7 +7,8 @@ require (
 	github.com/go-bridget/mig v0.0.0-20251031175119-16ccaa044a41
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/titpetric/platform v0.0.2
+	github.com/stretchr/testify v1.11.1
+	github.com/titpetric/platform v0.0.3-0.20251107164829-2ac81719aed2
 	golang.org/x/crypto v0.43.0
 )
 
@@ -37,7 +38,6 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/riandyrn/otelchi v0.12.2 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
-	github.com/stretchr/testify v1.11.1 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.38.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.38.0 // indirect
