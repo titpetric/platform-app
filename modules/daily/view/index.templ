@@ -1,0 +1,65 @@
+package view
+
+import "github.com/titpetric/platform-app/modules/theme"
+import "github.com/titpetric/platform-app/modules/daily/model"
+
+// The component wraps the theme layout
+templ Daily(title string, tasks []model.Todo) {
+	@theme.Layout(title, DailyIndex(title, tasks))
+}
+
+func printTime(t *time.Time) string {
+	if t == nil {
+		return "<nil>"
+	}
+
+	return t.Format(time.DateOnly)
+}
+
+// The component expects: title string, tasks []model.Todo
+templ DailyIndex(title string, tasks []model.Todo) {
+	<div class="app-root daily-app">
+	<div class="panel">
+	<div class="header-row">
+	<div>
+		<div class="title">Daily — Todo</div>
+		<div class="text-muted small">A tiny front page todo. Add tasks, they POST to <code>/save</code>.</div>
+	</div>
+
+	<div class="controls">
+	<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">Toggle</button>
+	</div>
+	</div>
+
+<div class="task-input-form">
+  <form id="task-form" class="row g-2 align-items-center">
+    <div class="col-sm">
+      <input id="task-input" name="task" type="text" class="form-control" placeholder="What will you do today?" aria-label="Task"/>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+  </form>
+</div>
+
+<div class="task-list" id="task-list">
+  if len(tasks) > 0 {
+    for _, t := range tasks {
+      <div class="task-item d-flex align-items-center justify-content-between" data-task-id={t.ID}>
+        <div class="form-check task-meta">
+          <input class="form-check-input task-checkbox" type="checkbox" id={"task-"+t.ID}/>
+          <label class="form-check-label" for={"task-"+t.ID}>
+            <div class="fw-semibold">{t.Title}</div>
+            <div class="text-muted small">{printTime(t.CreatedAt)}</div>
+          </label>
+        </div>
+      </div>
+    }
+  } else {
+    <div class="text-muted small">No tasks yet. Add one above.</div>
+  }
+</div>
+
+	</div>
+	</div>
+}

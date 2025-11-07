@@ -1,0 +1,10 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: "Run db migrations"
+    cmds:
+      - mig migrate --db-driver=sqlite --db-dsn="file:daily.db" --project daily --path model --apply
+      - mig gen --db-driver=sqlite --db-dsn="file:daily.db" --go.skip-json --output=./model
+      - go build .

@@ -8,6 +8,8 @@ import (
 	"github.com/titpetric/platform/cmd"
 	"github.com/titpetric/platform/pkg/telemetry"
 
+	"github.com/titpetric/platform-app/modules/assets"
+	"github.com/titpetric/platform-app/modules/daily"
 	"github.com/titpetric/platform-app/modules/expvar"
 	"github.com/titpetric/platform-app/modules/user"
 )
@@ -31,6 +33,8 @@ func Main(ctx context.Context, options ...*platform.Options) {
 func Register() {
 	platform.Use(middleware.Logger)
 	platform.Use(telemetry.Middleware("user"))
+	platform.Register(assets.Module{})
 	platform.Register(user.NewHandler())
 	platform.Register(expvar.NewHandler())
+	platform.Register(daily.NewModule())
 }
