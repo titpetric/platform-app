@@ -7,11 +7,12 @@ import (
 	"context"
 	"testing"
 
+	_ "github.com/titpetric/platform-app/autoload"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
 	"github.com/titpetric/platform/pkg/assert"
 
-	_ "github.com/titpetric/platform-app/autoload"
 	"github.com/titpetric/platform-app/modules/daily"
 	"github.com/titpetric/platform-app/modules/daily/model"
 	"github.com/titpetric/platform-app/modules/daily/storage"

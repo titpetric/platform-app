@@ -10,6 +10,7 @@ import (
 
 	"github.com/a-h/templ"
 	templruntime "github.com/a-h/templ/runtime"
+
 	"github.com/titpetric/platform-app/modules/daily/model"
 	"github.com/titpetric/platform-app/modules/theme"
 )

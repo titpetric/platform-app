@@ -6,6 +6,7 @@ version: "3"
 
 vars:
   name: app
+  docker_image: internal/{{.name}}
   goversion:
     sh: go env GOVERSION
   toolchain: '{{.goversion}}+auto'
@@ -22,22 +23,22 @@ tasks:
   fmt:
     desc: "Source code formatting"
     cmds:
-      - goimports -w .
-      - goimports-reviser -set-alias -format ./...
+      - goimports -w -local $(go list .) .
+      - goimports-reviser -set-alias -format -imports-order "std,blanked,general,company,project" ./...
       - gofumpt -w .
       - go mod tidy
 
   gen:
     desc: "Generate code"
     cmds:
-      - templ generate
+      - go generate ./...
 
   docker:
     desc: "Build docker image"
     cmds:
       - defer: rm {{.name}} -f
       - CGO_ENABLED=0 go build ./cmd/{{.name}}
-      - docker build --no-cache -t internal/{{.name}} -f docker/Dockerfile .
+      - docker build --no-cache -t {{.docker_image}} -f docker/Dockerfile .
 
   clean:
     desc: "Clean build assets"
@@ -47,17 +48,18 @@ tasks:
       - go clean -cache
       - go clean -testcache
       - rm -f ./{{.name}} pkg.cov pkg.cov.json go-fsck.json
-      - docker rmi -f internal/{{.name}}
+      - docker rmi -f {{.docker_image}}
 
   migrate:
     desc: "Run migrations"
     cmds:
       - mig lint --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform
-      - mig docs --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform --output=./user/docs
-      - mig gen --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --go.skip-json --schema platform --output=./user/model
+      - mig docs --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform --output=./modules/user/docs
+      - mig gen --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --go.skip-json --schema platform --output=./modules/user/model
 
   bench:
     desc: "Run benchmarks"
+    dotenv: [.env.test]
     env:
       GOTOOLCHAIN: '{{.toolchain}}'
     cmd: go test -failfast -run='Bench.+' -bench=. -benchmem -cpu 1,2,4 -race -v ./...

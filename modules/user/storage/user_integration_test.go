@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	_ "github.com/titpetric/platform/pkg/drivers"
+
 	"github.com/titpetric/platform/pkg/require"
 
 	"github.com/titpetric/platform-app/modules/user/model"
