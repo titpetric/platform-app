@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-
 	"github.com/titpetric/platform/pkg/telemetry"
 	"github.com/titpetric/platform/pkg/ulid"
 

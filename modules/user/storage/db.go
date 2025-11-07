@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
-
 	"github.com/titpetric/platform"
 )
 

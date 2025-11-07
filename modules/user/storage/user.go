@@ -8,11 +8,10 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
 	"github.com/titpetric/platform/pkg/ulid"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/titpetric/platform-app/modules/user/model"
 )

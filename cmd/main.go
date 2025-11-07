@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-chi/chi/v5/middleware"
-
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/cmd"
 	"github.com/titpetric/platform/pkg/telemetry"
