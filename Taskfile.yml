@@ -14,18 +14,21 @@ tasks:
   default:
     desc: "Run platform base"
     env:
-      PLATFORM_SERVER_ADDR: ":0"
+      PLATFORM_SERVER_ADDR: ":3000"
       PLATFORM_DB_DEFAULT: "mysql://platform:platform@tcp(127.0.0.1:3306)/platform"
       PLATFORM_DB_USER: "mysql://platform:platform@tcp(127.0.0.1:3306)/platform"
+      PLATFORM_DB_DAILY: "sqlite://file:daily.db"
       PLATFORM_ENABLE_EXPVAR: "true"
     cmds:
+      - task: gen
       - task: fmt
       - CGO_ENABLED=0 go run ./cmd/{{.name}}
 
   fmt:
     desc: "Source code formatting"
     cmds:
-      - goimports-reviser -rm-unused -set-alias -format ./...
+      - goimports -w .
+      - goimports-reviser -set-alias -format ./...
       - gofumpt -w .
       - go mod tidy
 
@@ -38,12 +41,14 @@ tasks:
     desc: "Build docker image"
     cmds:
       - defer: rm platform -f
+      - task: gen
       - CGO_ENABLED=0 go build ./cmd/{{.name}}
       - docker build --no-cache -t internal/{{.name}} -f docker/Dockerfile .
 
   clean:
     desc: "Clean build assets"
     cmds:
+      - task: gen
       - task: fmt
       - go clean -cache
       - go clean -testcache
