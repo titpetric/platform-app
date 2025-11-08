@@ -1,0 +1,240 @@
+@startuml
+
+class Module {
+  + Mount (r platform.Router) error
+}
+
+class Migrations {
+  + Project: string
+  + Filename: string
+  + StatementIndex: int64
+  + Status: string
+}
+
+class Storage {
+  - type: any
+}
+
+class Todo {
+  + ID: string
+  + Title: string
+  + Completed: bool
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + DeletedAt: *time.Time
+}
+
+class Storage {
+  - db: *sqlx.DB
+}
+
+class Category {
+  + Name: string
+}
+
+class Options {
+  + Title: string
+  + Categories: []Category
+}
+
+class DailyData {
+  + Tasks: []model.Todo
+}
+
+class Module {
+  - repository: *storage.Storage
+}
+
+class Handler {
+  + Enabled: bool
+}
+
+class SessionStorage {
+  - type: any
+}
+
+class User {
+  + ID: string
+  + FirstName: string
+  + LastName: string
+  + DeletedAt: *time.Time
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+}
+
+class UserAuth {
+  + UserID: string
+  + Email: string
+  + Password: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+}
+
+class UserGroup {
+  + ID: string
+  + Title: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+}
+
+class UserGroupMember {
+  + UserGroupID: string
+  + UserID: string
+  + JoinedAt: *time.Time
+}
+
+class UserSession {
+  + ID: string
+  + UserID: string
+  + ExpiresAt: *time.Time
+  + CreatedAt: *time.Time
+}
+
+class UserStorage {
+  - type: any
+}
+
+class SessionStorage {
+  - db: *sqlx.DB
+}
+
+class UserStorage {
+  - db: *sqlx.DB
+}
+
+class LoginData {
+  + User: *model.User
+  + Session: *model.UserSession
+  + ErrorMessage: string
+  + Email: string
+}
+
+class RegisterData {
+  + ErrorMessage: string
+  + Email: string
+  + FirstName: string
+  + LastName: string
+}
+
+class Service {
+  + UserStorage: *storage.UserStorage
+  + SessionStorage: *storage.SessionStorage
+}
+
+class Handler {
+}
+
+platform.UnimplementedModule --|> Module : embeded by
+
+note top of Module
+Module is the assets module for serving embedded CSS and JS.
+end note
+
+
+
+note top of Migrations
+Migrations generated for db table `migrations`.
+end note
+
+
+
+note top of Storage
+Storage defines operations against the todo store.
+
+Note: Add and Update accept a Todo value so we can pass title/completed
+and timestamps from Go. Methods always take a context.
+end note
+
+
+
+note top of Todo
+Todo generated for db table `todo`.
+end note
+
+
+
+note top of Storage
+Storage implements model.Storage backed by sqlite
+end note
+
+
+
+Options --> Category : Categories
+
+
+platform.UnimplementedModule --|> Module : embeded by
+
+platform.UnimplementedModule --|> Handler : embeded by
+
+
+
+note top of User
+User generated for db table `user`.
+
+Stores user profile information using ULID as primary key.
+end note
+
+
+
+note top of UserAuth
+UserAuth generated for db table `user_auth`.
+
+Stores user authentication credentials.
+end note
+
+
+
+note top of UserGroup
+UserGroup generated for db table `user_group`.
+
+Stores user group information using ULID as primary key.
+end note
+
+
+
+note top of UserGroupMember
+UserGroupMember generated for db table `user_group_member`.
+
+Stores user memberships in groups using ULID for IDs.
+end note
+
+
+
+note top of UserSession
+UserSession generated for db table `user_session`.
+
+Stores immutable user sessions with ULID IDs and expiration.
+end note
+
+
+
+
+note top of SessionStorage
+SessionStorage implements session persistence using MySQL.
+end note
+
+
+
+note top of UserStorage
+UserStorage implements the model.Storage interface using MySQL via sqlx.
+end note
+
+
+
+
+
+note top of Service
+Service encapsulates what we need to get from the handler.
+end note
+
+
+platform.UnimplementedModule --|> Handler : embeded by
+service.Service --|> Handler : embeded by
+
+note top of Handler
+Handler implements a module contract.
+end note
+
+
+
+@enduml
