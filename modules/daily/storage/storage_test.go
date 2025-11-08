@@ -16,6 +16,8 @@ import (
 	"github.com/titpetric/platform-app/modules/daily"
 	"github.com/titpetric/platform-app/modules/daily/model"
 	"github.com/titpetric/platform-app/modules/daily/storage"
+	"github.com/titpetric/platform-app/modules/user"
+	usermodel "github.com/titpetric/platform-app/modules/user/model"
 )
 
 func Must[T any](t *testing.T, ctor func(context.Context) (T, error)) T {
@@ -26,6 +28,10 @@ func Must[T any](t *testing.T, ctor func(context.Context) (T, error)) T {
 
 func TestStorage(t *testing.T) {
 	ctx := t.Context()
+	ctx = user.SetSessionUser(ctx, &usermodel.User{
+		ID: "test",
+	})
+
 	db := Must[*sqlx.DB](t, storage.DB)
 
 	assert.NoError(t, daily.Migrate(ctx, db))

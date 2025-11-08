@@ -62,3 +62,8 @@ func GetSessionUser(ctx context.Context) (*model.User, bool) {
 	userdata := userContext.GetContext(ctx)
 	return userdata, userdata.IsActive()
 }
+
+// SetSessionUser is here to aid testing.
+func SetSessionUser(ctx context.Context, u *model.User) context.Context {
+	return userContext.SetContext(ctx, u)
+}

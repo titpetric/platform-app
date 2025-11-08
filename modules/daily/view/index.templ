@@ -3,11 +3,12 @@ package view
 import "time"
 import "github.com/titpetric/platform-app/modules/theme"
 import "github.com/titpetric/platform-app/modules/daily/model"
+import usermodel "github.com/titpetric/platform-app/modules/user/model"
 
 type DailyData struct {
 	Tasks []model.Todo
 	IsLoggedIn bool
-	SessionUser *model.User
+	SessionUser *usermodel.User
 }
 
 templ Daily(data DailyData) {
