@@ -1,240 +1,260 @@
 @startuml
 
-class Module {
+class modules.assets.Module {
   + Mount (r platform.Router) error
 }
 
-class Migrations {
+class modules.daily.model.Migrations {
   + Project: string
   + Filename: string
   + StatementIndex: int64
   + Status: string
+  + GetFilename () string
+  + GetProject () string
+  + GetStatementIndex () int64
+  + GetStatus () string
 }
 
-class Storage {
-  - type: any
+interface modules.daily.model.Storage {
+  + List: List (ctx context.Context) ([]Todo, error)
+  + Get: Get (ctx context.Context, id string) (Todo, error)
+  + Add: Add (ctx context.Context, t Todo) (Todo, error)
+  + Update: Update (ctx context.Context, t Todo) error
+  + Complete: Complete (ctx context.Context, id string) error
+  + Delete: Delete (ctx context.Context, id string) error
 }
 
-class Todo {
+class modules.daily.model.Todo {
   + ID: string
   + Title: string
   + Completed: bool
   + CreatedAt: *time.Time
   + UpdatedAt: *time.Time
   + DeletedAt: *time.Time
+  + GetCompleted () bool
+  + GetCreatedAt () *time.Time
+  + GetDeletedAt () *time.Time
+  + GetID () string
+  + GetTitle () string
+  + GetUpdatedAt () *time.Time
+  + SetCreatedAt (stamp time.Time)
+  + SetDeletedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
 }
 
-class Storage {
+class modules.daily.storage.Storage {
   - db: *sqlx.DB
+  + Add (ctx context.Context, t model.Todo) (model.Todo, error)
+  + Complete (ctx context.Context, id string) error
+  + Delete (ctx context.Context, id string) error
+  + Get (ctx context.Context, id string) (model.Todo, error)
+  + List (ctx context.Context) ([]model.Todo, error)
+  + Update (ctx context.Context, t model.Todo) error
 }
 
-class Category {
+class modules.theme.Category {
   + Name: string
 }
 
-class Options {
+class modules.theme.Options {
   + Title: string
   + Categories: []Category
 }
 
-class DailyData {
+class modules.daily.view.DailyData {
   + Tasks: []model.Todo
 }
 
-class Module {
+class modules.daily.Module {
   - repository: *storage.Storage
+  + Mount (r platform.Router) error
+  + Name () string
+  + Start (ctx context.Context) error
 }
 
-class Handler {
+class modules.expvar.Handler {
   + Enabled: bool
+  + Mount (r platform.Router) error
+  + Start (context.Context) error
 }
 
-class SessionStorage {
-  - type: any
+interface modules.user.model.SessionStorage {
+  + Create: Create (ctx context.Context, userID string) (*UserSession, error)
+  + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
+  + Delete: Delete (ctx context.Context, sessionID string) error
 }
 
-class User {
+class modules.user.model.User {
   + ID: string
   + FirstName: string
   + LastName: string
   + DeletedAt: *time.Time
   + CreatedAt: *time.Time
   + UpdatedAt: *time.Time
+  + GetCreatedAt () *time.Time
+  + GetDeletedAt () *time.Time
+  + GetFirstName () string
+  + GetID () string
+  + GetLastName () string
+  + GetUpdatedAt () *time.Time
+  + IsActive () bool
+  + SetCreatedAt (stamp time.Time)
+  + SetDeletedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + String () string
 }
 
-class UserAuth {
+class modules.user.model.UserAuth {
   + UserID: string
   + Email: string
   + Password: string
   + CreatedAt: *time.Time
   + UpdatedAt: *time.Time
+  + GetCreatedAt () *time.Time
+  + GetEmail () string
+  + GetPassword () string
+  + GetUpdatedAt () *time.Time
+  + GetUserID () string
+  + SetCreatedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + Valid () bool
 }
 
-class UserGroup {
+class modules.user.model.UserGroup {
   + ID: string
   + Title: string
   + CreatedAt: *time.Time
   + UpdatedAt: *time.Time
+  + GetCreatedAt () *time.Time
+  + GetID () string
+  + GetTitle () string
+  + GetUpdatedAt () *time.Time
+  + SetCreatedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + String () string
 }
 
-class UserGroupMember {
+class modules.user.model.UserGroupMember {
   + UserGroupID: string
   + UserID: string
   + JoinedAt: *time.Time
+  + GetJoinedAt () *time.Time
+  + GetUserGroupID () string
+  + GetUserID () string
+  + SetJoinedAt (stamp time.Time)
 }
 
-class UserSession {
+class modules.user.model.UserSession {
   + ID: string
   + UserID: string
   + ExpiresAt: *time.Time
   + CreatedAt: *time.Time
+  + GetCreatedAt () *time.Time
+  + GetExpiresAt () *time.Time
+  + GetID () string
+  + GetUserID () string
+  + SetCreatedAt (stamp time.Time)
+  + SetExpiresAt (stamp time.Time)
 }
 
-class UserStorage {
-  - type: any
+interface modules.user.model.UserStorage {
+  + Create: Create (context.Context, *User, *UserAuth) (*User, error)
+  + Update: Update (context.Context, *User) (*User, error)
+  + Get: Get (context.Context, string) (*User, error)
+  + GetGroups: GetGroups (context.Context, string) ([]UserGroup, error)
+  + Authenticate: Authenticate (ctx context.Context, auth UserAuth) (*User, error)
 }
 
-class SessionStorage {
+class modules.user.storage.SessionStorage {
   - db: *sqlx.DB
+  + Create (ctx context.Context, userID string) (*model.UserSession, error)
+  + Delete (ctx context.Context, sessionID string) error
+  + Get (ctx context.Context, sessionID string) (*model.UserSession, error)
 }
 
-class UserStorage {
+class modules.user.storage.UserStorage {
   - db: *sqlx.DB
+  + Authenticate (ctx context.Context, userAuth model.UserAuth) (*model.User, error)
+  + Create (ctx context.Context, u *model.User, userAuth *model.UserAuth) (*model.User, error)
+  + Get (ctx context.Context, id string) (*model.User, error)
+  + GetGroups (ctx context.Context, userID string) ([]model.UserGroup, error)
+  + Update (ctx context.Context, u *model.User) (*model.User, error)
 }
 
-class LoginData {
+class modules.user.view.LoginData {
   + User: *model.User
   + Session: *model.UserSession
   + ErrorMessage: string
   + Email: string
 }
 
-class RegisterData {
+class modules.user.view.RegisterData {
   + ErrorMessage: string
   + Email: string
   + FirstName: string
   + LastName: string
 }
 
-class Service {
+class modules.user.service.Service {
   + UserStorage: *storage.UserStorage
   + SessionStorage: *storage.SessionStorage
+  + Error (r *http.Request, message string, err error)
+  + GetError (r *http.Request) string
+  + Login (w http.ResponseWriter, r *http.Request)
+  + LoginView (w http.ResponseWriter, r *http.Request)
+  + Logout (w http.ResponseWriter, r *http.Request)
+  + LogoutView (w http.ResponseWriter, r *http.Request)
+  + Register (w http.ResponseWriter, r *http.Request)
+  + RegisterView (w http.ResponseWriter, r *http.Request)
 }
 
-class Handler {
+class modules.user.Handler {
+  + Mount (r platform.Router) error
+  + Name () string
+  + Start (ctx context.Context) error
 }
 
-platform.UnimplementedModule --|> Module : embeded by
-
-note top of Module
-Module is the assets module for serving embedded CSS and JS.
-end note
-
-
-
-note top of Migrations
-Migrations generated for db table `migrations`.
-end note
-
-
-
-note top of Storage
-Storage defines operations against the todo store.
-
-Note: Add and Update accept a Todo value so we can pass title/completed
-and timestamps from Go. Methods always take a context.
-end note
-
-
-
-note top of Todo
-Todo generated for db table `todo`.
-end note
-
-
-
-note top of Storage
-Storage implements model.Storage backed by sqlite
-end note
-
-
-
-Options --> Category : Categories
-
-
-platform.UnimplementedModule --|> Module : embeded by
-
-platform.UnimplementedModule --|> Handler : embeded by
-
-
-
-note top of User
-User generated for db table `user`.
-
-Stores user profile information using ULID as primary key.
-end note
-
-
-
-note top of UserAuth
-UserAuth generated for db table `user_auth`.
-
-Stores user authentication credentials.
-end note
-
-
-
-note top of UserGroup
-UserGroup generated for db table `user_group`.
-
-Stores user group information using ULID as primary key.
-end note
-
-
-
-note top of UserGroupMember
-UserGroupMember generated for db table `user_group_member`.
-
-Stores user memberships in groups using ULID for IDs.
-end note
-
-
-
-note top of UserSession
-UserSession generated for db table `user_session`.
-
-Stores immutable user sessions with ULID IDs and expiration.
-end note
-
-
-
-
-note top of SessionStorage
-SessionStorage implements session persistence using MySQL.
-end note
-
-
-
-note top of UserStorage
-UserStorage implements the model.Storage interface using MySQL via sqlx.
-end note
 
 
 
 
 
-note top of Service
-Service encapsulates what we need to get from the handler.
-end note
+modules.daily.storage.Storage --> modules.daily.model.Todo : .Add()
+modules.daily.storage.Storage --> modules.daily.model.Todo : .Get()
+modules.daily.storage.Storage --> modules.daily.model.Todo : .List()
+modules.daily.storage.Storage --> modules.daily.model.Todo : .Update()
+
+modules.theme.Options --> modules.theme.Category : .Categories
+
+modules.daily.view.DailyData --> modules.daily.model.Todo : .Tasks
+
+modules.daily.Module --> modules.daily.storage.Storage : .repository
 
 
-platform.UnimplementedModule --|> Handler : embeded by
-service.Service --|> Handler : embeded by
 
-note top of Handler
-Handler implements a module contract.
-end note
 
+
+
+
+
+
+
+modules.user.storage.SessionStorage --> modules.user.model.UserSession : .Create()
+modules.user.storage.SessionStorage --> modules.user.model.UserSession : .Get()
+
+modules.user.storage.UserStorage --> modules.user.model.User : .Authenticate()
+modules.user.storage.UserStorage --> modules.user.model.User : .Create()
+modules.user.storage.UserStorage --> modules.user.model.User : .Get()
+modules.user.storage.UserStorage --> modules.user.model.UserGroup : .GetGroups()
+modules.user.storage.UserStorage --> modules.user.model.User : .Update()
+modules.user.view.LoginData --> modules.user.model.User : .User
+modules.user.view.LoginData --> modules.user.model.UserSession : .Session
+
+
+modules.user.service.Service --> modules.user.storage.UserStorage : .UserStorage
+modules.user.service.Service --> modules.user.storage.SessionStorage : .SessionStorage
+
+modules.user.Handler --|> modules.user.service.Service : embeds
 
 
 @enduml

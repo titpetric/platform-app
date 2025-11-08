@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/titpetric/platform"
-	"github.com/titpetric/platform/cmd"
+	platformcmd "github.com/titpetric/platform/cmd"
 	"github.com/titpetric/platform/pkg/telemetry"
 
 	"github.com/titpetric/platform-app/modules/assets"
@@ -26,7 +26,7 @@ import (
 func Main(ctx context.Context, options ...*platform.Options) {
 	Register()
 
-	cmd.Main(ctx, options...)
+	platformcmd.Main(ctx, options...)
 }
 
 // Register common middleware.

@@ -52,10 +52,12 @@ tasks:
 
   migrate:
     desc: "Run migrations"
+    dotenv: [.env.run]
     cmds:
       - mig lint --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform
       - mig docs --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform --output=./modules/user/docs
       - mig gen --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --go.skip-json --schema platform --output=./modules/user/model
+      - mig docs --db-driver sqlite --db-dsn="file:daily.db" --schema platform --output=./modules/daily/docs
 
   bench:
     desc: "Run benchmarks"
@@ -88,10 +90,14 @@ tasks:
     desc: "Show source coverage"
     cmds:
       - go tool cover -func=pkg.cov | summary coverfunc --json > pkg.cov.json
-      - go-fsck extract ./...
+      - go-fsck extract --pretty-json ./...
       - go-fsck coverage -c pkg.cov.json -o go-fsck.json
       - go-fsck coverage --template=docs/testing-coverage.md.tpl -v > docs/testing-coverage.md
       - perl -pi -e 's/github.com\/titpetric/titpetric/g' docs/testing-coverage.md
+      - go-fsck docs --render imports > docs/imports.puml
+      - go-fsck docs --render puml > docs/structure.puml
+      - plantuml -tsvg docs/structure.puml
+      - plantuml -tsvg docs/imports.puml
 
   uncover:
     desc: "Show uncovered source"
