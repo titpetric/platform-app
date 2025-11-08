@@ -1,10 +1,10 @@
 @startuml
 
-class modules.assets.Module {
+class "modules.assets.Module" {
   + Mount (r platform.Router) error
 }
 
-class modules.daily.model.Migrations {
+class "modules.daily.model.Migrations" {
   + Project: string
   + Filename: string
   + StatementIndex: int64
@@ -15,7 +15,7 @@ class modules.daily.model.Migrations {
   + GetStatus () string
 }
 
-interface modules.daily.model.Storage {
+interface "modules.daily.model.Storage" {
   + List: List (ctx context.Context) ([]Todo, error)
   + Get: Get (ctx context.Context, id string) (Todo, error)
   + Add: Add (ctx context.Context, t Todo) (Todo, error)
@@ -24,7 +24,7 @@ interface modules.daily.model.Storage {
   + Delete: Delete (ctx context.Context, id string) error
 }
 
-class modules.daily.model.Todo {
+class "modules.daily.model.Todo" {
   + ID: string
   + Title: string
   + Completed: bool
@@ -42,7 +42,7 @@ class modules.daily.model.Todo {
   + SetUpdatedAt (stamp time.Time)
 }
 
-class modules.daily.storage.Storage {
+class "modules.daily.storage.Storage" {
   - db: *sqlx.DB
   + Add (ctx context.Context, t model.Todo) (model.Todo, error)
   + Complete (ctx context.Context, id string) error
@@ -52,39 +52,39 @@ class modules.daily.storage.Storage {
   + Update (ctx context.Context, t model.Todo) error
 }
 
-class modules.theme.Category {
+class "modules.theme.Category" {
   + Name: string
 }
 
-class modules.theme.Options {
+class "modules.theme.Options" {
   + Title: string
   + Categories: []Category
 }
 
-class modules.daily.view.DailyData {
+class "modules.daily.view.DailyData" {
   + Tasks: []model.Todo
 }
 
-class modules.daily.Module {
+class "modules.daily.Module" {
   - repository: *storage.Storage
   + Mount (r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
 }
 
-class modules.expvar.Handler {
+class "modules.expvar.Handler" {
   + Enabled: bool
   + Mount (r platform.Router) error
   + Start (context.Context) error
 }
 
-interface modules.user.model.SessionStorage {
+interface "modules.user.model.SessionStorage" {
   + Create: Create (ctx context.Context, userID string) (*UserSession, error)
   + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
   + Delete: Delete (ctx context.Context, sessionID string) error
 }
 
-class modules.user.model.User {
+class "modules.user.model.User" {
   + ID: string
   + FirstName: string
   + LastName: string
@@ -104,7 +104,7 @@ class modules.user.model.User {
   + String () string
 }
 
-class modules.user.model.UserAuth {
+class "modules.user.model.UserAuth" {
   + UserID: string
   + Email: string
   + Password: string
@@ -120,7 +120,7 @@ class modules.user.model.UserAuth {
   + Valid () bool
 }
 
-class modules.user.model.UserGroup {
+class "modules.user.model.UserGroup" {
   + ID: string
   + Title: string
   + CreatedAt: *time.Time
@@ -134,7 +134,7 @@ class modules.user.model.UserGroup {
   + String () string
 }
 
-class modules.user.model.UserGroupMember {
+class "modules.user.model.UserGroupMember" {
   + UserGroupID: string
   + UserID: string
   + JoinedAt: *time.Time
@@ -144,7 +144,7 @@ class modules.user.model.UserGroupMember {
   + SetJoinedAt (stamp time.Time)
 }
 
-class modules.user.model.UserSession {
+class "modules.user.model.UserSession" {
   + ID: string
   + UserID: string
   + ExpiresAt: *time.Time
@@ -157,7 +157,7 @@ class modules.user.model.UserSession {
   + SetExpiresAt (stamp time.Time)
 }
 
-interface modules.user.model.UserStorage {
+interface "modules.user.model.UserStorage" {
   + Create: Create (context.Context, *User, *UserAuth) (*User, error)
   + Update: Update (context.Context, *User) (*User, error)
   + Get: Get (context.Context, string) (*User, error)
@@ -165,14 +165,14 @@ interface modules.user.model.UserStorage {
   + Authenticate: Authenticate (ctx context.Context, auth UserAuth) (*User, error)
 }
 
-class modules.user.storage.SessionStorage {
+class "modules.user.storage.SessionStorage" {
   - db: *sqlx.DB
   + Create (ctx context.Context, userID string) (*model.UserSession, error)
   + Delete (ctx context.Context, sessionID string) error
   + Get (ctx context.Context, sessionID string) (*model.UserSession, error)
 }
 
-class modules.user.storage.UserStorage {
+class "modules.user.storage.UserStorage" {
   - db: *sqlx.DB
   + Authenticate (ctx context.Context, userAuth model.UserAuth) (*model.User, error)
   + Create (ctx context.Context, u *model.User, userAuth *model.UserAuth) (*model.User, error)
@@ -181,21 +181,21 @@ class modules.user.storage.UserStorage {
   + Update (ctx context.Context, u *model.User) (*model.User, error)
 }
 
-class modules.user.view.LoginData {
+class "modules.user.view.LoginData" {
   + User: *model.User
   + Session: *model.UserSession
   + ErrorMessage: string
   + Email: string
 }
 
-class modules.user.view.RegisterData {
+class "modules.user.view.RegisterData" {
   + ErrorMessage: string
   + Email: string
   + FirstName: string
   + LastName: string
 }
 
-class modules.user.service.Service {
+class "modules.user.service.Service" {
   + UserStorage: *storage.UserStorage
   + SessionStorage: *storage.SessionStorage
   + Error (r *http.Request, message string, err error)
@@ -208,7 +208,7 @@ class modules.user.service.Service {
   + RegisterView (w http.ResponseWriter, r *http.Request)
 }
 
-class modules.user.Handler {
+class "modules.user.Handler" {
   + Mount (r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
@@ -219,18 +219,16 @@ class modules.user.Handler {
 
 
 
-modules.daily.storage.Storage --> modules.daily.model.Todo : .Add()
-modules.daily.storage.Storage --> modules.daily.model.Todo : .Get()
-modules.daily.storage.Storage --> modules.daily.model.Todo : .List()
-modules.daily.storage.Storage --> modules.daily.model.Todo : .Update()
+"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Add()
+"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Get()
+"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .List()
+"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Update()
 
-modules.theme.Options --> modules.theme.Category : .Categories
+"modules.theme.Options" --> "modules.theme.Category" : .Categories
 
-modules.daily.view.DailyData --> modules.daily.model.Todo : .Tasks
+"modules.daily.view.DailyData" --> "modules.daily.model.Todo" : .Tasks
 
-modules.daily.Module --> modules.daily.storage.Storage : .repository
-
-
+"modules.daily.Module" --> "modules.daily.storage.Storage" : .repository
 
 
 
@@ -239,22 +237,24 @@ modules.daily.Module --> modules.daily.storage.Storage : .repository
 
 
 
-modules.user.storage.SessionStorage --> modules.user.model.UserSession : .Create()
-modules.user.storage.SessionStorage --> modules.user.model.UserSession : .Get()
-
-modules.user.storage.UserStorage --> modules.user.model.User : .Authenticate()
-modules.user.storage.UserStorage --> modules.user.model.User : .Create()
-modules.user.storage.UserStorage --> modules.user.model.User : .Get()
-modules.user.storage.UserStorage --> modules.user.model.UserGroup : .GetGroups()
-modules.user.storage.UserStorage --> modules.user.model.User : .Update()
-modules.user.view.LoginData --> modules.user.model.User : .User
-modules.user.view.LoginData --> modules.user.model.UserSession : .Session
 
 
-modules.user.service.Service --> modules.user.storage.UserStorage : .UserStorage
-modules.user.service.Service --> modules.user.storage.SessionStorage : .SessionStorage
+"modules.user.storage.SessionStorage" --> "modules.user.model.UserSession" : .Create()
+"modules.user.storage.SessionStorage" --> "modules.user.model.UserSession" : .Get()
 
-modules.user.Handler --|> modules.user.service.Service : embeds
+"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Authenticate()
+"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Create()
+"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Get()
+"modules.user.storage.UserStorage" --> "modules.user.model.UserGroup" : .GetGroups()
+"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Update()
+"modules.user.view.LoginData" --> "modules.user.model.User" : .User
+"modules.user.view.LoginData" --> "modules.user.model.UserSession" : .Session
+
+
+"modules.user.service.Service" --> "modules.user.storage.UserStorage" : .UserStorage
+"modules.user.service.Service" --> "modules.user.storage.SessionStorage" : .SessionStorage
+
+"modules.user.Handler" --|> "modules.user.service.Service" : embeds
 
 
 @enduml
