@@ -182,8 +182,6 @@ class "modules.user.storage.UserStorage" {
 }
 
 class "modules.user.view.LoginData" {
-  + User: *model.User
-  + Session: *model.UserSession
   + ErrorMessage: string
   + Email: string
 }
@@ -247,8 +245,6 @@ class "modules.user.Handler" {
 "modules.user.storage.UserStorage" --> "modules.user.model.User" : .Get()
 "modules.user.storage.UserStorage" --> "modules.user.model.UserGroup" : .GetGroups()
 "modules.user.storage.UserStorage" --> "modules.user.model.User" : .Update()
-"modules.user.view.LoginData" --> "modules.user.model.User" : .User
-"modules.user.view.LoginData" --> "modules.user.model.UserSession" : .Session
 
 
 "modules.user.service.Service" --> "modules.user.storage.UserStorage" : .UserStorage

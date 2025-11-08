@@ -28,7 +28,7 @@ The storage packages have integration tests.
 | ❌      | titpetric/platform-app/modules/theme         | 50.00%   | 16        | 47    |
 | ❌      | titpetric/platform-app/modules/user          | 47.62%   | 12        | 86    |
 | ✅      | titpetric/platform-app/modules/user/model    | 10.53%   | 3         | 88    |
-| ❌      | titpetric/platform-app/modules/user/service  | 11.11%   | 21        | 187   |
+| ❌      | titpetric/platform-app/modules/user/service  | 11.11%   | 22        | 188   |
 | ❌      | titpetric/platform-app/modules/user/storage  | 44.01%   | 24        | 211   |
 | ❌      | titpetric/platform-app/modules/user/view     | 0.00%    | 134       | 279   |
 
@@ -125,7 +125,7 @@ The storage packages have integration tests.
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Error                  | 0.00%    | 2         |
 | ✅      | titpetric/platform-app/modules/user/service  | Service.GetError               | 0.00%    | 0         |
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Login                  | 0.00%    | 5         |
-| ❌      | titpetric/platform-app/modules/user/service  | Service.LoginView              | 0.00%    | 8         |
+| ❌      | titpetric/platform-app/modules/user/service  | Service.LoginView              | 0.00%    | 9         |
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Logout                 | 0.00%    | 2         |
 | ✅      | titpetric/platform-app/modules/user/service  | Service.LogoutView             | 0.00%    | 0         |
 | ❌      | titpetric/platform-app/modules/user/service  | Service.Register               | 0.00%    | 4         |

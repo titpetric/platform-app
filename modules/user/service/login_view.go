@@ -1,7 +1,6 @@
 package service
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/titpetric/platform/pkg/telemetry"
@@ -23,10 +22,11 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 			if user, err := h.UserStorage.Get(ctx, session.UserID); err == nil {
 				view.Logout(user).Render(ctx, w)
 				return
+			} else {
+				telemetry.CaptureError(ctx, err)
 			}
-			log.Println(err)
 		} else {
-			log.Println(err)
+			telemetry.CaptureError(ctx, err)
 		}
 	}
 
