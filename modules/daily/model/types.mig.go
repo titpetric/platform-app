@@ -47,6 +47,9 @@ type Todo struct {
 	// ID
 	ID string `db:"id"`
 
+	// User ID
+	UserID string `db:"user_id"`
+
 	// Title
 	Title string `db:"title"`
 
@@ -65,6 +68,9 @@ type Todo struct {
 
 // GetID will return the value of ID.
 func (t *Todo) GetID() string { return t.ID }
+
+// GetUserID will return the value of UserID.
+func (t *Todo) GetUserID() string { return t.UserID }
 
 // GetTitle will return the value of Title.
 func (t *Todo) GetTitle() string { return t.Title }
@@ -94,7 +100,7 @@ func (t *Todo) SetDeletedAt(stamp time.Time) { t.DeletedAt = &stamp }
 const TodoTable = "`todo`"
 
 // TodoFields is a list of all columns in the DB table.
-var TodoFields = []string{"id", "title", "completed", "created_at", "updated_at", "deleted_at"}
+var TodoFields = []string{"id", "user_id", "title", "completed", "created_at", "updated_at", "deleted_at"}
 
 // TodoPrimaryFields are the primary key fields in the DB table.
 var TodoPrimaryFields = []string{"id"}

@@ -6,6 +6,8 @@ import "github.com/titpetric/platform-app/modules/daily/model"
 
 type DailyData struct {
 	Tasks []model.Todo
+	IsLoggedIn bool
+	SessionUser *model.User
 }
 
 templ Daily(data DailyData) {
@@ -24,23 +26,18 @@ templ DailyResponse(data DailyData) {
 	<div class="app-root daily-app">
 	<div class="panel">
 	<div class="header-row">
-	<div>
-		<div class="title">Daily — Todo</div>
-		<div class="text-muted small">A tiny front page todo. Add tasks, they POST to <code>/save</code>.</div>
-	</div>
-
-	<div class="controls">
-	<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">Toggle</button>
-	</div>
+		<h1>Hello, {data.SessionUser.FirstName}!</h1>
+		<div class="title">What are we doing today?</div>
+		<div class="text-muted small">A tiny front page todo. Add tasks and tick them off same day.</div>
 	</div>
 
 <div class="task-input-form">
   <form id="task-form" class="row g-2 align-items-center">
     <div class="col-sm">
-      <input id="task-input" name="task" type="text" class="form-control" placeholder="What will you do today?" aria-label="Task"/>
+      <input id="task-input" name="task" type="text" class="form-control form-control-lg" placeholder="What will you do today?" aria-label="Task"/>
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary">Add</button>
+      <button type="submit" class="btn btn-primary btn-lg">Add</button>
     </div>
   </form>
 </div>
@@ -59,7 +56,7 @@ templ DailyResponse(data DailyData) {
       </div>
     }
   } else {
-    <div class="text-muted small">No tasks yet. Add one above.</div>
+    <div class="text-muted small text-center">No tasks yet. Add one above.</div>
   }
 </div>
 

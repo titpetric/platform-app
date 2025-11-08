@@ -58,6 +58,7 @@ tasks:
       - mig docs --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform --output=./modules/user/docs
       - mig gen --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --go.skip-json --schema platform --output=./modules/user/model
       - mig docs --db-driver sqlite --db-dsn="file:daily.db" --schema platform --output=./modules/daily/docs
+      - mig gen --db-driver sqlite --db-dsn="file:daily.db" --go.skip-json --schema platform --output=./modules/daily/model
 
   bench:
     desc: "Run benchmarks"

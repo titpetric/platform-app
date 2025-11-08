@@ -7,10 +7,356 @@ templ Layout(contents templ.Component) {
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>Daily - simple TODO tracker</title>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
+		<link rel="stylesheet" href="/assets/css/theme.css"/>
 		<link rel="stylesheet" href="/assets/css/style.css"/>
-	</head>
+    <style>.post-timer{display:none}@supports (animation-timeline:scroll()){.post-timer{--range-start: calc(var(--page-gutters) + 10rem);--range-end: calc(var(--page-gutters) + 12rem);--plunge-start: calc(100% - 4rem);--plunge-end: calc(100% - 1rem);--_x: calc(-100% - 1rem);--_size: 2.5rem;place-items:center;place-content:center;grid-template-areas:"container";position:sticky;top:var(--space-m);width:var(--_size);height:var(--_size);border-radius:50%;background:conic-gradient(from 45deg,var(--color-theme-accent) calc(var(--progress)*1%),transparent 0);animation-fill-mode:both;animation-timing-function:linear;animation-name:progress,appear,turn-upright;animation-range:var(--range-start) var(--plunge-start),var(--range-start) var(--range-end),var(--plunge-start) var(--plunge-end),var(--plunge-start) var(--plunge-end);animation-timeline:scroll();z-index:1;translate:var(--_x) 0.75em}@media (min-width:56.25rem){.post-timer{display:grid}}.post-timer>*{grid-area:container}.post-timer+*{--flow-space: 0}.post-timer .timer{--plunge-depth: 0.25em;width:calc(var(--_size)/1.25);height:calc(var(--_size)/1.25);transform-origin:50%0;animation-name:plunge;animation-fill-mode:both;animation-timing-function:linear;animation-timeline:scroll();animation-range:var(--plunge-start) var(--plunge-end)}.post-timer .timer-switch{--plunge-depth: 1em;transform-origin:50%0;animation-name:plunge;animation-fill-mode:both;animation-timing-function:linear;animation-timeline:scroll();animation-range:var(--plunge-start) var(--plunge-end)}.post-timer .timer-hand{transform-origin:50%;rotate:calc((var(--progress)/100)*360deg);animation-name:progress;animation-fill-mode:both;animation-timing-function:linear;animation-timeline:scroll();animation-range:var(--range-start) var(--plunge-start)}@property --progress{syntax:"<integer>";initial-value:0;inherits:false}@keyframes progress{to{--progress: 100}}@keyframes turn-upright{from{rotate:-10deg}to{rotate:0}}@keyframes plunge{50%{translate:0 var(--plunge-depth)}}@keyframes appear{from{opacity:0;scale:0.9}to{opacity:1;scale:1}}@keyframes fade-out{from{opacity:1}to{opacity:0}}}
+:is(.post-timer, .title) {
+    --flow-space: 0;
+    grid-row: 2;
+  }
+
+  .title {
+    margin-block-end: 8vh;
+  }
+
+  .info {
+    order: -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-inline-start: 0.5rem;
+    margin-block: 0 1em;
+  }
+
+  .info > * {
+    align-items: center;
+    display: flex;
+    gap: 0.2rem;
+    line-height: 1.2;
+    font-size: 0.8em;
+    padding: 0.1rem var(--space-2xs) 0.1rem 0;
+  }
+
+  .info svg {
+    --_size: 1.75em;
+    flex-shrink: 0;
+    margin-inline-start: calc(var(--_size) / -2);
+    width: var(--_size);
+    height: var(--_size);
+  }
+.theme-machine{--_padding: 0.3em;
+--_radius: var(--radius-pill);
+--icon-size: 1.2em;
+position:relative;
+display:flex;
+isolation:isolate}
+@media (forced-colors:active){.theme-machine{forced-color-adjust:none}}.theme-machine .control-appearance{all:unset;
+position:relative;
+display:flex;
+gap:var(--_padding);
+background:var(--color-theme);
+padding:var(--_padding);
+border-radius:360px;
+isolation:isolate;
+transform:translateZ(0);
+inline-size:fit-content;
+z-index:2}.theme-machine .control-appearance label{display:grid;
+place-items:center;
+place-content:center;
+border-radius:50%;
+padding:var(--_padding);
+color:var(--color-theme-offset);
+cursor:pointer}.theme-machine .control-appearance input:checked+label{color:currentcolor}.theme-machine .control-appearance input:checked:focus-visible+label{outline:var(--focus-outline);
+outline-offset:2px}.theme-machine .control-appearance .highlighter{content:"";
+position:absolute;
+top:var(--_padding);
+left:var(--_padding);
+aspect-ratio:1;
+height:calc(100% - var(--_padding)*2);
+background:var(--color-theme-accent);
+border-radius:50%;
+pointer-events:none;
+z-index:-1;
+transition:translate 250ms cubic-bezier(0.65,0,0.35,1)}.theme-machine .control-appearance input:focus-visible~.highlighter{transition:unset}.theme-machine .control-appearance input:nth-of-type(2):checked~.highlighter{translate:calc(100% + var(--_padding))}.theme-machine .control-appearance input:nth-of-type(3):checked~.highlighter{translate:calc(200% + var(--_padding)*2)}.theme-machine .theme-display-toggle{--_pull: 2rem;
+all:unset;
+position:relative;
+z-index:1;
+display:grid;
+align-items:center;
+cursor:pointer;
+padding-block:calc(var(--_padding)*2);
+border-radius:0 var(--_radius) var(--_radius)0;
+background-color:var(--color-theme-offset);
+margin-inline-start:calc(var(--_pull)*-1);
+padding-inline:calc(var(--_pull) + var(--_padding)) calc(var(--_padding) + 0.3rem)}.theme-machine .theme-display-toggle .icon{scale:1.01;
+border-radius:var(--radius-round)}.theme-machine .theme-display-toggle:focus-visible .icon{outline:2px solid var(--color-bg-accent);
+outline-offset:2px}.theme-machine .theme-display-wrapper{position:absolute;
+top:0;
+right:0;
+display:grid;
+align-items:start;
+inline-size:calc(100% - var(--_padding));
+block-size:200%;
+mask-image:linear-gradient(transparent 25%,black 0);
+z-index:0}.theme-machine .control-theme{display:flex;
+gap:var(--space-3xs);
+padding:var(--space-xs);
+block-size:50%;
+border-radius:var(--_radius);
+background-color:var(--color-theme-offset)}.theme-machine .control-theme::before{content:"";
+position:absolute;
+bottom:50%;
+left:0;
+inline-size:100%;
+block-size:100%;
+background-color:inherit;
+z-index:-1}.theme-machine .control-theme .options{--_border-color: var(--color-theme-accent);
+display:flex;
+gap:var(--space-3xs);
+justify-content:space-between;
+inline-size:100%}.theme-machine .control-theme input{--_size: 0.95em;
+appearance:none;
+margin:0;
+font:inherit;
+color:currentColor;
+width:var(--_size);
+height:var(--_size);
+border:2px solid var(--color-theme);
+border-radius:var(--radius-round);
+background-color:var(--color-theme-offset);
+display:grid;
+place-content:center}.theme-machine .control-theme input::before{--_size: 0.5em;
+content:"";
+width:var(--_size);
+height:var(--_size);
+border-radius:var(--radius-round);
+background-color:var(--color-theme);
+scale:0}.theme-machine .control-theme input:focus-visible{outline:2px solid var(--color-theme-accent);
+outline-offset:1px}.theme-machine .control-theme input:checked::before{scale:1;
+transition:200ms scale cubic-bezier(0.34,1.56,0.64,1)}.theme-machine .control-theme input:checked{background-color:transparent}.theme-machine .control-theme input:active:not(:checked){translate:0 1px}.theme-machine .theme-display-toggle,.theme-machine .theme-display-wrapper{--_transition: translate 300ms cubic-bezier(0.16, 1, 0.3, 1);
+translate:var(--_padding) var(--_padding);
+transition:var(--_transition)}.theme-machine .control-theme{translate:0 calc(100% - var(--_padding));
+transition:var(--_transition)}.theme-machine .theme-display-toggle[aria-expanded="false"],.theme-machine .theme-display-wrapper[hidden]{translate:0 0}.theme-machine .theme-display-wrapper[hidden] .control-theme{translate:0 0}.theme-machine .theme-display-wrapper[hidden] input{display:none}
+.site-header{position:relative;
+display:flex;
+justify-content:flex-end;
+padding-inline:var(--page-gutters);
+margin-block:var(--page-gutters) var(--space-xl);
+z-index:1}.site-header nav{position:relative}@media (max-width:40rem){.site-header nav{--column-gap: clamp(var(--space-s), 5vw, var(--space-m));
+--row-gap: var(--space-s);
+--justify: space-between;
+inline-size:100%}}.site-header a{display:grid;
+place-items:center;
+place-content:center;
+color:currentcolor;
+text-decoration:none}.site-header a:hover{color:var(--color-theme-offset)}.site-header .jump-to-content{position:absolute;
+top:-9999px;
+left:0;
+.site-header &:focus-within{top:50%;
+translate:0-50%;
+z-index:1}a {
+      padding: var(--space-2xs) var(--space-s);
+
+      background-color: var(--color-bg);
+
+    }}
+.site-footer{position:sticky;
+top:100vh;
+padding-block:var(--space-2xl);
+font-size:0.75em}.site-footer p{text-wrap:balance}.site-footer .copyright{margin-inline-start:-0.1em}.site-footer .icon{--_size: 1.2em;
+position:relative;
+top:0.2em;
+margin-inline:0.1em;
+width:var(--_size);
+height:var(--_size);
+color:red}.site-footer li{display:flex;
+align-items:center;
+gap:0.2em}
+</style>
+  </head>
 	<body>
-		@contents
+
+<script>
+(function () {
+    let root = document.documentElement;
+    let body = document.body;
+
+    let appearance = localStorage.getItem("appearance");
+    let theme = localStorage.getItem("theme");
+
+    appearance && root.setAttribute("data-appearance", appearance);
+    theme && body.setAttribute("data-theme", theme);
+  })();
+</script>
+
+<header class="site-header">
+  <nav class="cluster">
+    <ul role="list" class="cluster">
+      <li class="jump-to-content">
+        <a href="#main" class="text-label">Jump to main content</a>
+      </li>
+
+	for _, li := range options.Header {
+	      <li>
+	        <a href={li.URL}>{li.Name}</a>
+	      </li>
+	}
+
+    </ul>
+    <theme-machine class="theme-machine">
+
+
+<fieldset class="control-appearance">
+  <legend class="visually-hidden">Select appearance</legend>
+  
+    <input id="appearance-system" value="" type="radio" name="appearance" class="visually-hidden">
+    <label for="appearance-system">
+      <span class="visually-hidden">System</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentcolor" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><rect x="24" y="40" width="208" height="160" rx="24"></rect><path d="M160,216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Z"></path></svg>
+
+    </label>
+  
+
+    <input id="appearance-light" value="light" type="radio" name="appearance" class="visually-hidden">
+    <label for="appearance-light">
+      <span class="visually-hidden">Light</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentcolor" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm8,24a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"></path></svg>
+
+    </label>
+  
+
+    <input id="appearance-dark" value="dark" type="radio" name="appearance" class="visually-hidden">
+    <label for="appearance-dark">
+      <span class="visually-hidden">Dark</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentcolor" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><path d="M240,96a8,8,0,0,1-8,8H216v16a8,8,0,0,1-16,0V104H184a8,8,0,0,1,0-16h16V72a8,8,0,0,1,16,0V88h16A8,8,0,0,1,240,96ZM144,56h8v8a8,8,0,0,0,16,0V56h8a8,8,0,0,0,0-16h-8V32a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16Zm65.14,94.33A88.07,88.07,0,0,1,105.67,46.86a8,8,0,0,0-10.6-9.06A96,96,0,1,0,218.2,160.93a8,8,0,0,0-9.06-10.6Z"></path></svg>
+
+    </label>
+  
+  <div class="highlighter"></div>
+</fieldset>
+
+
+<button aria-expanded="false" aria-controls="theme-display" class="theme-display-toggle">
+  <span class="visually-hidden">Select theme</span>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><path d="M49.67,186.24h0L40.48,207.3a5.74,5.74,0,0,0,1.2,6.36,8,8,0,0,0,8.86,1.67l20-8.74h0a32,32,0,0,0,32.06-8L141.25,160H52.3A32.07,32.07,0,0,0,49.67,186.24Z" fill="var(--color-theme-accent)"></path><path d="M182.43,113.17l4.88,4.89a16,16,0,0,1,0,22.63l-9,9a8,8,0,0,1-11.31,0L106.34,89a8,8,0,0,1,0-11.31l9-9a16,16,0,0,1,22.63,0l4.89,4.88,25-25.1c10.79-10.79,28.37-11.45,39.44-1a28,28,0,0,1,.57,40.15Z" fill="none" stroke="var(--color-theme)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path><path d="M159.31,141.94l-56.68,56.69a32,32,0,0,1-32.06,8h0l-20,8.74a8,8,0,0,1-8.86-1.67h0a5.74,5.74,0,0,1-1.2-6.36l9.19-21.06h0a32,32,0,0,1,7.7-32.87l56.69-56.68" fill="none" stroke="var(--color-theme)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+
+</button>
+<div id="theme-display" hidden="" class="theme-display-wrapper">
+  <fieldset class="control-theme">
+    <legend class="visually-hidden">Select theme</legend>
+    <div class="options">
+      
+        <label for="theme-default" data-theme="default">
+          <span class="visually-hidden">default</span>
+          <input id="theme-default" value="default" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-pink" data-theme="pink">
+          <span class="visually-hidden">pink</span>
+          <input id="theme-pink" value="pink" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-blue" data-theme="blue">
+          <span class="visually-hidden">blue</span>
+          <input id="theme-blue" value="blue" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-green" data-theme="green">
+          <span class="visually-hidden">green</span>
+          <input id="theme-green" value="green" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-purple" data-theme="purple">
+          <span class="visually-hidden">purple</span>
+          <input id="theme-purple" value="purple" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-slate" data-theme="slate">
+          <span class="visually-hidden">slate</span>
+          <input id="theme-slate" value="slate" type="radio" name="theme">
+        </label>
+      
+    </div>
+  </fieldset>
+</div>
+
+
+
+</theme-machine>
+  </nav>
+</header>
+
+<main id="main" class="breakout flow prose">
+
+if false {
+
+    <figure aria-hidden="true" class="post-timer">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 256 256" class="timer">
+    <rect width="256" height="256" fill="none"></rect>
+    <circle cx="128" cy="128" r="88" fill="var(--color-theme)"></circle>
+    <circle cx="128" cy="128" r="88" fill="none" stroke="currentcolor" stroke-miterlimit="10" stroke-width="16"></circle>
+    <line x1="128" y1="128" x2="167.6" y2="88.4" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" class="timer-hand"></line>
+    <line x1="104" y1="8" x2="152" y2="8" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" class="timer-switch"></line>
+  </svg>
+</figure>
+
+
+
+<h1 class="title | skewer">Lorem ipsum dolor sit amet</h1>
+<section class="info | cluster skewer">
+  <div class="cluster pseudo-gradient">
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M40,88H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8Z" fill="var(--color-theme-accent)"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="176" y1="24" x2="176" y2="56" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="80" y1="24" x2="80" y2="56" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="40" y1="88" x2="216" y2="88" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>
+
+    <span>Posted on <strong>October 7, 2022</strong></span>
+  </div>
+  <div class="cluster pseudo-gradient">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--color-text-accent)" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><circle cx="128" cy="128" r="88" fill="var(--color-theme)"></circle><circle cx="128" cy="128" r="88" fill="none" stroke="var(--color-text-accent)" stroke-miterlimit="10" stroke-width="16"></circle><line x1="128" y1="128" x2="167.6" y2="88.4" fill="none" stroke="var(--color-text-accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="104" y1="8" x2="152" y2="8" fill="none" stroke="var(--color-text-accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>
+
+    <span> Takes about <strong>6 minutes</strong> to read </span>
+  </div>
+</section>
+
+}
+
+   @contents
+
+</main>
+
+
+<footer class="breakout site-footer">
+  <p class="copyright">
+    © <strong>Ryan Mulligan</strong> from day one to this magic moment in
+    2025
+  </p>
+  <p>
+    Assembled with a boundless affinity for the web
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 256 256" aria-hidden="true" class="icon"><path d="M240,94c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,220.66,16,164,16,94A62.07,62.07,0,0,1,78,32c20.65,0,38.73,8.88,50,23.89C139.27,40.88,157.35,32,178,32A62.07,62.07,0,0,1,240,94Z"></path></svg>
+
+  </p>
+  <ul role="list" style="--gap: var(--space-2xs)" class="cluster">
+    <li>
+      <a href="/">Home</a>
+    </li>
+<li>
+      <a href="/blog/">Blog</a>
+    </li>
+<li>
+      <a href="/feed.xml">RSS</a>
+    </li>
+<li>
+      <a href="/blogroll/">Blogroll</a>
+    </li>
+<li>
+      <a href="https://github.com/hexagoncircle/ryan-mulligan-dev/issues/new" target="_blank" ref="noreferrer noopener">Report an issue</a>
+    </li>
+  </ul>
+</footer>
+
 
 		<script type="module" src="/assets/js/daily.js"></script>
 	</body>

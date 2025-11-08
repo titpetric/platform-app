@@ -12,5 +12,5 @@ func (u *User) String() string {
 }
 
 func (u *User) IsActive() bool {
-	return u.DeletedAt == nil
+	return u != nil && u.ID != "" && u.DeletedAt == nil
 }

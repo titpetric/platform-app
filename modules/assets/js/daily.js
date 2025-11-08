@@ -1,10 +1,9 @@
 // assets/js/daily.js
 class DailyApp {
-  constructor(formId = 'task-form', inputId = 'task-input', listId = 'task-list', themeBtnId = 'theme-toggle') {
+  constructor(formId = 'task-form', inputId = 'task-input', listId = 'task-list') {
     this.form = document.getElementById(formId);
     this.input = document.getElementById(inputId);
     this.list = document.getElementById(listId);
-    this.themeBtn = document.getElementById(themeBtnId);
 
     if (!this.form || !this.input || !this.list) {
       throw new Error('DailyApp: required elements not found');
@@ -12,11 +11,6 @@ class DailyApp {
 
     this.form.addEventListener('submit', (e) => this.onSubmit(e));
     this.list.addEventListener('change', (e) => this.onCheckboxChange(e));
-
-    if (this.themeBtn) {
-      this.themeBtn.addEventListener('click', () => this.toggleTheme());
-    }
-    this.loadTheme();
   }
 
   async onSubmit(e) {
@@ -78,39 +72,73 @@ class DailyApp {
       alert('Network error while completing task');
     }
   }
-
-  toggleTheme() {
-    const body = document.body;
-    const isDark = body.classList.contains('dark');
-    if (isDark) {
-      body.classList.remove('dark');
-      body.classList.add('light');
-      localStorage.setItem('daily:theme', 'light');
-      this.updateToggleLabel('Light');
-    } else {
-      body.classList.remove('light');
-      body.classList.add('dark');
-      localStorage.setItem('daily:theme', 'dark');
-      this.updateToggleLabel('Dark');
-    }
-  }
-
-  loadTheme() {
-    const saved = localStorage.getItem('daily:theme');
-    const body = document.body;
-    if (saved === 'light') {
-      body.classList.add('light');
-      this.updateToggleLabel('Light');
-    } else {
-      body.classList.add('dark');
-      this.updateToggleLabel('Dark');
-    }
-  }
-
-  updateToggleLabel(text) {
-    if (!this.themeBtn) return;
-    this.themeBtn.textContent = text;
-  }
 }
 
 document.addEventListener('DOMContentLoaded', () => new DailyApp());
+
+class ThemeMachine extends HTMLElement {
+    constructor() {
+      super();
+      this.themeToggle;
+      this.themeDisplay;
+    }
+
+    connectedCallback() {
+      this.setupControl("appearance", document.documentElement);
+      this.setupControl("theme", document.body);
+
+      this.themeToggle = this.querySelector(".theme-display-toggle");
+      this.themeDisplay = this.querySelector(".theme-display-wrapper");
+
+      this.handleClickOutside();
+      this.themeToggle.addEventListener("click", this.handleThemeToggleClick.bind(this));
+    }
+
+    handleChange(e, prop, el) {
+      const attr = `data-${prop}`;
+      const value = e.target.value;
+
+      if (!value) {
+        localStorage.removeItem(prop);
+        el.removeAttribute(attr);
+        return;
+      }
+
+      localStorage.setItem(prop, value);
+      el.setAttribute(attr, value);
+    }
+
+    handleThemeToggleClick() {
+      let expanded = this.themeToggle.getAttribute("aria-expanded") === "true" || false;
+
+      this.themeToggle.setAttribute("aria-expanded", !expanded);
+      this.themeDisplay.toggleAttribute("hidden", expanded);
+    }
+
+    handleClickOutside() {
+      document.addEventListener(
+        "click",
+        (e) => {
+          if (!e.target.closest("theme-machine")) {
+            this.themeToggle.setAttribute("aria-expanded", false);
+            this.themeDisplay.toggleAttribute("hidden", true);
+          }
+        },
+        false
+      );
+    }
+
+    setupControl(prop, el) {
+      const initialValue = localStorage.getItem(prop) || "";
+      const collection = this.querySelectorAll(`[name='${prop}']`);
+
+      for (let item of collection) {
+        item.checked = item.value === initialValue;
+        item.addEventListener("change", (e) => this.handleChange(e, prop, el));
+      }
+    }
+  }
+
+  if ("customElements" in window) {
+    window.customElements.define("theme-machine", ThemeMachine);
+  }

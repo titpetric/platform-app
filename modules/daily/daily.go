@@ -3,6 +3,7 @@ package daily
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	chi "github.com/go-chi/chi/v5"
@@ -12,6 +13,7 @@ import (
 	"github.com/titpetric/platform-app/modules/daily/model"
 	"github.com/titpetric/platform-app/modules/daily/storage"
 	"github.com/titpetric/platform-app/modules/daily/view"
+	"github.com/titpetric/platform-app/modules/user"
 )
 
 type Module struct {
@@ -43,39 +45,52 @@ func (m *Module) Start(ctx context.Context) error {
 }
 
 func (m *Module) Mount(r platform.Router) error {
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		tasks, err := m.repository.List(ctx)
-		if err != nil {
-			platform.Error(w, r, 503, err)
-		}
-		view.Daily(view.DailyData{Tasks: tasks}).Render(ctx, w)
-	})
+	r.Group(func(r platform.Router) {
+		r.Use(user.Middleware)
 
-	r.Post("/daily/save", func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			tasks, err := m.repository.List(ctx)
+			if err != nil {
+				if errors.Is(err, user.ErrLoginRequired) {
+					http.Redirect(w, r, "/login", http.StatusSeeOther)
+				}
+				platform.Error(w, r, 503, err)
+			}
 
-		var todo model.Todo
-		if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
-			http.Error(w, "invalid JSON body", http.StatusBadRequest)
-			return
-		}
+			sessionUser, _ := user.GetSessionUser(ctx)
 
-		created, err := m.repository.Add(ctx, todo)
-		if err != nil {
-			http.Error(w, "failed to add todo", http.StatusInternalServerError)
-			return
-		}
+			view.Daily(view.DailyData{
+				Tasks:       tasks,
+				SessionUser: sessionUser,
+			}).Render(ctx, w)
+		})
 
-		platform.JSON(w, r, http.StatusOK, created)
-	})
+		r.Post("/daily/save", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
 
-	r.Post("/daily/complete/{id}", func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		err := m.repository.Delete(ctx, chi.URLParam(r, "id"))
-		telemetry.CaptureError(ctx, err)
+			var todo model.Todo
+			if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+				platform.Error(w, r, http.StatusBadRequest, err)
+				return
+			}
 
-		w.WriteHeader(http.StatusOK)
+			created, err := m.repository.Add(ctx, todo)
+			if err != nil {
+				platform.Error(w, r, http.StatusInternalServerError, err)
+				return
+			}
+
+			platform.JSON(w, r, http.StatusOK, created)
+		})
+
+		r.Post("/daily/complete/{id}", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			err := m.repository.Delete(ctx, chi.URLParam(r, "id"))
+			telemetry.CaptureError(ctx, err)
+
+			w.WriteHeader(http.StatusOK)
+		})
 	})
 
 	return nil
