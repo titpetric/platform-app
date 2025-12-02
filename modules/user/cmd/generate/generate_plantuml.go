@@ -20,7 +20,7 @@ func GeneratePlantUML(cfg *Config, outputPath string) error {
 	}
 
 	// Write .puml file
-	if err := os.WriteFile(outputPath, buf.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(outputPath, buf.Bytes(), 0o644); err != nil {
 		return err
 	}
 

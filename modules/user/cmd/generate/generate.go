@@ -19,7 +19,6 @@ var funcMap = template.FuncMap{
 
 func GenerateRego(cfg *Config, outputPath string) error {
 	tmpl, err := template.New("flows.rego.tmpl").Funcs(funcMap).ParseFiles("opa/flows.rego.tmpl")
-
 	if err != nil {
 		return fmt.Errorf("error in parsefiles: %w", err)
 	}
@@ -29,5 +28,5 @@ func GenerateRego(cfg *Config, outputPath string) error {
 		return fmt.Errorf("error in execute: %w", err)
 	}
 
-	return os.WriteFile(outputPath, buf.Bytes(), 0644)
+	return os.WriteFile(outputPath, buf.Bytes(), 0o644)
 }

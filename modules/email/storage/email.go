@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	ulid "github.com/oklog/ulid/v2"
+	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/modules/email/model"
 )
@@ -22,12 +22,8 @@ func NewEmailStorage(db *sqlx.DB) *EmailStorage {
 
 // Create inserts a new email into the email table
 func (s *EmailStorage) Create(ctx context.Context, email *model.Email) error {
-	if email.ID == "" {
-		email.ID = ulid.Make().String()
-	}
-	if email.CreatedAt.IsZero() {
-		email.CreatedAt = time.Now()
-	}
+	email.ID = ulid.String()
+	email.SetCreatedAt(time.Now())
 
 	query := `INSERT INTO email (id, recipient, subject, body, status, created_at, retry_count, last_error, last_retry) 
 	         VALUES (:id, :recipient, :subject, :body, :status, :created_at, :retry_count, :last_error, :last_retry)`

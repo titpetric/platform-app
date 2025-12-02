@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 
 	"github.com/qri-io/jsonschema"
-	"gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v3"
 )
 
 func ValidateFlowsYAML(yamlPath, schemaPath string) error {

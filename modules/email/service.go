@@ -22,13 +22,13 @@ type EmailStorage interface {
 // ServiceOptions configures the email service behavior
 type ServiceOptions struct {
 	// MaxRetries is the maximum number of retry attempts (default: 3)
-	MaxRetries int
+	MaxRetries int64
 	// RetryDuration is the maximum time to attempt retries (default: 1 hour)
 	RetryDuration time.Duration
 	// TickerInterval is the interval for checking pending emails (default: 5 seconds)
 	TickerInterval time.Duration
 	// QueueCapacity is the in-memory queue capacity (default: 100)
-	QueueCapacity int
+	QueueCapacity int64
 	// Logger for structured logging
 	Logger *slog.Logger
 }
@@ -186,7 +186,7 @@ func (s *Service) sendEmail(email *model.Email) {
 			// Exceeded both retry count and duration
 			email.Status = model.StatusFailed
 			errMsg := "max retries exceeded and retry duration expired"
-			email.Error = &errMsg
+			email.Error = errMsg
 			s.logger.Error("email marked as failed - max retries exceeded",
 				"email_id", email.ID,
 				"recipient", email.Recipient,
@@ -203,7 +203,7 @@ func (s *Service) sendEmail(email *model.Email) {
 		now := time.Now()
 		email.LastRetry = &now
 		errMsg := err.Error()
-		email.LastError = &errMsg
+		email.LastError = errMsg
 
 		// Keep as pending if we can retry
 		if email.RetryCount < s.options.MaxRetries {
@@ -218,7 +218,7 @@ func (s *Service) sendEmail(email *model.Email) {
 			} else {
 				// Retry duration exceeded
 				email.Status = model.StatusFailed
-				email.Error = &errMsg
+				email.Error = errMsg
 				s.logger.Error("email marked as failed - retry duration exceeded",
 					"email_id", email.ID,
 					"recipient", email.Recipient,
@@ -228,7 +228,7 @@ func (s *Service) sendEmail(email *model.Email) {
 		} else {
 			// Max retries exceeded
 			email.Status = model.StatusFailed
-			email.Error = &errMsg
+			email.Error = errMsg
 			s.logger.Error("email marked as failed - max retries reached",
 				"email_id", email.ID,
 				"recipient", email.Recipient,
@@ -238,8 +238,7 @@ func (s *Service) sendEmail(email *model.Email) {
 	} else {
 		// Successfully sent
 		email.Status = model.StatusSent
-		now := time.Now()
-		email.SentAt = &now
+		email.SetSentAt(time.Now())
 		s.logger.Info("email sent successfully",
 			"email_id", email.ID,
 			"recipient", email.Recipient,
