@@ -1,0 +1,82 @@
+features:
+  mfa: true
+  password_expiry_days: 30
+  email_reverify_days: 180
+  allow_registration: true
+
+flows:
+  registration:
+    steps:
+      - name: register_form
+        view: register.vuego
+        link: /register
+        next:
+          ok: email_verify
+          error: register_error
+      - name: email_verify
+        view: email_verify.vuego
+        link: /verify-email
+        next:
+          ok: success
+          error: email_verify_error
+      - name: success
+        link: /login/success
+
+  login:
+    steps:
+      - name: login
+        view: login.vuego
+        link: /login
+        next:
+          ok: check_mfa
+          error: login_error
+      - name: check_mfa
+        enabled_if: features.mfa
+        view: mfa_challenge.vuego
+        link: /mfa
+        next:
+          ok: success
+          error: check_mfa_error
+      - name: success
+        link: /login/success
+
+  forgotten_password:
+    steps:
+      - name: forgot_password
+        view: forgot_password.vuego
+        link: /forgot-password
+        next:
+          ok: send_reset
+          error: forgot_error
+      - name: send_reset
+        view: reset_sent.vuego
+        link: /forgot-password/sent
+        next:
+          ok: reset_password
+      - name: reset_password
+        view: reset_password.vuego
+        link: /reset-password
+        next:
+          ok: success
+          error: reset_password_error
+      - name: success
+        link: /login/success
+
+  policies:
+    steps:
+      - name: password_expired
+        enabled_if: features.password_expiry_days > 0
+        view: password_expired.vuego
+        link: /password-expired
+        next:
+          ok: success
+          error: reset_password_error
+      - name: email_reverify
+        enabled_if: features.email_reverify_days > 0
+        view: email_reverify.vuego
+        link: /verify-email
+        next:
+          ok: success
+          error: email_reverify_error
+      - name: success
+        link: /login/success

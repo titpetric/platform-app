@@ -44,7 +44,7 @@ func (h *Handler) Name() string {
 }
 
 // Mount registers login, logout, and register routes.
-func (h *Handler) Mount(r platform.Router) error {
+func (h *Handler) Mount(_ context.Context, r platform.Router) error {
 	r.Get("/login", h.LoginView)
 	r.Post("/login", h.Login)
 	r.Get("/logout", h.LogoutView)

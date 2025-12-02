@@ -1,0 +1,18 @@
+@startuml
+title User Flow Diagram
+
+{{- range $flowName, $flow := .Flows }}
+package "{{ $flowName }}" {
+    {{- range $i, $step := $flow.Steps }}
+    {{$flowName}}.{{$step.Name}} as "{{$flowName}}.{{$step.Name}}"
+    {{- end }}
+
+    {{- range $i, $step := $flow.Steps }}
+        {{- range $result, $next := $step.Next }}
+    {{$flowName}}.{{$step.Name}} --> {{$flowName}}.{{$next}} : {{$result}}
+        {{- end }}
+    {{- end }}
+}
+{{- end }}
+
+@enduml

@@ -1,0 +1,72 @@
+package opa
+
+# Features block (YAML → JSON)
+features := {{ toJSON .Features }}
+
+# Flow definitions
+flows := {
+{{- $flowLen := len .Flows -}}
+{{- $flowIndex := 0 -}}
+{{- range $flowName, $flow := .Flows }}
+  "{{ $flowName }}": {
+    "steps": {
+      {{- $stepLen := len $flow.Steps -}}
+      {{- $stepIndex := 0 -}}
+      {{- range $i, $step := $flow.Steps }}
+      "{{ $step.Name }}": {
+        "view": "{{ $step.View }}",
+        {{- if $step.Link }}
+        "link": "{{ $step.Link }}",
+        {{- end }}
+        {{- if $step.EnabledIf }}
+        "enabled_if": "{{ $step.EnabledIf }}",
+        {{- end }}
+        "next": {{ toJSON $step.Next }}
+      }{{- if lt $stepIndex (sub $stepLen 1) }},{{ end }}
+      {{- $stepIndex = inc $stepIndex -}}
+      {{- end }}
+    }
+  }{{- if lt $flowIndex (sub $flowLen 1) }},{{ end }}
+  {{- $flowIndex = inc $flowIndex -}}
+{{- end }}
+}
+
+# Check if a step is enabled
+step_enabled(flow, step) {
+    not flows[flow].steps[step].enabled_if
+}
+
+step_enabled(flow, step) {
+    cond := flows[flow].steps[step].enabled_if
+    data.userflow.evaluate_condition[cond]
+}
+
+# Evaluate conditions (simple features mapping)
+evaluate_condition[k] = v {
+    parts := split(k, ".")
+    v := features[parts[1]]
+}
+
+# Determine next step
+next_step[step] {
+    f := input.flow
+    s := input.step
+    result := input.result
+
+    step_enabled(f, s)
+    step := flows[f].steps[s].next[result]
+}
+
+# Get the template/view for the next step
+view_for_step[view] {
+    f := input.flow
+    s := next_step[_]
+    view := flows[f].steps[s].view
+}
+
+# Optional: get link for the next step
+link_for_step[link] {
+    f := input.flow
+    s := next_step[_]
+    link := flows[f].steps[s].link
+}

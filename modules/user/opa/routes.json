@@ -1,0 +1,15 @@
+{
+  "forgotten_password.forgot_password": "/forgot-password",
+  "forgotten_password.reset_password": "/reset-password",
+  "forgotten_password.send_reset": "/forgot-password/sent",
+  "forgotten_password.success": "/login/success",
+  "login.check_mfa": "/mfa",
+  "login.login": "/login",
+  "login.success": "/login/success",
+  "policies.email_reverify": "/verify-email",
+  "policies.password_expired": "/password-expired",
+  "policies.success": "/login/success",
+  "registration.email_verify": "/verify-email",
+  "registration.register_form": "/register",
+  "registration.success": "/login/success"
+}

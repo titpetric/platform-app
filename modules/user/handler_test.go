@@ -11,5 +11,5 @@ func TestHandler(t *testing.T) {
 	h := NewHandler()
 
 	require.NotNil(t, h)
-	require.NoError(t, h.Mount(chi.NewRouter()))
+	require.NoError(t, h.Mount(t.Context(), chi.NewRouter()))
 }

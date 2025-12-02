@@ -1,0 +1,42 @@
+@startuml
+title User Flow Diagram
+package "forgotten_password" {
+    forgotten_password.forgot_password as "forgotten_password.forgot_password"
+    forgotten_password.send_reset as "forgotten_password.send_reset"
+    forgotten_password.reset_password as "forgotten_password.reset_password"
+    forgotten_password.success as "forgotten_password.success"
+    forgotten_password.forgot_password --> forgotten_password.forgot_error : error
+    forgotten_password.forgot_password --> forgotten_password.send_reset : ok
+    forgotten_password.send_reset --> forgotten_password.reset_password : ok
+    forgotten_password.reset_password --> forgotten_password.reset_password_error : error
+    forgotten_password.reset_password --> forgotten_password.success : ok
+}
+package "login" {
+    login.login as "login.login"
+    login.check_mfa as "login.check_mfa"
+    login.success as "login.success"
+    login.login --> login.login_error : error
+    login.login --> login.check_mfa : ok
+    login.check_mfa --> login.check_mfa_error : error
+    login.check_mfa --> login.success : ok
+}
+package "policies" {
+    policies.password_expired as "policies.password_expired"
+    policies.email_reverify as "policies.email_reverify"
+    policies.success as "policies.success"
+    policies.password_expired --> policies.reset_password_error : error
+    policies.password_expired --> policies.success : ok
+    policies.email_reverify --> policies.email_reverify_error : error
+    policies.email_reverify --> policies.success : ok
+}
+package "registration" {
+    registration.register_form as "registration.register_form"
+    registration.email_verify as "registration.email_verify"
+    registration.success as "registration.success"
+    registration.register_form --> registration.register_error : error
+    registration.register_form --> registration.email_verify : ok
+    registration.email_verify --> registration.email_verify_error : error
+    registration.email_verify --> registration.success : ok
+}
+
+@enduml
