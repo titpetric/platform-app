@@ -41,7 +41,7 @@ func (m *Handler) Start(context.Context) error {
 	return nil
 }
 
-func (m *Handler) Mount(r platform.Router) error {
+func (m *Handler) Mount(_ context.Context, r platform.Router) error {
 	if !m.Enabled {
 		return nil
 	}

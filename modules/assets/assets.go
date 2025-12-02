@@ -1,6 +1,7 @@
 package assets
 
 import (
+	"context"
 	"embed"
 	"net/http"
 
@@ -16,7 +17,7 @@ type Module struct {
 }
 
 // Mount registers the assets routes.
-func (Module) Mount(r platform.Router) error {
+func (Module) Mount(_ context.Context, r platform.Router) error {
 	r.Get("/assets/*", func(w http.ResponseWriter, r *http.Request) {
 		http.StripPrefix("/assets/", http.FileServer(http.FS(assets))).ServeHTTP(w, r)
 	})

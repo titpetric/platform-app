@@ -44,7 +44,7 @@ func (m *Module) Start(ctx context.Context) error {
 	return nil
 }
 
-func (m *Module) Mount(r platform.Router) error {
+func (m *Module) Mount(_ context.Context, r platform.Router) error {
 	r.Group(func(r platform.Router) {
 		r.Use(user.Middleware)
 
