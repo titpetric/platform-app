@@ -15,6 +15,17 @@ services:
     env_file: .env.docker
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=jaeger:4318
+      - PLATFORM_EMAIL_HOST=mailhog
+      - PLATFORM_EMAIL_PORT=1025
+      - PLATFORM_EMAIL_FROM=noreply@platform-app.local
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    networks:
+      - db_storage
+    ports:
+      - 1025:1025
+      - 8025:8025
 
 networks:
   db_storage:

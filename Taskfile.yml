@@ -60,6 +60,13 @@ tasks:
       - mig docs --db-driver sqlite --db-dsn="file:daily.db" --schema platform --output=./modules/daily/docs
       - mig gen --db-driver sqlite --db-dsn="file:daily.db" --go.skip-json --schema platform --output=./modules/daily/model
 
+  migrate:email:
+    desc: "Run email module migrations"
+    dotenv: [.env.run]
+    cmds:
+      - mig docs --db-driver sqlite --db-dsn="file:email.db" --schema platform --output=./modules/email/docs
+      - mig gen --db-driver sqlite --db-dsn="file:email.db" --go.skip-json --schema platform --output=./modules/email/model
+
   bench:
     desc: "Run benchmarks"
     dotenv: [.env.test]
@@ -86,6 +93,15 @@ tasks:
     cmds:
       - task: fmt
       - go test -tags '{{.tags}}' -failfast -race -count=1 -cover -coverpkg=./... -coverprofile=pkg.cov ./...
+
+  test:email:
+    desc: "Run email module tests with mailhog"
+    dotenv: [.env.test]
+    env:
+      GOTOOLCHAIN: '{{.toolchain}}'
+    cmds:
+      - task: fmt
+      - go test -tags integration -failfast -count=1 -cover -coverpkg=./... -v ./modules/email/...
 
   cover:
     desc: "Show source coverage"
