@@ -7,9 +7,9 @@
 | subject     | TEXT     |     | Subject     |
 | body        | TEXT     |     | Body        |
 | status      | TEXT     |     | Status      |
+| error       | TEXT     |     | Error       |
 | created_at  | DATETIME |     | Created At  |
 | sent_at     | DATETIME |     | Sent At     |
-| error       | TEXT     |     | Error       |
 | retry_count | INTEGER  |     | Retry Count |
-| last_error  | TEXT     |     | Last Error  |
-| last_retry  | DATETIME |     | Last Retry  |
+| retry_error | TEXT     |     | Retry Error |
+| retry_at    | DATETIME |     | Retry At    |

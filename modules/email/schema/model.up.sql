@@ -8,12 +8,12 @@ CREATE TABLE IF NOT EXISTS email (
     subject TEXT NOT NULL,
     body TEXT NOT NULL,
     status TEXT DEFAULT 'pending',
+    error TEXT,
     created_at DATETIME NOT NULL,
     sent_at DATETIME,
-    error TEXT,
     retry_count INTEGER DEFAULT 0,
-    last_error TEXT,
-    last_retry DATETIME
+    retry_error TEXT,
+    retry_at DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS email_sent (
@@ -22,12 +22,12 @@ CREATE TABLE IF NOT EXISTS email_sent (
     subject TEXT NOT NULL,
     body TEXT NOT NULL,
     status TEXT DEFAULT 'sent',
+    error TEXT,
     created_at DATETIME NOT NULL,
     sent_at DATETIME NOT NULL,
-    error TEXT,
     retry_count INTEGER DEFAULT 0,
-    last_error TEXT,
-    last_retry DATETIME
+    retry_error TEXT,
+    retry_at DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS email_failed (
@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS email_failed (
     subject TEXT NOT NULL,
     body TEXT NOT NULL,
     status TEXT DEFAULT 'failed',
+    error TEXT,
     created_at DATETIME NOT NULL,
     sent_at DATETIME,
-    error TEXT,
     retry_count INTEGER DEFAULT 0,
-    last_error TEXT,
-    last_retry DATETIME
+    retry_error TEXT,
+    retry_at DATETIME
 );

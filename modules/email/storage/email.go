@@ -25,9 +25,7 @@ func (s *EmailStorage) Create(ctx context.Context, email *model.Email) error {
 	email.ID = ulid.String()
 	email.SetCreatedAt(time.Now())
 
-	query := `INSERT INTO email (id, recipient, subject, body, status, created_at, retry_count, last_error, last_retry) 
-	         VALUES (:id, :recipient, :subject, :body, :status, :created_at, :retry_count, :last_error, :last_retry)`
-
+	query := email.Insert()
 	_, err := s.db.NamedExecContext(ctx, query, email)
 	if err != nil {
 		return err
@@ -39,7 +37,7 @@ func (s *EmailStorage) Create(ctx context.Context, email *model.Email) error {
 // Get retrieves an email by ID from email
 func (s *EmailStorage) Get(ctx context.Context, id string) (*model.Email, error) {
 	email := &model.Email{}
-	query := `SELECT * FROM email WHERE id = ?`
+	query := `SELECT * FROM email WHERE id=?`
 
 	err := s.db.GetContext(ctx, email, query, id)
 	if err != nil {
@@ -52,7 +50,7 @@ func (s *EmailStorage) Get(ctx context.Context, id string) (*model.Email, error)
 // GetPending retrieves all pending emails from email
 func (s *EmailStorage) GetPending(ctx context.Context, limit int) ([]model.Email, error) {
 	var emails []model.Email
-	query := `SELECT * FROM email WHERE status = 'pending' ORDER BY created_at ASC LIMIT ?`
+	query := `SELECT * FROM email WHERE status='pending' ORDER BY created_at ASC LIMIT ?`
 
 	err := s.db.SelectContext(ctx, &emails, query, limit)
 	if err != nil {
@@ -68,39 +66,34 @@ func (s *EmailStorage) GetPending(ctx context.Context, limit int) ([]model.Email
 func (s *EmailStorage) Update(ctx context.Context, email *model.Email) error {
 	// If sent, insert into email_sent for audit trail
 	if email.Status == model.StatusSent && email.SentAt != nil {
-		insertSentQuery := `INSERT OR IGNORE INTO email_sent 
-		                   (id, recipient, subject, body, status, created_at, sent_at, error, retry_count, last_error, last_retry) 
-		                   VALUES (:id, :recipient, :subject, :body, :status, :created_at, :sent_at, :error, :retry_count, :last_error, :last_retry)`
+		insertSentQuery := email.Insert(model.WithTable(model.EmailSentTable).WithStatement("INSERT OR IGNORE"))
 		_, err := s.db.NamedExecContext(ctx, insertSentQuery, email)
 		if err != nil {
 			// Log but don't fail - audit trail insertion is secondary
 		}
 
 		// Remove from email table after successful send
-		deleteQuery := `DELETE FROM email WHERE id = :id`
+		deleteQuery := `DELETE FROM email WHERE id=:id`
 		_, err = s.db.NamedExecContext(ctx, deleteQuery, email)
 		return err
 	}
 
 	// If failed, insert into email_failed for audit trail
 	if email.Status == model.StatusFailed {
-		insertFailedQuery := `INSERT OR IGNORE INTO email_failed 
-		                      (id, recipient, subject, body, status, created_at, sent_at, error, retry_count, last_error, last_retry) 
-		                      VALUES (:id, :recipient, :subject, :body, :status, :created_at, :sent_at, :error, :retry_count, :last_error, :last_retry)`
+		insertFailedQuery := email.Insert(model.WithTable(model.EmailFailedTable).WithStatement("INSERT OR IGNORE"))
 		_, err := s.db.NamedExecContext(ctx, insertFailedQuery, email)
 		if err != nil {
 			// Log but don't fail - audit trail insertion is secondary
 		}
 
 		// Remove from email table after failure recorded
-		deleteQuery := `DELETE FROM email WHERE id = :id`
+		deleteQuery := `DELETE FROM email WHERE id=:id`
 		_, err = s.db.NamedExecContext(ctx, deleteQuery, email)
 		return err
 	}
 
 	// For pending emails, update email table with retry info
-	query := `UPDATE email SET retry_count = :retry_count, last_error = :last_error, last_retry = :last_retry
-	         WHERE id = :id`
+	query := `UPDATE email SET retry_count=:retry_count, retry_error=:retry_error, retry_at=:retry_at WHERE id=:id`
 
 	_, err := s.db.NamedExecContext(ctx, query, email)
 	return err

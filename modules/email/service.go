@@ -200,10 +200,9 @@ func (s *Service) sendEmail(email *model.Email) {
 	err := s.sender.Send(email.Recipient, email.Subject, email.Body)
 	if err != nil {
 		email.RetryCount++
-		now := time.Now()
-		email.LastRetry = &now
+		email.SetRetryAt(time.Now())
 		errMsg := err.Error()
-		email.LastError = errMsg
+		email.RetryError = errMsg
 
 		// Keep as pending if we can retry
 		if email.RetryCount < s.options.MaxRetries {
