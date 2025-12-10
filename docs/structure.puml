@@ -1,7 +1,7 @@
 @startuml
 
 class "modules.assets.Module" {
-  + Mount (r platform.Router) error
+  + Mount (_ context.Context, r platform.Router) error
 }
 
 class "modules.daily.model.Migrations" {
@@ -181,7 +181,7 @@ class "modules.user.service.Service" {
 }
 
 class "modules.user.Handler" {
-  + Mount (r platform.Router) error
+  + Mount (_ context.Context, r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
 }
@@ -204,15 +204,234 @@ class "modules.daily.view.DailyData" {
 
 class "modules.daily.Module" {
   - repository: *storage.Storage
-  + Mount (r platform.Router) error
+  + Mount (_ context.Context, r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
 }
 
+class "modules.email.model.Email" {
+  + ID: string
+  + Recipient: string
+  + Subject: string
+  + Body: string
+  + Status: string
+  + Error: string
+  + CreatedAt: *time.Time
+  + SentAt: *time.Time
+  + RetryCount: int64
+  + RetryError: string
+  + RetryAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetBody () string
+  + GetCreatedAt () *time.Time
+  + GetError () string
+  + GetID () string
+  + GetRecipient () string
+  + GetRetryAt () *time.Time
+  + GetRetryCount () int64
+  + GetRetryError () string
+  + GetSentAt () *time.Time
+  + GetStatus () string
+  + GetSubject () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetRetryAt (stamp time.Time)
+  + SetSentAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.email.model.EmailFailed" {
+  + ID: string
+  + Recipient: string
+  + Subject: string
+  + Body: string
+  + Status: string
+  + Error: string
+  + CreatedAt: *time.Time
+  + SentAt: *time.Time
+  + RetryCount: int64
+  + RetryError: string
+  + RetryAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetBody () string
+  + GetCreatedAt () *time.Time
+  + GetError () string
+  + GetID () string
+  + GetRecipient () string
+  + GetRetryAt () *time.Time
+  + GetRetryCount () int64
+  + GetRetryError () string
+  + GetSentAt () *time.Time
+  + GetStatus () string
+  + GetSubject () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetRetryAt (stamp time.Time)
+  + SetSentAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.email.model.EmailSent" {
+  + ID: string
+  + Recipient: string
+  + Subject: string
+  + Body: string
+  + Status: string
+  + Error: string
+  + CreatedAt: *time.Time
+  + SentAt: *time.Time
+  + RetryCount: int64
+  + RetryError: string
+  + RetryAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetBody () string
+  + GetCreatedAt () *time.Time
+  + GetError () string
+  + GetID () string
+  + GetRecipient () string
+  + GetRetryAt () *time.Time
+  + GetRetryCount () int64
+  + GetRetryError () string
+  + GetSentAt () *time.Time
+  + GetStatus () string
+  + GetSubject () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetRetryAt (stamp time.Time)
+  + SetSentAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.email.model.Migrations" {
+  + Project: string
+  + Filename: string
+  + StatementIndex: int64
+  + Status: string
+  + Delete (opts ...QueryOption) string
+  + GetFilename () string
+  + GetProject () string
+  + GetStatementIndex () int64
+  + GetStatus () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.email.model.QueryConfig" {
+  + Table: string
+  + Columns: []string
+  + Where: string
+  + OrderBy: string
+  + LimitStart: int
+  + LimitOffset: int
+  + Statement: string
+  + Apply (opts ...QueryOption) *QueryConfig
+  + WithColumns (cols []string) QueryOption
+  + WithLimit (start,offset int) QueryOption
+  + WithOrderBy (clause string) QueryOption
+  + WithStatement (stmt string) QueryOption
+  + WithTable (name string) QueryOption
+  + WithWhere (clause string) QueryOption
+}
+
+interface "modules.email.model.QueryOption" {
+  + WithTable: WithTable (name string) QueryOption
+  + WithColumns: WithColumns (cols []string) QueryOption
+  + WithWhere: WithWhere (clause string) QueryOption
+  + WithOrderBy: WithOrderBy (clause string) QueryOption
+  + WithLimit: WithLimit (start,offset int) QueryOption
+  + WithStatement: WithStatement (stmt string) QueryOption
+}
+
+class "modules.email.smtp.Config" {
+  + Host: string
+  + Port: int
+  + Username: string
+  + Password: string
+  + From: string
+}
+
+class "modules.email.smtp.SMTPSender" {
+  - config: Config
+  + Send (recipient,subject,body string) error
+}
+
+interface "modules.email.smtp.Sender" {
+  + Send: Send (recipient,subject,body string) error
+}
+
+class "modules.email.storage.EmailStorage" {
+  - db: *sqlx.DB
+  + Create (ctx context.Context, email *model.Email) error
+  + Get (ctx context.Context, id string) (*model.Email, error)
+  + GetFailed (ctx context.Context, limit int) ([]model.Email, error)
+  + GetPending (ctx context.Context, limit int) ([]model.Email, error)
+  + GetSent (ctx context.Context, limit int) ([]model.Email, error)
+  + Update (ctx context.Context, email *model.Email) error
+}
+
+interface "modules.email.EmailStorage" {
+  + Create: Create (ctx context.Context, email *model.Email) error
+  + Get: Get (ctx context.Context, id string) (*model.Email, error)
+  + GetPending: GetPending (ctx context.Context, limit int) ([]model.Email, error)
+  + Update: Update (ctx context.Context, email *model.Email) error
+}
+
+class "modules.email.Handler" {
+  - service: *Service
+  + Mount (_ context.Context, r platform.Router) error
+  + Name () string
+  + Start (ctx context.Context) error
+  + Stop (ctx context.Context) error
+}
+
+class "modules.email.Service" {
+  - emailStorage: EmailStorage
+  - sender: smtp.Sender
+  - queue: chan *model.Email
+  - wg: sync.WaitGroup
+  - ctx: context.Context
+  - cancel: context.CancelFunc
+  - ticker: *time.Ticker
+  - options: ServiceOptions
+  - logger: *slog.Logger
+  + AddEmail (ctx context.Context, email *model.Email) error
+  + Start ()
+  + Stop ()
+}
+
+class "modules.email.ServiceOptions" {
+  + MaxRetries: int64
+  + RetryDuration: time.Duration
+  + TickerInterval: time.Duration
+  + QueueCapacity: int64
+  + Logger: *slog.Logger
+}
+
 class "modules.expvar.Handler" {
   + Enabled: bool
-  + Mount (r platform.Router) error
+  + Mount (_ context.Context, r platform.Router) error
   + Start (context.Context) error
+}
+
+class "modules.user.cmd.generate.Config" {
+  + Features: map[string]any
+  + Flows: map[string]Flow
+}
+
+class "modules.user.cmd.generate.Flow" {
+  + Steps: []Step
+}
+
+class "modules.user.cmd.generate.Step" {
+  + Name: string
+  + View: string
+  + Link: string
+  + EnabledIf: string
+  + Next: map[string]string
 }
 
 
@@ -254,6 +473,39 @@ class "modules.expvar.Handler" {
 "modules.daily.view.DailyData" --> "modules.user.model.User" : .SessionUser
 
 "modules.daily.Module" --> "modules.daily.storage.Storage" : .repository
+
+
+
+
+
+
+
+
+"modules.email.smtp.SMTPSender" --> "modules.email.smtp.Config" : .config
+
+
+
+"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .Create()
+"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .Get()
+"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .GetFailed()
+"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .GetPending()
+"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .GetSent()
+"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .Update()
+
+"modules.email.Handler" --> "modules.email.Service" : .service
+
+"modules.email.Service" --> "modules.email.EmailStorage" : .emailStorage
+"modules.email.Service" --> "modules.email.smtp.Sender" : .sender
+"modules.email.Service" --> "modules.email.ServiceOptions" : .options
+
+"modules.email.Service" --> "modules.email.model.Email" : .AddEmail()
+"modules.email.Service" --> "modules.email.model.Email" : .sendEmail()
+
+
+"modules.user.cmd.generate.Config" --> "modules.user.cmd.generate.any" : .Features
+"modules.user.cmd.generate.Config" --> "modules.user.cmd.generate.Flow" : .Flows
+
+"modules.user.cmd.generate.Flow" --> "modules.user.cmd.generate.Step" : .Steps
 
 
 

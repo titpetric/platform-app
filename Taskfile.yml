@@ -64,6 +64,7 @@ tasks:
     desc: "Run email module migrations"
     dotenv: [.env.run]
     cmds:
+      - mig migrate --db-driver sqlite --db-dsn="file:email.db" --project email --path ./modules/email/schema --apply
       - mig docs --db-driver sqlite --db-dsn="file:email.db" --schema platform --output=./modules/email/docs
       - mig gen --db-driver sqlite --db-dsn="file:email.db" --go.skip-json --schema platform --output=./modules/email/model
 

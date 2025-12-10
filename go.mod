@@ -6,6 +6,7 @@ require (
 	github.com/a-h/templ v0.3.960
 	github.com/go-bridget/mig v0.0.0-20251031175119-16ccaa044a41
 	github.com/go-chi/chi/v5 v5.2.3
+	github.com/google/go-cmp v0.7.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/qri-io/jsonschema v0.2.1
 	github.com/stretchr/testify v1.11.1
