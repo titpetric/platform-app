@@ -1,0 +1,60 @@
+<fieldset class="form-group">
+    <legend class="form-label mb-3">
+        {{ field.title }}
+        <template v-if="field.required">
+        <span class="text-danger">*</span>
+        </template>
+    </legend>
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-3">
+            <thead class="table-light">
+                <tr>
+                    <th>Select</th>
+                    <th>Option</th>
+                    <th>Weight</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="option in field.options">
+                <tr>
+                    <td style="width: 50px;">
+                        <input 
+                            class="form-check-input"
+                            :class="{ 'is-invalid': field.error }"
+                            type="checkbox"
+                            :id="field.name + '_' + option.value"
+                            :name="field.name"
+                            :value="option.value"
+                            :checked="field.selected && field.selected.includes(option.value)"
+                            :disabled="field.disabled"
+                        />
+                    </td>
+                    <td>
+                        <label class="form-check-label" :for="field.name + '_' + option.value">
+                            {{ option.label }}
+                        </label>
+                    </td>
+                    <td style="width: 120px;">
+                        <input 
+                            class="form-control form-control-sm"
+                            type="number"
+                            :name="field.name + '_weight[' + option.value + ']'"
+                            :value="field.weights && field.weights[option.value] || '0'"
+                            min="0"
+                            :disabled="field.disabled"
+                        />
+                    </td>
+                </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+    <template v-if="field.error">
+    <div class="invalid-feedback d-block">
+        {{ field.error }}
+    </div>
+    </template>
+    <template v-if="field.help">
+    <small class="form-text text-muted d-block mt-2">{{ field.help }}</small>
+    </template>
+</fieldset>

@@ -1,0 +1,51 @@
+article:
+  id:
+    desc: "Article ID"
+    type: "key"
+  
+  title:
+    desc: "Article Title"
+    type: "string"
+  
+  slug:
+    desc: "URL Slug"
+    type: "string"
+  
+  excerpt:
+    desc: "Short description"
+    type: "string"
+  
+  content:
+    desc: "Article Content"
+    type: "html"
+    size: "full"
+    height: 400
+  
+  status:
+    desc: "Publication Status"
+    type: "enum"
+    value: "draft=Draft,published=Published,archived=Archived"
+  
+  featured:
+    desc: "Featured Article"
+    type: "bool"
+  
+  categories:
+    desc: "Article Categories"
+    type: "section_multi"
+  
+  tags:
+    desc: "Tags"
+    type: "string"
+  
+  author_id:
+    desc: "Author"
+    type: "property"
+  
+  created_at:
+    desc: "Created At"
+    type: "stamp"
+  
+  updated_at:
+    desc: "Last Updated"
+    type: "stamp"

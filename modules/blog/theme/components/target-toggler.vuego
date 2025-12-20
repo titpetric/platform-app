@@ -1,0 +1,42 @@
+<button class="target-toggler" :data-target="target" @click="toggleTarget">
+  {{ label }}
+</button>
+
+<script>
+  class TargetToggler extends HTMLElement {
+    constructor() {
+      super();
+      this.target = this.getAttribute("data-target");
+    }
+
+    connectedCallback() {
+      this.addEventListener("click", this.toggleTarget.bind(this));
+    }
+
+    toggleTarget() {
+      const el = document.querySelector(this.target);
+      if (el) {
+        el.toggleAttribute("hidden");
+      }
+    }
+  }
+
+  if ("customElements" in window) {
+    window.customElements.define("target-toggler", TargetToggler);
+  }
+</script>
+
+<style type="text/css+less">
+  .target-toggler {
+    padding: var(--space-s) var(--space-m);
+    border-radius: var(--radius-s);
+    background-color: var(--color-theme);
+    color: white;
+    cursor: pointer;
+    border: none;
+
+    &:hover {
+      background-color: var(--color-theme-offset);
+    }
+  }
+</style>

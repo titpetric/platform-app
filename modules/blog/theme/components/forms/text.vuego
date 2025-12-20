@@ -1,0 +1,26 @@
+<label class="form-label" :for="field.name">
+    {{ field.title }}
+    <template v-if="field.required">
+    <span class="text-danger">*</span>
+    </template>
+</label>
+<input 
+    class="form-control"
+    :class="{ 'is-invalid': field.error }"
+    :id="field.name"
+    :name="field.name"
+    :type="field.type || 'text'"
+    :value="field.value || ''"
+    :placeholder="field.placeholder"
+    :required="field.required"
+    :disabled="field.disabled"
+    :readonly="field.readonly"
+/>
+<template v-if="field.error">
+<div class="invalid-feedback d-block">
+    {{ field.error }}
+</div>
+</template>
+<template v-if="field.help">
+<small class="form-text text-muted d-block mt-1">{{ field.help }}</small>
+</template>

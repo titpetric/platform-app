@@ -1,0 +1,50 @@
+<label class="form-label" :for="field.name">
+    {{ field.title }}
+    <template v-if="field.required">
+    <span class="text-danger">*</span>
+    </template>
+</label>
+<div class="input-group">
+    <input 
+        class="form-control"
+        :class="{ 'is-invalid': field.error }"
+        :id="field.name"
+        :name="field.name"
+        type="text"
+        :value="field.displayValue || field.value || ''"
+        :placeholder="field.placeholder || 'Click to search...'"
+        :disabled="field.disabled"
+        readonly
+    />
+    <button 
+        class="btn btn-outline-secondary" 
+        type="button"
+        :disabled="field.disabled"
+        @click="openSearchPopup"
+    >
+        🔍 Search
+    </button>
+    <template v-if="field.value">
+    <button 
+        class="btn btn-outline-danger" 
+        type="button"
+        :disabled="field.disabled"
+        @click="clearValue"
+    >
+        ✕ Clear
+    </button>
+    </template>
+</div>
+<input 
+    type="hidden"
+    :name="field.name + '_id'"
+    :value="field.value || ''"
+/>
+<template v-if="field.error">
+<div class="invalid-feedback d-block">
+    {{ field.error }}
+</div>
+</template>
+<template v-if="field.help">
+<small class="form-text text-muted d-block mt-1">{{ field.help }}</small>
+</template>

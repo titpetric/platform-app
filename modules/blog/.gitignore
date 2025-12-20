@@ -1,0 +1,10 @@
+/data
+/appdata
+/blog
+/blog.db
+/public
+/appdata/public
+/*.cov
+/*.json
+/*.test
+/*.out

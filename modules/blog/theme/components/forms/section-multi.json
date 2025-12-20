@@ -1,0 +1,18 @@
+{
+  "field": {
+    "name": "topics",
+    "title": "Topics",
+    "type": "section_multi",
+    "values": ["ai", "blockchain"],
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Select multiple topics",
+    "options": [
+      {"value": "ai", "label": "Artificial Intelligence"},
+      {"value": "blockchain", "label": "Blockchain"},
+      {"value": "cloud", "label": "Cloud Computing"},
+      {"value": "security", "label": "Security"}
+    ]
+  }
+}

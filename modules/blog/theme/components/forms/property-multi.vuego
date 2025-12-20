@@ -1,0 +1,38 @@
+<fieldset class="form-group">
+    <legend class="form-label mb-3">
+        {{ field.title }}
+        <template v-if="field.required">
+        <span class="text-danger">*</span>
+        </template>
+    </legend>
+    <div class="property-multi-container border rounded p-3" style="min-height: 150px; background-color: #f8f9fa;">
+        <div v-if="!field.options || field.options.length == 0" class="text-muted text-center py-4">
+            <p>No properties available</p>
+        </div>
+        <template v-for="option in field.options">
+        <div class="form-check mb-2">
+            <input 
+                class="form-check-input"
+                :class="{ 'is-invalid': field.error }"
+                type="checkbox"
+                :id="field.name + '_' + option.value"
+                :name="field.name"
+                :value="option.value"
+                :checked="field.values && field.values.includes(option.value)"
+                :disabled="field.disabled"
+            />
+            <label class="form-check-label" :for="field.name + '_' + option.value">
+                {{ option.label }}
+            </label>
+        </div>
+        </template>
+    </div>
+    <template v-if="field.error">
+    <div class="invalid-feedback d-block mt-2">
+        {{ field.error }}
+    </div>
+    </template>
+    <template v-if="field.help">
+    <small class="form-text text-muted d-block mt-2">{{ field.help }}</small>
+    </template>
+</fieldset>

@@ -1,0 +1,35 @@
+<fieldset class="form-group">
+    <legend class="form-label mb-3">
+        {{ field.title }}
+        <template v-if="field.required">
+        <span class="text-danger">*</span>
+        </template>
+    </legend>
+    <div :class="{ 'is-invalid': field.error }">
+        <template v-for="option in field.options">
+        <div class="form-check">
+            <input 
+                class="form-check-input"
+                :class="{ 'is-invalid': field.error }"
+                type="checkbox"
+                :id="field.name + '_' + option.value"
+                :name="field.name"
+                :value="option.value"
+                :checked="field.values && field.values.includes(option.value)"
+                :disabled="field.disabled"
+            />
+            <label class="form-check-label" :for="field.name + '_' + option.value">
+                {{ option.label }}
+            </label>
+        </div>
+        </template>
+    </div>
+    <template v-if="field.error">
+    <div class="invalid-feedback d-block">
+        {{ field.error }}
+    </div>
+    </template>
+    <template v-if="field.help">
+    <small class="form-text text-muted d-block mt-2">{{ field.help }}</small>
+    </template>
+</fieldset>

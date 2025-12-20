@@ -1,0 +1,18 @@
+{
+  "field": {
+    "name": "category",
+    "title": "Category",
+    "type": "section_id",
+    "value": "sports",
+    "placeholder": "Select a category",
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Choose article category",
+    "options": [
+      {"value": "tech", "label": "Technology"},
+      {"value": "sports", "label": "Sports"},
+      {"value": "news", "label": "News"}
+    ]
+  }
+}

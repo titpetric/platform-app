@@ -1,0 +1,313 @@
+<theme-machine class="theme-machine">
+  <!-- appearance -->
+  <fieldset class="control-appearance">
+    <legend class="visually-hidden">Select appearance</legend>
+    <template v-for="item in navigation.appearances">
+      <input id="appearance-{{ item.id }}" :value="item.value" type="radio" name="appearance" class="visually-hidden" />
+      <label for="appearance-{{item.id}}">
+        <span class="visually-hidden">{{ item.label }}</span>
+        <vuego include="components/inline-svg.vuego" src="assets/icons/{{ item.icon }}.svg"></vuego>
+      </label>
+    </template>
+    <div class="highlighter"></div>
+  </fieldset>
+
+  <button class="theme-display-toggle" aria-expanded="false" aria-controls="theme-display">
+    <span class="visually-hidden">Select theme</span>
+    <vuego include="components/inline-svg.vuego" src="assets/icons/dropper.svg" class="icon" aria-hidden="true"></vuego>
+  </button>
+
+  <div id="theme-display" class="theme-display-wrapper" hidden>
+    <fieldset class="control-theme">
+      <legend class="visually-hidden">Select theme</legend>
+      <div class="options">
+        <template v-for="theme in themes">
+          <label for="theme-{{ theme.name }}" :data-theme="theme.name">
+            <span class="visually-hidden">{{ theme.name }}</span>
+            <input id="theme-{{ theme.name }}" :value="theme.name" type="radio" name="theme" />
+          </label>
+        </template>
+      </div>
+    </fieldset>
+  </div>
+</theme-machine>
+
+<script v-once>
+  class ThemeMachine extends HTMLElement {
+    constructor() {
+      super();
+      this.themeToggle;
+      this.themeDisplay;
+    }
+
+    connectedCallback() {
+      this.setupControl("appearance", document.documentElement);
+      this.setupControl("theme", document.body);
+
+      this.themeToggle = this.querySelector(".theme-display-toggle");
+      this.themeDisplay = this.querySelector(".theme-display-wrapper");
+
+      this.handleClickOutside();
+      this.themeToggle.addEventListener("click", this.handleThemeToggleClick.bind(this));
+    }
+
+    handleChange(e, prop, el) {
+      const attr = `data-${prop}`;
+      const value = e.target.value;
+
+      if (!value) {
+        localStorage.removeItem(prop);
+        el.removeAttribute(attr);
+        return;
+      }
+
+      localStorage.setItem(prop, value);
+      el.setAttribute(attr, value);
+    }
+
+    handleThemeToggleClick() {
+      let expanded = this.themeToggle.getAttribute("aria-expanded") === "true" || false;
+
+      this.themeToggle.setAttribute("aria-expanded", !expanded);
+      this.themeDisplay.toggleAttribute("hidden", expanded);
+    }
+
+    handleClickOutside() {
+      document.addEventListener(
+        "click",
+        (e) => {
+          if (!e.target.closest("theme-machine")) {
+            this.themeToggle.setAttribute("aria-expanded", false);
+            this.themeDisplay.toggleAttribute("hidden", true);
+          }
+        },
+        false
+      );
+    }
+
+    setupControl(prop, el) {
+      const initialValue = localStorage.getItem(prop) || "";
+      const collection = this.querySelectorAll(`[name='${prop}']`);
+
+      for (let item of collection) {
+        item.checked = item.value === initialValue;
+        item.addEventListener("change", (e) => this.handleChange(e, prop, el));
+      }
+    }
+  }
+
+  if ("customElements" in window) {
+    window.customElements.define("theme-machine", ThemeMachine);
+  }
+</script>
+
+<style type="text/css+less">
+
+.theme-machine {
+  --_padding: 0.3em;
+  --_radius: var(--radius-pill);
+  --icon-size: 1.2em;
+
+    position: relative;
+    display: flex;
+    isolation: isolate;
+
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+    }
+
+    .control-appearance {
+      all: unset;
+      position: relative;
+      display: flex;
+      gap: var(--_padding);
+      background: var(--color-theme);
+      padding: var(--_padding);
+      border-radius: 360px;
+      isolation: isolate;
+      transform: translateZ(0);
+      inline-size: fit-content;
+      z-index: 2;
+
+      label {
+        display: grid;
+        place-items: center;
+        place-content: center;
+        border-radius: 50%;
+        padding: var(--_padding);
+        color: var(--color-theme-offset);
+        cursor: pointer;
+      }
+
+      input:checked + label {
+        color: currentcolor;
+      }
+
+      input:checked:focus-visible + label {
+        outline: var(--focus-outline);
+        outline-offset: 2px;
+      }
+
+      .highlighter {
+        content: "";
+        position: absolute;
+        top: var(--_padding);
+        left: var(--_padding);
+        aspect-ratio: 1;
+        height: calc(100% - var(--_padding) * 2);
+        background: var(--color-theme-accent);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        transition: translate 250ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      input:focus-visible ~ .highlighter {
+        transition: unset;
+      }
+
+      input:nth-of-type(2):checked ~ .highlighter {
+        translate: calc(100% + var(--_padding));
+      }
+
+      input:nth-of-type(3):checked ~ .highlighter {
+        translate: calc(200% + var(--_padding) * 2);
+      }
+    }
+
+    .theme-display-toggle {
+      --_pull: 2rem;
+      all: unset;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      align-items: center;
+      cursor: pointer;
+      padding-block: calc(var(--_padding) * 2);
+      border-radius: 0 var(--_radius) var(--_radius) 0;
+      background-color: var(--color-theme-offset);
+      margin-inline-start: calc(var(--_pull) * -1);
+      padding-inline: calc(var(--_pull) + var(--_padding)) calc(var(--_padding) + 0.3rem);
+
+      .icon {
+        scale: 1.01;
+        border-radius: var(--radius-round);
+      }
+
+      &:focus-visible .icon {
+        outline: 2px solid var(--color-bg-accent);
+        outline-offset: 2px;
+      }
+    }
+
+    .theme-display-wrapper {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: grid;
+      align-items: start;
+      inline-size: calc(100% - var(--_padding));
+      block-size: 200%;
+      mask-image: linear-gradient(transparent 25%, black 0);
+      z-index: 0;
+    }
+
+    .control-theme {
+      display: flex;
+      gap: var(--space-3xs);
+      padding: var(--space-xs);
+      block-size: 50%;
+      border-radius: var(--_radius);
+      background-color: var(--color-theme-offset);
+
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: 50%;
+        left: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        background-color: inherit;
+        z-index: -1;
+      }
+
+      .options {
+        --_border-color: var(--color-theme-accent);
+        display: flex;
+        gap: var(--space-3xs);
+        justify-content: space-between;
+        inline-size: 100%;
+      }
+
+      input {
+        --_size: 0.95em;
+
+        appearance: none;
+        margin: 0;
+        font: inherit;
+        color: currentColor;
+        width: var(--_size);
+        height: var(--_size);
+        border: 2px solid var(--color-theme);
+        border-radius: var(--radius-round);
+        background-color: var(--color-theme-offset);
+        display: grid;
+        place-content: center;
+
+        &::before {
+          --_size: 0.5em;
+          content: "";
+          width: var(--_size);
+          height: var(--_size);
+          border-radius: var(--radius-round);
+          background-color: var(--color-theme);
+          scale: 0;
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-theme-accent);
+          outline-offset: 1px;
+        }
+
+        &:checked::before {
+          scale: 1;
+          transition: 200ms scale cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        &:checked {
+          background-color: transparent;
+        }
+
+        &:active:not(:checked) {
+          translate: 0 1px;
+        }
+      }
+    }
+
+    /* Transition theme display */
+    .theme-display-toggle,
+    .theme-display-wrapper {
+      --_transition: translate 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      translate: var(--_padding) var(--_padding);
+      transition: var(--_transition);
+    }
+
+    .control-theme {
+      translate: 0 calc(100% - var(--_padding));
+      transition: var(--_transition);
+    }
+
+    .theme-display-toggle[aria-expanded="false"],
+    .theme-display-wrapper[hidden] {
+      translate: 0 0;
+    }
+
+    .theme-display-wrapper[hidden] .control-theme {
+      translate: 0 0;
+    }
+
+    .theme-display-wrapper[hidden] input {
+      display: none;
+    }
+  }
+</style>

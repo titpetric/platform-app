@@ -1,0 +1,13 @@
+{
+  "field": {
+    "name": "agree_terms",
+    "title": "I agree to the terms and conditions",
+    "type": "checkbox",
+    "value": "1",
+    "checked": true,
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "You must agree to continue"
+  }
+}

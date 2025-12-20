@@ -1,0 +1,7 @@
+{
+  "field": {
+    "name": "csrf_token",
+    "type": "hidden",
+    "value": "abc123def456"
+  }
+}

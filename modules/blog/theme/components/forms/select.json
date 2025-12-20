@@ -1,0 +1,18 @@
+{
+  "field": {
+    "name": "country",
+    "title": "Country",
+    "type": "select",
+    "value": "us",
+    "placeholder": "Select a country",
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Choose your country",
+    "options": [
+      {"value": "us", "label": "United States"},
+      {"value": "ca", "label": "Canada"},
+      {"value": "uk", "label": "United Kingdom"}
+    ]
+  }
+}

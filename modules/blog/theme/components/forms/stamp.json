@@ -1,0 +1,9 @@
+{
+  "field": {
+    "name": "created_at",
+    "title": "Created At",
+    "type": "stamp",
+    "value": "2025-12-20T10:30:45Z",
+    "help": "Auto-generated timestamp"
+  }
+}

@@ -1,0 +1,15 @@
+<label class="form-label" :for="field.name">
+    {{ field.title }}
+</label>
+<div class="form-control-plaintext bg-light p-2 border rounded">
+    {{ field.value || 'Not set' }}
+</div>
+<input 
+    type="hidden"
+    :id="field.name"
+    :name="field.name"
+    :value="field.value"
+/>
+<template v-if="field.help">
+<small class="form-text text-muted d-block mt-2">{{ field.help }}</small>
+</template>

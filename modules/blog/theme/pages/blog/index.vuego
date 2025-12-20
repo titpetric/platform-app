@@ -1,0 +1,6 @@
+---
+layout: "base"
+---
+
+<h1>Blog</h1>
+<vuego include="components/article-list.vuego" :articles="articles"></vuego>

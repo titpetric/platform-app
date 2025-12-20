@@ -1,0 +1,14 @@
+{
+  "field": {
+    "name": "document",
+    "title": "Upload Document",
+    "type": "file-upload",
+    "value": "previous-file.pdf",
+    "accept": ".pdf,.doc,.docx",
+    "multiple": false,
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Accepted: PDF, DOC, DOCX (max 10MB)"
+  }
+}

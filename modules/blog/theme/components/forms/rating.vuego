@@ -1,0 +1,32 @@
+<fieldset class="form-group">
+    <legend class="form-label mb-3">
+        {{ field.title }}
+        {{ v-if="field.required" }}
+        <span class="text-danger">*</span>
+        {{ /v-if }}
+    </legend>
+    <div class="btn-group" role="group" aria-label="Rating scale">
+        {{ v-for="i in [1, 2, 3, 4, 5]" }}
+        <input 
+            type="radio" 
+            class="btn-check"
+            :id="field.name + '_' + i"
+            :name="field.name"
+            :value="i"
+            :checked="field.value == i || field.value == String(i)"
+            :disabled="field.disabled"
+        />
+        <label class="btn btn-outline-primary" :for="field.name + '_' + i">
+            {{ i }}
+        </label>
+        {{ /v-for }}
+    </div>
+    {{ v-if="field.error" }}
+    <div class="invalid-feedback d-block mt-2">
+        {{ field.error }}
+    </div>
+    {{ /v-if }}
+    {{ v-if="field.help" }}
+    <small class="form-text text-muted d-block mt-2">{{ field.help }}</small>
+    {{ /v-if }}
+</fieldset>

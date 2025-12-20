@@ -1,0 +1,12 @@
+{
+  "field": {
+    "name": "satisfaction",
+    "title": "Satisfaction Level",
+    "type": "rating",
+    "value": 4,
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Rate from 1 to 5"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "field": {
+    "name": "featured_image",
+    "title": "Featured Image",
+    "type": "property",
+    "value": "image_1",
+    "placeholder": "Select an image",
+    "required": false,
+    "disabled": false,
+    "error": null,
+    "help": "Choose featured image",
+    "options": [
+      {"value": "image_1", "label": "Image 1 - Landscape"},
+      {"value": "image_2", "label": "Image 2 - Portrait"},
+      {"value": "image_3", "label": "Image 3 - Square"}
+    ]
+  }
+}

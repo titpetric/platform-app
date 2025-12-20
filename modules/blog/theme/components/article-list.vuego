@@ -1,0 +1,43 @@
+<template :require="articles">
+
+  <ul class="article-list flow" role="list">
+    <li v-for="post in articles">
+      <div class="info">
+        <time :datetime="post.Date | datetime" >{{ post.Date | formatDate(false) }}</time>
+        <span v-if="post.Source" class="source">
+          — {{ post.Source }}
+          <vuego include="components/inline-svg.vuego" src="assets/icons/arrow-square-out.svg"></vuego>
+        </span>
+      </div>
+      <a class="text-1 font-semibold" :href="post.URL" :target="post.Source ? '_blank' : null">{{ post.Title }}</a>
+  </li>
+</ul>
+
+</template>
+
+<style type="text/css+less">
+  .article-list {
+    --flow-space: var(--space-m);
+
+    .info {
+      --icon-size: 1em;
+
+      font-size: 0.7em;
+      font-weight: var(--font-semibold);
+      letter-spacing: -0.01em;
+    }
+
+    li:has(a:hover, a:focus-visible) :is(time, .source) {
+      color: var(--color-theme-offset);
+    }
+
+    a {
+      text-wrap: balance;
+      outline-offset: 3px;
+
+      &:not(:hover, :focus-visible) {
+        text-decoration: none;
+      }
+    }
+  }
+</style>

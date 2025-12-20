@@ -1,0 +1,35 @@
+<label class="form-label" :for="field.name">
+    {{ field.title }}
+    <template v-if="field.required">
+    <span class="text-danger">*</span>
+    </template>
+</label>
+<div class="d-flex gap-2 align-items-center">
+    <input 
+        class="form-control form-control-color"
+        :class="{ 'is-invalid': field.error }"
+        :id="field.name"
+        :name="field.name"
+        type="color"
+        :value="field.value || '#000000'"
+        :required="field.required"
+        :disabled="field.disabled"
+        style="max-width: 80px;"
+    />
+    <input 
+        class="form-control form-control-sm"
+        type="text"
+        :placeholder="'#000000'"
+        :value="field.value || ''"
+        readonly
+        style="max-width: 120px;"
+    />
+</div>
+<template v-if="field.error">
+<div class="invalid-feedback d-block">
+    {{ field.error }}
+</div>
+</template>
+<template v-if="field.help">
+<small class="form-text text-muted d-block mt-1">{{ field.help }}</small>
+</template>

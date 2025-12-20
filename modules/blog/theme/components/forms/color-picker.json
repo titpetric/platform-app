@@ -1,0 +1,12 @@
+{
+  "field": {
+    "name": "brand_color",
+    "title": "Brand Color",
+    "type": "color-picker",
+    "value": "#FF5733",
+    "required": false,
+    "disabled": false,
+    "error": null,
+    "help": "Choose your brand color"
+  }
+}

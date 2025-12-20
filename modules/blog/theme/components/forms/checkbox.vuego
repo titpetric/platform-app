@@ -1,0 +1,26 @@
+<div class="form-check">
+    <input 
+        class="form-check-input"
+        :class="{ 'is-invalid': field.error }"
+        type="checkbox"
+        :id="field.name"
+        :name="field.name"
+        :value="field.value || '1'"
+        :checked="field.checked || false"
+        :disabled="field.disabled"
+    />
+    <label class="form-check-label" :for="field.name">
+        {{ field.title }}
+        <template v-if="field.required">
+        <span class="text-danger">*</span>
+        </template>
+    </label>
+    <template v-if="field.error">
+    <div class="invalid-feedback d-block">
+        {{ field.error }}
+    </div>
+    </template>
+    <template v-if="field.help">
+    <small class="form-text text-muted d-block mt-1">{{ field.help }}</small>
+    </template>
+</div>

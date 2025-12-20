@@ -1,0 +1,31 @@
+<label class="form-label" :for="field.name">
+    {{ field.title }}
+    <template v-if="field.required">
+    <span class="text-danger">*</span>
+    </template>
+</label>
+<select
+    class="form-select"
+    :class="{ 'is-invalid': field.error }"
+    :id="field.name"
+    :name="field.name"
+    :required="field.required"
+    :disabled="field.disabled"
+>
+    <option value="">-- No parent --</option>
+    <template v-for="option in field.options">
+    <template v-if="option.value != field.currentId">
+    <option :value="option.value" :selected="field.value == option.value">
+        {{ option.label }}
+    </option>
+    </template>
+    </template>
+</select>
+<template v-if="field.error">
+<div class="invalid-feedback d-block">
+    {{ field.error }}
+</div>
+</template>
+<template v-if="field.help">
+<small class="form-text text-muted d-block mt-1">{{ field.help }}</small>
+</template>

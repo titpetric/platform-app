@@ -1,0 +1,14 @@
+{
+  "field": {
+    "name": "bio",
+    "title": "Biography",
+    "type": "textarea",
+    "value": "Software engineer with 10 years of experience",
+    "placeholder": "Tell us about yourself",
+    "required": false,
+    "disabled": false,
+    "rows": 5,
+    "error": null,
+    "help": "Maximum 500 characters"
+  }
+}

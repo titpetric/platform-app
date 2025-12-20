@@ -1,0 +1,17 @@
+{
+  "field": {
+    "name": "gender",
+    "title": "Gender",
+    "type": "radio",
+    "value": "female",
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Select your gender",
+    "options": [
+      {"value": "male", "label": "Male"},
+      {"value": "female", "label": "Female"},
+      {"value": "other", "label": "Other"}
+    ]
+  }
+}

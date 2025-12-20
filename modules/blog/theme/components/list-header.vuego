@@ -1,0 +1,18 @@
+<div class="list-header mb-4 d-flex justify-content-between align-items-start">
+    <div class="list-header-title">
+        <h3 class="fw-bold mb-2">{{ title }}</h3>
+        <template v-if="subtitle">
+        <p class="text-muted mb-0">{{ subtitle }}</p>
+        </template>
+    </div>
+    
+    <template v-if="actions">
+    <div class="list-header-actions">
+        <template v-for="action in actions">
+        <a href="{{ action.url }}" class="btn btn-{{ action.type || 'primary' }} ms-2">
+            {{ action.label }}
+        </a>
+        </template>
+    </div>
+    </template>
+</div>

@@ -1,0 +1,18 @@
+{
+  "field": {
+    "name": "skills",
+    "title": "Skills",
+    "type": "multi-select",
+    "values": ["go", "rust"],
+    "required": true,
+    "disabled": false,
+    "error": null,
+    "help": "Select all applicable skills",
+    "options": [
+      {"value": "go", "label": "Go"},
+      {"value": "rust", "label": "Rust"},
+      {"value": "python", "label": "Python"},
+      {"value": "javascript", "label": "JavaScript"}
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+<div class="info-cta">
+  <slot></slot>
+</div>
+
+<style type="text/css+less">
+  .info-cta {
+    padding: var(--space-m);
+    border-radius: var(--radius-m);
+    background-color: var(--color-bg-accent);
+    border-left: 4px solid var(--color-theme);
+  }
+</style>

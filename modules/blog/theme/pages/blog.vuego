@@ -1,0 +1,14 @@
+---
+permalink: "blog/"
+title: "Blog posts by Tit Petric"
+---
+
+<h1 class="title | skewer">The Blog</h1>
+
+<p style="--flow-space: var(--space-xl)">
+  This is the incubation space for various projects. The purpose is to experiment, learn and
+  share the results with others. Feedback is welcome. Below is a list of all posts.
+</p>
+<p>Follow my <a href="/feed.xml">RSS feed</a> to stay in the loop when new content gets published.</p>
+
+<vuego include="components/article-list.vuego" :articles="articles"></vuego>

@@ -1,0 +1,19 @@
+{
+  "field": {
+    "name": "attachments",
+    "title": "Attachments",
+    "type": "property_multi",
+    "values": ["doc1", "doc3"],
+    "required": false,
+    "disabled": false,
+    "error": null,
+    "help": "Select multiple attachments",
+    "options": [
+      {"value": "doc1", "label": "Documentation PDF"},
+      {"value": "doc2", "label": "User Guide PDF"},
+      {"value": "doc3", "label": "API Reference PDF"},
+      {"value": "doc4", "label": "Changelog"},
+      {"value": "doc5", "label": "License Agreement"}
+    ]
+  }
+}

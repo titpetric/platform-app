@@ -1,0 +1,1470 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- what'sa meta with you? -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Eleventy">
+    <title>Ryan Mulligan</title>
+    <meta name="description" content="Passenger through space and time, front-end web builder &amp; bittersweet songs enthusiast">
+    <link rel="canonical" href="https://ryanmulligan.dev/">
+    
+    <meta name="author" content="Ryan Mulligan">
+
+    <!-- favicon-trary to popular belief -->
+    <link rel="icon" href="/favicon/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- social club -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ryan Mulligan">
+    <meta name="twitter:description" content="Passenger through space and time, front-end web builder &amp; bittersweet songs enthusiast">
+    <meta name="twitter:image" content="https://ryanmulligan.dev/social/ryan-mulligan-dev.png">
+    <meta name="og:title" content="Ryan Mulligan">
+    <meta name="og:description" content="Passenger through space and time, front-end web builder &amp; bittersweet songs enthusiast">
+    <meta property="og:image" content="https://ryanmulligan.dev/social/ryan-mulligan-dev.png">
+    <meta name="fediverse:creator" content="@hexagoncircle@fosstodon.org">
+
+    <!-- [deep breath] me, me, me, me, meeee -->
+    <link href="https://github.com/hexagoncircle" rel="me">
+    <link href="https://twitter.com/hexagoncircle" rel="me">
+    <link href="https://fosstodon.org/@hexagoncircle" rel="me">
+    <link href="https://codepen.io/hexagoncircle" rel="me">
+    <link rel="webmention" href="https://webmention.io/ryanmulligan.dev/webmention">
+    <link rel="pingback" href="https://webmention.io/ryanmulligan.dev/xmlrpc">
+    <link rel="alternate" type="application/atom+xml" href="https://ryanmulligan.dev/feed.xml" title="Ryan Mulligan">
+
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "name": "Ryan Mulligan",
+        "url": "https://ryanmulligan.dev/",
+        "image": "https://ryanmulligan.dev/images/headshot.jpg"
+      }
+    </script>
+
+    <!-- assets the situation -->
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>scroll-pen a::after {
+    mix-blend-mode: multiply;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html:not([data-appearance="light"]) scroll-pen a::after {
+      mix-blend-mode: screen;
+    }
+  }
+
+  [data-appearance="dark"] scroll-pen a::after {
+    mix-blend-mode: screen;
+  }
+
+  .checkbox {
+    --align: center;
+    --column-gap: var(--space-3xs);
+  }
+
+  [data-scroll-pen-controls] {
+    --column-gap: var(--space-m);
+    --row-gap: var(--space-xs);
+  }
+
+  [data-scroll-pen-controls] .wrap {
+    --column-gap: var(--space-xs);
+    position: relative;
+    top: -0.05em;
+  }
+
+  [data-scroll-pen-scroller] {
+    flex-grow: 1;
+  }
+
+  @media (any-hover: none) {
+    [data-scroll-pen-nopreview] {
+      display: none;
+    }
+  }
+.scroll-pen{--_duration: 200ms;--_delay: 250ms;--_offset: 6;--_ease: cubic-bezier(0, 0.55, 0.45, 1);--_transition: 180ms cubic-bezier(0, 0.55, 0.45, 1);--_gap: clamp(var(--space-2xs), 3vw, var(--space-s));grid-column:full;display:grid;grid-template-columns:inherit;transition:transform 200ms var(--ease-out)}@media (forced-colors:active){.scroll-pen{forced-color-adjust:none}}.scroll-pen ul{grid-column:content;display:grid;grid-auto-columns:100%;grid-auto-flow:column;padding-block:var(--space-m) calc(var(--space-m) + 1ex);gap:var(--_gap);.scroll-pen &::after{content:"";width:var(--page-gutters);margin-inline-start:calc(var(--_gap)*-1)}}@media (min-width:21rem){.scroll-pen ul{grid-auto-columns:calc(8rem + 3vw);> :nth-child(3n + 1) {
+        grid-column: span 2;
+        grid-row: span 2;
+      }}}.scroll-pen li{overflow:hidden;border-radius:var(--radius-l);transform:var(--unskew);transition:var(--_duration) cubic-bezier(0,0.55,0.45,1);transition-property:scale,transform;.scroll-pen &:focus-within{outline:var(--focus-outline);outline-offset:var(--focus-outline-offset)}}.scroll-pen a{position:relative;outline:none;aspect-ratio:1;transform:translateZ(0);transform-style:preserve-3d;perspective:1000px;background-color:var(--color-theme)}.scroll-pen a::after{content:"";position:relative;width:100%;height:100%;opacity:0.8;background-color:var(--color-theme);transition:opacity var(--_transition);z-index:1}.scroll-pen :is(img,video){object-fit:cover;width:100%;height:100%;aspect-ratio:1}.scroll-pen img{filter:grayscale(0.6);transform:translateZ(0);opacity:1;transition:var(--_duration) var(--_ease);transition-property:filter,opacity,transform}.scroll-pen video{display:none;position:relative}.scroll-pen [data-scroll-pen-focus-arrows]{visibility:hidden;display:inline-flex;gap:0.5em;align-items:center;justify-content:space-between;position:absolute;bottom:0;left:50%;padding-inline:var(--space-2xs);font-size:var(--step--1);transform:translate(-50%,-8px);> span {
+      display: grid;
+      place-content: center;
+      padding-inline: var(--space-2xs);
+      aspect-ratio: 1;
+      background-color: var(--color-bg);
+      border-radius: var(--radius-s);
+      outline: var(--focus-outline);
+    }}.scroll-pen :where(.current :focus-visible)+[data-scroll-pen-focus-arrows]{visibility:visible}.scroll-pen .active [data-scroll-pen-focus-arrows]{visibility:hidden}@media (prefers-reduced-motion:no-preference){.scroll-pen li:nth-child(-n+10){--_animation: var(--_duration)
+        calc(var(--i) * var(--_duration) / var(--_offset) + var(--_delay)) forwards;animation:slide-up-right var(--_animation);a {
+        opacity: 0;
+        transform-origin: bottom left;
+        animation: fade-in-scale-up var(--_animation);
+      }
+
+      img {
+        opacity: 0;
+        animation: fade-in-scale-back calc(var(--_duration) * 2)
+          calc(var(--_duration) / var(--_offset) + var(--_delay) + var(--_duration)) forwards;
+      }}}@media (any-hover:hover){.scroll-pen li:is(:hover,:focus-within){scale:1.04;z-index:1;a::after {
+        opacity: 0;
+        transition-duration: calc(var(--_duration) * 4);
+      }
+
+      img {
+        transform: translateZ(0);
+        filter: grayscale(0);
+        transition-duration: calc(var(--_duration) * 4);
+      }}.scroll-pen:not(.no-preview) li:is(:hover,:focus-within) video.playback-ready{display:block;animation:scale-back calc(var(--_duration)*8) var(--_ease) forwards,fade-in calc(var(--_duration)/2) var(--_ease) forwards}}
+.last-played-track{--icon-size: 1em;--icon-offset: 0.1em;position:relative;margin-inline-start:calc(var(--icon-size) + var(--icon-offset))}.last-played-track .icon{position:absolute;top:0.1em;right:calc(100% + var(--icon-offset));text-decoration:none}
+.article-list{--flow-space: var(--space-m)}.article-list .info{--icon-size: 1em;font-size:0.7em;font-weight:var(--font-semibold);letter-spacing:-0.01em}.article-list li:has(a:hover,a:focus-visible) :is(time,.source){color:var(--color-theme-offset)}.article-list a{text-wrap:balance;outline-offset:3px}.article-list a:not(:hover,:focus-visible){text-decoration:none}
+.say-hey-hey:is(:hover,:focus)+span{display:inline-block;transform-origin:right bottom;animation:waving 300ms cubic-bezier(0.61,1,0.88,1)3}@keyframes waving{50%{transform:rotate(18deg)}}
+.grid {
+    --flow-space: var(--space-xs);
+    --gap: 2px;
+    --min: 14rem;
+  }
+
+  .cta {
+    --flow-space: var(--space-m);
+  }
+
+  .social-link {
+    --icon-size: 1em;
+    --gap: var(--space-3xs);
+    display: inline-flex;
+  }
+
+  scroll-pen {
+    margin-block-start: var(--space-m);
+  }
+
+  [data-scroll-pen-controls] {
+    --flow-space: var(--space-2xs);
+    margin-block-start: var(--space-s);
+    margin-block-end: var(--space-m);
+    position: relative;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-scroll-pen-controls] {
+      opacity: 0;
+      animation: fade-in 200ms 500ms ease-out forwards;
+    }
+  }
+
+  @media (min-width: 35rem) {
+    [data-scroll-pen-controls] {
+      max-width: 35rem;
+    }
+  }
+.theme-machine{--_padding: 0.3em;--_radius: var(--radius-pill);--icon-size: 1.2em;position:relative;display:flex;isolation:isolate}@media (forced-colors:active){.theme-machine{forced-color-adjust:none}}.theme-machine .control-appearance{all:unset;position:relative;display:flex;gap:var(--_padding);background:var(--color-theme);padding:var(--_padding);border-radius:360px;isolation:isolate;transform:translateZ(0);inline-size:fit-content;z-index:2}.theme-machine .control-appearance label{display:grid;place-items:center;place-content:center;border-radius:50%;padding:var(--_padding);color:var(--color-theme-offset);cursor:pointer}.theme-machine .control-appearance input:checked+label{color:currentcolor}.theme-machine .control-appearance input:checked:focus-visible+label{outline:var(--focus-outline);outline-offset:2px}.theme-machine .control-appearance .highlighter{content:"";position:absolute;top:var(--_padding);left:var(--_padding);aspect-ratio:1;height:calc(100% - var(--_padding)*2);background:var(--color-theme-accent);border-radius:50%;pointer-events:none;z-index:-1;transition:translate 250ms cubic-bezier(0.65,0,0.35,1)}.theme-machine .control-appearance input:focus-visible~.highlighter{transition:unset}.theme-machine .control-appearance input:nth-of-type(2):checked~.highlighter{translate:calc(100% + var(--_padding))}.theme-machine .control-appearance input:nth-of-type(3):checked~.highlighter{translate:calc(200% + var(--_padding)*2)}.theme-machine .theme-display-toggle{--_pull: 2rem;all:unset;position:relative;z-index:1;display:grid;align-items:center;cursor:pointer;padding-block:calc(var(--_padding)*2);border-radius:0 var(--_radius) var(--_radius)0;background-color:var(--color-theme-offset);margin-inline-start:calc(var(--_pull)*-1);padding-inline:calc(var(--_pull) + var(--_padding)) calc(var(--_padding) + 0.3rem)}.theme-machine .theme-display-toggle .icon{scale:1.01;border-radius:var(--radius-round)}.theme-machine .theme-display-toggle:focus-visible .icon{outline:2px solid var(--color-bg-accent);outline-offset:2px}.theme-machine .theme-display-wrapper{position:absolute;top:0;right:0;display:grid;align-items:start;inline-size:calc(100% - var(--_padding));block-size:200%;mask-image:linear-gradient(transparent 25%,black 0);z-index:0}.theme-machine .control-theme{display:flex;gap:var(--space-3xs);padding:var(--space-xs);block-size:50%;border-radius:var(--_radius);background-color:var(--color-theme-offset)}.theme-machine .control-theme::before{content:"";position:absolute;bottom:50%;left:0;inline-size:100%;block-size:100%;background-color:inherit;z-index:-1}.theme-machine .control-theme .options{--_border-color: var(--color-theme-accent);display:flex;gap:var(--space-3xs);justify-content:space-between;inline-size:100%}.theme-machine .control-theme input{--_size: 0.95em;appearance:none;margin:0;font:inherit;color:currentColor;width:var(--_size);height:var(--_size);border:2px solid var(--color-theme);border-radius:var(--radius-round);background-color:var(--color-theme-offset);display:grid;place-content:center}.theme-machine .control-theme input::before{--_size: 0.5em;content:"";width:var(--_size);height:var(--_size);border-radius:var(--radius-round);background-color:var(--color-theme);scale:0}.theme-machine .control-theme input:focus-visible{outline:2px solid var(--color-theme-accent);outline-offset:1px}.theme-machine .control-theme input:checked::before{scale:1;transition:200ms scale cubic-bezier(0.34,1.56,0.64,1)}.theme-machine .control-theme input:checked{background-color:transparent}.theme-machine .control-theme input:active:not(:checked){translate:0 1px}.theme-machine .theme-display-toggle,.theme-machine .theme-display-wrapper{--_transition: translate 300ms cubic-bezier(0.16, 1, 0.3, 1);translate:var(--_padding) var(--_padding);transition:var(--_transition)}.theme-machine .control-theme{translate:0 calc(100% - var(--_padding));transition:var(--_transition)}.theme-machine .theme-display-toggle[aria-expanded="false"],.theme-machine .theme-display-wrapper[hidden]{translate:0 0}.theme-machine .theme-display-wrapper[hidden] .control-theme{translate:0 0}.theme-machine .theme-display-wrapper[hidden] input{display:none}
+.site-header{position:relative;display:flex;justify-content:flex-end;padding-inline:var(--page-gutters);margin-block:var(--page-gutters) var(--space-xl);z-index:1}.site-header nav{position:relative}@media (max-width:40rem){.site-header nav{--column-gap: clamp(var(--space-s), 5vw, var(--space-m));--row-gap: var(--space-s);--justify: space-between;inline-size:100%}}.site-header a{display:grid;place-items:center;place-content:center;color:currentcolor;text-decoration:none}.site-header a:hover{color:var(--color-theme-offset)}.site-header .jump-to-content{position:absolute;top:-9999px;left:0;.site-header &:focus-within{top:50%;translate:0-50%;z-index:1}a {
+      padding: var(--space-2xs) var(--space-s);
+      background-color: var(--color-bg);
+    }}
+.site-footer{position:sticky;top:100vh;padding-block:var(--space-2xl);font-size:0.75em}.site-footer p{text-wrap:balance}.site-footer .copyright{margin-inline-start:-0.1em}.site-footer .icon{--_size: 1.2em;position:relative;top:0.2em;margin-inline:0.1em;width:var(--_size);height:var(--_size);color:red}.site-footer li{display:flex;align-items:center;gap:0.2em}</style>
+  </head>
+  <body>
+    <script>(function () {
+    let root = document.documentElement;
+    let body = document.body;
+
+    let appearance = localStorage.getItem("appearance");
+    let theme = localStorage.getItem("theme");
+
+    appearance && root.setAttribute("data-appearance", appearance);
+    theme && body.setAttribute("data-theme", theme);
+  })();</script>
+    
+
+<header class="site-header">
+  <nav class="cluster">
+    <ul role="list" class="cluster">
+      <li class="jump-to-content">
+        <a href="#main" class="text-label">Jump to main content</a>
+      </li>
+      <li>
+        <a href="/" aria-current="page">Home</a>
+      </li>
+<li>
+        <a href="/blog/">Blog</a>
+      </li>
+<li>
+        <a href="/feed.xml">RSS</a>
+      </li>
+    </ul>
+    <theme-machine class="theme-machine">
+
+
+<fieldset class="control-appearance">
+  <legend class="visually-hidden">Select appearance</legend>
+  
+    <input id="appearance-system" value="" type="radio" name="appearance" class="visually-hidden">
+    <label for="appearance-system">
+      <span class="visually-hidden">System</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentcolor" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><rect x="24" y="40" width="208" height="160" rx="24"></rect><path d="M160,216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Z"></path></svg>
+
+    </label>
+  
+
+    <input id="appearance-light" value="light" type="radio" name="appearance" class="visually-hidden">
+    <label for="appearance-light">
+      <span class="visually-hidden">Light</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentcolor" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm8,24a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"></path></svg>
+
+    </label>
+  
+
+    <input id="appearance-dark" value="dark" type="radio" name="appearance" class="visually-hidden">
+    <label for="appearance-dark">
+      <span class="visually-hidden">Dark</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentcolor" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><path d="M240,96a8,8,0,0,1-8,8H216v16a8,8,0,0,1-16,0V104H184a8,8,0,0,1,0-16h16V72a8,8,0,0,1,16,0V88h16A8,8,0,0,1,240,96ZM144,56h8v8a8,8,0,0,0,16,0V56h8a8,8,0,0,0,0-16h-8V32a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16Zm65.14,94.33A88.07,88.07,0,0,1,105.67,46.86a8,8,0,0,0-10.6-9.06A96,96,0,1,0,218.2,160.93a8,8,0,0,0-9.06-10.6Z"></path></svg>
+
+    </label>
+  
+  <div class="highlighter"></div>
+</fieldset>
+
+
+<button aria-expanded="false" aria-controls="theme-display" class="theme-display-toggle">
+  <span class="visually-hidden">Select theme</span>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><path d="M49.67,186.24h0L40.48,207.3a5.74,5.74,0,0,0,1.2,6.36,8,8,0,0,0,8.86,1.67l20-8.74h0a32,32,0,0,0,32.06-8L141.25,160H52.3A32.07,32.07,0,0,0,49.67,186.24Z" fill="var(--color-theme-accent)"></path><path d="M182.43,113.17l4.88,4.89a16,16,0,0,1,0,22.63l-9,9a8,8,0,0,1-11.31,0L106.34,89a8,8,0,0,1,0-11.31l9-9a16,16,0,0,1,22.63,0l4.89,4.88,25-25.1c10.79-10.79,28.37-11.45,39.44-1a28,28,0,0,1,.57,40.15Z" fill="none" stroke="var(--color-theme)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path><path d="M159.31,141.94l-56.68,56.69a32,32,0,0,1-32.06,8h0l-20,8.74a8,8,0,0,1-8.86-1.67h0a5.74,5.74,0,0,1-1.2-6.36l9.19-21.06h0a32,32,0,0,1,7.7-32.87l56.69-56.68" fill="none" stroke="var(--color-theme)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+
+</button>
+<div id="theme-display" hidden="" class="theme-display-wrapper">
+  <fieldset class="control-theme">
+    <legend class="visually-hidden">Select theme</legend>
+    <div class="options">
+      
+        <label for="theme-default" data-theme="default">
+          <span class="visually-hidden">default</span>
+          <input id="theme-default" value="default" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-pink" data-theme="pink">
+          <span class="visually-hidden">pink</span>
+          <input id="theme-pink" value="pink" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-blue" data-theme="blue">
+          <span class="visually-hidden">blue</span>
+          <input id="theme-blue" value="blue" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-green" data-theme="green">
+          <span class="visually-hidden">green</span>
+          <input id="theme-green" value="green" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-purple" data-theme="purple">
+          <span class="visually-hidden">purple</span>
+          <input id="theme-purple" value="purple" type="radio" name="theme">
+        </label>
+      
+
+        <label for="theme-slate" data-theme="slate">
+          <span class="visually-hidden">slate</span>
+          <input id="theme-slate" value="slate" type="radio" name="theme">
+        </label>
+      
+    </div>
+  </fieldset>
+</div>
+
+
+
+
+
+
+</theme-machine>
+  </nav>
+</header>
+
+
+
+    <main id="main" class="breakout flow">
+
+<h1 class="visually-hidden">Ryan Mulligan</h1>
+<scroll-pen tabindex="-1" class="scroll-x skewer scroll-pen">
+
+
+  <h2 class="visually-hidden">CodePen collection</h2>
+  <ul role="list">
+    <li style="--i: 0">
+      <a href="https://codepen.io/hexagoncircle/full/GRBJLwE" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS Skateboard (with GSAP Observer)</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/Bu7xJYfyDH-600.webp 600w"><img loading="eager" decoding="async" src="/images/Bu7xJYfyDH-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/GRBJLwE.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 1">
+      <a href="https://codepen.io/hexagoncircle/full/wBBwmqo" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">wavy wobbly lava orb</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/dLOhSrQ2AB-300.webp 300w"><img loading="eager" decoding="async" src="/images/dLOhSrQ2AB-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/wBBwmqo.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 2">
+      <a href="https://codepen.io/hexagoncircle/full/PoOberB" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Almost before we knew it</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/2KBsdcjb1m-300.webp 300w"><img loading="eager" decoding="async" src="/images/2KBsdcjb1m-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/PoOberB.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 3">
+      <a href="https://codepen.io/hexagoncircle/full/JjOaabp" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Metrognome</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/rtB3JrVCvD-600.webp 600w"><img loading="eager" decoding="async" src="/images/rtB3JrVCvD-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/JjOaabp.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 4">
+      <a href="https://codepen.io/hexagoncircle/full/MWMqXbK" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Shiny call-to-action button</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/-KQRbD5Mpp-300.webp 300w"><img loading="eager" decoding="async" src="/images/-KQRbD5Mpp-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/MWMqXbK.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 5">
+      <a href="https://codepen.io/hexagoncircle/full/OJrJZqR" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Weather app prototype — Scroll-driven animations</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/NctMeo3rcQ-300.webp 300w"><img loading="eager" decoding="async" src="/images/NctMeo3rcQ-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/OJrJZqR.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 6">
+      <a href="https://codepen.io/hexagoncircle/full/yyBePPV" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS view-timeline shine effect</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/QKQfPEdeZn-600.webp 600w"><img loading="eager" decoding="async" src="/images/QKQfPEdeZn-600.jpeg" alt="" height="601" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/yyBePPV.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 7">
+      <a href="https://codepen.io/hexagoncircle/full/NWmEMmJ" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Make it pop</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/1BK9Xz0xTq-300.webp 300w"><img loading="lazy" decoding="async" src="/images/1BK9Xz0xTq-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/NWmEMmJ.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 8">
+      <a href="https://codepen.io/hexagoncircle/full/wvmjomb" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS Marquee Logo Wall</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/C6HHBB6d2M-300.webp 300w"><img loading="lazy" decoding="async" src="/images/C6HHBB6d2M-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/wvmjomb.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 9">
+      <a href="https://codepen.io/hexagoncircle/full/KwPpdBZ" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">&lt;pixel-canvas&gt; Web Component</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/9M3or_tApB-600.webp 600w"><img loading="lazy" decoding="async" src="/images/9M3or_tApB-600.jpeg" alt="" height="601" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/KwPpdBZ.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 10">
+      <a href="https://codepen.io/hexagoncircle/full/vYwKNzR" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">&lt;pointer-particles&gt; Web Component</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/tcprjkEofs-300.webp 300w"><img loading="lazy" decoding="async" src="/images/tcprjkEofs-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/vYwKNzR.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 11">
+      <a href="https://codepen.io/hexagoncircle/full/XWxZgqx" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Diamond Spin</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/wHYH8UIXM4-300.webp 300w"><img loading="lazy" decoding="async" src="/images/wHYH8UIXM4-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/XWxZgqx.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 12">
+      <a href="https://codepen.io/hexagoncircle/full/jgGxKR" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">React Slider with Hover Effect</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/w9A126uYeg-600.webp 600w"><img loading="lazy" decoding="async" src="/images/w9A126uYeg-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/jgGxKR.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 13">
+      <a href="https://codepen.io/hexagoncircle/full/BavjjGE" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Battery Charge</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/eGBOtV9zVb-300.webp 300w"><img loading="lazy" decoding="async" src="/images/eGBOtV9zVb-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/BavjjGE.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 14">
+      <a href="https://codepen.io/hexagoncircle/full/XWbWKwL" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Card Hover Interactions</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/FKc_enpp41-300.webp 300w"><img loading="lazy" decoding="async" src="/images/FKc_enpp41-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/XWbWKwL.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 15">
+      <a href="https://codepen.io/hexagoncircle/full/LYNNYyQ" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Supa Dupa Fly Hover</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/wxPCoL5EzM-600.webp 600w"><img loading="lazy" decoding="async" src="/images/wxPCoL5EzM-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/LYNNYyQ.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 16">
+      <a href="https://codepen.io/hexagoncircle/full/zYxzQqa" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Password Input Light</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/JklKcDN0CU-300.webp 300w"><img loading="lazy" decoding="async" src="/images/JklKcDN0CU-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/zYxzQqa.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 17">
+      <a href="https://codepen.io/hexagoncircle/full/PoxMPzM" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Photo figures — Scroll-driven animations</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/7PSvo8JXv--300.webp 300w"><img loading="lazy" decoding="async" src="/images/7PSvo8JXv--300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/PoxMPzM.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 18">
+      <a href="https://codepen.io/hexagoncircle/full/jOzybYa" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Infinite Roll</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/b2V1XZEJ1y-600.webp 600w"><img loading="lazy" decoding="async" src="/images/b2V1XZEJ1y-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/jOzybYa.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 19">
+      <a href="https://codepen.io/hexagoncircle/full/bGqVyxm" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Grim Reaper's Used Cars - Deal Wheel</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/kErYS3rcSU-300.webp 300w"><img loading="lazy" decoding="async" src="/images/kErYS3rcSU-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/bGqVyxm.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 20">
+      <a href="https://codepen.io/hexagoncircle/full/dyNQJpp" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Isometric Light Switch</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/MuwcIxxtfJ-300.webp 300w"><img loading="lazy" decoding="async" src="/images/MuwcIxxtfJ-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/dyNQJpp.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 21">
+      <a href="https://codepen.io/hexagoncircle/full/gORYwrg" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Food Trucks On Demand</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/Rid5BL7FQt-600.webp 600w"><img loading="lazy" decoding="async" src="/images/Rid5BL7FQt-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/gORYwrg.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 22">
+      <a href="https://codepen.io/hexagoncircle/full/wvJPjQa" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Thank you – have a nice day</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/acbfvKZg-S-300.webp 300w"><img loading="lazy" decoding="async" src="/images/acbfvKZg-S-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/wvJPjQa.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 23">
+      <a href="https://codepen.io/hexagoncircle/full/MWgbqON" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Animated Verbs (part one of three)</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/ibKulAlm6a-300.webp 300w"><img loading="lazy" decoding="async" src="/images/ibKulAlm6a-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/MWgbqON.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 24">
+      <a href="https://codepen.io/hexagoncircle/full/JjYLLNR" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">MCU Timeline Carousel</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/pnMynHFVBD-600.webp 600w"><img loading="lazy" decoding="async" src="/images/pnMynHFVBD-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/JjYLLNR.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 25">
+      <a href="https://codepen.io/hexagoncircle/full/vYJWVvy" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Good Morning Friends</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/CxkOohBGf0-300.webp 300w"><img loading="lazy" decoding="async" src="/images/CxkOohBGf0-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/vYJWVvy.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 26">
+      <a href="https://codepen.io/hexagoncircle/full/abmyQBN" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Ask Emoji</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/r_PPYyA64H-300.webp 300w"><img loading="lazy" decoding="async" src="/images/r_PPYyA64H-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/abmyQBN.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 27">
+      <a href="https://codepen.io/hexagoncircle/full/gJNPON" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Burger Boxer</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/2B2k-AIaKL-600.webp 600w"><img loading="lazy" decoding="async" src="/images/2B2k-AIaKL-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/gJNPON.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 28">
+      <a href="https://codepen.io/hexagoncircle/full/xxRNRwP" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Simon Says, 'Tetradic Color Palette #CodePenChallenge'</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/GWPPlp_R5x-300.webp 300w"><img loading="lazy" decoding="async" src="/images/GWPPlp_R5x-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/xxRNRwP.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 29">
+      <a href="https://codepen.io/hexagoncircle/full/oNLZmvV" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Dynamic Sticky Sidebar Component</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/So1gs-ZdXZ-300.webp 300w"><img loading="lazy" decoding="async" src="/images/So1gs-ZdXZ-300.jpeg" alt="" height="300" width="300"></picture>
+          
+        </figure>
+      </a>
+    </li>
+<li style="--i: 30">
+      <a href="https://codepen.io/hexagoncircle/full/xxYrpzP" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">GSAP Increment Counter + Celebrate</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/Z7va480cNa-600.webp 600w"><img loading="lazy" decoding="async" src="/images/Z7va480cNa-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/xxYrpzP.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 31">
+      <a href="https://codepen.io/hexagoncircle/full/abJEeXL" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Viewport Gradient Rotation</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/QkmosWONsN-300.webp 300w"><img loading="lazy" decoding="async" src="/images/QkmosWONsN-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/abJEeXL.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 32">
+      <a href="https://codepen.io/hexagoncircle/full/gORePQx" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Cool Spotlight Shadows</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/bdX18VSN6n-300.webp 300w"><img loading="lazy" decoding="async" src="/images/bdX18VSN6n-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/gORePQx.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 33">
+      <a href="https://codepen.io/hexagoncircle/full/VoExWp" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Waves</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/dFC4CQ-Dou-600.webp 600w"><img loading="lazy" decoding="async" src="/images/dFC4CQ-Dou-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/VoExWp.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 34">
+      <a href="https://codepen.io/hexagoncircle/full/joqYEj" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Rocket Through Space</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/RCdYDV54Fc-300.webp 300w"><img loading="lazy" decoding="async" src="/images/RCdYDV54Fc-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/joqYEj.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 35">
+      <a href="https://codepen.io/hexagoncircle/full/yLeGbgJ" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Bold Hover Animations with Splitting.js</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/BEcjfwqlhl-300.webp 300w"><img loading="lazy" decoding="async" src="/images/BEcjfwqlhl-300.jpeg" alt="" height="300" width="300"></picture>
+          
+        </figure>
+      </a>
+    </li>
+<li style="--i: 36">
+      <a href="https://codepen.io/hexagoncircle/full/MWJoYxv" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Orbiting Through Torus</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/Av7CnLtP6B-600.webp 600w"><img loading="lazy" decoding="async" src="/images/Av7CnLtP6B-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/MWJoYxv.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 37">
+      <a href="https://codepen.io/hexagoncircle/full/jOWyepg" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Horizontal Scroll Cards</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/6zKzLXSxwo-300.webp 300w"><img loading="lazy" decoding="async" src="/images/6zKzLXSxwo-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/jOWyepg.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 38">
+      <a href="https://codepen.io/hexagoncircle/full/OJLMgYY" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Fork This Nav</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/rkffLSi36c-300.webp 300w"><img loading="lazy" decoding="async" src="/images/rkffLSi36c-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/OJLMgYY.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 39">
+      <a href="https://codepen.io/hexagoncircle/full/ExjwZZg" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS Chop!</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/0rq031lMRz-600.webp 600w"><img loading="lazy" decoding="async" src="/images/0rq031lMRz-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/ExjwZZg.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 40">
+      <a href="https://codepen.io/hexagoncircle/full/zYqYvEV" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSSpirograph</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/gLlebhTqAa-300.webp 300w"><img loading="lazy" decoding="async" src="/images/gLlebhTqAa-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/zYqYvEV.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 41">
+      <a href="https://codepen.io/hexagoncircle/full/YzPmyjx" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Interactive MOOD Pedal</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/s1RJ_GduGd-300.webp 300w"><img loading="lazy" decoding="async" src="/images/s1RJ_GduGd-300.jpeg" alt="" height="300" width="300"></picture>
+          
+        </figure>
+      </a>
+    </li>
+<li style="--i: 42">
+      <a href="https://codepen.io/hexagoncircle/full/VwLKbWJ" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Spinning CSS</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/oPMZcU69UQ-600.webp 600w"><img loading="lazy" decoding="async" src="/images/oPMZcU69UQ-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/VwLKbWJ.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 43">
+      <a href="https://codepen.io/hexagoncircle/full/OJRLBYJ" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS Putt-Putt Radio Buttons</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/xoRNW5NHg2-300.webp 300w"><img loading="lazy" decoding="async" src="/images/xoRNW5NHg2-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/OJRLBYJ.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 44">
+      <a href="https://codepen.io/hexagoncircle/full/xxwBLMy" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">GSAP ScrollTrigger - Marquee Page Border</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/Hvb4Qr2X4c-300.webp 300w"><img loading="lazy" decoding="async" src="/images/Hvb4Qr2X4c-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/xxwBLMy.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 45">
+      <a href="https://codepen.io/hexagoncircle/full/poNGaGO" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS Triadic Color Palette #CodePenChallenge</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/_Y25m4y87m-600.webp 600w"><img loading="lazy" decoding="async" src="/images/_Y25m4y87m-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/poNGaGO.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 46">
+      <a href="https://codepen.io/hexagoncircle/full/jOWXzrw" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS variables in cubic-bezier function</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/mCQ3_sT-I0-300.webp 300w"><img loading="lazy" decoding="async" src="/images/mCQ3_sT-I0-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/jOWXzrw.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 47">
+      <a href="https://codepen.io/hexagoncircle/full/GRJPXLa" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Hello, World!</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/xEhM8U-IPz-300.webp 300w"><img loading="lazy" decoding="async" src="/images/xEhM8U-IPz-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/GRJPXLa.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 48">
+      <a href="https://codepen.io/hexagoncircle/full/XWJGQqy" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Folded Paper Login Form</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/vsl7dwF-qW-600.webp 600w"><img loading="lazy" decoding="async" src="/images/vsl7dwF-qW-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/XWJGQqy.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 49">
+      <a href="https://codepen.io/hexagoncircle/full/WRqEaV" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Parallax Emoji</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/dE55MS4WIw-300.webp 300w"><img loading="lazy" decoding="async" src="/images/dE55MS4WIw-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/WRqEaV.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 50">
+      <a href="https://codepen.io/hexagoncircle/full/dwreYm" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">Primary Color Bounce</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/TbsZH5q61U-300.webp 300w"><img loading="lazy" decoding="async" src="/images/TbsZH5q61U-300.jpeg" alt="" height="300" width="300"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="300" height="300">
+              <source src="/videos/codepen/dwreYm.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+<li style="--i: 51">
+      <a href="https://codepen.io/hexagoncircle/full/PoPpKKg" target="_blank" rel="noopener" class="stack">
+        <span class="visually-hidden">CSS Clip-Path Hover Effect</span>
+        <figure class="stack">
+          <picture><source type="image/webp" srcset="/images/0hJK-xHUCI-600.webp 600w"><img loading="lazy" decoding="async" src="/images/0hJK-xHUCI-600.jpeg" alt="" height="600" width="600"></picture>
+          <template>
+            <video muted="" loop="" playsinline="" preload="none" width="600" height="600">
+              <source src="/videos/codepen/PoPpKKg.mp4" type="video/mp4">
+            </video>
+          </template>
+        </figure>
+      </a>
+    </li>
+  </ul>
+
+  <template data-scroll-pen-utils="">
+    <p data-scroll-pen-focus-arrows="">
+      <span class="visually-hidden"> Navigate with left and right arrow keys </span>
+      <span>←</span>
+      <span>→</span>
+    </p>
+
+    <fieldset data-scroll-pen-controls="" class="cluster">
+      <legend class="visually-hidden">CodePen collection controls</legend>
+      <label data-scroll-pen-scroller="">
+        <input type="range" value="0" min="0" max="100" step="0.1">
+        <span class="visually-hidden">Scroll horizontally</span>
+      </label>
+      <div class="wrap cluster">
+        <label data-scroll-pen-unskewer="" class="cluster checkbox text-label">
+          <input type="checkbox">
+          Unskew
+        </label>
+        <label data-scroll-pen-nopreview="" class="cluster checkbox text-label">
+          <input type="checkbox">
+          Disable preview
+        </label>
+      </div>
+    </fieldset>
+  </template>
+
+
+
+
+
+
+
+</scroll-pen>
+<section class="flow prose">
+  <p>
+    This is a website made by me, <strong>Ryan Mulligan</strong>, a front-end builder of the web and
+    fellow passenger through space and time.
+  </p>
+  <ul>
+    <li>
+      The latest site build was deployed in the
+      morning on October 13th.
+    </li>
+    <li>
+      During deployment, the weather over here was
+      44°F
+        and partly cloudy.
+    </li>
+    <li>I was listening to 
+
+
+  <a href="https://open.spotify.com/track/1aXJIlBIexINqbS7AP1b98" title="Listen to Stray Cats in Spain by Jeff Tweedy on Spotify" target="_blank" ref="noopener" class="last-played-track">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 256 256" aria-hidden="true" class="icon"><path d="M212.92,25.71a7.89,7.89,0,0,0-6.86-1.46l-128,32A8,8,0,0,0,72,64V174.1A36,36,0,1,0,88,204V110.25l112-28V142.1A36,36,0,1,0,216,172V32A8,8,0,0,0,212.92,25.71Z"></path></svg>
+
+    Stray Cats in Spain</a>
+  by Jeff Tweedy.
+
+
+
+</li>
+  </ul>
+  <h2>Most recent articles</h2>
+  
+
+<ul role="list" count="3" class="flow article-list">
+  <li>
+    <div class="info">
+      <time datetime="2025-10-11T00:00:00.000Z">October 11, 2025</time>
+      
+    </div>
+    <a href="/blog/transition-to-the-other-side/" class="text-1 font-semibold">Transition to the Other Side with Container Query Units</a>
+  </li>
+<li>
+    <div class="info">
+      <time datetime="2025-03-25T00:00:00.000Z">March 25, 2025</time>
+      
+    </div>
+    <a href="/blog/blog-questions-challenge-2025/" class="text-1 font-semibold">Blog Questions Challenge</a>
+  </li>
+<li>
+    <div class="info">
+      <time datetime="2024-12-30T00:00:00.000Z">December 30, 2024</time>
+      
+    </div>
+    <a href="/blog/some-things-about-keyframes/" class="text-1 font-semibold">Some Things About Keyframes</a>
+  </li>
+</ul>
+
+
+
+  <p class="cta arrow-end">
+    <a href="/blog/">Read more articles</a>
+  </p>
+  <h2>The bit about myself</h2>
+  <p>
+    I'm a front-end engineer and creative developer with over a decade of experience building for
+    the web. I've established an extensive, versatile skillset servicing both product and marketing
+    teams. My back catalog of roles range from individual contribution to management, team building,
+    and leadership.
+  </p>
+  <p>
+    I perpetually advocate for modern web standards, embrace the web platform, and believe in the
+    rule of least power—use the simplest language to do the job well, then scale as it becomes
+    necessary. My priorities are influenced by empathy: lift up those around me so we may succeed
+    together, always care for the end user, and deliver a performant, inclusive, and accessible web.
+  </p>
+  <p>
+    When I'm not busy building for a better web, you can catch me noodling on my acoustic guitar or
+    blasting out rhythms if there's a drum kit ready for a lefty nearby.
+  </p>
+  <p>Want to know more? <a href="mailto:h%65y@%72%79%61%6E%6D%75%6Clig%61n.dev?subject=You are wonderful and I had to tell you" target="_blank" rel="noopener" class="say-hey-hey">Say hello anytime!</a>&nbsp;<span aria-hidden="true">👋</span>
+
+
+</p>
+  <h2>Me around the web</h2>
+  <p>
+    Other virtual networks where you can find me if you're feeling adventurous. Let's connect and
+    fork and toot or whatever.
+  </p>
+  <ul role="list" class="multi-column">
+    <li>
+      <a href="https://fosstodon.org/@hexagoncircle" target="_blank" rel="me" class="social-link cluster">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 448 512" fill="currentcolor" aria-hidden="true" class="icon"><path d="M433 179.11c0-97.2-63.71-125.7-63.71-125.7-62.52-28.7-228.56-28.4-290.48 0 0 0-63.72 28.5-63.72 125.7 0 115.7-6.6 259.4 105.63 289.1 40.51 10.7 75.32 13 103.33 11.4 50.81-2.8 79.32-18.1 79.32-18.1l-1.7-36.9s-36.31 11.4-77.12 10.1c-40.41-1.4-83-4.4-89.63-54a102.54 102.54 0 0 1-.9-13.9c85.63 20.9 158.65 9.1 178.75 6.7 56.12-6.7 105-41.3 111.23-72.9 9.8-49.8 9-121.5 9-121.5zm-75.12 125.2h-46.63v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.33V197c0-58.5-64-56.6-64-6.9v114.2H90.19c0-122.1-5.2-147.9 18.41-175 25.9-28.9 79.82-30.8 103.83 6.1l11.6 19.5 11.6-19.5c24.11-37.1 78.12-34.8 103.83-6.1 23.71 27.3 18.4 53 18.4 175z"></path></svg>
+
+        Mastodon
+      </a>
+    </li>
+<li>
+      <a href="https://codepen.io/hexagoncircle" target="_blank" rel="me" class="social-link cluster">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" fill="currentcolor" aria-hidden="true" class="icon"><path d="M502.285 159.704l-234-156c-7.987-4.915-16.511-4.96-24.571 0l-234 156C3.714 163.703 0 170.847 0 177.989v155.999c0 7.143 3.714 14.286 9.715 18.286l234 156.022c7.987 4.915 16.511 4.96 24.571 0l234-156.022c6-3.999 9.715-11.143 9.715-18.286V177.989c-.001-7.142-3.715-14.286-9.716-18.285zM278 63.131l172.286 114.858-76.857 51.429L278 165.703V63.131zm-44 0v102.572l-95.429 63.715-76.857-51.429L234 63.131zM44 219.132l55.143 36.857L44 292.846v-73.714zm190 229.715L61.714 333.989l76.857-51.429L234 346.275v102.572zm22-140.858l-77.715-52 77.715-52 77.715 52-77.715 52zm22 140.858V346.275l95.429-63.715 76.857 51.429L278 448.847zm190-156.001l-55.143-36.857L468 219.132v73.714z"></path></svg>
+
+        CodePen
+      </a>
+    </li>
+<li>
+      <a href="https://github.com/hexagoncircle" target="_blank" rel="me" class="social-link cluster">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 496 512" fill="currentcolor" aria-hidden="true" class="icon"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
+
+        GitHub
+      </a>
+    </li>
+<li>
+      <a href="https://bsky.app/profile/ryanmulligan.dev" target="_blank" rel="me" class="social-link cluster">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 576 512" aria-hidden="true" class="icon"><path d="M407.8 294.7c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3zM288 227.1C261.9 176.4 190.9 81.9 124.9 35.3C61.6-9.4 37.5-1.7 21.6 5.5C3.3 13.8 0 41.9 0 58.4S9.1 194 15 213.9c19.5 65.7 89.1 87.9 153.2 80.7c3.3-.5 6.6-.9 10-1.4c-3.3 .5-6.6 1-10 1.4C74.3 308.6-9.1 342.8 100.3 464.5C220.6 589.1 265.1 437.8 288 361.1c22.9 76.7 49.2 222.5 185.6 103.4c102.4-103.4 28.1-156-65.8-169.9c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3c64.1 7.1 133.6-15.1 153.2-80.7C566.9 194 576 75 576 58.4s-3.3-44.7-21.6-52.9c-15.8-7.1-40-14.9-103.2 29.8C385.1 81.9 314.1 176.4 288 227.1z"></path></svg>
+
+        Bluesky
+      </a>
+    </li>
+<li>
+      <a href="https://www.linkedin.com/in/mulliganryan/" target="_blank" rel="me" class="social-link cluster">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true" class="icon"><path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24ZM96,176a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0ZM88,96a12,12,0,1,1,12-12A12,12,0,0,1,88,96Zm96,80a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140Z"></path></svg>
+
+        LinkedIn
+      </a>
+    </li>
+<li>
+      <a href="https://buymeacoffee.com/ryanmulligan" target="_blank" rel="me" class="social-link cluster">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true" class="icon"><rect width="256" height="256" fill="none"></rect><line x1="88" y1="24" x2="88" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="120" y1="24" x2="120" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="152" y1="24" x2="152" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="32" y1="216" x2="208" y2="216" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><path d="M83.3,216A88,88,0,0,1,32,136V88H208v48a88,88,0,0,1-51.3,80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path><path d="M208,88h0a32,32,0,0,1,32,32v8a32,32,0,0,1-32,32h-3.38" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+
+        Buy me a coffee
+      </a>
+    </li>
+  </ul>
+
+  <h2>Some personal joy</h2>
+  <ul class="multi-column">
+    <li>All things CSS</li>
+    <li>Finding the perfect custom cubic Bézier curve</li>
+    <li>Building an inclusive web</li>
+    <li>Any beach, any ocean</li>
+    <li>Early morning coffee</li>
+    <li>Nick Drake's <em>Pink Moon</em> in its entirety</li>
+    <li>Cool side of the pillow</li>
+    <li>Guitar noodling</li>
+    <li>Trashing a drum kit</li>
+  </ul>
+</section>
+
+
+</main>
+    
+
+<footer class="breakout site-footer">
+  <p class="copyright">
+    © <strong>Ryan Mulligan</strong> from day one to this magic moment in
+    2025
+  </p>
+  <p>
+    Assembled with a boundless affinity for the web
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 256 256" aria-hidden="true" class="icon"><path d="M240,94c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,220.66,16,164,16,94A62.07,62.07,0,0,1,78,32c20.65,0,38.73,8.88,50,23.89C139.27,40.88,157.35,32,178,32A62.07,62.07,0,0,1,240,94Z"></path></svg>
+
+  </p>
+  <ul role="list" style="--gap: var(--space-2xs)" class="cluster">
+    <li>
+      <a href="/">Home</a>
+    </li>
+<li>
+      <a href="/blog/">Blog</a>
+    </li>
+<li>
+      <a href="/feed.xml">RSS</a>
+    </li>
+<li>
+      <a href="/blogroll/">Blogroll</a>
+    </li>
+<li>
+      <a href="https://github.com/hexagoncircle/ryan-mulligan-dev/issues/new" target="_blank" ref="noreferrer noopener">Report an issue</a>
+    </li>
+  </ul>
+</footer>
+
+
+
+
+
+    <script>class ScrollPen extends HTMLElement {
+    constructor() {
+      super();
+      this.list;
+      this.items;
+      this.controls;
+      this.scroller;
+      this.unskewer;
+      this.nopreview;
+      this.focusArrows;
+      this.currentIndex = 0;
+      this.cls = {
+        active: "active",
+        current: "current",
+      };
+      this.mq = {
+        reducedMotion: matchMedia("(prefers-reduced-motion)"),
+        hover: matchMedia("(any-hover: hover)"),
+      };
+    }
+
+    connectedCallback() {
+      this.list = this.querySelector("ul");
+      this.items = this.querySelectorAll("a");
+
+      this.setupTemplateUtils();
+      this.updateCurrentIndex();
+      this.appendFocusArrows();
+      this.addEventListener("scroll", this.updateRangeScroll);
+      this.addEventListener("keydown", this.handleKeyPress);
+      this.scroller.addEventListener("keydown", this.handleScrollerKeyPress);
+      this.scroller.addEventListener("input", this.handleScrollerInput.bind(this));
+      this.unskewer.addEventListener("input", this.handleUnskewerClick.bind(this));
+      this.nopreview.addEventListener("input", this.handleNoPreviewClick.bind(this));
+
+      if (!this.mq.hover.matches) return;
+
+      this.setupVideos();
+
+      if (this.mq.reducedMotion.matches) {
+        this.nopreview.click();
+        return;
+      }
+
+      this.addVideoEvents();
+    }
+
+    appendFocusArrows() {
+      this.items[this.currentIndex].parentNode.append(this.focusArrows);
+    }
+
+    async handleItemEnter(e) {
+      let video = this.querySelector("video");
+
+      if (!video) return;
+
+      if (video.readyState === 0) {
+        video.muted = true; // Fix playback issue in Firefox
+        video.load(); // Fix playback issue in Safari
+      }
+
+      try {
+        await video.play();
+      } catch (err) {}
+    }
+
+    handleItemLeave(e) {
+      let video = this.querySelector("video");
+
+      if (!video) return;
+
+      video.pause();
+    }
+
+    handleKeyPress(e) {
+      let lastIndex = this.items.length - 1;
+
+      if (e.key === "Tab") {
+        this.list.classList.remove(this.cls.active);
+      }
+
+      if (["ArrowRight", "ArrowDown"].includes(e.key)) {
+        if (this.currentIndex === lastIndex) {
+          this.currentIndex = 0;
+        } else {
+          this.currentIndex++;
+        }
+      }
+
+      if (["ArrowUp", "ArrowLeft"].includes(e.key)) {
+        if (this.currentIndex === 0) {
+          this.currentIndex = lastIndex;
+        } else {
+          this.currentIndex--;
+        }
+      }
+
+      if (["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"].includes(e.key)) {
+        let selected = this.items[this.currentIndex];
+
+        e.preventDefault();
+
+        selected.scrollIntoView({
+          block: "nearest",
+          inline: "center",
+        });
+        selected.focus({ preventScroll: true });
+
+        this.list.classList.add(this.cls.active);
+        this.updateCurrentIndex();
+      }
+    }
+
+    handleScrollerInput(e) {
+      let position = this.scrollWidth - this.offsetWidth;
+      let percentage = position * (e.target.value / 100);
+
+      this.scrollLeft = percentage;
+    }
+
+    handleScrollerKeyPress(e) {
+      let value = Number(e.target.value);
+      let boost = 3;
+
+      if (["ArrowUp", "ArrowRight"].includes(e.key)) {
+        e.target.value = value + boost;
+      }
+
+      if (["ArrowDown", "ArrowLeft"].includes(e.key)) {
+        e.target.value = value - boost;
+      }
+    }
+
+    handleNoPreviewClick(e) {
+      this.classList.toggle("no-preview", e.target.checked);
+      e.target.checked ? this.removeVideoEvents() : this.addVideoEvents();
+    }
+
+    handleUnskewerClick(e) {
+      this.classList.toggle("skewer", !e.target.checked);
+    }
+
+    handleVideoPlayback(e) {
+      this.classList.add("playback-ready");
+    }
+
+    setupTemplateUtils() {
+      let template = this.querySelector("[data-scroll-pen-utils]");
+      let content = template.content.cloneNode(true);
+
+      this.controls = content.querySelector("[data-scroll-pen-controls]");
+      this.scroller = content.querySelector("[data-scroll-pen-scroller] input");
+      this.unskewer = content.querySelector("[data-scroll-pen-unskewer]");
+      this.nopreview = content.querySelector("[data-scroll-pen-nopreview]");
+      this.focusArrows = content.querySelector("[data-scroll-pen-focus-arrows]");
+
+      this.insertAdjacentElement("afterend", this.controls);
+    }
+
+    setupVideos() {
+      this.items.forEach((item) => {
+        let template = item.querySelector("template");
+
+        if (!template) return;
+
+        let content = template.content.cloneNode(true);
+
+        template.replaceWith(content);
+
+        item.querySelector("video").addEventListener("canplaythrough", this.handleVideoPlayback);
+      });
+    }
+
+    addVideoEvents() {
+      this.items.forEach((item) => {
+        item.addEventListener("pointerenter", this.handleItemEnter);
+        item.addEventListener("focusin", this.handleItemEnter);
+        item.addEventListener("pointerleave", this.handleItemLeave);
+        item.addEventListener("focusout", this.handleItemLeave);
+      });
+    }
+
+    removeVideoEvents() {
+      this.items.forEach((item) => {
+        item.removeEventListener("pointerenter", this.handleItemEnter);
+        item.removeEventListener("focusin", this.handleItemEnter);
+        item.removeEventListener("pointerleave", this.handleItemLeave);
+        item.removeEventListener("focusout", this.handleItemLeave);
+      });
+    }
+
+    updateCurrentIndex() {
+      this.items.forEach((item, index) => {
+        item.parentNode.classList.toggle(this.cls.current, index === this.currentIndex);
+      });
+
+      this.updateTabIndex();
+      this.appendFocusArrows();
+    }
+
+    updateRangeScroll() {
+      let position = this.scrollWidth - this.offsetWidth;
+      let percentage = this.scrollLeft / position;
+      this.scroller.value = percentage * 100;
+    }
+
+    updateTabIndex() {
+      this.items.forEach((item) => {
+        item.setAttribute("tabIndex", item === this.items[this.currentIndex] ? 0 : -1);
+      });
+    }
+  }
+
+  if ("customElements" in window) {
+    window.customElements.define("scroll-pen", ScrollPen);
+  }
+class ThemeMachine extends HTMLElement {
+    constructor() {
+      super();
+      this.themeToggle;
+      this.themeDisplay;
+    }
+
+    connectedCallback() {
+      this.setupControl("appearance", document.documentElement);
+      this.setupControl("theme", document.body);
+
+      this.themeToggle = this.querySelector(".theme-display-toggle");
+      this.themeDisplay = this.querySelector(".theme-display-wrapper");
+
+      this.handleClickOutside();
+      this.themeToggle.addEventListener("click", this.handleThemeToggleClick.bind(this));
+    }
+
+    handleChange(e, prop, el) {
+      const attr = `data-${prop}`;
+      const value = e.target.value;
+
+      if (!value) {
+        localStorage.removeItem(prop);
+        el.removeAttribute(attr);
+        return;
+      }
+
+      localStorage.setItem(prop, value);
+      el.setAttribute(attr, value);
+    }
+
+    handleThemeToggleClick() {
+      let expanded = this.themeToggle.getAttribute("aria-expanded") === "true" || false;
+
+      this.themeToggle.setAttribute("aria-expanded", !expanded);
+      this.themeDisplay.toggleAttribute("hidden", expanded);
+    }
+
+    handleClickOutside() {
+      document.addEventListener(
+        "click",
+        (e) => {
+          if (!e.target.closest("theme-machine")) {
+            this.themeToggle.setAttribute("aria-expanded", false);
+            this.themeDisplay.toggleAttribute("hidden", true);
+          }
+        },
+        false
+      );
+    }
+
+    setupControl(prop, el) {
+      const initialValue = localStorage.getItem(prop) || "";
+      const collection = this.querySelectorAll(`[name='${prop}']`);
+
+      for (let item of collection) {
+        item.checked = item.value === initialValue;
+        item.addEventListener("change", (e) => this.handleChange(e, prop, el));
+      }
+    }
+  }
+
+  if ("customElements" in window) {
+    window.customElements.define("theme-machine", ThemeMachine);
+  }
+console.log("I appreciate you and glad you're here ❤️");</script>
+    <script async="" defer="" src="https://scripts.withcabin.com/hello.js"></script>
+  
+
+</body>
+</html>

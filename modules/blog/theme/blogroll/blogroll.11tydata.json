@@ -1,0 +1,214 @@
+{
+  "blogs": [
+    {
+      "name": "Adam Argyle",
+      "url": "https://nerdy.dev/",
+      "feed": "https://nerdy.dev/rss.xml"
+    },
+    {
+      "name": "Adam Stoddard",
+      "url": "https://aaadaaam.com/",
+      "feed": "https://aaadaaam.com/feed.xml"
+    },
+    {
+      "name": "Adrian Roselli",
+      "url": "https://adrianroselli.com/",
+      "feed": "https://adrianroselli.com/feed"
+    },
+    {
+      "name": "Ana Rodrigues",
+      "url": "https://ohhelloana.blog/",
+      "feed": "https://ohhelloana.blog/feed.xml"
+    },
+    {
+      "name": "Andy Bell",
+      "url": "https://piccalil.li/",
+      "feed": "https://piccalil.li/feed.xml"
+    },
+    {
+      "name": "Ashlee M. Boyer",
+      "url": "https://ashleemboyer.com/",
+      "feed": "https://ashleemboyer.com/rss.xml"
+    },
+    {
+      "name": "Ben Myers",
+      "url": "https://benmyers.dev/",
+      "feed": "https://benmyers.dev/feed.xml"
+    },
+    {
+      "name": "Boost by Frontend Masters",
+      "url": "https://frontendmasters.com/blog/",
+      "feed": "https://frontendmasters.com/blog/feed/"
+    },
+    {
+      "name": "Bramus Van Damme",
+      "url": "https://bram.us/",
+      "feed": "https://bram.us/feed/"
+    },
+    {
+      "name": "Chris Coyier",
+      "url": "https://chriscoyier.net/",
+      "feed": "https://chriscoyier.net/feed/"
+    },
+    {
+      "name": "Chris Ferdinandi",
+      "url": "https://gomakethings.com/",
+      "feed": "https://gomakethings.com/feed/index.xml"
+    },
+    {
+      "name": "Christopher Kirk-Nielsen",
+      "url": "https://chriskirknielsen.com/",
+      "feed": "https://chriskirknielsen.com/rss.xml"
+    },
+    {
+      "name": "CSS { In Real Life }",
+      "url": "https://css-irl.info/",
+      "feed": "https://css-irl.info/rss.xml"
+    },
+    {
+      "name": "Dave Rupert",
+      "url": "https://daverupert.com/",
+      "feed": "https://daverupert.com/atom.xml"
+    },
+    {
+      "name": "David Darnes",
+      "url": "https://darn.es/",
+      "feed": "https://darn.es/rss.xml"
+    },
+    {
+      "name": "Eric Bailey",
+      "url": "https://ericwbailey.website/",
+      "feed": "https://ericwbailey.website/feed/feed.xml"
+    },
+    {
+      "name": "Henry Desroches",
+      "url": "https://henry.codes/",
+      "feed": "https://henry.codes/feed.xml"
+    },
+    {
+      "name": "Heydon Pickering",
+      "url": "https://heydonworks.com/",
+      "feed": "https://heydonworks.com/feed.xml"
+    },
+    {
+      "name": "Hidde de Vries",
+      "url": "https://hidde.blog/",
+      "feed": "https://hidde.blog/feed"
+    },
+    {
+      "name": "HTMHell",
+      "url": "https://htmhell.dev/",
+      "feed": "https://htmhell.dev/feed.xml"
+    },
+    {
+      "name": "Jake Lazaroff",
+      "url": "https://jakelazaroff.com/",
+      "feed": "https://jakelazaroff.com/rss.xml"
+    },
+    {
+      "name": "Julia Evans",
+      "url": "https://jvns.ca/",
+      "feed": "https://jvns.ca/atom.xml"
+    },
+    {
+      "name": "Lene Saile",
+      "url": "https://lenesaile.com/",
+      "feed": "https://lenesaile.com/en/feed.xml"
+    },
+    {
+      "name": "Lynn Fisher",
+      "url": "https://lynnandtonic.com/",
+      "feed": "https://lynnandtonic.com/feed.xml"
+    },
+    {
+      "name": "Matthias Ott",
+      "url": "https://matthiasott.com/",
+      "feed": "https://matthiasott.com/feed"
+    },
+    {
+      "name": "Max Böck",
+      "url": "https://mxb.dev/",
+      "feed": "https://mxb.dev/feed.xml"
+    },
+    {
+      "name": "Mayank",
+      "url": "https://mayank.co/",
+      "feed": "https://mayank.co/blog/rss.xml"
+    },
+    {
+      "name": "Melanie Richards",
+      "url": "https://melanie-richards.com/",
+      "feed": "https://melanie-richards.com/feed.xml"
+    },
+    {
+      "name": "Miriam Suzanne",
+      "url": "https://www.miriamsuzanne.com/",
+      "feed": "https://www.miriamsuzanne.com/feed.xml"
+    },
+    {
+      "name": "Modern CSS Solutions",
+      "url": "https://moderncss.dev",
+      "feed": "https://moderncss.dev/feed"
+    },
+    {
+      "name": "Nicolas Hoizey",
+      "url": "https://nicolas-hoizey.com/",
+      "feed": "https://nicolas-hoizey.com/feeds/articles.xml"
+    },
+    {
+      "name": "Rach Smith",
+      "url": "https://rachsmith.com/",
+      "feed": "https://rachsmith.com/feed.xml"
+    },
+    {
+      "name": "Robb Knight",
+      "url": "https://rknight.me/",
+      "feed": "https://rknight.me/subscribe/posts/rss.xml"
+    },
+    {
+      "name": "Robin Rendle",
+      "url": "https://robinrendle.com/",
+      "feed": "https://robinrendle.com/feed.xml"
+    },
+    {
+      "name": "Roman Komarov",
+      "url": "https://kizu.dev/",
+      "feed": "https://feeds.feedburner.com/kizuruen"
+    },
+    {
+      "name": "Sara Soueidan",
+      "url": "https://www.sarasoueidan.com/",
+      "feed": "https://www.sarasoueidan.com/blog/index.xml"
+    },
+    {
+      "name": "Stefan Judis",
+      "url": "https://www.stefanjudis.com/",
+      "feed": "https://www.stefanjudis.com/rss.xml"
+    },
+    {
+      "name": "Stephanie Eckles",
+      "url": "https://thinkdobecreate.com/",
+      "feed": "https://thinkdobecreate.com/feed"
+    },
+    {
+      "name": "That HTML blog",
+      "url": "https://thathtml.blog/",
+      "feed": "https://thathtml.blog/feed.xml"
+    },
+    {
+      "name": "Tyler Sticka",
+      "url": "https://tylersticka.com/",
+      "feed": "https://tylersticka.com/journal/feed.xml"
+    },
+    {
+      "name": "Una Kravets",
+      "url": "https://una.im/",
+      "feed": "https://una.im/rss.xml"
+    },
+    {
+      "name": "Zach Leatherman",
+      "url": "https://zachleat.com/",
+      "feed": "https://zachleat.com/feed/"
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+<form class="cms-form" :method="method || 'POST'" :action="action">
+    <template v-if="title">
+    <div class="form-section-title">
+        <h4>{{ title }}</h4>
+        <template v-if="description">
+        <p class="text-muted">{{ description }}</p>
+        </template>
+    </div>
+    </template>
+
+    <div class="form-fields">
+        <template v-for="field in fields">
+        <template v-if="field.type != 'hidden' && field.type != 'key' && field.type != 'parent_key' && field.type != 'explicit_parent_key'">
+        <div class="form-group mb-3">
+            <template v-if="field.type == 'text' || field.type == 'email' || field.type == 'number' || field.type == 'password' || field.type == 'url'">
+            <vuego include="components/forms/text.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'textarea'">
+            <vuego include="components/forms/textarea.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'html'">
+            <vuego include="components/forms/html.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'checkbox'">
+            <vuego include="components/forms/checkbox.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'select' || field.type == 'enum' || field.type == 'enum_sql'">
+            <vuego include="components/forms/select.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'radio'">
+            <vuego include="components/forms/radio.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'rating'">
+            <vuego include="components/forms/rating.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'multi-select'">
+            <vuego include="components/forms/multi-select.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'datetime'">
+            <vuego include="components/forms/datetime.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'file-upload'">
+            <vuego include="components/forms/file-upload.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'color-picker'">
+            <vuego include="components/forms/color-picker.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'stamp'">
+            <vuego include="components/forms/stamp.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'section_id'">
+            <vuego include="components/forms/section-id.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'section_multi'">
+            <vuego include="components/forms/section-multi.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'section_multi_weight'">
+            <vuego include="components/forms/section-multi-weight.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'property'">
+            <vuego include="components/forms/property.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'property_multi'">
+            <vuego include="components/forms/property-multi.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'search_popup'">
+            <vuego include="components/forms/search-popup.vuego"></vuego>
+            </template>
+
+            <template v-else-if="field.type == 'self_id'">
+            <vuego include="components/forms/self-id.vuego"></vuego>
+            </template>
+
+            <template v-else>
+            <label class="form-label" :for="field.name">{{ field.title }}</label>
+            <input 
+                class="form-control" 
+                :id="field.name"
+                :name="field.name" 
+                :type="field.type || 'text'"
+                :value="field.value"
+                :placeholder="field.placeholder"
+                :required="field.required"
+            >
+            </template>
+
+            <template v-if="field.error">
+            <div class="invalid-feedback d-block">
+                {{ field.error }}
+            </div>
+            </template>
+            
+            <template v-if="field.help">
+            <small class="form-text text-muted">{{ field.help }}</small>
+            </template>
+        </div>
+        </template>
+        <template v-else-if="field.type == 'hidden' || field.type == 'key' || field.type == 'parent_key' || field.type == 'explicit_parent_key'">
+        <template v-if="field.type == 'hidden'">
+        <vuego include="components/forms/hidden.vuego"></vuego>
+        </template>
+        <template v-else-if="field.type == 'key'">
+        <vuego include="components/forms/key.vuego"></vuego>
+        </template>
+        <template v-else-if="field.type == 'parent_key'">
+        <vuego include="components/forms/parent-key.vuego"></vuego>
+        </template>
+        <template v-else-if="field.type == 'explicit_parent_key'">
+        <vuego include="components/forms/explicit-parent-key.vuego"></vuego>
+        </template>
+        </template>
+        </template>
+    </div>
+
+    <template v-if="fields">
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {{ submitLabel || 'Submit' }}
+        </button>
+        <template v-if="cancelUrl">
+        <a href="{{ cancelUrl }}" class="btn btn-secondary">
+            {{ cancelLabel || 'Cancel' }}
+        </a>
+        </template>
+    </div>
+    </template>
+</form>

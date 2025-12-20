@@ -1,0 +1,14 @@
+{
+  "field": {
+    "name": "related_article",
+    "title": "Related Article",
+    "type": "search_popup",
+    "value": "article_42",
+    "displayValue": "How to Build REST APIs",
+    "placeholder": "Click to search articles",
+    "required": false,
+    "disabled": false,
+    "error": null,
+    "help": "Search and select a related article"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "field": {
+    "name": "content",
+    "title": "Page Content",
+    "type": "html",
+    "value": "<p>This is <strong>rich HTML</strong> content</p>",
+    "placeholder": "Enter HTML content",
+    "required": true,
+    "disabled": false,
+    "rows": 10,
+    "error": null,
+    "help": "Supports HTML formatting"
+  }
+}

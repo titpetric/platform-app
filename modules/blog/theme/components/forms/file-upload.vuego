@@ -1,0 +1,30 @@
+<label class="form-label" :for="field.name">
+    {{ field.title }}
+    <template v-if="field.required">
+    <span class="text-danger">*</span>
+    </template>
+</label>
+<input 
+    class="form-control"
+    :class="{ 'is-invalid': field.error }"
+    :id="field.name"
+    :name="field.name"
+    type="file"
+    :accept="field.accept"
+    :multiple="field.multiple || false"
+    :required="field.required"
+    :disabled="field.disabled"
+/>
+<template v-if="field.value">
+<div class="mt-2">
+    <small class="form-text text-muted">Current file: {{ field.value }}</small>
+</div>
+</template>
+<template v-if="field.error">
+<div class="invalid-feedback d-block">
+    {{ field.error }}
+</div>
+</template>
+<template v-if="field.help">
+<small class="form-text text-muted d-block mt-1">{{ field.help }}</small>
+</template>
