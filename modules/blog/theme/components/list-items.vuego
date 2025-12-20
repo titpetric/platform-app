@@ -1,6 +1,6 @@
-<template :require="items" :require="columns">
+<template :require="articles" :require="columns">
 <div class="list-items">
-    <template v-if="items && items.length > 0">
+    <template v-if="articles && articles.length > 0">
     <div class="table-responsive">
         <table class="table table-hover items-table">
             <thead class="table-light">
@@ -14,16 +14,16 @@
                 </tr>
             </thead>
             <tbody>
-                <template v-for="item in items">
-                <tr class="item-row" :data-id="item.id">
-                  <template v-for="column in columns">
-                    <td class="col-{{ column.key }}">
-                      <span :data-value="item[column.key]">{{ item[column.key] }}</span>
-                    </td>
+                <template v-for="item in articles">
+                       <tr class="item-row" :data-id="item.ID">
+                          <template v-for="column in columns">
+                            <td class="col-{{ column.key }}">
+                             <span>col:{{ column.key }} slug:{{ item.Slug }} title:{{ item.Title }} date:{{ item.Date }}</span>
+                            </td>
+                            </template>
+                            <td class="col-actions" v-html="item.actions"></td>
+                        </tr>
                     </template>
-                    <td class="col-actions" v-html="item.actions"></td>
-                </tr>
-                </template>
             </tbody>
         </table>
     </div>

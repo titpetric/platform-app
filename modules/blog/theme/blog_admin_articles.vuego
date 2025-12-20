@@ -6,24 +6,24 @@ navigation:
   top:
     - label: Dashboard
       url: /admin
-      icon: 📊
+      icon: bi-speedometer2
     - label: Help
       url: /admin/help
-      icon: ❓
+      icon: bi-question-circle
   side:
     - label: Articles
       url: /admin/articles
-      icon: 📝
+      icon: bi-file-text
       active: true
     - label: Categories
       url: /admin/categories
-      icon: 📂
+      icon: bi-folder
     - label: Authors
       url: /admin/authors
-      icon: ✍️
+      icon: bi-person-circle
     - label: Settings
       url: /admin/settings
-      icon: ⚙️
+      icon: bi-gear
 columns:
   - key: slug
     label: Slug
@@ -71,7 +71,38 @@ columns:
     </div>
 
     <div class="articles-table">
-	<vuego include="components/list-items.vuego" :items="articles"></vuego>
+        <div class="list-items">
+            <template v-if="articles">
+            <div class="table-responsive">
+                <table class="table table-hover items-table">
+                    <thead class="table-light">
+                        <tr>
+                            <template v-for="column in columns">
+                            <th class="col-{{ column.key }}" :data-type="column.type">
+                                {{ column.label }}
+                            </th>
+                            </template>
+                            <th class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="item in articles">
+                        <tr class="item-row" :data-id="item.ID">
+                          <template v-for="column in columns">
+                            <td class="col-{{ column.key }}">
+                              <span v-if="column.key == 'slug'">{{ item.Slug }}</span>
+                              <span v-if="column.key == 'title'">{{ item.Title }}</span>
+                              <span v-if="column.key == 'date'">{{ item.Date }}</span>
+                            </td>
+                            </template>
+                            <td class="col-actions" v-html="item.actions"></td>
+                        </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            </template>
+        </div>
     </div>
 
     <template v-if="total > pageSize">

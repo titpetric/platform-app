@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"embed"
 	"io/fs"
 	"path"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func Migrate(ctx context.Context, db *sqlx.DB, schema embed.FS) error {
+func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
 	entries, err := fs.Glob(schema, "*.sql")
 	if err != nil {
 		return err
@@ -18,7 +17,7 @@ func Migrate(ctx context.Context, db *sqlx.DB, schema embed.FS) error {
 
 	migrations := make(map[string][]byte, len(entries))
 	for _, name := range entries {
-		contents, _ := schema.ReadFile(name)
+		contents, _ := fs.ReadFile(schema, name)
 		migrations[path.Base(name)] = contents
 	}
 

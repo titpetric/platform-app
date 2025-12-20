@@ -14,6 +14,7 @@ import (
 	"github.com/titpetric/platform"
 	yaml "gopkg.in/yaml.v3"
 
+	"github.com/titpetric/platform-app/internal/overlayfs"
 	"github.com/titpetric/platform-app/modules/blog/handlers"
 	"github.com/titpetric/platform-app/modules/blog/model"
 	"github.com/titpetric/platform-app/modules/blog/storage"
@@ -44,7 +45,7 @@ func NewModule(dataDir string) *Module {
 	// Check if local theme directory exists
 	var overlay fs.FS = themeSub
 	if _, err := os.Stat("theme"); err == nil {
-		overlay = NewOverlayFS(os.DirFS("theme"), themeSub)
+		overlay = overlayfs.NewOverlayFS(os.DirFS("theme"), themeSub)
 	}
 
 	return &Module{
