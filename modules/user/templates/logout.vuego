@@ -1,15 +1,13 @@
-<template>
+<template :require="sessionUser">
   <div class="row justify-content-center my-5">
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm rounded-4">
         <div class="card-body">
-          <h1 class="mb-4">Welcome, {{ user }}</h1>
+          <h1 class="mb-4">Welcome, {{ sessionUser }}</h1>
 
-          <form method="POST" action="/logout">
+          <form method="POST" :action="links.logout">
             <div class="d-grid mt-3">
-              <button type="submit" class="btn btn-danger btn-lg rounded-3">
-                Logout
-              </button>
+              <button type="submit" class="btn btn-danger btn-lg rounded-3">Logout</button>
             </div>
           </form>
         </div>

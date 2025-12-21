@@ -1,0 +1,17 @@
+# This file serves as config for all the views.
+#
+# Test with `vuego file.vuego _data.yml`.
+
+links:
+  login: /login
+  logout: /logout
+  register: /register
+
+sessionUser: "Tit Petric"
+
+data:
+  user: "Tit Petric"
+  email: "me@titpetric.com"
+  errorMessage: "This is an error message."
+  firstName: "Tit"
+  lastName: "Petric"

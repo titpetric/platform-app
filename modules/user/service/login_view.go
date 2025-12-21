@@ -20,7 +20,9 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 	if err == nil && cookie.Value != "" {
 		if session, err := h.SessionStorage.Get(ctx, cookie.Value); err == nil {
 			if user, err := h.UserStorage.Get(ctx, session.UserID); err == nil {
-				view.Logout(user).Render(ctx, w)
+				h.view.Logout(view.LogoutData{
+					SessionUser: user,
+				}).Render(ctx, w)
 				return
 			} else {
 				telemetry.CaptureError(ctx, err)
@@ -30,8 +32,8 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	view.Login(view.LoginData{
+	h.view.Login(view.LoginData{
 		ErrorMessage: h.GetError(r),
 		Email:        r.FormValue("email"),
-	}).Render(ctx, w)
+	}).Layout(ctx, w)
 }

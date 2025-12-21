@@ -34,7 +34,7 @@ func (h *Handler) Start(ctx context.Context) error {
 	userStorage := storage.NewUserStorage(db)
 	sessionStorage := storage.NewSessionStorage(db)
 
-	h.Service = service.NewService(userStorage, sessionStorage)
+	h.Service = service.NewService(templateFS, userStorage, sessionStorage)
 	return nil
 }
 

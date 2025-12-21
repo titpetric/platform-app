@@ -13,10 +13,10 @@ func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
 	r, span := telemetry.StartRequest(r, "user.service.RegisterView")
 	defer span.End()
 
-	view.Register(view.RegisterData{
+	h.view.Register(view.RegisterData{
 		ErrorMessage: h.GetError(r),
 		FirstName:    r.FormValue("first_name"),
 		LastName:     r.FormValue("last_name"),
 		Email:        r.FormValue("email"),
-	}).Render(r.Context(), w)
+	}).Layout(r.Context(), w)
 }
