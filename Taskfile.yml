@@ -16,8 +16,6 @@ tasks:
     desc: "Run platform base"
     dotenv: [.env.run]
     cmds:
-      - task: gen
-      - task: fmt
       - CGO_ENABLED=0 go run ./cmd/{{.name}}
 
   fmt:
@@ -57,6 +55,7 @@ tasks:
       - mig lint --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform
       - mig docs --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --schema platform --output=./modules/user/docs
       - mig gen --db-dsn="platform:platform@tcp(127.0.0.1:3306)/platform" --go.skip-json --schema platform --output=./modules/user/model
+      - mig migrate --db-driver sqlite --db-dsn="file:daily.db" --project email --path ./modules/daily/schema --apply
       - mig docs --db-driver sqlite --db-dsn="file:daily.db" --schema platform --output=./modules/daily/docs
       - mig gen --db-driver sqlite --db-dsn="file:daily.db" --go.skip-json --schema platform --output=./modules/daily/model
 
@@ -67,6 +66,14 @@ tasks:
       - mig migrate --db-driver sqlite --db-dsn="file:email.db" --project email --path ./modules/email/schema --apply
       - mig docs --db-driver sqlite --db-dsn="file:email.db" --schema platform --output=./modules/email/docs
       - mig gen --db-driver sqlite --db-dsn="file:email.db" --go.skip-json --schema platform --output=./modules/email/model
+
+  migrate:blog:
+    desc: "Run email module migrations"
+    dotenv: [.env.run]
+    cmds:
+      - mig migrate --db-driver sqlite --db-dsn="file:blog.db" --project blog --path ./modules/blog/schema --apply
+      - mig docs --db-driver sqlite --db-dsn="file:blog.db" --schema platform --output=./modules/blog/docs/schema
+      - mig gen --db-driver sqlite --db-dsn="file:blog.db" --go.skip-json --schema platform --output=./modules/blog/model
 
   bench:
     desc: "Run benchmarks"

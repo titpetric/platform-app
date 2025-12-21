@@ -3,25 +3,32 @@ module github.com/titpetric/platform-app
 go 1.25.4
 
 require (
-	github.com/a-h/templ v0.3.960
-	github.com/go-bridget/mig v0.0.0-20251031175119-16ccaa044a41
+	github.com/alecthomas/chroma/v2 v2.21.1
+	github.com/go-bridget/mig v0.0.0-20251211153636-ab0f7b32f437
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/google/go-cmp v0.7.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/qri-io/jsonschema v0.2.1
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.11.1
 	github.com/titpetric/platform v0.0.6
-	golang.org/x/crypto v0.45.0
+	github.com/titpetric/vuego v0.2.2
+	golang.org/x/crypto v0.46.0
 	gopkg.in/yaml.v3 v3.0.1
+	modernc.org/sqlite v1.40.1
 )
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/SentimensRG/sigctx v0.0.0-20171003180858-c19b774db63b // indirect
-	github.com/XSAM/otelsql v0.40.0 // indirect
+	github.com/XSAM/otelsql v0.41.0 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/expr-lang/expr v1.17.7 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -42,25 +49,25 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/riandyrn/otelchi v0.12.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
+	github.com/titpetric/lessgo v0.0.1 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel v1.38.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.38.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.38.0 // indirect
-	go.opentelemetry.io/otel/metric v1.38.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.38.0 // indirect
-	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	go.opentelemetry.io/otel v1.39.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.39.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.39.0 // indirect
+	go.opentelemetry.io/otel/metric v1.39.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.39.0 // indirect
+	go.opentelemetry.io/otel/trace v1.39.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.9.0 // indirect
-	golang.org/x/exp v0.0.0-20251125195548-87e1e737ad39 // indirect
-	golang.org/x/net v0.47.0 // indirect
-	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20251124214823-79d6a2a48846 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251124214823-79d6a2a48846 // indirect
+	golang.org/x/exp v0.0.0-20251209150349-8475f28825e9 // indirect
+	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20251213004720-97cd9d5aeac2 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251213004720-97cd9d5aeac2 // indirect
 	google.golang.org/grpc v1.77.0 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	modernc.org/libc v1.67.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.40.1 // indirect
 )
