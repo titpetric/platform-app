@@ -9,7 +9,6 @@ import (
 	chi "github.com/go-chi/chi/v5"
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
-	"github.com/titpetric/vuego"
 
 	"github.com/titpetric/platform-app/modules/daily/model"
 	"github.com/titpetric/platform-app/modules/daily/storage"
@@ -48,7 +47,7 @@ func (m *Module) Start(ctx context.Context) error {
 	}
 
 	m.repository = repository
-	m.views = view.NewViews(vuego.New(vuego.WithFS(templateFS), vuego.WithLessProcessor()))
+	m.views = view.NewViews(templateFS)
 	return nil
 }
 

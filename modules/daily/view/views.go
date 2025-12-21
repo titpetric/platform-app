@@ -1,6 +1,10 @@
 package view
 
-import "github.com/titpetric/vuego"
+import (
+	"io/fs"
+
+	"github.com/titpetric/vuego"
+)
 
 // Views is a type that provides type safe view helpers.
 type Views struct {
@@ -8,9 +12,9 @@ type Views struct {
 }
 
 // NewViews creates a view object. All views are implemented here.
-func NewViews(tpl vuego.Template) *Views {
+func NewViews(filesystem fs.FS) *Views {
 	return &Views{
-		Loader: NewLoader(tpl),
+		Loader: NewLoader(vuego.NewFS(filesystem, vuego.WithLessProcessor(), vuego.WithFuncs(Funcs))),
 	}
 }
 
