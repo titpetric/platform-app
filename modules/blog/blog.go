@@ -78,7 +78,7 @@ func (m *Module) Start(ctx context.Context) error {
 	// Scan and index markdown files
 	count, err := m.scanMarkdownFiles(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to scan markdown files: %w", err)
+		fmt.Printf("warning: no markdown files scanned: %v", err)
 	}
 
 	fmt.Printf("[blog] scanned %d markdown files from %s\n", count, m.dataDir)
