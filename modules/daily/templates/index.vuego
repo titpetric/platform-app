@@ -2,25 +2,19 @@
   <div class="app-root daily-app">
     <div class="panel">
       <div class="header-row">
-        <h1>Hello, {{ sessionUserFirstName }}!</h1>
+        <h1>Hello, {{ sessionUser.firstName }}!</h1>
+
         <div class="title">What are we doing today?</div>
-        <div class="text-muted small">
-          A tiny front page todo. Add tasks and tick them off same day.
-        </div>
+
+        <div class="text-muted small">A tiny front page todo. Add tasks and tick them off same day.</div>
       </div>
 
       <div class="task-input-form">
         <form id="task-form" class="row g-2 align-items-center">
           <div class="col-sm">
-            <input
-              id="task-input"
-              name="task"
-              type="text"
-              class="form-control form-control-lg"
-              placeholder="What will you do today?"
-              aria-label="Task"
-            />
+            <input id="task-input" name="task" type="text" class="form-control form-control-lg" placeholder="What will you do today?" aria-label="Task">
           </div>
+
           <div class="col-auto">
             <button type="submit" class="btn btn-primary btn-lg">Add</button>
           </div>
@@ -29,24 +23,19 @@
 
       <div class="task-list" id="task-list">
         <div v-if="tasks.length > 0">
-          <div
-            v-for="(t, i) in tasks"
-            class="task-item d-flex align-items-center justify-content-between"
-            :data-task-id="t.ID"
-          >
+          <div v-for="(t, i) in tasks" class="task-item d-flex align-items-center justify-content-between" :data-task-id="t.ID">
             <div class="form-check task-meta">
-              <input
-                :id="'task-' + t.ID"
-                class="form-check-input task-checkbox"
-                type="checkbox"
-              />
+              <input :id="'task-' + t.ID" class="form-check-input task-checkbox" type="checkbox">
+
               <label class="form-check-label" :for="'task-' + t.ID">
                 <div class="fw-semibold">{{ t.Title }}</div>
+
                 <div class="text-muted small">{{ t.CreatedAt }}</div>
               </label>
             </div>
           </div>
         </div>
+
         <div v-else>
           <div class="text-muted small text-center">No tasks yet. Add one above.</div>
         </div>

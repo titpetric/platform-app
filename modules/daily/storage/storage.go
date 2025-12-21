@@ -11,6 +11,7 @@ import (
 	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/modules/daily/model"
+	"github.com/titpetric/platform-app/modules/daily/schema"
 	"github.com/titpetric/platform-app/modules/user"
 )
 
@@ -19,9 +20,21 @@ type Storage struct {
 	db *sqlx.DB
 }
 
-// NewStorage creates a Storage using an existing sqlx.DB
-func NewStorage(db *sqlx.DB) *Storage {
-	return &Storage{db: db}
+// New creates a new Storage instance, runs migrations.
+func New(ctx context.Context) (*Storage, error) {
+	db, err := DB(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return NewStorage(ctx, db)
+}
+
+// NewStorage creates a new Storage instance, rungs migrations.
+func NewStorage(ctx context.Context, db *sqlx.DB) (*Storage, error) {
+	if err := Migrate(ctx, db, schema.Migrations); err != nil {
+		return nil, err
+	}
+	return &Storage{db: db}, nil
 }
 
 var empty model.Todo

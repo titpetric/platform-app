@@ -9,6 +9,7 @@ import (
 	chi "github.com/go-chi/chi/v5"
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/vuego"
 
 	"github.com/titpetric/platform-app/modules/daily/model"
 	"github.com/titpetric/platform-app/modules/daily/storage"
@@ -20,6 +21,7 @@ type Module struct {
 	platform.UnimplementedModule
 
 	repository *storage.Storage
+	views      *view.Views
 }
 
 func NewModule() *Module {
@@ -40,7 +42,13 @@ func (m *Module) Start(ctx context.Context) error {
 		return err
 	}
 
-	m.repository = storage.NewStorage(db)
+	repository, err := storage.NewStorage(ctx, db)
+	if err != nil {
+		return err
+	}
+
+	m.repository = repository
+	m.views = view.NewViews(vuego.New(vuego.WithFS(templateFS), vuego.WithLessProcessor()))
 	return nil
 }
 
@@ -60,7 +68,7 @@ func (m *Module) Mount(_ context.Context, r platform.Router) error {
 
 			sessionUser, _ := user.GetSessionUser(ctx)
 
-			view.Daily(view.DailyData{
+			m.views.Index(view.Data{
 				Tasks:       tasks,
 				SessionUser: sessionUser,
 			}).Render(ctx, w)
