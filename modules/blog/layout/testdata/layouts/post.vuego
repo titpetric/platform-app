@@ -1,8 +1,0 @@
----
-layout: "base"
-classnames: "prose"
----
-
-<p>Layout: post</p>
-
-<p v-html="content"></p>

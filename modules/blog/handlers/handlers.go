@@ -3,8 +3,6 @@ package handlers
 import (
 	"io/fs"
 
-	"github.com/titpetric/vuego"
-
 	"github.com/titpetric/platform-app/modules/blog/storage"
 	"github.com/titpetric/platform-app/modules/blog/view"
 )
@@ -19,7 +17,7 @@ type Handlers struct {
 func NewHandlers(repo *storage.Storage, themeFS fs.FS) (*Handlers, error) {
 	return &Handlers{
 		repository: repo,
-		views:      view.NewViews(vuego.New(vuego.WithFS(themeFS), vuego.WithLessProcessor())),
+		views:      view.NewViews(themeFS),
 	}, nil
 }
 
