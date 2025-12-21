@@ -1,7 +1,392 @@
 @startuml
 
-class "modules.assets.Module" {
+class "internal.overlayfs.OverlayFS" {
+  + Upper: fs.FS
+  + Lower: fs.FS
+  + Glob (pattern string) ([]string, error)
+  + Open (name string) (fs.File, error)
+  + ReadDir (name string) ([]fs.DirEntry, error)
+}
+
+class "modules.blog.layout.Renderer" {
+  - root: fs.FS
+  - tpl: vuego.Template
+  - data: map[string]any
+  + Render (ctx context.Context, w io.Writer, filename string, data map[string]any) error
+}
+
+class "modules.blog.markdown.Renderer" {
+  - codeBlockPattern: *regexp.Regexp
+  + Render (content []byte) []byte
+}
+
+class "modules.blog.model.Article" {
+  + ID: string
+  + Slug: string
+  + Title: string
+  + Filename: string
+  + Description: string
+  + Date: *time.Time
+  + OgImage: string
+  + Layout: string
+  + Source: string
+  + URL: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetDate () *time.Time
+  + GetDescription () string
+  + GetFilename () string
+  + GetID () string
+  + GetLayout () string
+  + GetOgImage () string
+  + GetSlug () string
+  + GetSource () string
+  + GetTitle () string
+  + GetURL () string
+  + GetUpdatedAt () *time.Time
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetDate (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.blog.model.ArticleList" {
+  + Articles: []Article
+  + Total: int
+  + Page: int
+  + PageSize: int
+}
+
+class "modules.blog.model.Metadata" {
+  + Title: string
+  + Description: string
+  + OgImage: string
+  + Date: string
+  + Layout: string
+  + Source: string
+}
+
+class "modules.blog.model.Migrations" {
+  + Project: string
+  + Filename: string
+  + StatementIndex: int64
+  + Status: string
+  + Delete (opts ...QueryOption) string
+  + GetFilename () string
+  + GetProject () string
+  + GetStatementIndex () int64
+  + GetStatus () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.blog.model.QueryConfig" {
+  + Table: string
+  + Columns: []string
+  + Where: string
+  + OrderBy: string
+  + LimitStart: int
+  + LimitOffset: int
+  + Statement: string
+  + Apply (opts ...QueryOption) *QueryConfig
+  + WithColumns (cols []string) QueryOption
+  + WithLimit (start,offset int) QueryOption
+  + WithOrderBy (clause string) QueryOption
+  + WithStatement (stmt string) QueryOption
+  + WithTable (name string) QueryOption
+  + WithWhere (clause string) QueryOption
+}
+
+interface "modules.blog.model.QueryOption" {
+  + WithTable: WithTable (name string) QueryOption
+  + WithColumns: WithColumns (cols []string) QueryOption
+  + WithWhere: WithWhere (clause string) QueryOption
+  + WithOrderBy: WithOrderBy (clause string) QueryOption
+  + WithLimit: WithLimit (start,offset int) QueryOption
+  + WithStatement: WithStatement (stmt string) QueryOption
+}
+
+class "modules.blog.storage.Storage" {
+  - db: *sqlx.DB
+  + CountArticles (ctx context.Context) (int, error)
+  + GetArticleBySlug (ctx context.Context, slug string) (*model.Article, error)
+  + GetArticles (ctx context.Context, start,length int) ([]model.Article, error)
+  + InsertArticle (ctx context.Context, article *model.Article) error
+  + SearchArticles (ctx context.Context, query string) ([]model.Article, error)
+}
+
+class "modules.blog.view.IndexData" {
+  + Title: string
+  + Description: string
+  + OGImage: string
+  + Articles: []model.Article
+  + Total: int
+  + Map () map[string]any
+}
+
+class "modules.blog.view.PostData" {
+  + Slug: string
+  + Title: string
+  + Description: string
+  + OgImage: string
+  + Content: string
+  + Date: *time.Time
+  + Classnames: string
+  + Map () map[string]any
+}
+
+class "modules.blog.view.Views" {
+  - data: map[string]any
+  + AtomFeed (ctx context.Context, w io.Writer, articles []model.Article) error
+  + Blog (ctx context.Context, w io.Writer, data *IndexData) error
+  + Index (ctx context.Context, w io.Writer, data *IndexData) error
+  + IndexFromArticles (articles []model.Article) *IndexData
+  + Post (ctx context.Context, w io.Writer, data *PostData) error
+  + PostFromArticle (article *model.Article, content string) *PostData
+}
+
+class "modules.blog.handlers.Handlers" {
+  - repository: *storage.Storage
+  - views: *view.Views
+  - layoutRenderer: *layout.Renderer
+  + GetArticleAdminJSON (w http.ResponseWriter, r *http.Request)
+  + GetArticleHTML (w http.ResponseWriter, r *http.Request)
+  + GetArticleJSON (w http.ResponseWriter, r *http.Request)
+  + GetAtomFeed (w http.ResponseWriter, r *http.Request)
+  + IndexHTML (w http.ResponseWriter, r *http.Request)
+  + ListArticlesAdminHTML (w http.ResponseWriter, r *http.Request)
+  + ListArticlesAdminJSON (w http.ResponseWriter, r *http.Request)
+  + ListArticlesHTML (w http.ResponseWriter, r *http.Request)
+  + ListArticlesJSON (w http.ResponseWriter, r *http.Request)
+  + Repository () *storage.Storage
+  + SearchArticlesJSON (w http.ResponseWriter, r *http.Request)
+  + Views () *view.Views
+}
+
+class "modules.blog.Field" {
+  + Name: string
+  + Title: string
+  + Desc: string
+  + Type: string
+  + Value: any
+  + Placeholder: string
+  + Required: bool
+  + Options: []Option
+  + Attributes: map[string]string
+  + Size: string
+  + Height: int
+  + Rows: int
+  + Cols: int
+  + Link: string
+  + Sort: string
+  + Accept: string
+  + Multiple: bool
+  + Disabled: bool
+  + Readonly: bool
+  + Error: string
+  + Help: string
+}
+
+class "modules.blog.Form" {
+  + Name: string
+  + Title: string
+  + Fields: []Field
+  + Meta: map[string]string
+  + UnmarshalYAML (node *yaml.Node) error
+}
+
+class "modules.blog.Generator" {
+  - module: *Module
+  - outputDir: string
+  + Generate (ctx context.Context) error
+}
+
+class "modules.blog.Module" {
+  - dataDir: string
+  - repository: *storage.Storage
+  - articles: map[string]*model.Article
+  - themeFS: fs.FS
   + Mount (_ context.Context, r platform.Router) error
+  + Name () string
+  + ScanMarkdownFiles (ctx context.Context) (int, error)
+  + SetRepository (repo *storage.Storage)
+  + Start (ctx context.Context) error
+  + Stop (context.Context) error
+}
+
+class "modules.blog.Navigation" {
+  + Name: string
+  + Links: []NavigationLink
+}
+
+class "modules.blog.NavigationLink" {
+  + Label: string
+  + URL: string
+  + Icon: string
+}
+
+class "modules.blog.Option" {
+  + Value: string
+  + Label: string
+}
+
+class "modules.blog.RenderData" {
+  + Title: string
+  + Description: string
+  + Fields: []Field
+  + Method: string
+  + Action: string
+  + SubmitLabel: string
+  + CancelURL: string
+  + CancelLabel: string
+  + Navigation: *Navigation
+  + FieldsBySize (size string) []Field
+  + FieldsWithType (fieldType string) []Field
+  + HiddenFields () []Field
+  + SetAction (action string) *RenderData
+  + SetCancelLabel (label string) *RenderData
+  + SetCancelURL (url string) *RenderData
+  + SetMethod (method string) *RenderData
+  + SetSubmitLabel (label string) *RenderData
+  + VisibleFields () []Field
+}
+
+class "modules.user.model.QueryConfig" {
+  + Table: string
+  + Columns: []string
+  + Where: string
+  + OrderBy: string
+  + LimitStart: int
+  + LimitOffset: int
+  + Statement: string
+  + Apply (opts ...QueryOption) *QueryConfig
+  + WithColumns (cols []string) QueryOption
+  + WithLimit (start,offset int) QueryOption
+  + WithOrderBy (clause string) QueryOption
+  + WithStatement (stmt string) QueryOption
+  + WithTable (name string) QueryOption
+  + WithWhere (clause string) QueryOption
+}
+
+interface "modules.user.model.QueryOption" {
+  + WithTable: WithTable (name string) QueryOption
+  + WithColumns: WithColumns (cols []string) QueryOption
+  + WithWhere: WithWhere (clause string) QueryOption
+  + WithOrderBy: WithOrderBy (clause string) QueryOption
+  + WithLimit: WithLimit (start,offset int) QueryOption
+  + WithStatement: WithStatement (stmt string) QueryOption
+}
+
+interface "modules.user.model.SessionStorage" {
+  + Create: Create (ctx context.Context, userID string) (*UserSession, error)
+  + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
+  + Delete: Delete (ctx context.Context, sessionID string) error
+}
+
+class "modules.user.model.User" {
+  + ID: string
+  + FirstName: string
+  + LastName: string
+  + DeletedAt: *time.Time
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetDeletedAt () *time.Time
+  + GetFirstName () string
+  + GetID () string
+  + GetLastName () string
+  + GetUpdatedAt () *time.Time
+  + Insert (opts ...QueryOption) string
+  + IsActive () bool
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetDeletedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + String () string
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.user.model.UserAuth" {
+  + UserID: string
+  + Email: string
+  + Password: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetEmail () string
+  + GetPassword () string
+  + GetUpdatedAt () *time.Time
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+  + Valid () bool
+}
+
+class "modules.user.model.UserGroup" {
+  + ID: string
+  + Title: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetID () string
+  + GetTitle () string
+  + GetUpdatedAt () *time.Time
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+  + String () string
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.user.model.UserGroupMember" {
+  + UserGroupID: string
+  + UserID: string
+  + JoinedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetJoinedAt () *time.Time
+  + GetUserGroupID () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetJoinedAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.user.model.UserSession" {
+  + ID: string
+  + UserID: string
+  + ExpiresAt: *time.Time
+  + CreatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetExpiresAt () *time.Time
+  + GetID () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetExpiresAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+interface "modules.user.model.UserStorage" {
+  + Create: Create (context.Context, *User, *UserAuth) (*User, error)
+  + Update: Update (context.Context, *User) (*User, error)
+  + Get: Get (context.Context, string) (*User, error)
+  + GetGroups: GetGroups (context.Context, string) ([]UserGroup, error)
+  + Authenticate: Authenticate (ctx context.Context, auth UserAuth) (*User, error)
 }
 
 class "modules.daily.model.Migrations" {
@@ -9,10 +394,40 @@ class "modules.daily.model.Migrations" {
   + Filename: string
   + StatementIndex: int64
   + Status: string
+  + Delete (opts ...QueryOption) string
   + GetFilename () string
   + GetProject () string
   + GetStatementIndex () int64
   + GetStatus () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + Update (opts ...QueryOption) string
+}
+
+class "modules.daily.model.QueryConfig" {
+  + Table: string
+  + Columns: []string
+  + Where: string
+  + OrderBy: string
+  + LimitStart: int
+  + LimitOffset: int
+  + Statement: string
+  + Apply (opts ...QueryOption) *QueryConfig
+  + WithColumns (cols []string) QueryOption
+  + WithLimit (start,offset int) QueryOption
+  + WithOrderBy (clause string) QueryOption
+  + WithStatement (stmt string) QueryOption
+  + WithTable (name string) QueryOption
+  + WithWhere (clause string) QueryOption
+}
+
+interface "modules.daily.model.QueryOption" {
+  + WithTable: WithTable (name string) QueryOption
+  + WithColumns: WithColumns (cols []string) QueryOption
+  + WithWhere: WithWhere (clause string) QueryOption
+  + WithOrderBy: WithOrderBy (clause string) QueryOption
+  + WithLimit: WithLimit (start,offset int) QueryOption
+  + WithStatement: WithStatement (stmt string) QueryOption
 }
 
 interface "modules.daily.model.Storage" {
@@ -32,6 +447,7 @@ class "modules.daily.model.Todo" {
   + CreatedAt: *time.Time
   + UpdatedAt: *time.Time
   + DeletedAt: *time.Time
+  + Delete (opts ...QueryOption) string
   + GetCompleted () bool
   + GetCreatedAt () *time.Time
   + GetDeletedAt () *time.Time
@@ -39,96 +455,16 @@ class "modules.daily.model.Todo" {
   + GetTitle () string
   + GetUpdatedAt () *time.Time
   + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
   + SetCreatedAt (stamp time.Time)
   + SetDeletedAt (stamp time.Time)
   + SetUpdatedAt (stamp time.Time)
+  + Update (opts ...QueryOption) string
 }
 
-interface "modules.user.model.SessionStorage" {
-  + Create: Create (ctx context.Context, userID string) (*UserSession, error)
-  + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
-  + Delete: Delete (ctx context.Context, sessionID string) error
-}
-
-class "modules.user.model.User" {
-  + ID: string
-  + FirstName: string
-  + LastName: string
-  + DeletedAt: *time.Time
-  + CreatedAt: *time.Time
-  + UpdatedAt: *time.Time
-  + GetCreatedAt () *time.Time
-  + GetDeletedAt () *time.Time
-  + GetFirstName () string
-  + GetID () string
-  + GetLastName () string
-  + GetUpdatedAt () *time.Time
-  + IsActive () bool
-  + SetCreatedAt (stamp time.Time)
-  + SetDeletedAt (stamp time.Time)
-  + SetUpdatedAt (stamp time.Time)
-  + String () string
-}
-
-class "modules.user.model.UserAuth" {
-  + UserID: string
-  + Email: string
-  + Password: string
-  + CreatedAt: *time.Time
-  + UpdatedAt: *time.Time
-  + GetCreatedAt () *time.Time
-  + GetEmail () string
-  + GetPassword () string
-  + GetUpdatedAt () *time.Time
-  + GetUserID () string
-  + SetCreatedAt (stamp time.Time)
-  + SetUpdatedAt (stamp time.Time)
-  + Valid () bool
-}
-
-class "modules.user.model.UserGroup" {
-  + ID: string
-  + Title: string
-  + CreatedAt: *time.Time
-  + UpdatedAt: *time.Time
-  + GetCreatedAt () *time.Time
-  + GetID () string
-  + GetTitle () string
-  + GetUpdatedAt () *time.Time
-  + SetCreatedAt (stamp time.Time)
-  + SetUpdatedAt (stamp time.Time)
-  + String () string
-}
-
-class "modules.user.model.UserGroupMember" {
-  + UserGroupID: string
-  + UserID: string
-  + JoinedAt: *time.Time
-  + GetJoinedAt () *time.Time
-  + GetUserGroupID () string
-  + GetUserID () string
-  + SetJoinedAt (stamp time.Time)
-}
-
-class "modules.user.model.UserSession" {
-  + ID: string
-  + UserID: string
-  + ExpiresAt: *time.Time
-  + CreatedAt: *time.Time
-  + GetCreatedAt () *time.Time
-  + GetExpiresAt () *time.Time
-  + GetID () string
-  + GetUserID () string
-  + SetCreatedAt (stamp time.Time)
-  + SetExpiresAt (stamp time.Time)
-}
-
-interface "modules.user.model.UserStorage" {
-  + Create: Create (context.Context, *User, *UserAuth) (*User, error)
-  + Update: Update (context.Context, *User) (*User, error)
-  + Get: Get (context.Context, string) (*User, error)
-  + GetGroups: GetGroups (context.Context, string) ([]UserGroup, error)
-  + Authenticate: Authenticate (ctx context.Context, auth UserAuth) (*User, error)
+class "modules.daily.model.User" {
+  - type: model.User
 }
 
 class "modules.user.storage.SessionStorage" {
@@ -147,22 +483,42 @@ class "modules.user.storage.UserStorage" {
   + Update (ctx context.Context, u *model.User) (*model.User, error)
 }
 
-class "modules.theme.Link" {
-  + Name: string
+class "modules.user.view.Renderer" {
+  - root: fs.FS
+  - tpl: vuego.Template
+  - data: map[string]any
+  + Load (filename string, data any) vuego.Template
+  + Login (data LoginData) vuego.Template
+  + Logout (data LogoutData) vuego.Template
+  + Register (data RegisterData) vuego.Template
 }
 
-class "modules.theme.Options" {
-  + Header: []Link
-}
-
+class "modules.user.view.Data" {
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + ErrorMessage: string
+  + FirstName: string
+  + LastName: string
 class "modules.user.view.LoginData" {
-  + ErrorMessage: string
+  + SessionUser: *model.User
+  + User: string
   + Email: string
-}
-
+  + ErrorMessage: string
+  + FirstName: string
+  + LastName: string
+class "modules.user.view.LogoutData" {
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + ErrorMessage: string
+  + FirstName: string
+  + LastName: string
 class "modules.user.view.RegisterData" {
-  + ErrorMessage: string
+  + SessionUser: *model.User
+  + User: string
   + Email: string
+  + ErrorMessage: string
   + FirstName: string
   + LastName: string
 }
@@ -170,6 +526,7 @@ class "modules.user.view.RegisterData" {
 class "modules.user.service.Service" {
   + UserStorage: *storage.UserStorage
   + SessionStorage: *storage.SessionStorage
+  - view: *view.Renderer
   + Error (r *http.Request, message string, err error)
   + GetError (r *http.Request) string
   + Login (w http.ResponseWriter, r *http.Request)
@@ -196,14 +553,24 @@ class "modules.daily.storage.Storage" {
   + Update (ctx context.Context, t model.Todo) error
 }
 
-class "modules.daily.view.DailyData" {
+class "modules.daily.view.Data" {
   + Tasks: []model.Todo
-  + IsLoggedIn: bool
-  + SessionUser: *usermodel.User
+  + SessionUser: *model.User
+}
+
+class "modules.daily.view.Loader" {
+  - tpl: vuego.Template
+  + Load (filename string) vuego.Template
+}
+
+class "modules.daily.view.Views" {
+  + Loader: *Loader
+  + Index (data Data) vuego.Template
 }
 
 class "modules.daily.Module" {
   - repository: *storage.Storage
+  - views: *view.Views
   + Mount (_ context.Context, r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
@@ -417,6 +784,105 @@ class "modules.expvar.Handler" {
   + Start (context.Context) error
 }
 
+class "modules.maillist.service.Permissions" {
+  + User: *usermodel.User
+  + Create: bool
+}
+
+class "modules.maillist.MailList" {
+  + Create (w http.ResponseWriter, r *http.Request)
+  + Index (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router) error
+  + Name () string
+  + Start (ctx context.Context) error
+}
+
+class "modules.maillist.model.Maillist" {
+  + ID: string
+  + Name: string
+  + Slug: string
+  + Description: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + GetCreatedAt () *time.Time
+  + GetDescription () string
+  + GetID () string
+  + GetName () string
+  + GetSlug () string
+  + GetUpdatedAt () *time.Time
+  + SetCreatedAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+}
+
+class "modules.maillist.model.MaillistCampaign" {
+  + ID: string
+  + MaillistID: string
+  + Subject: string
+  + Body: string
+  + Status: string
+  + ScheduledAt: *time.Time
+  + SentAt: *time.Time
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + GetBody () string
+  + GetCreatedAt () *time.Time
+  + GetID () string
+  + GetMaillistID () string
+  + GetScheduledAt () *time.Time
+  + GetSentAt () *time.Time
+  + GetStatus () string
+  + GetSubject () string
+  + GetUpdatedAt () *time.Time
+  + SetCreatedAt (stamp time.Time)
+  + SetScheduledAt (stamp time.Time)
+  + SetSentAt (stamp time.Time)
+  + SetUpdatedAt (stamp time.Time)
+}
+
+class "modules.maillist.model.MaillistMember" {
+  + ID: string
+  + MaillistID: string
+  + Email: string
+  + Name: string
+  + SubscribedAt: *time.Time
+  + UnsubscribedAt: *time.Time
+  + Source: string
+  + GetEmail () string
+  + GetID () string
+  + GetMaillistID () string
+  + GetName () string
+  + GetSource () string
+  + GetSubscribedAt () *time.Time
+  + GetUnsubscribedAt () *time.Time
+  + SetSubscribedAt (stamp time.Time)
+  + SetUnsubscribedAt (stamp time.Time)
+}
+
+class "modules.maillist.model.MaillistMemberActivity" {
+  + ID: string
+  + MaillistMemberID: string
+  + CampaignID: string
+  + ActivityType: string
+  + ActivityAt: *time.Time
+  + GetActivityAt () *time.Time
+  + GetActivityType () string
+  + GetCampaignID () string
+  + GetID () string
+  + GetMaillistMemberID () string
+  + SetActivityAt (stamp time.Time)
+}
+
+class "modules.maillist.model.Migrations" {
+  + Project: string
+  + Filename: string
+  + StatementIndex: int32
+  + Status: string
+  + GetFilename () string
+  + GetProject () string
+  + GetStatementIndex () int32
+  + GetStatus () string
+}
+
 class "modules.user.cmd.generate.Config" {
   + Features: map[string]any
   + Flows: map[string]Flow
@@ -435,15 +901,82 @@ class "modules.user.cmd.generate.Step" {
 }
 
 
+interface "Campaign"
+
+"modules.blog.layout.Renderer" --> "modules.blog.layout.any" : .data
+
+
+
+"modules.blog.model.ArticleList" --> "modules.blog.model.Article" : .Articles
 
 
 
 
 
 
+"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .GetArticleBySlug()
+"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .GetArticles()
+"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .InsertArticle()
+"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .SearchArticles()
+"modules.blog.view.IndexData" --> "modules.blog.model.Article" : .Articles
+
+
+"modules.blog.view.Views" --|> "modules.blog.layout.Renderer" : embeds
+"modules.blog.view.Views" --> "modules.blog.view.any" : .data
+
+"modules.blog.view.Views" --> "modules.blog.model.Article" : .AtomFeed()
+"modules.blog.view.Views" --> "modules.blog.model.Article" : .IndexFromArticles()
+"modules.blog.view.Views" --> "modules.blog.model.Article" : .PostFromArticle()
+"modules.blog.handlers.Handlers" --> "modules.blog.storage.Storage" : .repository
+"modules.blog.handlers.Handlers" --> "modules.blog.view.Views" : .views
+"modules.blog.handlers.Handlers" --> "modules.blog.layout.Renderer" : .layoutRenderer
+
+"modules.blog.handlers.Handlers" --> "modules.blog.storage.Storage" : .Repository()
+"modules.blog.handlers.Handlers" --> "modules.blog.view.Views" : .Views()
+"modules.blog.Field" --> "modules.blog.any" : .Value
+"modules.blog.Field" --> "modules.blog.Option" : .Options
+
+"modules.blog.Form" --> "modules.blog.Field" : .Fields
+
+"modules.blog.Generator" --> "modules.blog.Module" : .module
+
+"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateArticlePage()
+"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateFeed()
+"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateIndexPage()
+"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateStaticPages()
+"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .walkPages()
+"modules.blog.Module" --> "modules.blog.storage.Storage" : .repository
+"modules.blog.Module" --> "modules.blog.model.Article" : .articles
+
+"modules.blog.Module" --> "modules.blog.storage.Storage" : .SetRepository()
+"modules.blog.Module" --> "modules.blog.model.Article" : .parseMarkdownFile()
+"modules.blog.Navigation" --> "modules.blog.NavigationLink" : .Links
 
 
 
+"modules.blog.RenderData" --> "modules.blog.Field" : .Fields
+"modules.blog.RenderData" --> "modules.blog.Navigation" : .Navigation
+
+
+
+
+
+"modules.user.model.UserAuth" --> "modules.user.model.User" : .UserID (1:1)
+
+
+"modules.user.model.UserGroupMember" --> "modules.user.model.UserGroup" : .UserGroupID (1:1)
+"modules.user.model.UserGroupMember" --> "modules.user.model.User" : .UserID (1:1)
+
+"modules.user.model.UserSession" --> "modules.user.model.User" : .UserID (1:N)
+
+
+
+
+
+
+"modules.daily.model.Todo" --> "modules.daily.model.User" : .UserID (1:N)
+
+"modules.daily.model.User" --> "modules.user.model.User" : .type
 
 
 "modules.user.storage.SessionStorage" --> "modules.user.model.UserSession" : .Create()
@@ -454,13 +987,19 @@ class "modules.user.cmd.generate.Step" {
 "modules.user.storage.UserStorage" --> "modules.user.model.User" : .Get()
 "modules.user.storage.UserStorage" --> "modules.user.model.UserGroup" : .GetGroups()
 "modules.user.storage.UserStorage" --> "modules.user.model.User" : .Update()
+"modules.user.view.Renderer" --> "modules.user.view.any" : .data
 
-"modules.theme.Options" --> "modules.theme.Link" : .Header
+"modules.user.view.Data" --> "modules.user.model.User" : .SessionUser
 
+"modules.user.view.LoginData" --> "modules.user.model.User" : .SessionUser
 
+"modules.user.view.LogoutData" --> "modules.user.model.User" : .SessionUser
+
+"modules.user.view.RegisterData" --> "modules.user.model.User" : .SessionUser
 
 "modules.user.service.Service" --> "modules.user.storage.UserStorage" : .UserStorage
 "modules.user.service.Service" --> "modules.user.storage.SessionStorage" : .SessionStorage
+"modules.user.service.Service" --> "modules.user.view.Renderer" : .view
 
 "modules.user.Handler" --|> "modules.user.service.Service" : embeds
 
@@ -469,10 +1008,14 @@ class "modules.user.cmd.generate.Step" {
 "modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Get()
 "modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .List()
 "modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Update()
-"modules.daily.view.DailyData" --> "modules.daily.model.Todo" : .Tasks
-"modules.daily.view.DailyData" --> "modules.user.model.User" : .SessionUser
+"modules.daily.view.Data" --> "modules.daily.model.Todo" : .Tasks
+"modules.daily.view.Data" --> "modules.daily.model.User" : .SessionUser
+
+
+"modules.daily.view.Views" --> "modules.daily.view.Loader" : .Loader
 
 "modules.daily.Module" --> "modules.daily.storage.Storage" : .repository
+"modules.daily.Module" --> "modules.daily.view.Views" : .views
 
 
 
@@ -500,6 +1043,18 @@ class "modules.user.cmd.generate.Step" {
 
 "modules.email.Service" --> "modules.email.model.Email" : .AddEmail()
 "modules.email.Service" --> "modules.email.model.Email" : .sendEmail()
+
+
+"modules.maillist.service.Permissions" --> "modules.user.model.User" : .User
+
+
+
+"modules.maillist.model.MaillistCampaign" --> "modules.maillist.model.Maillist" : .MaillistID (1:N)
+
+"modules.maillist.model.MaillistMember" --> "modules.maillist.model.Maillist" : .MaillistID (1:N)
+
+"modules.maillist.model.MaillistMemberActivity" --> "modules.maillist.model.MaillistMember" : .MaillistMemberID (1:N)
+"modules.maillist.model.MaillistMemberActivity" --> "modules.maillist.model.Campaign" : .CampaignID (1:N)
 
 
 "modules.user.cmd.generate.Config" --> "modules.user.cmd.generate.any" : .Features
