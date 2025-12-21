@@ -9,5 +9,6 @@ It provides modules under the `modules/` folder:
 - `assets` - static files to be served
 - `theme` - the layout shared by modules for output
 - `daily` - a simple sqlite focused TODO-app
+- `blog` - a blog based on ryan mulligan dev
 
 - [Testing coverage report](./docs/testing-coverage.md)
