@@ -3,7 +3,7 @@
   <ul class="article-list flow" role="list">
     <li v-for="post in articles">
       <div class="info">
-        <time :datetime="post.Date | datetime" >{{ post.Date | formatDate(false) }}</time>
+        <time :datetime="post.Date" >{{ post.Date | formatDate(false) }}</time>
         <span v-if="post.Source" class="source">
           — {{ post.Source }}
           <vuego include="components/inline-svg.vuego" src="assets/icons/arrow-square-out.svg"></vuego>
