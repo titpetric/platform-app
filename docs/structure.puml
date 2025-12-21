@@ -8,13 +8,6 @@ class "internal.overlayfs.OverlayFS" {
   + ReadDir (name string) ([]fs.DirEntry, error)
 }
 
-class "modules.blog.layout.Renderer" {
-  - root: fs.FS
-  - tpl: vuego.Template
-  - data: map[string]any
-  + Render (ctx context.Context, w io.Writer, filename string, data map[string]any) error
-}
-
 class "modules.blog.markdown.Renderer" {
   - codeBlockPattern: *regexp.Regexp
   + Render (content []byte) []byte
@@ -129,6 +122,11 @@ class "modules.blog.view.IndexData" {
   + Map () map[string]any
 }
 
+class "modules.blog.view.Loader" {
+  - tpl: vuego.Template
+  + Load (filename string) vuego.Template
+}
+
 class "modules.blog.view.PostData" {
   + Slug: string
   + Title: string
@@ -141,19 +139,16 @@ class "modules.blog.view.PostData" {
 }
 
 class "modules.blog.view.Views" {
-  - data: map[string]any
-  + AtomFeed (ctx context.Context, w io.Writer, articles []model.Article) error
-  + Blog (ctx context.Context, w io.Writer, data *IndexData) error
-  + Index (ctx context.Context, w io.Writer, data *IndexData) error
-  + IndexFromArticles (articles []model.Article) *IndexData
-  + Post (ctx context.Context, w io.Writer, data *PostData) error
-  + PostFromArticle (article *model.Article, content string) *PostData
+  + Loader: *Loader
+  + AtomFeed (ctx context.Context, w io.Writer, articles []model.Article, meta map[string]any) error
+  + Blog (data *IndexData) vuego.Template
+  + Index (data *IndexData) vuego.Template
+  + Post (data *PostData) vuego.Template
 }
 
 class "modules.blog.handlers.Handlers" {
   - repository: *storage.Storage
   - views: *view.Views
-  - layoutRenderer: *layout.Renderer
   + GetArticleAdminJSON (w http.ResponseWriter, r *http.Request)
   + GetArticleHTML (w http.ResponseWriter, r *http.Request)
   + GetArticleJSON (w http.ResponseWriter, r *http.Request)
@@ -903,8 +898,6 @@ class "modules.user.cmd.generate.Step" {
 
 interface "Campaign"
 
-"modules.blog.layout.Renderer" --> "modules.blog.layout.any" : .data
-
 
 
 "modules.blog.model.ArticleList" --> "modules.blog.model.Article" : .Articles
@@ -921,15 +914,12 @@ interface "Campaign"
 "modules.blog.view.IndexData" --> "modules.blog.model.Article" : .Articles
 
 
-"modules.blog.view.Views" --|> "modules.blog.layout.Renderer" : embeds
-"modules.blog.view.Views" --> "modules.blog.view.any" : .data
+
+"modules.blog.view.Views" --> "modules.blog.view.Loader" : .Loader
 
 "modules.blog.view.Views" --> "modules.blog.model.Article" : .AtomFeed()
-"modules.blog.view.Views" --> "modules.blog.model.Article" : .IndexFromArticles()
-"modules.blog.view.Views" --> "modules.blog.model.Article" : .PostFromArticle()
 "modules.blog.handlers.Handlers" --> "modules.blog.storage.Storage" : .repository
 "modules.blog.handlers.Handlers" --> "modules.blog.view.Views" : .views
-"modules.blog.handlers.Handlers" --> "modules.blog.layout.Renderer" : .layoutRenderer
 
 "modules.blog.handlers.Handlers" --> "modules.blog.storage.Storage" : .Repository()
 "modules.blog.handlers.Handlers" --> "modules.blog.view.Views" : .Views()
