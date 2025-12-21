@@ -26,6 +26,7 @@ func RegisterRoutes(r platform.Router, repository *storage.Storage, themeFS fs.F
 
 		// Public HTML Routes
 		r.Get("/", h.IndexHTML)
+		r.Get("/blog", h.ListArticlesHTML)
 		r.Get("/blog/", h.ListArticlesHTML)
 		r.Get("/blog/{slug}", h.GetArticleHTML)
 		r.Get("/blog/{slug}/", h.GetArticleHTML)

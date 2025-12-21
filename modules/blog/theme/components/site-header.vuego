@@ -7,7 +7,7 @@
       <li v-for="(index, item) in navigation.menu" v-if="index < 3">
         <a
           :href="item.url"
-          :aria-current="item.url === page.url ? 'page' : null"
+          :aria-current="item.url === page?.url ? 'page' : null"
           >{{ item.label }}</a
         >
       </li>

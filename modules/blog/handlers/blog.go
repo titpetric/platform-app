@@ -23,9 +23,9 @@ func (h *Handlers) IndexHTML(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "public, max-age=300")
 
 	// Create index component to render list
-	indexData := h.views.IndexFromArticles(articles)
+	indexData := view.NewIndexData(articles)
 
-	if err := h.views.Index(r.Context(), w, indexData); err != nil {
+	if err := h.views.Index(indexData).Layout(r.Context(), w); err != nil {
 		http.Error(w, fmt.Sprintf("render failed: %v", err), http.StatusInternalServerError)
 	}
 }
@@ -42,9 +42,9 @@ func (h *Handlers) ListArticlesHTML(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "public, max-age=300")
 
 	// Create blog list and render
-	blogData := h.views.IndexFromArticles(articles)
+	blogData := view.NewIndexData(articles)
 
-	if err := h.views.Blog(r.Context(), w, blogData); err != nil {
+	if err := h.views.Blog(blogData).Layout(r.Context(), w); err != nil {
 		http.Error(w, fmt.Sprintf("render failed: %v", err), http.StatusInternalServerError)
 	}
 }
@@ -73,9 +73,9 @@ func (h *Handlers) GetArticleHTML(w http.ResponseWriter, r *http.Request) {
 	htmlContent := mdRenderer.Render(contentWithoutFrontMatter)
 
 	// Create PostData and render
-	postData := h.views.PostFromArticle(article, string(htmlContent))
+	postData := view.NewPostData(article, string(htmlContent))
 
-	if err := h.views.Post(r.Context(), w, postData); err != nil {
+	if err := h.views.Post(postData).Layout(r.Context(), w); err != nil {
 		http.Error(w, fmt.Sprintf("render failed: %v", err), http.StatusInternalServerError)
 	}
 }
@@ -91,7 +91,7 @@ func (h *Handlers) GetAtomFeed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 
-	if err := h.views.AtomFeed(r.Context(), w, articles); err != nil {
+	if err := h.views.AtomFeed(r.Context(), w, articles, nil); err != nil {
 		http.Error(w, fmt.Sprintf("feed generation failed: %v", err), http.StatusInternalServerError)
 	}
 }

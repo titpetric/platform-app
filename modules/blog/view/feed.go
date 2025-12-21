@@ -12,13 +12,8 @@ import (
 )
 
 // AtomFeed generates an Atom XML feed for articles
-func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Article) error {
-	var meta map[string]any
+func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Article, meta map[string]any) error {
 	var author map[string]any
-
-	if m, ok := v.data["meta"].(map[string]any); ok {
-		meta = m
-	}
 	if m, ok := meta["author"].(map[string]any); ok {
 		author = m
 	}

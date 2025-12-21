@@ -52,8 +52,8 @@
     </script>
 
     <!-- assets the situation -->
-    <link rel="stylesheet" href="/assets/css/themes.css" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="/assets/css/blog/themes.css" />
+    <link rel="stylesheet" href="/assets/css/blog/styles.css" />
     <style v-html="getCss(page.url)"></style>
   </head>
   <body>

@@ -3,31 +3,23 @@ package handlers
 import (
 	"io/fs"
 
-	"github.com/titpetric/platform-app/modules/blog/layout"
+	"github.com/titpetric/vuego"
+
 	"github.com/titpetric/platform-app/modules/blog/storage"
 	"github.com/titpetric/platform-app/modules/blog/view"
 )
 
 // Handlers handles HTTP requests for the blog module
 type Handlers struct {
-	repository     *storage.Storage
-	views          *view.Views
-	layoutRenderer *layout.Renderer
+	repository *storage.Storage
+	views      *view.Views
 }
 
 // NewHandlers creates a new Handlers instance with the given storage and theme
 func NewHandlers(repo *storage.Storage, themeFS fs.FS) (*Handlers, error) {
-	views, err := view.NewViews(themeFS)
-	if err != nil {
-		return nil, err
-	}
-
-	layoutRenderer := layout.NewRenderer(themeFS, map[string]any{})
-
 	return &Handlers{
-		repository:     repo,
-		views:          views,
-		layoutRenderer: layoutRenderer,
+		repository: repo,
+		views:      view.NewViews(vuego.New(vuego.WithFS(themeFS), vuego.WithLessProcessor())),
 	}, nil
 }
 
