@@ -11,6 +11,7 @@ import (
 	"github.com/titpetric/platform/pkg/telemetry"
 
 	"github.com/titpetric/platform-app/modules/daily/model"
+	"github.com/titpetric/platform-app/modules/daily/schema"
 	"github.com/titpetric/platform-app/modules/daily/storage"
 	"github.com/titpetric/platform-app/modules/daily/view"
 	"github.com/titpetric/platform-app/modules/user"
@@ -37,7 +38,7 @@ func (m *Module) Start(ctx context.Context) error {
 		return err
 	}
 
-	if err := Migrate(ctx, db); err != nil {
+	if err := storage.Migrate(ctx, db, schema.Migrations); err != nil {
 		return err
 	}
 

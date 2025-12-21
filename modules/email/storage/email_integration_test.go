@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/titpetric/platform-app/modules/email"
 	"github.com/titpetric/platform-app/modules/email/model"
+	"github.com/titpetric/platform-app/modules/email/schema"
 	"github.com/titpetric/platform-app/modules/email/storage"
 )
 
@@ -24,7 +24,7 @@ func setupTestDB(t *testing.T, ctx context.Context) {
 		t.Skipf("skipping: database not available: %v", err)
 	}
 
-	if err := email.Migrate(ctx, db); err != nil {
+	if err := storage.Migrate(ctx, db, schema.Migrations); err != nil {
 		t.Fatalf("failed to migrate email tables: %v", err)
 	}
 }

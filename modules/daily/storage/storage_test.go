@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/titpetric/platform/pkg/assert"
 
-	"github.com/titpetric/platform-app/modules/daily"
 	"github.com/titpetric/platform-app/modules/daily/model"
+	"github.com/titpetric/platform-app/modules/daily/schema"
 	"github.com/titpetric/platform-app/modules/daily/storage"
 	"github.com/titpetric/platform-app/modules/user"
 	usermodel "github.com/titpetric/platform-app/modules/user/model"
@@ -34,9 +34,10 @@ func TestStorage(t *testing.T) {
 
 	db := Must[*sqlx.DB](t, storage.DB)
 
-	assert.NoError(t, daily.Migrate(ctx, db))
+	assert.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
 
-	repo := storage.NewStorage(db)
+	repo, err := storage.NewStorage(ctx, db)
+	require.NoError(t, err)
 
 	{
 		_, err := repo.Get(ctx, "test")

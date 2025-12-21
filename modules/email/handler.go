@@ -5,6 +5,7 @@ import (
 
 	"github.com/titpetric/platform"
 
+	"github.com/titpetric/platform-app/modules/email/schema"
 	"github.com/titpetric/platform-app/modules/email/storage"
 )
 
@@ -30,7 +31,7 @@ func (h *Handler) Start(ctx context.Context) error {
 		return err
 	}
 
-	if err := Migrate(ctx, db); err != nil {
+	if err := storage.Migrate(ctx, db, schema.Migrations); err != nil {
 		return err
 	}
 
