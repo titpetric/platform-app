@@ -8,13 +8,13 @@ import (
 
 // PostData holds the data required for rendering the post layout
 type PostData struct {
-	Slug        string
-	Title       string
-	Description string
-	OgImage     string
-	Content     string
-	Date        *time.Time
-	Classnames  string
+	Slug        string     `json:"slug"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	OgImage     string     `json:"ogImage"`
+	Content     string     `json:"content"`
+	Date        *time.Time `json:"date"`
+	Classnames  string     `json:"classnames"`
 }
 
 // NewPostData creates PostData from an Article
