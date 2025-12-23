@@ -6,3 +6,4 @@ go-fsck.json
 docs/.flatnotes
 /appdata
 /data
+/bin

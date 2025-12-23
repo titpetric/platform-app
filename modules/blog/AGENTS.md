@@ -205,7 +205,7 @@ All database operations accept `context.Context`:
 - Enables request cancellation
 - Supports distributed tracing
 - Pass `r.Context()` from HTTP handlers
-- Use `context.Background()` in tests
+- Use `t/b.Context()` in tests
 
 ## Continuous Integration
 

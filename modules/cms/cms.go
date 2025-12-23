@@ -1,4 +1,4 @@
-package blog
+package cms
 
 import (
 	yaml "gopkg.in/yaml.v3"

@@ -1,4 +1,4 @@
-package blog
+package cms
 
 // RenderData prepares form data for vuego template rendering
 type RenderData struct {
