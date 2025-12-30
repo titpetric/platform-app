@@ -1,4 +1,4 @@
-package service
+package storage
 
 import (
 	"context"
@@ -27,6 +27,7 @@ func Migrate(ctx context.Context, schema embed.FS) error {
 	}
 
 	return migrate.RunWithFS(
+		ctx,
 		db,
 		migrations,
 		&migrate.Options{

@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/alecthomas/chroma/v2 v2.21.1
-	github.com/go-bridget/mig v0.0.0-20251221082645-9f72e3734e3b
+	github.com/go-bridget/mig v0.0.2
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/google/go-cmp v0.7.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -12,7 +12,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.11.1
 	github.com/titpetric/platform v0.1.1
-	github.com/titpetric/vuego v0.4.2
+	github.com/titpetric/vuego v0.5.0
 	golang.org/x/crypto v0.46.0
 	gopkg.in/yaml.v3 v3.0.1
 	modernc.org/sqlite v1.41.0

@@ -22,6 +22,7 @@ func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
 	}
 
 	return migrate.RunWithFS(
+		ctx,
 		db,
 		migrations,
 		&migrate.Options{

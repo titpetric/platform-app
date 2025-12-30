@@ -8,7 +8,7 @@ import (
 
 	"github.com/titpetric/platform"
 
-	"github.com/titpetric/platform-app/modules/maillist/service"
+	"github.com/titpetric/platform-app/modules/maillist/storage"
 )
 
 //go:embed schema
@@ -27,7 +27,7 @@ func (*MailList) Name() string {
 }
 
 func (m *MailList) Start(ctx context.Context) error {
-	return service.Migrate(ctx, schema)
+	return storage.Migrate(ctx, schema)
 }
 
 func (m *MailList) Mount(r platform.Router) error {
@@ -39,7 +39,7 @@ func (m *MailList) Mount(r platform.Router) error {
 }
 
 func (m *MailList) Index(w http.ResponseWriter, r *http.Request) {
-	perms := service.NewPermissions(r)
+	perms := storage.NewPermissions(r)
 
 	fmt.Fprintf(w, "Permissions: %#v", perms)
 }
