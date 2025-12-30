@@ -1,0 +1,112 @@
+{
+  "title": "Create Event",
+  "tableName": "event",
+  "recordId": null,
+  "method": "POST",
+  "submitUrl": "/cms/event",
+  "submitText": "Create",
+  "cancelUrl": "/cms/event",
+  "fields": [
+    {
+      "name": "title",
+      "label": "Title",
+      "type": "text",
+      "value": "",
+      "placeholder": "Enter event title",
+      "required": true,
+      "readonly": false,
+      "disabled": false,
+      "size": "full",
+      "help": "Event title or name"
+    },
+    {
+      "name": "description",
+      "label": "Description",
+      "type": "textarea",
+      "value": "",
+      "placeholder": "Enter event description",
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "size": "full",
+      "rows": 4,
+      "cols": 50,
+      "help": "Detailed description of the event"
+    },
+    {
+      "name": "status",
+      "label": "Status",
+      "type": "select",
+      "value": "PENDING",
+      "required": true,
+      "readonly": false,
+      "disabled": false,
+      "size": "half",
+      "options": [
+        {"value": "PENDING", "label": "PENDING"},
+        {"value": "PROCESSING", "label": "PROCESSING"},
+        {"value": "COMPLETED", "label": "COMPLETED"},
+        {"value": "FAILED", "label": "FAILED"}
+      ],
+      "help": "Current status of the event"
+    },
+    {
+      "name": "retry_count",
+      "label": "Retry Count",
+      "type": "number",
+      "value": 0,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "size": "half",
+      "help": "Number of retry attempts"
+    },
+    {
+      "name": "max_retries",
+      "label": "Max Retries",
+      "type": "number",
+      "value": 3,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "size": "half",
+      "help": "Maximum number of retries allowed"
+    },
+    {
+      "name": "tags",
+      "label": "Tags",
+      "type": "text",
+      "value": "",
+      "placeholder": "comma-separated values",
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "size": "half",
+      "help": "Tags for categorization"
+    },
+    {
+      "name": "payload",
+      "label": "Payload",
+      "type": "textarea",
+      "value": "",
+      "placeholder": "JSON payload",
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "size": "full",
+      "rows": 6,
+      "help": "JSON data for event processing"
+    },
+    {
+      "name": "next_retry_at",
+      "label": "Next Retry At",
+      "type": "datetime-local",
+      "value": "",
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "size": "half",
+      "help": "When to retry this event next"
+    }
+  ]
+}

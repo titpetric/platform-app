@@ -1,0 +1,20 @@
+<template :required="name,label">
+  <div class="cms-input-wrapper">
+    <label for="{{ name }}" class="form-label">
+      {{ label }}
+      <span class="required-marker" v-if="required">*</span>
+    </label>
+    <input 
+      type="date"
+      id="{{ name }}"
+      name="{{ name }}"
+      :value="value"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      class="form-control"
+      :class="{'is-invalid': error}">
+    <small class="form-text text-muted" v-if="help">{{ help }}</small>
+    <div class="invalid-feedback d-block" v-if="error">{{ error }}</div>
+  </div>
+</template>

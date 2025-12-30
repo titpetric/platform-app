@@ -1,0 +1,12 @@
+{
+  "name": "description",
+  "label": "Description",
+  "value": "This is a test description",
+  "placeholder": "Enter description",
+  "required": false,
+  "readonly": false,
+  "disabled": false,
+  "rows": 4,
+  "cols": 50,
+  "help": "Event description"
+}

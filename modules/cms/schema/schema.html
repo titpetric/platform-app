@@ -1,0 +1,1501 @@
+<meta charset="UTF-8"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+<title>Database Schema</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/bootstrap.min.css" rel="stylesheet"></link>
+<link href="schema.css" rel="stylesheet"></link>
+<div class="container">
+  <h1>Database Schema Documentation</h1>
+  <p class="lead mb-4">
+    <strong>Total Tables:</strong>
+    <span class="badge bg-primary">3</span>
+  </p>
+  <div>
+    <h2>
+      EVENT       <span class="badge bg-info text-dark">11 columns</span>
+    </h2>
+    <div>
+      <p class="mb-3">
+        <strong>Description:</strong>
+         Event      </p>
+    </div>
+    <h3>Columns</h3>
+    <table class="table table-striped table-hover mb-4">
+      <thead class="table-primary">
+        <tr>
+          <th>Name</th>
+          <th>SQL Type</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+          <th>Enum Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>id</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>ID</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>title</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Title</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>description</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Description</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>tags</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-index">INDEXED</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Tags</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>status</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">enum</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-index">INDEXED</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Status</div>
+          </td>
+          <td>
+            <div>
+              <div class="enum-values">
+                <div>• COMPLETED</div>
+                <div>• FAILED</div>
+                <div>• PENDING</div>
+                <div>• PROCESSING</div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>payload</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Payload</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>retry_count</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Retry Count</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>max_retries</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Max Retries</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>next_retry_at</strong>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-index">INDEXED</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Next Retry At</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>created_at</strong>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Created At</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>updated_at</strong>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Updated At</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <h3>Indexes</h3>
+      <table class="table table-striped table-hover mb-4">
+        <thead class="table-primary">
+          <tr>
+            <th>Index Name</th>
+            <th>Columns</th>
+            <th>Type</th>
+            <th>Properties</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div>
+                <strong class="text-muted">auto-generated</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>id</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Enforces uniqueness and not-null</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <strong>idx_event_next_retry_at</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>next_retry_at</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-index">INDEX</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Improves query performance</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <strong>idx_event_status</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>status</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-index">INDEX</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Improves query performance</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <strong>idx_event_tags</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>tags</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-index">INDEX</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Improves query performance</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="info-box primary">
+        <h4>Index Summary</h4>
+        <ul>
+          <li>
+            Total indexes:             <strong>4</strong>
+          </li>
+          <li>
+            
+            Primary keys:           </li>
+          <li>
+            
+            Performance indexes:             <strong>
+            </strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2>
+      EVENT_LOG       <span class="badge bg-info text-dark">8 columns</span>
+    </h2>
+    <div>
+      <p class="mb-3">
+        <strong>Description:</strong>
+         Event Log      </p>
+    </div>
+    <h3>Columns</h3>
+    <table class="table table-striped table-hover mb-4">
+      <thead class="table-primary">
+        <tr>
+          <th>Name</th>
+          <th>SQL Type</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+          <th>Enum Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>id</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>ID</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_id</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-index">INDEXED</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Event ID</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>worker_id</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-index">INDEXED</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Worker ID</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>action</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Action</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>status_code</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Status Code</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>error_message</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Error Message</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>execution_time_ms</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Execution Time Ms</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>created_at</strong>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-index">INDEXED</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Created At</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <h3>Indexes</h3>
+      <table class="table table-striped table-hover mb-4">
+        <thead class="table-primary">
+          <tr>
+            <th>Index Name</th>
+            <th>Columns</th>
+            <th>Type</th>
+            <th>Properties</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div>
+                <strong class="text-muted">auto-generated</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>id</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Enforces uniqueness and not-null</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <strong>idx_event_log_created_at</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>created_at</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-index">INDEX</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Improves query performance</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <strong>idx_event_log_event_id</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>event_id</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-index">INDEX</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Improves query performance</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <strong>idx_event_log_worker_id</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>worker_id</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-index">INDEX</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Improves query performance</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 1                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="info-box primary">
+        <h4>Index Summary</h4>
+        <ul>
+          <li>
+            Total indexes:             <strong>4</strong>
+          </li>
+          <li>
+            
+            Primary keys:           </li>
+          <li>
+            
+            Performance indexes:             <strong>
+            </strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2>
+      MIGRATIONS       <span class="badge bg-info text-dark">4 columns</span>
+    </h2>
+    <div>
+      <p class="mb-3">
+        <strong>Description:</strong>
+         Migrations      </p>
+    </div>
+    <h3>Columns</h3>
+    <table class="table table-striped table-hover mb-4">
+      <thead class="table-primary">
+        <tr>
+          <th>Name</th>
+          <th>SQL Type</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+          <th>Enum Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>project</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Project</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>filename</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+              <div class="mb-2">
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>Filename</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>statement_index</strong>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Statement Index</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>status</strong>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td class="small-text">
+            <div>
+            </div>
+          </td>
+          <td>
+            <div>Status</div>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <h3>Indexes</h3>
+      <table class="table table-striped table-hover mb-4">
+        <thead class="table-primary">
+          <tr>
+            <th>Index Name</th>
+            <th>Columns</th>
+            <th>Type</th>
+            <th>Properties</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div>
+                <strong>sqlite_autoindex_migrations_1</strong>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>
+                  <code>project</code>
+                </span>
+                <span>
+                  <div class="mt-2"></div>
+                  <code>filename</code>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span class="key-badge key-primary">PRIMARY KEY</span>
+              </div>
+            </td>
+            <td class="small-text">
+              <div>Enforces uniqueness and not-null</div>
+              <div class="text-light mt-2">
+                <span>
+                  Covers 2                  <span> columns</span>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="info-box primary">
+        <h4>Index Summary</h4>
+        <ul>
+          <li>
+            Total indexes:             <strong>1</strong>
+          </li>
+          <li>
+            
+            Primary keys:           </li>
+          <li>
+            
+            Performance indexes:             <strong>
+            </strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="section-divider">
+    <h2>Schema Statistics</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h4>Tables</h4>
+        <p class="stat-value">3</p>
+      </div>
+      <div class="stat-card danger">
+        <h4>Total Columns</h4>
+        <p class="stat-value">
+          <span>11</span>
+          <span>8</span>
+          <span>4</span>
+        </p>
+      </div>
+      <div class="stat-card success">
+        <h4>Total Indexes</h4>
+        <p class="stat-value">
+          <span>4</span>
+          <span>4</span>
+          <span>1</span>
+        </p>
+      </div>
+    </div>
+    <h3>Table Details</h3>
+    <table class="table table-striped table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th>Table</th>
+          <th>Description</th>
+          <th class="text-center">Columns</th>
+          <th class="text-center">Primary Keys</th>
+          <th class="text-center">Indexes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>Event</td>
+          <td class="text-center">11</td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">4</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>Event Log</td>
+          <td class="text-center">8</td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">4</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>migrations</strong>
+          </td>
+          <td>Migrations</td>
+          <td class="text-center">4</td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">1</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 class="mt-5">Column Type Distribution</h3>
+    <p class="text-muted">Aggregated data type usage across all tables in the schema.</p>
+    <table class="table table-striped table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th>Data Type</th>
+          <th>SQL Type</th>
+          <th class="text-center">Usage Count</th>
+          <th>Tables Using This Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>TEXT</td>
+          <td class="text-center">
+            <strong>12</strong>
+          </td>
+          <td>event, event_log, migrations</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>INTEGER</td>
+          <td class="text-center">
+            <strong>7</strong>
+          </td>
+          <td>event, event_log, migrations</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td>TIMESTAMP</td>
+          <td class="text-center">
+            <strong>5</strong>
+          </td>
+          <td>event, event_log</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="datatype">enum</span>
+          </td>
+          <td>TEXT</td>
+          <td class="text-center">
+            <strong>1</strong>
+          </td>
+          <td>event</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 class="mt-5">All Columns by Table</h3>
+    <p class="text-muted">Complete list of all columns across all tables with full details.</p>
+    <table class="table table-striped table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th>Table</th>
+          <th>Column Name</th>
+          <th>SQL Type</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>id</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="key-badge key-primary">PRIMARY KEY</span>
+          </td>
+          <td>ID</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>title</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Title</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>description</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Description</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>tags</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="key-badge key-index">INDEXED</span>
+          </td>
+          <td>Tags</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>status</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">enum</span>
+          </td>
+          <td>
+            <span class="key-badge key-index">INDEXED</span>
+          </td>
+          <td>Status</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>payload</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Payload</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>retry_count</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Retry Count</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>max_retries</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Max Retries</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>next_retry_at</code>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td>
+            <span class="key-badge key-index">INDEXED</span>
+          </td>
+          <td>Next Retry At</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>created_at</code>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Created At</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event</strong>
+          </td>
+          <td>
+            <code>updated_at</code>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Updated At</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>id</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="key-badge key-primary">PRIMARY KEY</span>
+          </td>
+          <td>ID</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>event_id</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="key-badge key-index">INDEXED</span>
+          </td>
+          <td>Event ID</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>worker_id</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="key-badge key-index">INDEXED</span>
+          </td>
+          <td>Worker ID</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>action</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Action</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>status_code</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Status Code</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>error_message</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Error Message</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>execution_time_ms</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Execution Time Ms</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>event_log</strong>
+          </td>
+          <td>
+            <code>created_at</code>
+          </td>
+          <td>
+            <span class="datatype">TIMESTAMP</span>
+          </td>
+          <td>
+            <span class="datatype">timestamp</span>
+          </td>
+          <td>
+            <span class="key-badge key-index">INDEXED</span>
+          </td>
+          <td>Created At</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>migrations</strong>
+          </td>
+          <td>
+            <code>project</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="key-badge key-primary">PRIMARY KEY</span>
+          </td>
+          <td>Project</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>migrations</strong>
+          </td>
+          <td>
+            <code>filename</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="key-badge key-primary">PRIMARY KEY</span>
+          </td>
+          <td>Filename</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>migrations</strong>
+          </td>
+          <td>
+            <code>statement_index</code>
+          </td>
+          <td>
+            <span class="datatype">INTEGER</span>
+          </td>
+          <td>
+            <span class="datatype">integer</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Statement Index</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>migrations</strong>
+          </td>
+          <td>
+            <code>status</code>
+          </td>
+          <td>
+            <span class="datatype">TEXT</span>
+          </td>
+          <td>
+            <span class="datatype">text</span>
+          </td>
+          <td>
+            <span class="text-light">-</span>
+          </td>
+          <td>Status</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

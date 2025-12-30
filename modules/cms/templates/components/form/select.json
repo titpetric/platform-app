@@ -1,0 +1,14 @@
+{
+  "name": "status",
+  "label": "Status",
+  "value": "PENDING",
+  "required": true,
+  "disabled": false,
+  "options": [
+    {"value": "PENDING", "label": "Pending"},
+    {"value": "PROCESSING", "label": "Processing"},
+    {"value": "COMPLETED", "label": "Completed"},
+    {"value": "FAILED", "label": "Failed"}
+  ],
+  "help": "Select status"
+}

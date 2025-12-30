@@ -1,0 +1,11 @@
+{
+  "name": "title",
+  "label": "Title",
+  "type": "text",
+  "value": "My Event",
+  "placeholder": "Enter title",
+  "required": true,
+  "readonly": false,
+  "disabled": false,
+  "help": "Event title"
+}

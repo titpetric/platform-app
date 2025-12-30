@@ -1,0 +1,8 @@
+{
+  "name": "active",
+  "label": "Active",
+  "value": true,
+  "required": false,
+  "disabled": false,
+  "help": "Enable this item"
+}

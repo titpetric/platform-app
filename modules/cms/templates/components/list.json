@@ -1,0 +1,91 @@
+{
+  "title": "Events",
+  "tableName": "event",
+  "createUrl": "/cms/event/create",
+  "editUrlBase": "/cms/event/edit/",
+  "deleteUrlBase": "/cms/event/delete/",
+  "columns": [
+    {
+      "name": "id",
+      "label": "ID",
+      "type": "integer",
+      "width": "60px",
+      "sortable": true
+    },
+    {
+      "name": "title",
+      "label": "Title",
+      "type": "text",
+      "width": "280px",
+      "sortable": true
+    },
+    {
+      "name": "status",
+      "label": "Status",
+      "type": "enum",
+      "width": "110px",
+      "sortable": true
+    },
+    {
+      "name": "retry_count",
+      "label": "Retries",
+      "type": "integer",
+      "width": "80px",
+      "sortable": true
+    },
+    {
+      "name": "created_at",
+      "label": "Created",
+      "type": "timestamp",
+      "width": "160px",
+      "sortable": true
+    }
+  ],
+  "rows": [
+    {
+      "id": 1,
+      "title": "User Registration Event",
+      "status": "COMPLETED",
+      "retry_count": 0,
+      "created_at": "2024-12-30T10:15:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Payment Processing Event",
+      "status": "PENDING",
+      "retry_count": 2,
+      "created_at": "2024-12-30T11:30:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Email Notification Event",
+      "status": "FAILED",
+      "retry_count": 5,
+      "created_at": "2024-12-30T09:45:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Data Sync Event",
+      "status": "PROCESSING",
+      "retry_count": 1,
+      "created_at": "2024-12-30T12:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Webhook Delivery Event",
+      "status": "COMPLETED",
+      "retry_count": 0,
+      "created_at": "2024-12-30T08:20:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 5,
+    "total": 12,
+    "totalPages": 3,
+    "hasPrev": false,
+    "hasNext": true,
+    "prevUrl": "",
+    "nextUrl": "/cms/event?page=2&pageSize=5"
+  }
+}

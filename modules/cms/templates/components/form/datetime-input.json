@@ -1,0 +1,9 @@
+{
+  "name": "next_retry_at",
+  "label": "Next Retry At",
+  "value": "2025-12-30T14:30",
+  "required": false,
+  "readonly": false,
+  "disabled": false,
+  "help": "When to retry"
+}

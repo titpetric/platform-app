@@ -1,0 +1,10 @@
+{
+  "name": "retry_count",
+  "label": "Retry Count",
+  "value": 3,
+  "placeholder": "0",
+  "required": false,
+  "readonly": false,
+  "disabled": false,
+  "help": "Number of retries"
+}

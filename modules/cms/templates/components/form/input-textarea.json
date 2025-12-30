@@ -1,0 +1,13 @@
+{
+  "name": "description",
+  "label": "Description",
+  "type": "textarea",
+  "value": "Event processing in progress",
+  "placeholder": "Enter event description",
+  "required": false,
+  "readonly": false,
+  "disabled": false,
+  "rows": 4,
+  "cols": 50,
+  "help": "Detailed description of the event"
+}

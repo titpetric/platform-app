@@ -1,0 +1,247 @@
+{
+  "tables": [
+    {
+      "columns": [
+        {
+          "comment": "ID",
+          "datatype": "integer",
+          "key": "PRI",
+          "name": "id",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Title",
+          "datatype": "text",
+          "name": "title",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Description",
+          "datatype": "text",
+          "name": "description",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Tags",
+          "datatype": "text",
+          "key": "MUL",
+          "name": "tags",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Status",
+          "datatype": "enum",
+          "enum_values": [
+            "COMPLETED",
+            "FAILED",
+            "PENDING",
+            "PROCESSING"
+          ],
+          "key": "MUL",
+          "name": "status",
+          "type": "TEXT",
+          "values": [
+            "COMPLETED",
+            "FAILED",
+            "PENDING",
+            "PROCESSING"
+          ]
+        },
+        {
+          "comment": "Payload",
+          "datatype": "text",
+          "name": "payload",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Retry Count",
+          "datatype": "integer",
+          "name": "retry_count",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Max Retries",
+          "datatype": "integer",
+          "name": "max_retries",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Next Retry At",
+          "datatype": "timestamp",
+          "key": "MUL",
+          "name": "next_retry_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "comment": "Created At",
+          "datatype": "timestamp",
+          "name": "created_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "comment": "Updated At",
+          "datatype": "timestamp",
+          "name": "updated_at",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "comment": "Event",
+      "indexes": [
+        {
+          "columns": [
+            "id"
+          ],
+          "primary": true,
+          "unique": true
+        },
+        {
+          "columns": [
+            "next_retry_at"
+          ],
+          "name": "idx_event_next_retry_at"
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "idx_event_status"
+        },
+        {
+          "columns": [
+            "tags"
+          ],
+          "name": "idx_event_tags"
+        }
+      ],
+      "name": "event"
+    },
+    {
+      "columns": [
+        {
+          "comment": "ID",
+          "datatype": "integer",
+          "key": "PRI",
+          "name": "id",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Event ID",
+          "datatype": "integer",
+          "key": "MUL",
+          "name": "event_id",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Worker ID",
+          "datatype": "text",
+          "key": "MUL",
+          "name": "worker_id",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Action",
+          "datatype": "text",
+          "name": "action",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Status Code",
+          "datatype": "integer",
+          "name": "status_code",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Error Message",
+          "datatype": "text",
+          "name": "error_message",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Execution Time Ms",
+          "datatype": "integer",
+          "name": "execution_time_ms",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Created At",
+          "datatype": "timestamp",
+          "key": "MUL",
+          "name": "created_at",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "comment": "Event Log",
+      "indexes": [
+        {
+          "columns": [
+            "id"
+          ],
+          "primary": true,
+          "unique": true
+        },
+        {
+          "columns": [
+            "created_at"
+          ],
+          "name": "idx_event_log_created_at"
+        },
+        {
+          "columns": [
+            "event_id"
+          ],
+          "name": "idx_event_log_event_id"
+        },
+        {
+          "columns": [
+            "worker_id"
+          ],
+          "name": "idx_event_log_worker_id"
+        }
+      ],
+      "name": "event_log"
+    },
+    {
+      "columns": [
+        {
+          "comment": "Project",
+          "datatype": "text",
+          "key": "PRI",
+          "name": "project",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Filename",
+          "datatype": "text",
+          "key": "PRI",
+          "name": "filename",
+          "type": "TEXT"
+        },
+        {
+          "comment": "Statement Index",
+          "datatype": "integer",
+          "name": "statement_index",
+          "type": "INTEGER"
+        },
+        {
+          "comment": "Status",
+          "datatype": "text",
+          "name": "status",
+          "type": "TEXT"
+        }
+      ],
+      "comment": "Migrations",
+      "indexes": [
+        {
+          "columns": [
+            "project",
+            "filename"
+          ],
+          "name": "sqlite_autoindex_migrations_1",
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "name": "migrations"
+    }
+  ]
+}

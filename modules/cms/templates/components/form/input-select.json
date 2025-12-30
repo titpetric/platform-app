@@ -1,0 +1,28 @@
+{
+  "name": "status",
+  "label": "Status",
+  "type": "select",
+  "value": "PENDING",
+  "required": true,
+  "readonly": false,
+  "disabled": false,
+  "options": [
+    {
+      "value": "PENDING",
+      "label": "Pending"
+    },
+    {
+      "value": "PROCESSING",
+      "label": "Processing"
+    },
+    {
+      "value": "COMPLETED",
+      "label": "Completed"
+    },
+    {
+      "value": "FAILED",
+      "label": "Failed"
+    }
+  ],
+  "help": "Choose the current status"
+}

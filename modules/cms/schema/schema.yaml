@@ -1,0 +1,157 @@
+tables:
+- name: event
+  comment: Event
+  columns:
+    - name: id
+      type: INTEGER
+      key: PRI
+      comment: ID
+      datatype: integer
+    - name: title
+      type: TEXT
+      comment: Title
+      datatype: text
+    - name: description
+      type: TEXT
+      comment: Description
+      datatype: text
+    - name: tags
+      type: TEXT
+      key: MUL
+      comment: Tags
+      datatype: text
+    - name: status
+      type: TEXT
+      key: MUL
+      comment: Status
+      datatype: enum
+      values:
+        - COMPLETED
+        - FAILED
+        - PENDING
+        - PROCESSING
+      enum_values:
+        - COMPLETED
+        - FAILED
+        - PENDING
+        - PROCESSING
+    - name: payload
+      type: TEXT
+      comment: Payload
+      datatype: text
+    - name: retry_count
+      type: INTEGER
+      comment: Retry Count
+      datatype: integer
+    - name: max_retries
+      type: INTEGER
+      comment: Max Retries
+      datatype: integer
+    - name: next_retry_at
+      type: TIMESTAMP
+      key: MUL
+      comment: Next Retry At
+      datatype: timestamp
+    - name: created_at
+      type: TIMESTAMP
+      comment: Created At
+      datatype: timestamp
+    - name: updated_at
+      type: TIMESTAMP
+      comment: Updated At
+      datatype: timestamp
+  indexes:
+    - columns:
+        - id
+      primary: true
+      unique: true
+    - name: idx_event_next_retry_at
+      columns:
+        - next_retry_at
+    - name: idx_event_status
+      columns:
+        - status
+    - name: idx_event_tags
+      columns:
+        - tags
+- name: event_log
+  comment: Event Log
+  columns:
+    - name: id
+      type: INTEGER
+      key: PRI
+      comment: ID
+      datatype: integer
+    - name: event_id
+      type: INTEGER
+      key: MUL
+      comment: Event ID
+      datatype: integer
+    - name: worker_id
+      type: TEXT
+      key: MUL
+      comment: Worker ID
+      datatype: text
+    - name: action
+      type: TEXT
+      comment: Action
+      datatype: text
+    - name: status_code
+      type: INTEGER
+      comment: Status Code
+      datatype: integer
+    - name: error_message
+      type: TEXT
+      comment: Error Message
+      datatype: text
+    - name: execution_time_ms
+      type: INTEGER
+      comment: Execution Time Ms
+      datatype: integer
+    - name: created_at
+      type: TIMESTAMP
+      key: MUL
+      comment: Created At
+      datatype: timestamp
+  indexes:
+    - columns:
+        - id
+      primary: true
+      unique: true
+    - name: idx_event_log_created_at
+      columns:
+        - created_at
+    - name: idx_event_log_event_id
+      columns:
+        - event_id
+    - name: idx_event_log_worker_id
+      columns:
+        - worker_id
+- name: migrations
+  comment: Migrations
+  columns:
+    - name: project
+      type: TEXT
+      key: PRI
+      comment: Project
+      datatype: text
+    - name: filename
+      type: TEXT
+      key: PRI
+      comment: Filename
+      datatype: text
+    - name: statement_index
+      type: INTEGER
+      comment: Statement Index
+      datatype: integer
+    - name: status
+      type: TEXT
+      comment: Status
+      datatype: text
+  indexes:
+    - name: sqlite_autoindex_migrations_1
+      columns:
+        - project
+        - filename
+      primary: true
+      unique: true

@@ -1,0 +1,47 @@
+<template :required="title,tableName,fields,submitUrl">
+  <link rel="stylesheet" href="form.less">
+  <div class="cms-form-wrapper">
+    <form method="{{ method | default('POST') }}" action="{{ submitUrl }}" class="cms-form" novalidate>
+      <div class="form-container">
+        <div class="form-header">
+          <h1 class="form-title">{{ title }}</h1>
+        </div>
+
+        <div class="form-body">
+          <div class="row">
+            <div v-for="field in fields" :class="{'col-lg-6': field.size == 'half', 'col-12': field.size == 'full' || !field.size}">
+              <vuego include="components/form/input.vuego" 
+                :name="field.name"
+                :label="field.label"
+                :type="field.type"
+                :value="field.value"
+                :placeholder="field.placeholder"
+                :required="field.required"
+                :readonly="field.readonly"
+                :disabled="field.disabled"
+                :options="field.options"
+                :rows="field.rows"
+                :cols="field.cols"
+                :help="field.help"
+                :error="field.error">
+              </vuego>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <div class="btn-group-actions">
+            <button type="submit" class="btn btn-primary btn-lg">{{ submitText | default('Submit') }}</button>
+            <v-if="cancelUrl">
+              <a href="{{ cancelUrl }}" class="btn btn-secondary btn-lg">Cancel</a>
+            </v-if>
+          </div>
+        </div>
+      </div>
+
+      <v-if="recordId">
+        <input type="hidden" name="id" value="{{ recordId }}">
+      </v-if>
+    </form>
+  </div>
+</template>

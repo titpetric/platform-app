@@ -1,0 +1,122 @@
+<template :required="name,label,type">
+  <link rel="stylesheet" href="form.less">
+  
+  <!-- Text, Email, URL, Tel, Password inputs -->
+  <v-if="type == 'text' || type == 'email' || type == 'url' || type == 'tel' || type == 'password'">
+    <vuego include="components/form/text-input.vuego" 
+      :name="name"
+      :label="label"
+      :type="type"
+      :value="value"
+      :placeholder="placeholder"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-if>
+
+  <!-- Number input -->
+  <v-else-if="type == 'number'">
+    <vuego include="components/form/number-input.vuego" 
+      :name="name"
+      :label="label"
+      :value="value"
+      :placeholder="placeholder"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else-if>
+
+  <!-- Textarea -->
+  <v-else-if="type == 'textarea'">
+    <vuego include="components/form/textarea.vuego" 
+      :name="name"
+      :label="label"
+      :value="value"
+      :placeholder="placeholder"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :rows="rows"
+      :cols="cols"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else-if>
+
+  <!-- Select/Dropdown -->
+  <v-else-if="type == 'select'">
+    <vuego include="components/form/select.vuego" 
+      :name="name"
+      :label="label"
+      :value="value"
+      :required="required"
+      :disabled="disabled"
+      :options="options"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else-if>
+
+  <!-- Datetime Local -->
+  <v-else-if="type == 'datetime-local'">
+    <vuego include="components/form/datetime-input.vuego" 
+      :name="name"
+      :label="label"
+      :value="value"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else-if>
+
+  <!-- Date -->
+  <v-else-if="type == 'date'">
+    <vuego include="components/form/date-input.vuego" 
+      :name="name"
+      :label="label"
+      :value="value"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else-if>
+
+  <!-- Checkbox -->
+  <v-else-if="type == 'checkbox'">
+    <vuego include="components/form/checkbox.vuego" 
+      :name="name"
+      :label="label"
+      :value="value"
+      :required="required"
+      :disabled="disabled"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else-if>
+
+  <!-- Fallback: text input -->
+  <v-else>
+    <vuego include="components/form/text-input.vuego" 
+      :name="name"
+      :label="label"
+      :type="'text'"
+      :value="value"
+      :placeholder="placeholder"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :help="help"
+      :error="error">
+    </vuego>
+  </v-else>
+</template>

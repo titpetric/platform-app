@@ -1,0 +1,12 @@
+{
+  "name": "email",
+  "label": "Email Address",
+  "type": "email",
+  "value": "user@example.com",
+  "placeholder": "Enter your email",
+  "required": true,
+  "readonly": false,
+  "disabled": false,
+  "help": "We'll never share your email",
+  "error": ""
+}

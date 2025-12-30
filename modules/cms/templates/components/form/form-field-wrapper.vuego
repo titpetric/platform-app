@@ -1,0 +1,5 @@
+<template :required="name,label">
+  <div class="cms-input-wrapper">
+    <slot></slot>
+  </div>
+</template>

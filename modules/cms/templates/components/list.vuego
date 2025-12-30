@@ -1,0 +1,456 @@
+<template :required="title,tableName,columns,rows,createUrl,pagination">
+  <div class="cms-list-wrapper">
+    <div class="list-container">
+      <div class="list-header">
+        <h1 class="list-title">{{ title }}</h1>
+        <a href="{{ createUrl }}" class="btn btn-primary">+ Add New</a>
+      </div>
+
+      <div class="list-body">
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <v-for="column in columns">
+                  <th class="column-{{ column.name }}" :style="column.width ? {'width': column.width} : {}">
+                    <v-if="column.sortable">
+                      <a href="/cms/{{ tableName }}?sort={{ column.name }}" class="sort-link">
+                        {{ column.label }}
+                        <span class="sort-icon"></span>
+                      </a>
+                    </v-if>
+                    <v-else>
+                      {{ column.label }}
+                    </v-else>
+                  </th>
+                </v-for>
+                <th class="column-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <v-for="row in rows">
+                <tr class="row-{{ row.id }}">
+                  <v-for="column in columns">
+                    <td class="column-{{ column.name }}">
+                      <v-if="column.type == 'timestamp'">
+                        <span class="cell-timestamp">{{ row[column.name] | formatTime('2006-01-02 15:04') }}</span>
+                      </v-if>
+                      <v-else-if="column.type == 'enum'">
+                        <span class="badge" :class="{'bg-success': row[column.name] == 'COMPLETED', 'bg-warning': row[column.name] == 'PENDING', 'bg-info': row[column.name] == 'PROCESSING', 'bg-danger': row[column.name] == 'FAILED'}">
+                          {{ row[column.name] }}
+                        </span>
+                      </v-else-if>
+                      <v-else-if="column.type == 'integer'">
+                        <span class="cell-number">{{ row[column.name] }}</span>
+                      </v-else-if>
+                      <v-else>
+                        <span class="cell-text" :title="row[column.name]">{{ row[column.name] | default('—') }}</span>
+                      </v-else>
+                    </td>
+                  </v-for>
+                  <td class="column-actions">
+                    <div class="action-buttons">
+                      <a href="{{ editUrlBase }}{{ row.id }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                      <form method="POST" action="{{ deleteUrlBase }}{{ row.id }}" class="delete-form" onsubmit="return confirm('Delete this record?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              </v-for>
+              <v-else>
+                <tr class="empty-state">
+                  <td :colspan="columns | len | . + 1" class="text-center text-muted py-5">
+                    <p class="mb-0">No records found</p>
+                  </td>
+                </tr>
+              </v-else>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="list-footer">
+        <div class="pagination-info">
+          <small class="text-muted">
+            Showing {{ pagination.pageSize | int }} of {{ pagination.total | int }} records (Page {{ pagination.page | int }} of {{ pagination.totalPages | int }})
+          </small>
+        </div>
+        <v-if="pagination.totalPages > 1">
+          <nav aria-label="Pagination Navigation" class="pagination-nav">
+            <ul class="pagination mb-0">
+              <li class="page-item" :class="{'disabled': !pagination.hasPrev}">
+                <v-if="pagination.hasPrev">
+                  <a class="page-link" href="{{ pagination.prevUrl }}">← Previous</a>
+                </v-if>
+                <v-else>
+                  <span class="page-link">← Previous</span>
+                </v-else>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">
+                  Page {{ pagination.page | int }}
+                  <span class="visually-hidden">(current)</span>
+                </span>
+              </li>
+              <li class="page-item" :class="{'disabled': !pagination.hasNext}">
+                <v-if="pagination.hasNext">
+                  <a class="page-link" href="{{ pagination.nextUrl }}">Next →</a>
+                </v-if>
+                <v-else>
+                  <span class="page-link">Next →</span>
+                </v-else>
+              </li>
+            </ul>
+          </nav>
+        </v-if>
+      </div>
+    </div>
+  </div>
+
+  <style type="text/css+less">
+    .cms-list-wrapper {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+
+      .list-container {
+        background: #fff;
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .list-header {
+        padding: 2rem;
+        border-bottom: 1px solid #e9ecef;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .list-title {
+          margin: 0;
+          font-size: 1.75rem;
+          font-weight: 600;
+          color: #212529;
+          flex: 1;
+        }
+
+        .btn {
+          min-width: 120px;
+          margin-left: 1rem;
+
+          &.btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: #fff;
+            font-weight: 500;
+
+            &:hover {
+              background-color: #0b5ed7;
+              border-color: #0a58ca;
+            }
+          }
+        }
+      }
+
+      .list-body {
+        flex: 1;
+        overflow-x: auto;
+
+        .table-responsive {
+          margin-bottom: 0;
+
+          .table {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+
+            thead {
+              background-color: #f8f9fa;
+              border-bottom: 2px solid #dee2e6;
+
+              th {
+                padding: 1rem 0.75rem;
+                font-weight: 600;
+                color: #212529;
+                border-bottom: 2px solid #dee2e6;
+                text-align: left;
+
+                .sort-link {
+                  color: #0d6efd;
+                  text-decoration: none;
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 0.5rem;
+
+                  &:hover {
+                    text-decoration: underline;
+                  }
+
+                  .sort-icon {
+                    font-size: 0.75rem;
+                    display: inline-block;
+
+                    &:after {
+                      content: "⇅";
+                    }
+                  }
+                }
+
+                &.column-actions {
+                  width: 150px;
+                  text-align: center;
+                }
+              }
+            }
+
+            tbody {
+              tr {
+                border-bottom: 1px solid #dee2e6;
+
+                &:hover {
+                  background-color: #f8f9fa;
+                }
+
+                td {
+                  padding: 0.75rem;
+                  vertical-align: middle;
+                  color: #212529;
+
+                  .cell-timestamp {
+                    font-family: monospace;
+                    font-size: 0.9rem;
+                    color: #6c757d;
+                  }
+
+                  .cell-number {
+                    font-family: monospace;
+                    font-weight: 500;
+                  }
+
+                  .cell-text {
+                    display: block;
+                    max-width: 300px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  }
+
+                  .badge {
+                    font-weight: 500;
+                    font-size: 0.85rem;
+                    padding: 0.35rem 0.65rem;
+
+                    &.bg-success {
+                      background-color: #198754 !important;
+                    }
+
+                    &.bg-warning {
+                      background-color: #ffc107 !important;
+                      color: #000;
+                    }
+
+                    &.bg-info {
+                      background-color: #0dcaf0 !important;
+                      color: #000;
+                    }
+
+                    &.bg-danger {
+                      background-color: #dc3545 !important;
+                    }
+                  }
+
+                  &.column-actions {
+                    text-align: center;
+
+                    .action-buttons {
+                      display: flex;
+                      gap: 0.5rem;
+                      justify-content: center;
+
+                      .btn {
+                        font-size: 0.875rem;
+                        padding: 0.375rem 0.75rem;
+
+                        &.btn-outline-primary {
+                          color: #0d6efd;
+                          border-color: #0d6efd;
+
+                          &:hover {
+                            background-color: #0d6efd;
+                            color: #fff;
+                          }
+                        }
+
+                        &.btn-outline-danger {
+                          color: #dc3545;
+                          border-color: #dc3545;
+
+                          &:hover {
+                            background-color: #dc3545;
+                            color: #fff;
+                          }
+                        }
+                      }
+
+                      .delete-form {
+                        display: inline;
+                      }
+                    }
+                  }
+                }
+
+                &.empty-state {
+                  background-color: #f8f9fa;
+
+                  td {
+                    padding: 2rem 0.75rem;
+                    color: #6c757d;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .list-footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e9ecef;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .pagination-info {
+          flex: 1;
+
+          small {
+            font-size: 0.875rem;
+          }
+        }
+
+        .pagination-nav {
+          margin-left: 2rem;
+
+          .pagination {
+            display: flex;
+            gap: 0.25rem;
+
+            .page-item {
+              &.disabled {
+                .page-link {
+                  color: #6c757d;
+                  pointer-events: none;
+                  background-color: #e9ecef;
+                  border-color: #dee2e6;
+                  cursor: not-allowed;
+                }
+              }
+
+              &.active {
+                .page-link {
+                  background-color: #0d6efd;
+                  border-color: #0d6efd;
+                  color: #fff;
+                }
+              }
+
+              .page-link {
+                padding: 0.375rem 0.75rem;
+                color: #0d6efd;
+                background-color: #fff;
+                border: 1px solid #dee2e6;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.15s ease-in-out;
+
+                &:hover:not(.disabled) {
+                  background-color: #e9ecef;
+                  border-color: #dee2e6;
+                }
+              }
+
+              .visually-hidden {
+                position: absolute !important;
+                width: 1px !important;
+                height: 1px !important;
+                padding: 0 !important;
+                margin: -1px !important;
+                overflow: hidden !important;
+                clip: rect(0, 0, 0, 0) !important;
+                white-space: nowrap !important;
+                border-width: 0 !important;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      .cms-list-wrapper {
+        margin: 1rem auto;
+
+        .list-container {
+          .list-header {
+            padding: 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+
+            .list-title {
+              font-size: 1.5rem;
+            }
+
+            .btn {
+              width: 100%;
+              margin-left: 0;
+            }
+          }
+
+          .list-body {
+            .table-responsive {
+              .table {
+                font-size: 0.85rem;
+
+                thead th {
+                  padding: 0.75rem 0.5rem;
+                }
+
+                tbody td {
+                  padding: 0.5rem;
+
+                  .cell-text {
+                    max-width: 150px;
+                  }
+                }
+              }
+            }
+          }
+
+          .list-footer {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+
+            .pagination-nav {
+              margin-left: 0;
+              width: 100%;
+
+              .pagination {
+                width: 100%;
+                justify-content: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  </style>
+</template>
