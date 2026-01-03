@@ -4,7 +4,7 @@
     <!-- what'sa meta with you? -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content="VueGo" />
+    <meta name="generator" content="platform-app-blog" />
     <title>{{ title | metaTitle }}</title>
     <meta name="description" :content="description | metaDescription" />
     <link rel="canonical" :href="meta.url + page.url" />
@@ -25,15 +25,13 @@
     <meta name="og:title" :content="title | metaTitle" />
     <meta name="og:description" :content="description | metaDescription" />
     <meta property="og:image" :content="ogImage | metaOGImage" />
-    <meta name="fediverse:creator" content="@hexagoncircle@fosstodon.org" />
 
     <!-- [deep breath] me, me, me, me, meeee -->
-    <link href="https://github.com/hexagoncircle" rel="me" />
-    <link href="https://twitter.com/hexagoncircle" rel="me" />
-    <link href="https://fosstodon.org/@hexagoncircle" rel="me" />
-    <link href="https://codepen.io/hexagoncircle" rel="me" />
-    <link rel="webmention" href="https://webmention.io/ryanmulligan.dev/webmention" />
-    <link rel="pingback" href="https://webmention.io/ryanmulligan.dev/xmlrpc" />
+    <link v-for="item in navigation.social" :href="item.url" rel="me" />
+
+    <link v-if="features.webmention.enable" rel="webmention" href="https://incubator.to/webmention" />
+    <link v-if="features.pingback.enable" rel="pingback" href="https://incubator.to/xmlrpc" />
+
     <link
       rel="alternate"
       type="application/atom+xml"
@@ -41,13 +39,13 @@
       title="Ryan Mulligan"
     />
 
-    <script v-if="page.url === '/'" type="application/ld+json">
+    <script type="application/ld+json">
       {
         "@context": "http://schema.org",
         "@type": "Person",
-        "name": "Ryan Mulligan",
-        "url": "https://ryanmulligan.dev/",
-        "image": "https://ryanmulligan.dev/images/headshot.jpg"
+        "name": "{{meta.author.name}}",
+        "url": "{{meta.url}}",
+        "image": "{{meta.headshot}}"
       }
     </script>
 
@@ -72,7 +70,7 @@
 
     <vuego include="components/site-header.vuego"></vuego>
 
-    <main id="main" class="breakout flow {{ classnames }}" v-html="content"></main>
+    <main id="main" class="breakout flow {{ class }}" v-html="content"></main>
 
     <vuego include="components/site-footer.vuego"></vuego>
 

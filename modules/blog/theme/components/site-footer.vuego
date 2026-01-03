@@ -1,31 +1,26 @@
 <footer class="breakout site-footer">
   <p class="copyright">
-    © <strong>Ryan Mulligan</strong> from day one to this magic moment in
-    <span>{{ year }}</span>
+    ©
+
+    <strong>{{ meta.author.name }}</strong>
+
+    from day one to this magic moment in
+
+    <span>{{ year() }}</span>
   </p>
+
   <p>
-    Assembled with a boundless affinity for the web
-    <vuego include="components/inline-svg.vuego" src="assets/icons/heart.svg"></vuego>
+    Assembled with a coffee budget that rivals small nations
   </p>
+
   <ul class="cluster" style="--gap: var(--space-2xs)" role="list">
     <li v-for="item in navigation.menu">
-      <a
-        :href="item.url"
-        :aria-current="item.url === page?.url ? 'page' : null"
-        :target="item.target"
-        :ref="item.target ? 'noreferrer noopener' : null"
-        >{{ item.label }}</a
-      >
+      <a :href="item.url" :aria-current="item.url === page?.url ? 'page' : null" :target="item.target" :ref="item.target ? 'noreferrer noopener' : null">{{ item.label }}</a>
     </li>
   </ul>
 </footer>
-
-<script v-once>
-  console.log("I appreciate you and glad you're here ❤️");
-</script>
-
 <style type="text/css+less">
-  .site-footer {
+.site-footer {
     position: sticky;
     top: 100vh;
     padding-block: var(--space-2xl);

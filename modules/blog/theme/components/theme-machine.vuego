@@ -1,39 +1,49 @@
 <theme-machine class="theme-machine">
   <!-- appearance -->
+
   <fieldset class="control-appearance">
     <legend class="visually-hidden">Select appearance</legend>
+
     <template v-for="item in navigation.appearances">
-      <input id="appearance-{{ item.id }}" :value="item.value" type="radio" name="appearance" class="visually-hidden" />
+      <input id="appearance-{{ item.id }}" :value="item.value" type="radio" name="appearance" class="visually-hidden">
+
       <label for="appearance-{{item.id}}">
         <span class="visually-hidden">{{ item.label }}</span>
-        <vuego include="components/inline-svg.vuego" src="assets/icons/{{ item.icon }}.svg"></vuego>
+
+        <vuego include="components/inline-svg.vuego" src="assets/icons/{{ item.icon }}.svg">
+        </vuego>
       </label>
     </template>
-    <div class="highlighter"></div>
+
+    <div class="highlighter">
+    </div>
   </fieldset>
 
   <button class="theme-display-toggle" aria-expanded="false" aria-controls="theme-display">
     <span class="visually-hidden">Select theme</span>
-    <vuego include="components/inline-svg.vuego" src="assets/icons/dropper.svg" class="icon" aria-hidden="true"></vuego>
+
+    <vuego include="components/inline-svg.vuego" src="assets/icons/dropper.svg" class="icon" aria-hidden="true">
+    </vuego>
   </button>
 
   <div id="theme-display" class="theme-display-wrapper" hidden>
     <fieldset class="control-theme">
       <legend class="visually-hidden">Select theme</legend>
+
       <div class="options">
         <template v-for="theme in themes">
           <label for="theme-{{ theme.name }}" :data-theme="theme.name">
             <span class="visually-hidden">{{ theme.name }}</span>
-            <input id="theme-{{ theme.name }}" :value="theme.name" type="radio" name="theme" />
+
+            <input id="theme-{{ theme.name }}" :value="theme.name" type="radio" name="theme">
           </label>
         </template>
       </div>
     </fieldset>
   </div>
 </theme-machine>
-
 <script v-once>
-  class ThemeMachine extends HTMLElement {
+class ThemeMachine extends HTMLElement {
     constructor() {
       super();
       this.themeToggle;
@@ -100,9 +110,7 @@
     window.customElements.define("theme-machine", ThemeMachine);
   }
 </script>
-
 <style type="text/css+less">
-
 .theme-machine {
   --_padding: 0.3em;
   --_radius: var(--radius-pill);

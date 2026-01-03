@@ -1,9 +1,6 @@
-<button class="target-toggler" :data-target="target" @click="toggleTarget">
-  {{ label }}
-</button>
-
+<button class="target-toggler" :data-target="target" @click="toggleTarget">{{ label }}</button>
 <script>
-  class TargetToggler extends HTMLElement {
+class TargetToggler extends HTMLElement {
     constructor() {
       super();
       this.target = this.getAttribute("data-target");
@@ -25,9 +22,8 @@
     window.customElements.define("target-toggler", TargetToggler);
   }
 </script>
-
 <style type="text/css+less">
-  .target-toggler {
+.target-toggler {
     padding: var(--space-s) var(--space-m);
     border-radius: var(--radius-s);
     background-color: var(--color-theme);

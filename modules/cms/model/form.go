@@ -2,20 +2,20 @@ package model
 
 // FormField represents a form field for rendering
 type FormField struct {
-	Name        string        `json:"name"`
-	Label       string        `json:"label"`
-	Type        string        `json:"type"` // text, number, select, textarea, checkbox, datetime-local, email, url, tel, password
-	Value       interface{}   `json:"value,omitempty"`
-	Placeholder string        `json:"placeholder,omitempty"`
-	Required    bool          `json:"required"`
-	Readonly    bool          `json:"readonly"`
-	Disabled    bool          `json:"disabled"`
-	Options     []FieldOption `json:"options,omitempty"`
-	Rows        int           `json:"rows,omitempty"`
-	Cols        int           `json:"cols,omitempty"`
-	Help        string        `json:"help,omitempty"`
-	Error       string        `json:"error,omitempty"`
-	Size        string        `json:"size,omitempty"` // full, half
+	Name        string            `json:"name"`
+	Label       string            `json:"label"`
+	Type        string            `json:"type"` // text, number, select, textarea, checkbox, datetime-local, email, url, tel, password
+	Value       interface{}       `json:"value,omitempty"`
+	Placeholder string            `json:"placeholder,omitempty"`
+	Required    bool              `json:"required"`
+	Readonly    bool              `json:"readonly"`
+	Disabled    bool              `json:"disabled"`
+	Options     []FieldOption     `json:"options,omitempty"`
+	Rows        int               `json:"rows,omitempty"`
+	Cols        int               `json:"cols,omitempty"`
+	Help        string            `json:"help,omitempty"`
+	Error       string            `json:"error,omitempty"`
+	Size        string            `json:"size,omitempty"` // full, half
 	Attributes  map[string]string `json:"attributes,omitempty"`
 }
 
@@ -39,43 +39,43 @@ type FormData struct {
 
 // ListData represents a paginated list with filters
 type ListData struct {
-	Title       string        `json:"title"`
-	TableName   string        `json:"tableName"`
-	Columns     []ListColumn  `json:"columns"`
-	Rows        []map[string]interface{} `json:"rows"`
-	CreateURL   string        `json:"createUrl"`
-	EditURLBase string        `json:"editUrlBase"`
-	DeleteURLBase string       `json:"deleteUrlBase"`
-	Pagination  PaginationInfo `json:"pagination"`
-	Filters     []FilterField `json:"filters,omitempty"`
-	Search      string        `json:"search,omitempty"`
+	Title         string                   `json:"title"`
+	TableName     string                   `json:"tableName"`
+	Columns       []ListColumn             `json:"columns"`
+	Rows          []map[string]interface{} `json:"rows"`
+	CreateURL     string                   `json:"createUrl"`
+	EditURLBase   string                   `json:"editUrlBase"`
+	DeleteURLBase string                   `json:"deleteUrlBase"`
+	Pagination    PaginationInfo           `json:"pagination"`
+	Filters       []FilterField            `json:"filters,omitempty"`
+	Search        string                   `json:"search,omitempty"`
 }
 
 // ListColumn represents a column to display in the list
 type ListColumn struct {
-	Name    string `json:"name"`
-	Label   string `json:"label"`
-	Type    string `json:"type"` // text, number, enum, timestamp, boolean
-	Width   string `json:"width,omitempty"` // e.g., "30%", "100px"
-	Sortable bool  `json:"sortable"`
+	Name     string `json:"name"`
+	Label    string `json:"label"`
+	Type     string `json:"type"`            // text, number, enum, timestamp, boolean
+	Width    string `json:"width,omitempty"` // e.g., "30%", "100px"
+	Sortable bool   `json:"sortable"`
 }
 
 // FilterField represents a filter option
 type FilterField struct {
-	Name    string `json:"name"`
-	Label   string `json:"label"`
-	Type    string `json:"type"` // text, select, date, daterange
+	Name    string        `json:"name"`
+	Label   string        `json:"label"`
+	Type    string        `json:"type"` // text, select, date, daterange
 	Options []FieldOption `json:"options,omitempty"`
 }
 
 // PaginationInfo represents pagination metadata
 type PaginationInfo struct {
-	Page       int `json:"page"`
-	PageSize   int `json:"pageSize"`
-	Total      int `json:"total"`
-	TotalPages int `json:"totalPages"`
-	HasPrev    bool `json:"hasPrev"`
-	HasNext    bool `json:"hasNext"`
+	Page       int    `json:"page"`
+	PageSize   int    `json:"pageSize"`
+	Total      int    `json:"total"`
+	TotalPages int    `json:"totalPages"`
+	HasPrev    bool   `json:"hasPrev"`
+	HasNext    bool   `json:"hasNext"`
 	PrevURL    string `json:"prevUrl,omitempty"`
 	NextURL    string `json:"nextUrl,omitempty"`
 }
@@ -107,13 +107,13 @@ func BuildFormFromTable(table *Table, records map[string]interface{}, isCreate b
 		}
 
 		field := FormField{
-			Name:        col.Name,
-			Label:       col.GetLabel(),
-			Type:        col.GetFieldType(),
-			Required:    !col.Nullable && !col.IsPrimaryKey(),
-			Help:        col.Comment,
-			Value:       records[col.Name],
-			Attributes:  make(map[string]string),
+			Name:       col.Name,
+			Label:      col.GetLabel(),
+			Type:       col.GetFieldType(),
+			Required:   !col.Nullable && !col.IsPrimaryKey(),
+			Help:       col.Comment,
+			Value:      records[col.Name],
+			Attributes: make(map[string]string),
 		}
 
 		// Special handling for enum columns
@@ -149,12 +149,12 @@ func BuildFormFromTable(table *Table, records map[string]interface{}, isCreate b
 // BuildListFromTable creates ListData from a schema table
 func BuildListFromTable(table *Table, rows []map[string]interface{}, page, pageSize, total int) *ListData {
 	list := &ListData{
-		Title:     table.Comment + " List",
-		TableName: table.Name,
-		Columns:   make([]ListColumn, 0),
-		Rows:      rows,
-		CreateURL: "/cms/" + table.Name + "/create",
-		EditURLBase: "/cms/" + table.Name + "/edit/",
+		Title:         table.Comment + " List",
+		TableName:     table.Name,
+		Columns:       make([]ListColumn, 0),
+		Rows:          rows,
+		CreateURL:     "/cms/" + table.Name + "/create",
+		EditURLBase:   "/cms/" + table.Name + "/edit/",
 		DeleteURLBase: "/cms/" + table.Name + "/delete/",
 	}
 

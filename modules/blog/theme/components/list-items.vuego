@@ -1,40 +1,44 @@
 <template :require="articles" :require="columns">
-<div class="list-items">
+  <div class="list-items">
     <template v-if="articles && articles.length > 0">
-    <div class="table-responsive">
+      <div class="table-responsive">
         <table class="table table-hover items-table">
-            <thead class="table-light">
-                <tr>
-                    <template v-for="column in columns">
-                    <th class="col-{{ column.key }}" :data-type="column.type">
-                        {{ column.label }}
-                    </th>
-                    </template>
-                    <th class="col-actions">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-for="item in articles">
-                       <tr class="item-row" :data-id="item.ID">
-                          <template v-for="column in columns">
-                            <td class="col-{{ column.key }}">
-                             <span>col:{{ column.key }} slug:{{ item.Slug }} title:{{ item.Title }} date:{{ item.Date }}</span>
-                            </td>
-                            </template>
-                            <td class="col-actions" v-html="item.actions"></td>
-                        </tr>
-                    </template>
-            </tbody>
+          <thead class="table-light">
+            <tr>
+              <template v-for="column in columns">
+                <th class="col-{{ column.key }}" :data-type="column.type">{{ column.label }}</th>
+              </template>
+
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <template v-for="item in articles">
+              <tr class="item-row" :data-id="item.ID">
+                <template v-for="column in columns">
+                  <td class="col-{{ column.key }}">
+                    <span>col:{{ column.key }} slug:{{ item.Slug }} title:{{ item.Title }} date:{{ item.Date }}</span>
+                  </td>
+                </template>
+
+                <td class="col-actions" v-html="item.actions">
+                </td>
+              </tr>
+            </template>
+          </tbody>
         </table>
-    </div>
+      </div>
     </template>
+
     <template v-else>
-    <div class="alert alert-info text-center py-5">
+      <div class="alert alert-info text-center py-5">
         <p class="mb-3">No items found</p>
+
         <template v-if="emptyAction">
           <a href="{{ emptyAction.url }}" class="btn btn-primary">{{ emptyAction.label }}</a>
         </template>
-    </div>
+      </div>
     </template>
-</div>
+  </div>
 </template>

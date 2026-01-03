@@ -2,53 +2,44 @@
 layout: "base"
 ---
 
-<h1 class="visually-hidden">Ryan Mulligan</h1>
+<h1 class="visually-hidden">{{meta.author.name}}</h1>
 <scroll-pen></scroll-pen>
 <section class="flow prose">
   <p>
-    This is a website made by me, <strong>Ryan Mulligan</strong>, a front-end builder of the web and
-    fellow passenger through space and time.
+    This is a journal written by me, <strong>{{meta.author.name}}</strong>.<br>
   </p>
-  <ul>
-    <li v-if="deployDate && deployTimeOfDay">
-      The latest site build was deployed in the
-      <span>{{ deployTimeOfDay }}</span> on <span>{{ deployDate }}</span>.
-    </li>
-    <li v-else>
-      This site build is live.
-    </li>
-    <li v-if="weather">
-      During deployment, the weather over here was
-      <span>{{ weather.temperature }}</span
-      ><template v-if="weather.status">
-        and <span>{{ weather.status }}</span></template
-      >.
-    </li>
-    <li v-if="spotify">I was listening to <last-played-track></last-played-track></li>
-  </ul>
+  <p class="subtitle">{{meta.subtitle}}</p>
   <h2>Most recent articles</h2>
   <vuego include="components/article-list.vuego" :articles="articles"></vuego>
   <p class="cta arrow-end">
     <a href="/blog/">Read more articles</a>
   </p>
   <h2>The bit about myself</h2>
+
+  <p v-for="para in about">{{para}}</p>
+
   <p>
-    I'm a front-end engineer and creative developer with over a decade of experience building for
-    the web. I've established an extensive, versatile skillset servicing both product and marketing
-    teams. My back catalog of roles range from individual contribution to management, team building,
-    and leadership.
+	Want to know more?
+
+<a href="&#109;&#97;&#73;&#108;&#84;&#79;&#58;&#109;&#101;&#64;&#116;&#105;&#116;&#112;&#101;&#116;&#114;&#105;&#99;&#46;&#99;&#111;&#109;&#63;&#115;&#117;&#98;&#106;&#101;&#99;&#116;&#61;&#82;&#101;&#37;&#51;&#65;&#37;&#50;&#48;&#105;&#110;&#99;&#117;&#98;&#97;&#116;&#111;&#114;&#46;&#116;&#111;"
+  target="_blank"
+  rel="noopener">Say hello anytime!</a>&nbsp;<span aria-hidden="true">👋</span>
+
+<style webc:scoped="say-hey-hey">
+  :host:is(:hover, :focus) + span {
+    display: inline-block;
+    transform-origin: right bottom;
+    animation: waving 300ms cubic-bezier(0.61, 1, 0.88, 1) 3;
+  }
+
+  @keyframes waving {
+    50% {
+      transform: rotate(18deg);
+    }
+  }
+</style>
   </p>
-  <p>
-    I perpetually advocate for modern web standards, embrace the web platform, and believe in the
-    rule of least power—use the simplest language to do the job well, then scale as it becomes
-    necessary. My priorities are influenced by empathy: lift up those around me so we may succeed
-    together, always care for the end user, and deliver a performant, inclusive, and accessible web.
-  </p>
-  <p>
-    When I'm not busy building for a better web, you can catch me noodling on my acoustic guitar or
-    blasting out rhythms if there's a drum kit ready for a lefty nearby.
-  </p>
-  <p>Want to know more? <say-hey-hey></say-hey-hey></p>
+
   <h2>Me around the web</h2>
   <p>
     Other virtual networks where you can find me if you're feeling adventurous. Let's connect and
@@ -60,7 +51,7 @@ layout: "base"
         <inline-svg
           class="icon"
           aria-hidden="true"
-          :src="`./assets/icons/${item.id}.svg`"
+          :src="./assets/icons/{{item.id}}.svg"
         ></inline-svg>
         <span>{{ item.label }}</span>
       </a>
@@ -69,15 +60,15 @@ layout: "base"
 
   <h2>Some personal joy</h2>
   <ul class="multi-column">
-    <li>All things CSS</li>
-    <li>Finding the perfect custom cubic Bézier curve</li>
-    <li>Building an inclusive web</li>
-    <li>Any beach, any ocean</li>
-    <li>Early morning coffee</li>
-    <li>Nick Drake's <em>Pink Moon</em> in its entirety</li>
-    <li>Cool side of the pillow</li>
-    <li>Guitar noodling</li>
-    <li>Trashing a drum kit</li>
+    <li>The smell of coffee</li>
+    <li>A good sandwich</li>
+    <li>Engineering in Go</li>
+    <li>A plastic chair and a white paper table cover</li>
+    <li>Mac Miller</li>
+    <li>Fire with friends</li>
+    <li>Walk down to the beach</li>
+    <li>e-MTB rides are fun</li>
+    <li>e-MTB rides are time consuming</li>
   </ul>
 </section>
 

@@ -1,22 +1,23 @@
 <template :require="articles">
-
   <ul class="article-list flow" role="list">
     <li v-for="post in articles">
       <div class="info">
-        <time :datetime="post.Date" >{{ post.Date | formatDate(false) }}</time>
+        <time :datetime="post.Date">{{ post.Date | formatDate(false) }}</time>
+
         <span v-if="post.Source" class="source">
           — {{ post.Source }}
-          <vuego include="components/inline-svg.vuego" src="assets/icons/arrow-square-out.svg"></vuego>
+
+          <vuego include="components/inline-svg.vuego" src="assets/icons/arrow-square-out.svg">
+          </vuego>
         </span>
       </div>
+
       <a class="text-1 font-semibold" :href="post.URL" :target="post.Source ? '_blank' : null">{{ post.Title }}</a>
-  </li>
-</ul>
-
+    </li>
+  </ul>
 </template>
-
 <style type="text/css+less">
-  .article-list {
+.article-list {
     --flow-space: var(--space-m);
 
     .info {

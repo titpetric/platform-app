@@ -24,6 +24,9 @@ var Funcs = vuego.FuncMap{
 		}
 		return val
 	},
+	"year": func() any {
+		return time.Now().Year()
+	},
 	"readingTime": func(content string) string {
 		// average reading speed ~200 words/minute
 		words := len(strings.Fields(content))

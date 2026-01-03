@@ -1,52 +1,44 @@
 <div class="list-footer mt-4">
-    <template v-if="pagination">
+  <template v-if="pagination">
     <div class="list-pagination d-flex justify-content-between align-items-center">
-        <span class="pagination-info text-muted">
-            Showing {{ pagination.start }} to {{ pagination.end }} of {{ pagination.total }} items
-        </span>
-        <nav aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                <template v-if="pagination.hasPrev">
-                <li class="page-item">
-                    <a href="{{ pagination.prevUrl }}" class="page-link">
-                        ← Previous
-                    </a>
-                </li>
-                </template>
+      <span class="pagination-info text-muted">Showing {{ pagination.start }} to {{ pagination.end }} of {{ pagination.total }} items</span>
 
-                <template v-for="page in pagination.pages">
-                <template v-if="page.isEllipsis">
-                <li class="page-item disabled">
-                    <span class="page-link">...</span>
-                </li>
-                </template>
-                <template v-else>
-                <li class="page-item" :class="{ active: page.current }">
-                    <a 
-                        href="{{ page.url }}" 
-                        class="page-link"
-                    >
-                        {{ page.number }}
-                    </a>
-                </li>
-                </template>
-                </template>
+      <nav aria-label="Page navigation">
+        <ul class="pagination mb-0">
+          <template v-if="pagination.hasPrev">
+            <li class="page-item">
+              <a href="{{ pagination.prevUrl }}" class="page-link">← Previous</a>
+            </li>
+          </template>
 
-                <template v-if="pagination.hasNext">
-                <li class="page-item">
-                    <a href="{{ pagination.nextUrl }}" class="page-link">
-                        Next →
-                    </a>
-                </li>
-                </template>
-            </ul>
-        </nav>
+          <template v-for="page in pagination.pages">
+            <template v-if="page.isEllipsis">
+              <li class="page-item disabled">
+                <span class="page-link">...</span>
+              </li>
+            </template>
+
+            <template v-else>
+              <li class="page-item" :class="{ active: page.current }">
+                <a href="{{ page.url }}" class="page-link">{{ page.number }}</a>
+              </li>
+            </template>
+          </template>
+
+          <template v-if="pagination.hasNext">
+            <li class="page-item">
+              <a href="{{ pagination.nextUrl }}" class="page-link">Next →</a>
+            </li>
+          </template>
+        </ul>
+      </nav>
     </div>
-    </template>
+  </template>
 
-    <template v-if="footer">
+  <template v-if="footer">
     <div class="list-footer-content mt-3">
-        <template v-html="footer"></template>
+      <template v-html="footer">
+      </template>
     </div>
-    </template>
+  </template>
 </div>

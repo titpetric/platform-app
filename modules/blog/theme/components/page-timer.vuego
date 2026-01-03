@@ -1,48 +1,23 @@
 <figure class="page-timer" aria-hidden="true">
-  <svg
-    class="timer"
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    fill="currentcolor"
-    viewBox="0 0 256 256">
-    <rect width="256" height="256" fill="none"></rect>
-    <circle cx="128" cy="128" r="88" fill="var(--color-theme)"></circle>
-    <circle
-      cx="128"
-      cy="128"
-      r="88"
-      fill="none"
-      stroke="currentcolor"
-      stroke-miterlimit="10"
-      stroke-width="16"></circle>
-    <line
-      class="timer-hand"
-      x1="128"
-      y1="128"
-      x2="167.6"
-      y2="88.4"
-      fill="none"
-      stroke="currentcolor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="16"></line>
-    <line
-      class="timer-switch"
-      x1="104"
-      y1="8"
-      x2="152"
-      y2="8"
-      fill="none"
-      stroke="currentcolor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="16"></line>
+  <svg class="timer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" viewBox="0 0 256 256">
+    <rect width="256" height="256" fill="none">
+    </rect>
+
+    <circle cx="128" cy="128" r="88" fill="var(--color-theme)">
+    </circle>
+
+    <circle cx="128" cy="128" r="88" fill="none" stroke="currentcolor" stroke-miterlimit="10" stroke-width="16">
+    </circle>
+
+    <line class="timer-hand" x1="128" y1="128" x2="167.6" y2="88.4" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
+    </line>
+
+    <line class="timer-switch" x1="104" y1="8" x2="152" y2="8" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
+    </line>
   </svg>
 </figure>
-
 <style type="text/css+less">
-  .page-timer {
+.page-timer {
     display: none;
 
     @supports (animation-timeline: scroll()) {

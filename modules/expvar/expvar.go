@@ -24,6 +24,10 @@ func NewHandler() *Handler {
 	}
 }
 
+func (m *Handler) Name() string {
+	return "expvar"
+}
+
 func (m *Handler) Start(context.Context) error {
 	if !m.Enabled {
 		return nil

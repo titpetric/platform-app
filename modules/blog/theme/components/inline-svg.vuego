@@ -1,1 +1,2 @@
-<template :require="src" v-html="file(src)"></template>
+<template :require="src" v-html="file(src)">
+</template>

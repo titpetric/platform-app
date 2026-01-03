@@ -4,20 +4,18 @@
       <li class="jump-to-content">
         <a href="#main" class="text-label">Jump to main content</a>
       </li>
+
       <li v-for="(index, item) in navigation.menu" v-if="index < 3">
-        <a
-          :href="item.url"
-          :aria-current="item.url === page?.url ? 'page' : null"
-          >{{ item.label }}</a
-        >
+        <a :href="item.url" :aria-current="item.url === page?.url ? 'page' : null">{{ item.label }}</a>
       </li>
     </ul>
-    <vuego include="components/theme-machine.vuego"></vuego>
+
+    <vuego include="components/theme-machine.vuego">
+    </vuego>
   </nav>
 </header>
-
 <style type="text/css+less">
-  .site-header {
+.site-header {
     position: relative;
     display: flex;
     justify-content: flex-end;

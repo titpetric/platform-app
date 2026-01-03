@@ -7,8 +7,9 @@ import (
 	_ "embed"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/titpetric/platform-app/modules/cms/schema"
 	"gopkg.in/yaml.v3"
+
+	"github.com/titpetric/platform-app/modules/cms/schema"
 )
 
 //go:embed schema.yaml

@@ -20,15 +20,15 @@ func NewViews(filesystem fs.FS) *Views {
 
 // Index renders the blog index/list page
 func (v *Views) Index(data *IndexData) vuego.Template {
-	return v.Loader.Load("pages/index.vuego").Fill(data)
+	return v.Loader.Load("pages/index.vuego").Fill(data.Map())
 }
 
 // Blog renders the blog list page
 func (v *Views) Blog(data *IndexData) vuego.Template {
-	return v.Loader.Load("pages/blog.vuego").Fill(data)
+	return v.Loader.Load("pages/blog.vuego").Fill(data.Map())
 }
 
 // Post renders the post layout template
 func (v *Views) Post(data *PostData) vuego.Template {
-	return v.Loader.Load("layouts/post.vuego").Fill(data)
+	return v.Loader.Load("layouts/post.vuego").Fill(data.Map())
 }

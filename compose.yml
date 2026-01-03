@@ -18,6 +18,8 @@ services:
       - PLATFORM_EMAIL_HOST=mailhog
       - PLATFORM_EMAIL_PORT=1025
       - PLATFORM_EMAIL_FROM=noreply@platform-app.local
+    volumes:
+      - ./appdata:/app
 
   mailhog:
     image: mailhog/mailhog:latest

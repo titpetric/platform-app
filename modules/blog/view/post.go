@@ -14,7 +14,7 @@ type PostData struct {
 	OgImage     string     `json:"ogImage"`
 	Content     string     `json:"content"`
 	Date        *time.Time `json:"date"`
-	Classnames  string     `json:"classnames"`
+	Class       string     `json:"class"`
 }
 
 // NewPostData creates PostData from an Article
@@ -26,7 +26,7 @@ func NewPostData(article *model.Article, content string) *PostData {
 		OgImage:     article.OgImage,
 		Content:     content,
 		Date:        article.Date,
-		Classnames:  "prose",
+		Class:       "prose",
 	}
 }
 
@@ -39,6 +39,6 @@ func (d *PostData) Map() map[string]any {
 		"ogImage":     d.OgImage,
 		"content":     d.Content,
 		"date":        d.Date,
-		"classnames":  d.Classnames,
+		"class":       d.Class,
 	}
 }
