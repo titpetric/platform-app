@@ -34,9 +34,7 @@ func (d *IndexData) Map() map[string]any {
 	data := d.Data
 	data["articles"] = d.Articles
 	data["total"] = d.Total
-
-	spew.Dump(data)
-
+	data["module"] = "user"
 	return data
 }
 

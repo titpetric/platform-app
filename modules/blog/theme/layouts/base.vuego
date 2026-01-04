@@ -50,8 +50,7 @@
     </script>
 
     <!-- assets the situation -->
-    <link rel="stylesheet" href="/assets/css/blog/themes.css" />
-    <link rel="stylesheet" href="/assets/css/blog/styles.css" />
+    <link rel="stylesheet" href="/assets/css/{{module}}.less" />
     <style v-html="getCss(page.url)"></style>
   </head>
   <body>
@@ -74,7 +73,7 @@
 
     <vuego include="components/site-footer.vuego"></vuego>
 
-    <script v-html="getJs(page.url)"></script>
+    <script async defer src="/assets/js/{{module}}.js"></script>
     <script async defer src="https://scripts.withcabin.com/hello.js"></script>
   </body>
 </html>

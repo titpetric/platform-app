@@ -49,12 +49,6 @@ var Funcs = vuego.FuncMap{
 	"metaOGImage": func(in string) string {
 		return in
 	},
-	"getCss": func(string) string {
-		return ""
-	},
-	"getJs": func(string) string {
-		return ""
-	},
 	"json": func(in any) (string, error) {
 		b, err := json.MarshalIndent(in, "", "  ")
 		return string(b), err
