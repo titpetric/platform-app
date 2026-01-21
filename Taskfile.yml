@@ -21,10 +21,7 @@ tasks:
   fmt:
     desc: "Source code formatting"
     cmds:
-      - goimports -w -local $(go list .) .
-      - goimports-reviser -set-alias -format -imports-order "std,blanked,general,company,project" ./...
-      - gofumpt -w .
-      - go mod tidy
+      - atkins fmt
 
   gen:
     desc: "Generate code"

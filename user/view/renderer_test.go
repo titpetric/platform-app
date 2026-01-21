@@ -24,7 +24,7 @@ func TestRenderLayout(t *testing.T) {
 		var buf bytes.Buffer
 		err := renderer.Load("blog.vuego", map[string]any{
 			"content": "Test Content",
-		}).Layout(ctx, &buf)
+		}).Render(ctx, &buf)
 		assert.NoError(t, err)
 
 		output := buf.String()
@@ -36,7 +36,7 @@ func TestRenderLayout(t *testing.T) {
 		var buf bytes.Buffer
 		err := renderer.Load("index.vuego", map[string]any{
 			"content": "Test Content",
-		}).Layout(ctx, &buf)
+		}).Render(ctx, &buf)
 		assert.NoError(t, err)
 
 		output := buf.String()

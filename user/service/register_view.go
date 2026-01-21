@@ -18,5 +18,5 @@ func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
 		FirstName:    r.FormValue("first_name"),
 		LastName:     r.FormValue("last_name"),
 		Email:        r.FormValue("email"),
-	}).Layout(r.Context(), w)
+	}).Render(r.Context(), w)
 }

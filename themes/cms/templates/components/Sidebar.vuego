@@ -1,0 +1,22 @@
+<template>
+  <nav class="sidebar">
+    <ul>
+      <li v-for="item in items" :class="{{item.class}}" :class="level-${{item.level}}">{{item.name}}</li>
+    </ul>
+  </nav>
+</template>
+
+
+<style type="text/css+less">
+nav.sidebar {
+  li {
+    list-style-item: none;
+  }
+  .level-1 {
+     padding-left: 20px;
+  }
+  .nav-header {
+
+  }
+}
+</style>

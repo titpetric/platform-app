@@ -1,0 +1,29 @@
+name: Platform app test pipeline
+
+env:
+  include:
+    - .env.test
+
+tasks:
+  default:
+    steps:
+      - task: test
+
+  fmt:
+    desc: "Source code formatting"
+    steps:
+      - goimports -w -local $(go list .) .
+      - goimports-reviser -set-alias -format -imports-order "std,blanked,general,company,project" ./...
+      - gofumpt -w .
+      - go mod tidy
+
+  test:
+    tty: true
+    passthru: true
+    steps:
+      - gotestsum ./... -- -count 1
+
+  pre-commit:
+    steps:
+      - task: fmt
+      - task: test

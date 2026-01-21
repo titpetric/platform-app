@@ -25,7 +25,7 @@ func TestRenderLayout(t *testing.T) {
 
 	t.Run("blog.vuego", func(t *testing.T) {
 		var buf bytes.Buffer
-		err := loader.Load("blog.vuego").Fill(data).Layout(ctx, &buf)
+		err := loader.Load("blog.vuego").Fill(data).Render(ctx, &buf)
 		assert.NoError(t, err)
 
 		output := buf.String()
@@ -35,7 +35,7 @@ func TestRenderLayout(t *testing.T) {
 
 	t.Run("index.vuego", func(t *testing.T) {
 		var buf bytes.Buffer
-		err := loader.Load("index.vuego").Fill(data).Layout(ctx, &buf)
+		err := loader.Load("index.vuego").Fill(data).Render(ctx, &buf)
 		assert.NoError(t, err)
 
 		output := buf.String()

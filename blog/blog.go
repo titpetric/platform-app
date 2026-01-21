@@ -14,10 +14,10 @@ import (
 	"github.com/titpetric/platform"
 	yaml "gopkg.in/yaml.v3"
 
-	"github.com/titpetric/platform-app/internal/overlayfs"
 	"github.com/titpetric/platform-app/blog/handlers"
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/storage"
+	"github.com/titpetric/platform-app/internal/overlayfs"
 )
 
 // Module implements the blog module for the platform

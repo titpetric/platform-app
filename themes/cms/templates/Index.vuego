@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minimal Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bulma -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+  />
+
+  <!-- Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <!-- Sidebar (20%) -->
+  <aside class="sidebar">
+    <div class="user-badge">
+      <div class="avatar">JD</div>
+      <div>
+        <div class="has-text-weight-semibold">John Doe</div>
+        <div class="is-size-7 has-text-muted">Administrator</div>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <p class="menu-label">General</p>
+      <ul class="menu-list">
+        <li><a class="is-active">Dashboard</a></li>
+        <li><a>Documentation</a></li>
+        <li><a>Projects</a></li>
+      </ul>
+
+      <p class="menu-label">Database</p>
+      <ul class="menu-list">
+        <li>
+          <a>Databases</a>
+          <ul>
+            <li><a>Overview</a></li>
+            <li><a>Create</a></li>
+            <li><a>Migrations</a></li>
+          </ul>
+        </li>
+        <li>
+          <a>Tables</a>
+          <ul>
+            <li><a>Browse</a></li>
+            <li><a>Schema</a></li>
+            <li><a>Indexes</a></li>
+          </ul>
+        </li>
+        <li>
+          <a>Query</a>
+          <ul>
+            <li><a>SQL Console</a></li>
+            <li><a>Saved Queries</a></li>
+          </ul>
+        </li>
+        <li><a>Users & Roles</a></li>
+        <li><a>Backups</a></li>
+      </ul>
+
+      <p class="menu-label">Administration</p>
+      <ul class="menu-list">
+        <li><a>Modules</a></li>
+        <li><a>Permissions</a></li>
+        <li><a>System Settings</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content (80%, full-width capable) -->
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <div>
+        <h1 class="title is-4">Dashboard</h1>
+        <p class="subtitle is-7">Project & database administration</p>
+      </div>
+      <div class="page-actions">
+        <a class="icon"><i class="fas fa-plus"></i></a>
+        <a class="icon"><i class="fas fa-rotate"></i></a>
+        <a class="icon"><i class="fas fa-gear"></i></a>
+      </div>
+    </header>
+
+    <!-- Modules Table -->
+    <section class="panel-box">
+      <h2 class="title is-6">Application Modules</h2>
+      <table class="table is-fullwidth is-hoverable is-dark">
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th class="has-text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Database Manager</td>
+            <td class="has-text-right">
+              <a class="button is-small">View</a>
+              <a class="button is-small">Permissions</a>
+            </td>
+          </tr>
+          <tr>
+            <td>SQL Editor</td>
+            <td class="has-text-right">
+              <a class="button is-small">View</a>
+              <a class="button is-small">Permissions</a>
+            </td>
+          </tr>
+          <tr>
+            <td>User Management</td>
+            <td class="has-text-right">
+              <a class="button is-small">View</a>
+              <a class="button is-small">Permissions</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Documentation / Markdown Demo -->
+    <section class="panel-box">
+      <h2 class="title is-6">Documentation Example</h2>
+      <div class="content">
+        <h3>Overview</h3>
+        <p>
+          This layout supports documentation-heavy pages rendered from Markdown.
+          Content flows naturally and benefits from the wider main column.
+        </p>
+
+        <h4>Typical Operations</h4>
+        <ul>
+          <li>Create and manage SQL databases</li>
+          <li>Inspect schemas and indexes</li>
+          <li>Run and save SQL queries</li>
+        </ul>
+
+        <pre><code>SELECT * FROM projects WHERE active = true;</code></pre>
+      </div>
+    </section>
+
+    <!-- Forms / CRUD -->
+    <section class="columns">
+      <div class="column is-half">
+        <div class="panel-box">
+          <h2 class="title is-6">Login</h2>
+          <form>
+            <div class="field">
+              <label class="label">Username</label>
+              <input class="input" type="text">
+            </div>
+
+            <div class="field">
+              <label class="label">Password</label>
+              <input class="input" type="password">
+            </div>
+
+            <button class="button is-primary is-fullwidth">
+              Sign In
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="column is-half">
+        <div class="panel-box">
+          <h2 class="title is-6">Register</h2>
+          <form>
+            <div class="field">
+              <label class="label">Username</label>
+              <input class="input" type="text">
+            </div>
+
+            <div class="field">
+              <label class="label">Email (optional)</label>
+              <input class="input" type="email">
+            </div>
+
+            <div class="field">
+              <label class="label">Password</label>
+              <input class="input" type="password">
+            </div>
+
+            <button class="button is-link is-fullwidth">
+              Create Account
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<style type="text/css+less">
+/* ---------- Theme ---------- */
+@bg-main: #0d1117;
+@bg-panel: #161b22;
+@bg-panel-alt: #1f242c;
+@border-subtle: #30363d;
+@text-main: #c9d1d9;
+@text-muted: #8b949e;
+@accent: #58a6ff;
+
+/* ---------- Base ---------- */
+html, body {
+  height: 100%;
+  background: @bg-main;
+  color: @text-main;
+}
+
+a {
+  color: @accent;
+}
+
+/* ---------- Shell ---------- */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar (20%) ---------- */
+.sidebar {
+  width: 20%;
+  min-width: 240px;
+  background: @bg-panel;
+  border-right: 1px solid @border-subtle;
+  padding: 1rem;
+}
+
+/* ---------- User ---------- */
+.user-badge {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: @bg-panel-alt;
+  border: 1px solid @border-subtle;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: @border-subtle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ---------- Menu ---------- */
+.menu-label {
+  color: @text-muted;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.menu-list a {
+  color: @text-main;
+  border-radius: 6px;
+
+  &:hover {
+    background: @bg-panel-alt;
+  }
+
+  &.is-active {
+    background: @bg-panel-alt;
+    font-weight: 600;
+  }
+}
+
+/* ---------- Main (80%) ---------- */
+.main-content {
+  width: 80%;
+  padding: 1.75rem 2.5rem;
+  overflow-x: auto;
+}
+
+/* ---------- Header ---------- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-actions .icon {
+  margin-left: 0.75rem;
+  color: @text-muted;
+
+  &:hover {
+    color: @text-main;
+  }
+}
+
+/* ---------- Panels ---------- */
+.panel-box {
+  background: @bg-panel;
+  border: 1px solid @border-subtle;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Tables ---------- */
+.table.is-dark {
+  background: transparent;
+  color: @text-main;
+
+  th, td {
+    border-color: @border-subtle;
+  }
+
+  thead {
+    background: @bg-panel-alt;
+  }
+}
+
+/* ---------- Forms ---------- */
+.input,
+.textarea,
+.select select {
+  background: @bg-panel-alt;
+  border-color: @border-subtle;
+  color: @text-main;
+}
+
+.label {
+  color: @text-muted;
+}
+
+/* ---------- Buttons ---------- */
+.button {
+  background: @bg-panel-alt;
+  border-color: @border-subtle;
+  color: @text-main;
+
+  &:hover {
+    border-color: lighten(@border-subtle, 10%);
+  }
+}
+
+.button.is-primary,
+.button.is-link {
+  background: @accent;
+  border-color: transparent;
+  color: #0d1117;
+}
+
+</style>
+
+</body>
+</html>

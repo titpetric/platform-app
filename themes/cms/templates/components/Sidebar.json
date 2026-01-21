@@ -1,0 +1,9 @@
+{
+    "items": [
+       { "id": 1, "name": "Dashboard", "class": "nav-header" },
+       { "id": 2, "name": "Users", "link": "/admin/users", "class": "nav-active" },
+       { "id": 3, "name": "Blog", "link": "/admin/blog", "open": true},
+       { "id": 4, "name": "Office hours", "level": 1 },
+       { "id": 5, "name": "Incubator", "level": 1 }
+    ]
+}

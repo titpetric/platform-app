@@ -11,7 +11,11 @@ import (
 )
 
 func TestStart(t *testing.T) {
-	platform.Register(&platform.UnimplementedModule{})
+	platform.Register(&platform.UnimplementedModule{
+		NameFn: func() string {
+			return "test"
+		},
+	})
 	platform.Use(platform.TestMiddleware())
 
 	ctx, cancel := context.WithCancel(t.Context())

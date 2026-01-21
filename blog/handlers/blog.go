@@ -25,7 +25,7 @@ func (h *Handlers) IndexHTML(w http.ResponseWriter, r *http.Request) {
 	// Create index component to render list
 	indexData := view.NewIndexData(articles)
 
-	if err := h.views.Index(indexData).Layout(r.Context(), w); err != nil {
+	if err := h.views.Index(indexData).Render(r.Context(), w); err != nil {
 		http.Error(w, fmt.Sprintf("render failed: %v", err), http.StatusInternalServerError)
 	}
 }
@@ -44,7 +44,7 @@ func (h *Handlers) ListArticlesHTML(w http.ResponseWriter, r *http.Request) {
 	// Create blog list and render
 	blogData := view.NewIndexData(articles)
 
-	if err := h.views.Blog(blogData).Layout(r.Context(), w); err != nil {
+	if err := h.views.Blog(blogData).Render(r.Context(), w); err != nil {
 		http.Error(w, fmt.Sprintf("render failed: %v", err), http.StatusInternalServerError)
 	}
 }
@@ -75,7 +75,7 @@ func (h *Handlers) GetArticleHTML(w http.ResponseWriter, r *http.Request) {
 	// Create PostData and render
 	postData := view.NewPostData(article, string(htmlContent))
 
-	if err := h.views.Post(postData).Layout(r.Context(), w); err != nil {
+	if err := h.views.Post(postData).Render(r.Context(), w); err != nil {
 		http.Error(w, fmt.Sprintf("render failed: %v", err), http.StatusInternalServerError)
 	}
 }

@@ -1,0 +1,8 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: "Run the playground server"
+    cmds:
+      - vuego-playground ./templates

@@ -140,7 +140,7 @@ func (h *Handlers) ListArticlesAdminHTML(w http.ResponseWriter, r *http.Request)
 	}
 
 	// Render using layout renderer with blog_admin_articles.vuego
-	err = h.views.Loader.Load("blog_admin_articles.vuego").Fill(data).Layout(r.Context(), w)
+	err = h.views.Loader.Load("blog_admin_articles.vuego").Fill(data).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to render template: %v", err), http.StatusInternalServerError)
 		return

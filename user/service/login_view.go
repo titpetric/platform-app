@@ -35,5 +35,5 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 	h.view.Login(view.LoginData{
 		ErrorMessage: h.GetError(r),
 		Email:        r.FormValue("email"),
-	}).Layout(ctx, w)
+	}).Render(ctx, w)
 }

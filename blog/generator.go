@@ -107,7 +107,7 @@ func (g *Generator) generateIndexPage(ctx context.Context, h *handlers.Handlers)
 	indexData := view.NewIndexData(articles)
 
 	var buf bytes.Buffer
-	if err := h.Views().Index(indexData).Layout(ctx, &buf); err != nil {
+	if err := h.Views().Index(indexData).Render(ctx, &buf); err != nil {
 		return err
 	}
 
@@ -197,7 +197,7 @@ func (g *Generator) walkPages(ctx context.Context, h *handlers.Handlers, dirPath
 
 		// Render the page
 		var buf bytes.Buffer
-		if err := h.Views().Loader.Load(templatePath).Fill(templateData).Layout(ctx, &buf); err != nil {
+		if err := h.Views().Loader.Load(templatePath).Fill(templateData).Render(ctx, &buf); err != nil {
 			return fmt.Errorf("failed to render page %s: %w", templatePath, err)
 		}
 
@@ -215,7 +215,7 @@ func (g *Generator) walkPages(ctx context.Context, h *handlers.Handlers, dirPath
 // generateArticlePage generates an individual article page
 func (g *Generator) generateArticlePage(ctx context.Context, h *handlers.Handlers, postData *view.PostData) error {
 	var buf bytes.Buffer
-	if err := h.Views().Post(postData).Layout(ctx, &buf); err != nil {
+	if err := h.Views().Post(postData).Render(ctx, &buf); err != nil {
 		return err
 	}
 
