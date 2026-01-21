@@ -7,7 +7,7 @@ import (
 	_ "embed"
 
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v3"
 
 	"github.com/titpetric/platform-app/modules/cms/schema"
 )

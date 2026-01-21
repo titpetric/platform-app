@@ -8,7 +8,6 @@ import (
 
 	yaml "gopkg.in/yaml.v3"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/titpetric/platform-app/modules/blog/model"
 )
 
