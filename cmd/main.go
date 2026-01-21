@@ -8,11 +8,11 @@ import (
 	platformcmd "github.com/titpetric/platform/cmd"
 	"github.com/titpetric/platform/pkg/telemetry"
 
-	"github.com/titpetric/platform-app/modules/blog"
-	"github.com/titpetric/platform-app/modules/daily"
-	"github.com/titpetric/platform-app/modules/email"
-	"github.com/titpetric/platform-app/modules/expvar"
-	"github.com/titpetric/platform-app/modules/user"
+	"github.com/titpetric/platform-app/blog"
+	"github.com/titpetric/platform-app/daily"
+	"github.com/titpetric/platform-app/email"
+	"github.com/titpetric/platform-app/expvar"
+	"github.com/titpetric/platform-app/user"
 )
 
 // Main is the entrypoint for the app.
