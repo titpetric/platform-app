@@ -12,12 +12,12 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/titpetric/platform"
+	"github.com/titpetric/vuego"
 	yaml "gopkg.in/yaml.v3"
 
 	"github.com/titpetric/platform-app/blog/handlers"
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/storage"
-	"github.com/titpetric/platform-app/internal/overlayfs"
 )
 
 // Module implements the blog module for the platform
@@ -45,7 +45,7 @@ func NewModule(dataDir string) *Module {
 	// Check if local theme directory exists
 	var overlay fs.FS = themeSub
 	if _, err := os.Stat("theme"); err == nil {
-		overlay = overlayfs.NewOverlayFS(os.DirFS("theme"), themeSub)
+		overlay = vuego.NewOverlayFS(os.DirFS("theme"), themeSub)
 	}
 
 	return &Module{
