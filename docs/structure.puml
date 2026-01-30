@@ -1,19 +1,11 @@
 @startuml
 
-class "internal.overlayfs.OverlayFS" {
-  + Upper: fs.FS
-  + Lower: fs.FS
-  + Glob (pattern string) ([]string, error)
-  + Open (name string) (fs.File, error)
-  + ReadDir (name string) ([]fs.DirEntry, error)
-}
-
-class "modules.blog.markdown.Renderer" {
+class "blog.markdown.Renderer" {
   - codeBlockPattern: *regexp.Regexp
   + Render (content []byte) []byte
 }
 
-class "modules.blog.model.Article" {
+class "blog.model.Article" {
   + ID: string
   + Slug: string
   + Title: string
@@ -47,14 +39,14 @@ class "modules.blog.model.Article" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.blog.model.ArticleList" {
+class "blog.model.ArticleList" {
   + Articles: []Article
   + Total: int
   + Page: int
   + PageSize: int
 }
 
-class "modules.blog.model.Metadata" {
+class "blog.model.Metadata" {
   + Title: string
   + Description: string
   + OgImage: string
@@ -63,7 +55,7 @@ class "modules.blog.model.Metadata" {
   + Source: string
 }
 
-class "modules.blog.model.Migrations" {
+class "blog.model.Migrations" {
   + Project: string
   + Filename: string
   + StatementIndex: int64
@@ -78,7 +70,7 @@ class "modules.blog.model.Migrations" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.blog.model.QueryConfig" {
+class "blog.model.QueryConfig" {
   + Table: string
   + Columns: []string
   + Where: string
@@ -95,7 +87,7 @@ class "modules.blog.model.QueryConfig" {
   + WithWhere (clause string) QueryOption
 }
 
-interface "modules.blog.model.QueryOption" {
+interface "blog.model.QueryOption" {
   + WithTable: WithTable (name string) QueryOption
   + WithColumns: WithColumns (cols []string) QueryOption
   + WithWhere: WithWhere (clause string) QueryOption
@@ -104,7 +96,7 @@ interface "modules.blog.model.QueryOption" {
   + WithStatement: WithStatement (stmt string) QueryOption
 }
 
-class "modules.blog.storage.Storage" {
+class "blog.storage.Storage" {
   - db: *sqlx.DB
   + CountArticles (ctx context.Context) (int, error)
   + GetArticleBySlug (ctx context.Context, slug string) (*model.Article, error)
@@ -113,32 +105,31 @@ class "modules.blog.storage.Storage" {
   + SearchArticles (ctx context.Context, query string) ([]model.Article, error)
 }
 
-class "modules.blog.view.IndexData" {
-  + Title: string
-  + Description: string
-  + OGImage: string
+class "blog.view.IndexData" {
   + Articles: []model.Article
+  + Data: map[string]any
   + Total: int
+  + Fill ()
   + Map () map[string]any
 }
 
-class "modules.blog.view.Loader" {
+class "blog.view.Loader" {
   - tpl: vuego.Template
   + Load (filename string) vuego.Template
 }
 
-class "modules.blog.view.PostData" {
+class "blog.view.PostData" {
   + Slug: string
   + Title: string
   + Description: string
   + OgImage: string
   + Content: string
   + Date: *time.Time
-  + Classnames: string
+  + Class: string
   + Map () map[string]any
 }
 
-class "modules.blog.view.Views" {
+class "blog.view.Views" {
   + Loader: *Loader
   + AtomFeed (ctx context.Context, w io.Writer, articles []model.Article, meta map[string]any) error
   + Blog (data *IndexData) vuego.Template
@@ -146,7 +137,7 @@ class "modules.blog.view.Views" {
   + Post (data *PostData) vuego.Template
 }
 
-class "modules.blog.handlers.Handlers" {
+class "blog.handlers.Handlers" {
   - repository: *storage.Storage
   - views: *view.Views
   + GetArticleAdminJSON (w http.ResponseWriter, r *http.Request)
@@ -163,45 +154,13 @@ class "modules.blog.handlers.Handlers" {
   + Views () *view.Views
 }
 
-class "modules.blog.Field" {
-  + Name: string
-  + Title: string
-  + Desc: string
-  + Type: string
-  + Value: any
-  + Placeholder: string
-  + Required: bool
-  + Options: []Option
-  + Attributes: map[string]string
-  + Size: string
-  + Height: int
-  + Rows: int
-  + Cols: int
-  + Link: string
-  + Sort: string
-  + Accept: string
-  + Multiple: bool
-  + Disabled: bool
-  + Readonly: bool
-  + Error: string
-  + Help: string
-}
-
-class "modules.blog.Form" {
-  + Name: string
-  + Title: string
-  + Fields: []Field
-  + Meta: map[string]string
-  + UnmarshalYAML (node *yaml.Node) error
-}
-
-class "modules.blog.Generator" {
+class "blog.Generator" {
   - module: *Module
   - outputDir: string
   + Generate (ctx context.Context) error
 }
 
-class "modules.blog.Module" {
+class "blog.Module" {
   - dataDir: string
   - repository: *storage.Storage
   - articles: map[string]*model.Article
@@ -214,44 +173,7 @@ class "modules.blog.Module" {
   + Stop (context.Context) error
 }
 
-class "modules.blog.Navigation" {
-  + Name: string
-  + Links: []NavigationLink
-}
-
-class "modules.blog.NavigationLink" {
-  + Label: string
-  + URL: string
-  + Icon: string
-}
-
-class "modules.blog.Option" {
-  + Value: string
-  + Label: string
-}
-
-class "modules.blog.RenderData" {
-  + Title: string
-  + Description: string
-  + Fields: []Field
-  + Method: string
-  + Action: string
-  + SubmitLabel: string
-  + CancelURL: string
-  + CancelLabel: string
-  + Navigation: *Navigation
-  + FieldsBySize (size string) []Field
-  + FieldsWithType (fieldType string) []Field
-  + HiddenFields () []Field
-  + SetAction (action string) *RenderData
-  + SetCancelLabel (label string) *RenderData
-  + SetCancelURL (url string) *RenderData
-  + SetMethod (method string) *RenderData
-  + SetSubmitLabel (label string) *RenderData
-  + VisibleFields () []Field
-}
-
-class "modules.user.model.QueryConfig" {
+class "user.model.QueryConfig" {
   + Table: string
   + Columns: []string
   + Where: string
@@ -268,7 +190,7 @@ class "modules.user.model.QueryConfig" {
   + WithWhere (clause string) QueryOption
 }
 
-interface "modules.user.model.QueryOption" {
+interface "user.model.QueryOption" {
   + WithTable: WithTable (name string) QueryOption
   + WithColumns: WithColumns (cols []string) QueryOption
   + WithWhere: WithWhere (clause string) QueryOption
@@ -277,13 +199,13 @@ interface "modules.user.model.QueryOption" {
   + WithStatement: WithStatement (stmt string) QueryOption
 }
 
-interface "modules.user.model.SessionStorage" {
+interface "user.model.SessionStorage" {
   + Create: Create (ctx context.Context, userID string) (*UserSession, error)
   + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
   + Delete: Delete (ctx context.Context, sessionID string) error
 }
 
-class "modules.user.model.User" {
+class "user.model.User" {
   + ID: string
   + FirstName: string
   + LastName: string
@@ -307,7 +229,7 @@ class "modules.user.model.User" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.user.model.UserAuth" {
+class "user.model.UserAuth" {
   + UserID: string
   + Email: string
   + Password: string
@@ -327,7 +249,7 @@ class "modules.user.model.UserAuth" {
   + Valid () bool
 }
 
-class "modules.user.model.UserGroup" {
+class "user.model.UserGroup" {
   + ID: string
   + Title: string
   + CreatedAt: *time.Time
@@ -345,7 +267,7 @@ class "modules.user.model.UserGroup" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.user.model.UserGroupMember" {
+class "user.model.UserGroupMember" {
   + UserGroupID: string
   + UserID: string
   + JoinedAt: *time.Time
@@ -359,7 +281,7 @@ class "modules.user.model.UserGroupMember" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.user.model.UserSession" {
+class "user.model.UserSession" {
   + ID: string
   + UserID: string
   + ExpiresAt: *time.Time
@@ -376,7 +298,7 @@ class "modules.user.model.UserSession" {
   + Update (opts ...QueryOption) string
 }
 
-interface "modules.user.model.UserStorage" {
+interface "user.model.UserStorage" {
   + Create: Create (context.Context, *User, *UserAuth) (*User, error)
   + Update: Update (context.Context, *User) (*User, error)
   + Get: Get (context.Context, string) (*User, error)
@@ -384,7 +306,7 @@ interface "modules.user.model.UserStorage" {
   + Authenticate: Authenticate (ctx context.Context, auth UserAuth) (*User, error)
 }
 
-class "modules.daily.model.Migrations" {
+class "daily.model.Migrations" {
   + Project: string
   + Filename: string
   + StatementIndex: int64
@@ -399,7 +321,7 @@ class "modules.daily.model.Migrations" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.daily.model.QueryConfig" {
+class "daily.model.QueryConfig" {
   + Table: string
   + Columns: []string
   + Where: string
@@ -416,7 +338,7 @@ class "modules.daily.model.QueryConfig" {
   + WithWhere (clause string) QueryOption
 }
 
-interface "modules.daily.model.QueryOption" {
+interface "daily.model.QueryOption" {
   + WithTable: WithTable (name string) QueryOption
   + WithColumns: WithColumns (cols []string) QueryOption
   + WithWhere: WithWhere (clause string) QueryOption
@@ -425,7 +347,7 @@ interface "modules.daily.model.QueryOption" {
   + WithStatement: WithStatement (stmt string) QueryOption
 }
 
-interface "modules.daily.model.Storage" {
+interface "daily.model.Storage" {
   + List: List (ctx context.Context) ([]Todo, error)
   + Get: Get (ctx context.Context, id string) (Todo, error)
   + Add: Add (ctx context.Context, t Todo) (Todo, error)
@@ -434,7 +356,7 @@ interface "modules.daily.model.Storage" {
   + Delete: Delete (ctx context.Context, id string) error
 }
 
-class "modules.daily.model.Todo" {
+class "daily.model.Todo" {
   + ID: string
   + UserID: string
   + Title: string
@@ -458,18 +380,18 @@ class "modules.daily.model.Todo" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.daily.model.User" {
+class "daily.model.User" {
   - type: model.User
 }
 
-class "modules.user.storage.SessionStorage" {
+class "user.storage.SessionStorage" {
   - db: *sqlx.DB
   + Create (ctx context.Context, userID string) (*model.UserSession, error)
   + Delete (ctx context.Context, sessionID string) error
   + Get (ctx context.Context, sessionID string) (*model.UserSession, error)
 }
 
-class "modules.user.storage.UserStorage" {
+class "user.storage.UserStorage" {
   - db: *sqlx.DB
   + Authenticate (ctx context.Context, userAuth model.UserAuth) (*model.User, error)
   + Create (ctx context.Context, u *model.User, userAuth *model.UserAuth) (*model.User, error)
@@ -478,7 +400,7 @@ class "modules.user.storage.UserStorage" {
   + Update (ctx context.Context, u *model.User) (*model.User, error)
 }
 
-class "modules.user.view.Renderer" {
+class "user.view.Renderer" {
   - root: fs.FS
   - tpl: vuego.Template
   - data: map[string]any
@@ -488,28 +410,28 @@ class "modules.user.view.Renderer" {
   + Register (data RegisterData) vuego.Template
 }
 
-class "modules.user.view.Data" {
+class "user.view.Data" {
   + SessionUser: *model.User
   + User: string
   + Email: string
   + ErrorMessage: string
   + FirstName: string
   + LastName: string
-class "modules.user.view.LoginData" {
+class "user.view.LoginData" {
   + SessionUser: *model.User
   + User: string
   + Email: string
   + ErrorMessage: string
   + FirstName: string
   + LastName: string
-class "modules.user.view.LogoutData" {
+class "user.view.LogoutData" {
   + SessionUser: *model.User
   + User: string
   + Email: string
   + ErrorMessage: string
   + FirstName: string
   + LastName: string
-class "modules.user.view.RegisterData" {
+class "user.view.RegisterData" {
   + SessionUser: *model.User
   + User: string
   + Email: string
@@ -518,7 +440,7 @@ class "modules.user.view.RegisterData" {
   + LastName: string
 }
 
-class "modules.user.service.Service" {
+class "user.service.Service" {
   + UserStorage: *storage.UserStorage
   + SessionStorage: *storage.SessionStorage
   - view: *view.Renderer
@@ -532,13 +454,13 @@ class "modules.user.service.Service" {
   + RegisterView (w http.ResponseWriter, r *http.Request)
 }
 
-class "modules.user.Handler" {
+class "user.Handler" {
   + Mount (_ context.Context, r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
 }
 
-class "modules.daily.storage.Storage" {
+class "daily.storage.Storage" {
   - db: *sqlx.DB
   + Add (ctx context.Context, t model.Todo) (model.Todo, error)
   + Complete (ctx context.Context, id string) error
@@ -548,22 +470,22 @@ class "modules.daily.storage.Storage" {
   + Update (ctx context.Context, t model.Todo) error
 }
 
-class "modules.daily.view.Data" {
+class "daily.view.Data" {
   + Tasks: []model.Todo
   + SessionUser: *model.User
 }
 
-class "modules.daily.view.Loader" {
+class "daily.view.Loader" {
   - tpl: vuego.Template
   + Load (filename string) vuego.Template
 }
 
-class "modules.daily.view.Views" {
+class "daily.view.Views" {
   + Loader: *Loader
   + Index (data Data) vuego.Template
 }
 
-class "modules.daily.Module" {
+class "daily.Module" {
   - repository: *storage.Storage
   - views: *view.Views
   + Mount (_ context.Context, r platform.Router) error
@@ -571,7 +493,7 @@ class "modules.daily.Module" {
   + Start (ctx context.Context) error
 }
 
-class "modules.email.model.Email" {
+class "email.model.Email" {
   + ID: string
   + Recipient: string
   + Subject: string
@@ -603,7 +525,7 @@ class "modules.email.model.Email" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.email.model.EmailFailed" {
+class "email.model.EmailFailed" {
   + ID: string
   + Recipient: string
   + Subject: string
@@ -635,7 +557,7 @@ class "modules.email.model.EmailFailed" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.email.model.EmailSent" {
+class "email.model.EmailSent" {
   + ID: string
   + Recipient: string
   + Subject: string
@@ -667,7 +589,7 @@ class "modules.email.model.EmailSent" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.email.model.Migrations" {
+class "email.model.Migrations" {
   + Project: string
   + Filename: string
   + StatementIndex: int64
@@ -682,7 +604,7 @@ class "modules.email.model.Migrations" {
   + Update (opts ...QueryOption) string
 }
 
-class "modules.email.model.QueryConfig" {
+class "email.model.QueryConfig" {
   + Table: string
   + Columns: []string
   + Where: string
@@ -699,7 +621,7 @@ class "modules.email.model.QueryConfig" {
   + WithWhere (clause string) QueryOption
 }
 
-interface "modules.email.model.QueryOption" {
+interface "email.model.QueryOption" {
   + WithTable: WithTable (name string) QueryOption
   + WithColumns: WithColumns (cols []string) QueryOption
   + WithWhere: WithWhere (clause string) QueryOption
@@ -708,7 +630,7 @@ interface "modules.email.model.QueryOption" {
   + WithStatement: WithStatement (stmt string) QueryOption
 }
 
-class "modules.email.smtp.Config" {
+class "email.smtp.Config" {
   + Host: string
   + Port: int
   + Username: string
@@ -716,16 +638,16 @@ class "modules.email.smtp.Config" {
   + From: string
 }
 
-class "modules.email.smtp.SMTPSender" {
+class "email.smtp.SMTPSender" {
   - config: Config
   + Send (recipient,subject,body string) error
 }
 
-interface "modules.email.smtp.Sender" {
+interface "email.smtp.Sender" {
   + Send: Send (recipient,subject,body string) error
 }
 
-class "modules.email.storage.EmailStorage" {
+class "email.storage.EmailStorage" {
   - db: *sqlx.DB
   + Create (ctx context.Context, email *model.Email) error
   + Get (ctx context.Context, id string) (*model.Email, error)
@@ -735,14 +657,14 @@ class "modules.email.storage.EmailStorage" {
   + Update (ctx context.Context, email *model.Email) error
 }
 
-interface "modules.email.EmailStorage" {
+interface "email.EmailStorage" {
   + Create: Create (ctx context.Context, email *model.Email) error
   + Get: Get (ctx context.Context, id string) (*model.Email, error)
   + GetPending: GetPending (ctx context.Context, limit int) ([]model.Email, error)
   + Update: Update (ctx context.Context, email *model.Email) error
 }
 
-class "modules.email.Handler" {
+class "email.Handler" {
   - service: *Service
   + Mount (_ context.Context, r platform.Router) error
   + Name () string
@@ -750,7 +672,7 @@ class "modules.email.Handler" {
   + Stop (ctx context.Context) error
 }
 
-class "modules.email.Service" {
+class "email.Service" {
   - emailStorage: EmailStorage
   - sender: smtp.Sender
   - queue: chan *model.Email
@@ -765,7 +687,7 @@ class "modules.email.Service" {
   + Stop ()
 }
 
-class "modules.email.ServiceOptions" {
+class "email.ServiceOptions" {
   + MaxRetries: int64
   + RetryDuration: time.Duration
   + TickerInterval: time.Duration
@@ -773,18 +695,128 @@ class "modules.email.ServiceOptions" {
   + Logger: *slog.Logger
 }
 
-class "modules.expvar.Handler" {
+class "expvar.Handler" {
   + Enabled: bool
   + Mount (_ context.Context, r platform.Router) error
+  + Name () string
   + Start (context.Context) error
 }
 
-class "modules.maillist.service.Permissions" {
+class "cms.Field" {
+  + Name: string
+  + Title: string
+  + Desc: string
+  + Type: string
+  + Value: any
+  + Placeholder: string
+  + Required: bool
+  + Options: []Option
+  + Attributes: map[string]string
+  + Size: string
+  + Height: int
+  + Rows: int
+  + Cols: int
+  + Link: string
+  + Sort: string
+  + Accept: string
+  + Multiple: bool
+  + Disabled: bool
+  + Readonly: bool
+  + Error: string
+  + Help: string
+}
+
+class "cms.Form" {
+  + Name: string
+  + Title: string
+  + Fields: []Field
+  + Meta: map[string]string
+  + UnmarshalYAML (node *yaml.Node) error
+}
+
+class "cms.Navigation" {
+  + Name: string
+  + Links: []NavigationLink
+}
+
+class "cms.NavigationLink" {
+  + Label: string
+  + URL: string
+  + Icon: string
+}
+
+class "cms.Option" {
+  + Value: string
+  + Label: string
+}
+
+class "cms.RenderData" {
+  + Title: string
+  + Description: string
+  + Fields: []Field
+  + Method: string
+  + Action: string
+  + SubmitLabel: string
+  + CancelURL: string
+  + CancelLabel: string
+  + Navigation: *Navigation
+  + FieldsBySize (size string) []Field
+  + FieldsWithType (fieldType string) []Field
+  + HiddenFields () []Field
+  + SetAction (action string) *RenderData
+  + SetCancelLabel (label string) *RenderData
+  + SetCancelURL (url string) *RenderData
+  + SetMethod (method string) *RenderData
+  + SetSubmitLabel (label string) *RenderData
+  + VisibleFields () []Field
+}
+
+class "cms.schema.Column" {
+  + Name: string
+  + Type: string
+  + Key: string
+  + Comment: string
+  + DataType: string
+  + Values: []string
+  + EnumValues: []string
+  + DefaultVal: string
+  + Nullable: bool
+  + Attributes: map[string]string
+  + GetFieldType () string
+  + GetLabel () string
+  + IsEnum () bool
+  + IsIndexed () bool
+  + IsPrimaryKey () bool
+  + IsTimestamp () bool
+}
+
+class "cms.schema.Index" {
+  + Name: string
+  + Columns: []string
+  + Primary: bool
+  + Unique: bool
+}
+
+class "cms.schema.Schema" {
+  + Tables: []*Table
+  + GetTable (name string) *Table
+  + GetTableNames () []string
+  + Walk (cb func(t *Table))
+}
+
+class "cms.schema.Table" {
+  + Name: string
+  + Comment: string
+  + Columns: []*Column
+  + Indexes: []*Index
+}
+
+class "maillist.storage.Permissions" {
   + User: *usermodel.User
   + Create: bool
 }
 
-class "modules.maillist.MailList" {
+class "maillist.MailList" {
   + Create (w http.ResponseWriter, r *http.Request)
   + Index (w http.ResponseWriter, r *http.Request)
   + Mount (r platform.Router) error
@@ -792,7 +824,7 @@ class "modules.maillist.MailList" {
   + Start (ctx context.Context) error
 }
 
-class "modules.maillist.model.Maillist" {
+class "maillist.model.Maillist" {
   + ID: string
   + Name: string
   + Slug: string
@@ -809,7 +841,7 @@ class "modules.maillist.model.Maillist" {
   + SetUpdatedAt (stamp time.Time)
 }
 
-class "modules.maillist.model.MaillistCampaign" {
+class "maillist.model.MaillistCampaign" {
   + ID: string
   + MaillistID: string
   + Subject: string
@@ -834,7 +866,7 @@ class "modules.maillist.model.MaillistCampaign" {
   + SetUpdatedAt (stamp time.Time)
 }
 
-class "modules.maillist.model.MaillistMember" {
+class "maillist.model.MaillistMember" {
   + ID: string
   + MaillistID: string
   + Email: string
@@ -853,7 +885,7 @@ class "modules.maillist.model.MaillistMember" {
   + SetUnsubscribedAt (stamp time.Time)
 }
 
-class "modules.maillist.model.MaillistMemberActivity" {
+class "maillist.model.MaillistMemberActivity" {
   + ID: string
   + MaillistMemberID: string
   + CampaignID: string
@@ -867,7 +899,7 @@ class "modules.maillist.model.MaillistMemberActivity" {
   + SetActivityAt (stamp time.Time)
 }
 
-class "modules.maillist.model.Migrations" {
+class "maillist.model.Migrations" {
   + Project: string
   + Filename: string
   + StatementIndex: int32
@@ -878,16 +910,106 @@ class "modules.maillist.model.Migrations" {
   + GetStatus () string
 }
 
-class "modules.user.cmd.generate.Config" {
+class "pulse.storage.Storage" {
+  - db: *sqlx.DB
+  + Pulse (ctx context.Context, count int64) error
+}
+
+class "pulse.service.Handlers" {
+  + IndexPage (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + PostIngest (w http.ResponseWriter, r *http.Request)
+  + UserPage (w http.ResponseWriter, r *http.Request)
+}
+
+class "pulse.service.Options" {
+  + Path: string
+}
+
+class "pulse.service.PulseModule" {
+  + Mount (ctx context.Context, r platform.Router) error
+  + Name () string
+}
+
+class "pulse.model.Migrations" {
+  + Project: string
+  + Filename: string
+  + StatementIndex: int64
+  + Status: string
+  + Delete (opts ...QueryOption) string
+  + GetFilename () string
+  + GetProject () string
+  + GetStatementIndex () int64
+  + GetStatus () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + Update (opts ...QueryOption) string
+}
+
+class "pulse.model.PulseDaily" {
+  + UserID: string
+  + Stamp: *time.Time
+  + Count: int64
+  + Delete (opts ...QueryOption) string
+  + GetCount () int64
+  + GetStamp () *time.Time
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetStamp (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "pulse.model.PulseHourly" {
+  + UserID: string
+  + Stamp: *time.Time
+  + Count: int64
+  + Delete (opts ...QueryOption) string
+  + GetCount () int64
+  + GetStamp () *time.Time
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetStamp (stamp time.Time)
+  + Update (opts ...QueryOption) string
+}
+
+class "pulse.model.QueryConfig" {
+  + Table: string
+  + Columns: []string
+  + Where: string
+  + OrderBy: string
+  + LimitStart: int
+  + LimitOffset: int
+  + Statement: string
+  + Apply (opts ...QueryOption) *QueryConfig
+  + WithColumns (cols []string) QueryOption
+  + WithLimit (start,offset int) QueryOption
+  + WithOrderBy (clause string) QueryOption
+  + WithStatement (stmt string) QueryOption
+  + WithTable (name string) QueryOption
+  + WithWhere (clause string) QueryOption
+}
+
+interface "pulse.model.QueryOption" {
+  + WithTable: WithTable (name string) QueryOption
+  + WithColumns: WithColumns (cols []string) QueryOption
+  + WithWhere: WithWhere (clause string) QueryOption
+  + WithOrderBy: WithOrderBy (clause string) QueryOption
+  + WithLimit: WithLimit (start,offset int) QueryOption
+  + WithStatement: WithStatement (stmt string) QueryOption
+}
+
+class "user.cmd.generate.Config" {
   + Features: map[string]any
   + Flows: map[string]Flow
 }
 
-class "modules.user.cmd.generate.Flow" {
+class "user.cmd.generate.Flow" {
   + Steps: []Step
 }
 
-class "modules.user.cmd.generate.Step" {
+class "user.cmd.generate.Step" {
   + Name: string
   + View: string
   + Link: string
@@ -899,158 +1021,178 @@ class "modules.user.cmd.generate.Step" {
 interface "Campaign"
 
 
+"blog.model.ArticleList" --> "blog.model.Article" : .Articles
 
-"modules.blog.model.ArticleList" --> "modules.blog.model.Article" : .Articles
 
 
 
 
 
+"blog.storage.Storage" --> "blog.model.Article" : .GetArticleBySlug()
+"blog.storage.Storage" --> "blog.model.Article" : .GetArticles()
+"blog.storage.Storage" --> "blog.model.Article" : .InsertArticle()
+"blog.storage.Storage" --> "blog.model.Article" : .SearchArticles()
+"blog.view.IndexData" --> "blog.model.Article" : .Articles
+"blog.view.IndexData" --> "blog.view.any" : .Data
 
-"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .GetArticleBySlug()
-"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .GetArticles()
-"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .InsertArticle()
-"modules.blog.storage.Storage" --> "modules.blog.model.Article" : .SearchArticles()
-"modules.blog.view.IndexData" --> "modules.blog.model.Article" : .Articles
 
 
+"blog.view.Views" --> "blog.view.Loader" : .Loader
 
-"modules.blog.view.Views" --> "modules.blog.view.Loader" : .Loader
+"blog.view.Views" --> "blog.model.Article" : .AtomFeed()
+"blog.handlers.Handlers" --> "blog.storage.Storage" : .repository
+"blog.handlers.Handlers" --> "blog.view.Views" : .views
 
-"modules.blog.view.Views" --> "modules.blog.model.Article" : .AtomFeed()
-"modules.blog.handlers.Handlers" --> "modules.blog.storage.Storage" : .repository
-"modules.blog.handlers.Handlers" --> "modules.blog.view.Views" : .views
+"blog.handlers.Handlers" --> "blog.storage.Storage" : .Repository()
+"blog.handlers.Handlers" --> "blog.view.Views" : .Views()
+"blog.Generator" --> "blog.Module" : .module
 
-"modules.blog.handlers.Handlers" --> "modules.blog.storage.Storage" : .Repository()
-"modules.blog.handlers.Handlers" --> "modules.blog.view.Views" : .Views()
-"modules.blog.Field" --> "modules.blog.any" : .Value
-"modules.blog.Field" --> "modules.blog.Option" : .Options
+"blog.Generator" --> "blog.handlers.Handlers" : .generateArticlePage()
+"blog.Generator" --> "blog.handlers.Handlers" : .generateFeed()
+"blog.Generator" --> "blog.handlers.Handlers" : .generateIndexPage()
+"blog.Generator" --> "blog.handlers.Handlers" : .generateStaticPages()
+"blog.Generator" --> "blog.handlers.Handlers" : .walkPages()
+"blog.Module" --> "blog.storage.Storage" : .repository
+"blog.Module" --> "blog.model.Article" : .articles
 
-"modules.blog.Form" --> "modules.blog.Field" : .Fields
+"blog.Module" --> "blog.storage.Storage" : .SetRepository()
+"blog.Module" --> "blog.model.Article" : .parseMarkdownFile()
 
-"modules.blog.Generator" --> "modules.blog.Module" : .module
 
-"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateArticlePage()
-"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateFeed()
-"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateIndexPage()
-"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .generateStaticPages()
-"modules.blog.Generator" --> "modules.blog.handlers.Handlers" : .walkPages()
-"modules.blog.Module" --> "modules.blog.storage.Storage" : .repository
-"modules.blog.Module" --> "modules.blog.model.Article" : .articles
 
-"modules.blog.Module" --> "modules.blog.storage.Storage" : .SetRepository()
-"modules.blog.Module" --> "modules.blog.model.Article" : .parseMarkdownFile()
-"modules.blog.Navigation" --> "modules.blog.NavigationLink" : .Links
 
+"user.model.UserAuth" --> "user.model.User" : .UserID (1:1)
 
 
-"modules.blog.RenderData" --> "modules.blog.Field" : .Fields
-"modules.blog.RenderData" --> "modules.blog.Navigation" : .Navigation
+"user.model.UserGroupMember" --> "user.model.UserGroup" : .UserGroupID (1:1)
+"user.model.UserGroupMember" --> "user.model.User" : .UserID (1:1)
 
+"user.model.UserSession" --> "user.model.User" : .UserID (1:N)
 
 
 
 
-"modules.user.model.UserAuth" --> "modules.user.model.User" : .UserID (1:1)
 
 
-"modules.user.model.UserGroupMember" --> "modules.user.model.UserGroup" : .UserGroupID (1:1)
-"modules.user.model.UserGroupMember" --> "modules.user.model.User" : .UserID (1:1)
+"daily.model.Todo" --> "daily.model.User" : .UserID (1:N)
 
-"modules.user.model.UserSession" --> "modules.user.model.User" : .UserID (1:N)
+"daily.model.User" --> "user.model.User" : .type
 
 
+"user.storage.SessionStorage" --> "user.model.UserSession" : .Create()
+"user.storage.SessionStorage" --> "user.model.UserSession" : .Get()
 
+"user.storage.UserStorage" --> "user.model.User" : .Authenticate()
+"user.storage.UserStorage" --> "user.model.User" : .Create()
+"user.storage.UserStorage" --> "user.model.User" : .Get()
+"user.storage.UserStorage" --> "user.model.UserGroup" : .GetGroups()
+"user.storage.UserStorage" --> "user.model.User" : .Update()
+"user.view.Renderer" --> "user.view.any" : .data
 
+"user.view.Data" --> "user.model.User" : .SessionUser
 
+"user.view.LoginData" --> "user.model.User" : .SessionUser
 
-"modules.daily.model.Todo" --> "modules.daily.model.User" : .UserID (1:N)
+"user.view.LogoutData" --> "user.model.User" : .SessionUser
 
-"modules.daily.model.User" --> "modules.user.model.User" : .type
+"user.view.RegisterData" --> "user.model.User" : .SessionUser
 
+"user.service.Service" --> "user.storage.UserStorage" : .UserStorage
+"user.service.Service" --> "user.storage.SessionStorage" : .SessionStorage
+"user.service.Service" --> "user.view.Renderer" : .view
 
-"modules.user.storage.SessionStorage" --> "modules.user.model.UserSession" : .Create()
-"modules.user.storage.SessionStorage" --> "modules.user.model.UserSession" : .Get()
+"user.Handler" --|> "user.service.Service" : embeds
 
-"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Authenticate()
-"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Create()
-"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Get()
-"modules.user.storage.UserStorage" --> "modules.user.model.UserGroup" : .GetGroups()
-"modules.user.storage.UserStorage" --> "modules.user.model.User" : .Update()
-"modules.user.view.Renderer" --> "modules.user.view.any" : .data
 
-"modules.user.view.Data" --> "modules.user.model.User" : .SessionUser
+"daily.storage.Storage" --> "daily.model.Todo" : .Add()
+"daily.storage.Storage" --> "daily.model.Todo" : .Get()
+"daily.storage.Storage" --> "daily.model.Todo" : .List()
+"daily.storage.Storage" --> "daily.model.Todo" : .Update()
+"daily.view.Data" --> "daily.model.Todo" : .Tasks
+"daily.view.Data" --> "daily.model.User" : .SessionUser
 
-"modules.user.view.LoginData" --> "modules.user.model.User" : .SessionUser
 
-"modules.user.view.LogoutData" --> "modules.user.model.User" : .SessionUser
+"daily.view.Views" --> "daily.view.Loader" : .Loader
 
-"modules.user.view.RegisterData" --> "modules.user.model.User" : .SessionUser
+"daily.Module" --> "daily.storage.Storage" : .repository
+"daily.Module" --> "daily.view.Views" : .views
 
-"modules.user.service.Service" --> "modules.user.storage.UserStorage" : .UserStorage
-"modules.user.service.Service" --> "modules.user.storage.SessionStorage" : .SessionStorage
-"modules.user.service.Service" --> "modules.user.view.Renderer" : .view
 
-"modules.user.Handler" --|> "modules.user.service.Service" : embeds
 
 
-"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Add()
-"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Get()
-"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .List()
-"modules.daily.storage.Storage" --> "modules.daily.model.Todo" : .Update()
-"modules.daily.view.Data" --> "modules.daily.model.Todo" : .Tasks
-"modules.daily.view.Data" --> "modules.daily.model.User" : .SessionUser
 
 
-"modules.daily.view.Views" --> "modules.daily.view.Loader" : .Loader
 
-"modules.daily.Module" --> "modules.daily.storage.Storage" : .repository
-"modules.daily.Module" --> "modules.daily.view.Views" : .views
 
+"email.smtp.SMTPSender" --> "email.smtp.Config" : .config
 
 
 
+"email.storage.EmailStorage" --> "email.model.Email" : .Create()
+"email.storage.EmailStorage" --> "email.model.Email" : .Get()
+"email.storage.EmailStorage" --> "email.model.Email" : .GetFailed()
+"email.storage.EmailStorage" --> "email.model.Email" : .GetPending()
+"email.storage.EmailStorage" --> "email.model.Email" : .GetSent()
+"email.storage.EmailStorage" --> "email.model.Email" : .Update()
 
+"email.Handler" --> "email.Service" : .service
 
+"email.Service" --> "email.EmailStorage" : .emailStorage
+"email.Service" --> "email.smtp.Sender" : .sender
+"email.Service" --> "email.ServiceOptions" : .options
 
+"email.Service" --> "email.model.Email" : .AddEmail()
+"email.Service" --> "email.model.Email" : .sendEmail()
 
-"modules.email.smtp.SMTPSender" --> "modules.email.smtp.Config" : .config
 
+"cms.Field" --> "cms.any" : .Value
+"cms.Field" --> "cms.Option" : .Options
 
+"cms.Form" --> "cms.Field" : .Fields
 
-"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .Create()
-"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .Get()
-"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .GetFailed()
-"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .GetPending()
-"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .GetSent()
-"modules.email.storage.EmailStorage" --> "modules.email.model.Email" : .Update()
+"cms.Navigation" --> "cms.NavigationLink" : .Links
 
-"modules.email.Handler" --> "modules.email.Service" : .service
 
-"modules.email.Service" --> "modules.email.EmailStorage" : .emailStorage
-"modules.email.Service" --> "modules.email.smtp.Sender" : .sender
-"modules.email.Service" --> "modules.email.ServiceOptions" : .options
 
-"modules.email.Service" --> "modules.email.model.Email" : .AddEmail()
-"modules.email.Service" --> "modules.email.model.Email" : .sendEmail()
+"cms.RenderData" --> "cms.Field" : .Fields
+"cms.RenderData" --> "cms.Navigation" : .Navigation
 
 
-"modules.maillist.service.Permissions" --> "modules.user.model.User" : .User
 
+"cms.schema.Schema" --> "cms.schema.Table" : .Tables
 
+"cms.schema.Table" --> "cms.schema.Column" : .Columns
+"cms.schema.Table" --> "cms.schema.Index" : .Indexes
 
-"modules.maillist.model.MaillistCampaign" --> "modules.maillist.model.Maillist" : .MaillistID (1:N)
+"maillist.storage.Permissions" --> "user.model.User" : .User
 
-"modules.maillist.model.MaillistMember" --> "modules.maillist.model.Maillist" : .MaillistID (1:N)
 
-"modules.maillist.model.MaillistMemberActivity" --> "modules.maillist.model.MaillistMember" : .MaillistMemberID (1:N)
-"modules.maillist.model.MaillistMemberActivity" --> "modules.maillist.model.Campaign" : .CampaignID (1:N)
 
+"maillist.model.MaillistCampaign" --> "maillist.model.Maillist" : .MaillistID (1:N)
 
-"modules.user.cmd.generate.Config" --> "modules.user.cmd.generate.any" : .Features
-"modules.user.cmd.generate.Config" --> "modules.user.cmd.generate.Flow" : .Flows
+"maillist.model.MaillistMember" --> "maillist.model.Maillist" : .MaillistID (1:N)
 
-"modules.user.cmd.generate.Flow" --> "modules.user.cmd.generate.Step" : .Steps
+"maillist.model.MaillistMemberActivity" --> "maillist.model.MaillistMember" : .MaillistMemberID (1:N)
+"maillist.model.MaillistMemberActivity" --> "maillist.model.Campaign" : .CampaignID (1:N)
+
+
+
+"pulse.service.Handlers" --|> "pulse.service.Options" : embeds
+
+
+"pulse.service.PulseModule" --|> "pulse.service.Options" : embeds
+
+
+"pulse.model.PulseDaily" --> "pulse.model.User" : .UserID (1:1)
+
+"pulse.model.PulseHourly" --> "pulse.model.User" : .UserID (1:1)
+
+
+
+"user.cmd.generate.Config" --> "user.cmd.generate.any" : .Features
+"user.cmd.generate.Config" --> "user.cmd.generate.Flow" : .Flows
+
+"user.cmd.generate.Flow" --> "user.cmd.generate.Step" : .Steps
 
 
 

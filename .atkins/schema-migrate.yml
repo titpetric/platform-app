@@ -1,0 +1,15 @@
+#!/usr/bin/env atkins
+vars:
+  name: $(basename $(realpath -s .))
+
+tasks:
+  migrate:
+    desc: "Run email module migrations"
+    passthru: true
+    env:
+      vars:
+        MIG_DB_DSN: "sqlite://file:${{name}}.db"
+    cmds:
+      - mig migrate --project ${{name}} --path ./schema --apply
+      - mig docs --output=./schema/docs
+      - mig gen --go.skip-json --output=./model
