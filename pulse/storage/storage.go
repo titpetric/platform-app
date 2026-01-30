@@ -16,14 +16,10 @@ type Storage struct {
 	db *sqlx.DB
 }
 
-func NewStorage(ctx context.Context) (*Storage, error) {
-	db, err := DB(ctx)
-	if err != nil {
-		return nil, err
-	}
+func NewStorage(db *sqlx.DB) *Storage {
 	return &Storage{
 		db: db,
-	}, nil
+	}
 }
 
 func (s *Storage) Pulse(ctx context.Context, count int64) error {

@@ -4,25 +4,37 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http"
 
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/vuego"
+	"github.com/titpetric/vuego-cli/basecoat"
 
 	"github.com/titpetric/platform-app/pulse/storage"
+	"github.com/titpetric/platform-app/pulse/view"
 )
 
 type Handlers struct {
-	Options
+	storage *storage.Storage
+	vuego   vuego.Template
+	fs      fs.FS
 }
 
-func NewHandlers(opts Options) *Handlers {
+func NewHandlers(storage *storage.Storage) *Handlers {
+	ofs := vuego.NewOverlayFS(view.FS, basecoat.FS)
+
 	return &Handlers{
-		Options: opts,
+		fs:      ofs,
+		storage: storage,
+		vuego:   vuego.NewFS(ofs),
 	}
 }
 
 func (h *Handlers) Mount(r platform.Router) {
+	r.Get("/assets/*", http.FileServer(http.FS(h.fs)).ServeHTTP)
+
 	r.Get("/pulse", h.IndexPage)
 	r.Get("/pulse/{username}", h.UserPage)
 
@@ -41,7 +53,18 @@ func (h *Handlers) IndexPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	type viewData struct {
+		Menu []any `json:"menu"`
+	}
+
+	ctx := r.Context()
+	data := viewData{
+		Menu: []any{},
+	}
+
+	indexPage := vuego.View[viewData](h.vuego, "index.vuego", data)
+
+	return indexPage.Render(ctx, w)
 }
 
 func (h *Handlers) UserPage(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +72,14 @@ func (h *Handlers) UserPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	type viewData struct{}
+
+	ctx := r.Context()
+	data := viewData{}
+
+	indexPage := vuego.View[viewData](h.vuego, "user.vuego", data)
+
+	return indexPage.Render(ctx, w)
 }
 
 func (h *Handlers) PostIngest(w http.ResponseWriter, r *http.Request) {
@@ -71,11 +101,5 @@ func (h *Handlers) postIngest(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	ctx := r.Context()
-
-	repo, err := storage.NewStorage(ctx)
-	if err != nil {
-		return err
-	}
-
-	return repo.Pulse(ctx, body.Count)
+	return h.storage.Pulse(ctx, body.Count)
 }

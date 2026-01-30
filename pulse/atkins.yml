@@ -15,6 +15,16 @@ tasks:
 
   migrate: ../.atkins/schema-migrate.yml
 
+  test:run:
+    passthru: true
+    env:
+      vars:
+        PLATFORM_SERVER_ADDR: :8081
+        PLATFORM_DB_USER: sqlite://file:pulse.run.db
+        PLATFORM_DB_PULSE: sqlite://file:pulse.run.db
+    cmds:
+      - go run ./cmd/pulse server
+
   fmt:
     cmds:
       - goimports -w .

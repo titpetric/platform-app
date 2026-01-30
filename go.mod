@@ -14,6 +14,7 @@ require (
 	github.com/titpetric/cli v0.2.4
 	github.com/titpetric/platform v0.3.1
 	github.com/titpetric/vuego v0.7.4
+	github.com/titpetric/vuego-cli v0.0.7
 	golang.org/x/crypto v0.47.0
 	gopkg.in/yaml.v3 v3.0.1
 	modernc.org/sqlite v1.44.3

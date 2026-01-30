@@ -37,7 +37,7 @@ func cmdServer() *cli.Command {
 
 			svc.Use(middleware.Logger)
 			svc.Register(user.NewHandler())
-			svc.Register(pulse.NewModule("./data"))
+			svc.Register(pulse.NewModule())
 
 			if err := svc.Start(ctx); err != nil {
 				return err

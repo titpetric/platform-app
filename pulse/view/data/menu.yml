@@ -1,0 +1,13 @@
+menu:
+  - type: group
+    label: Pulse
+    items:
+      - label: Tit Petric
+        url: /pulse/titpetric
+        icon: info
+        attrs: link_attrs
+      - label: GitHub
+        url: https://github.com/titpetric/platform-app
+        icon: github
+        attrs:
+          target: _blank
