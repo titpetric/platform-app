@@ -18,7 +18,7 @@ type Handler struct {
 	Enabled bool
 }
 
-func NewHandler() *Handler {
+func NewModule() *Handler {
 	return &Handler{
 		Enabled: os.Getenv("PLATFORM_ENABLE_EXPVAR") == "true",
 	}

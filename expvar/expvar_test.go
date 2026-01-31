@@ -8,7 +8,7 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	h := NewHandler()
+	h := NewModule()
 
 	require.NotNil(t, h)
 	require.NoError(t, h.Mount(t.Context(), chi.NewRouter()))

@@ -19,8 +19,8 @@ type Handler struct {
 // Verify contract.
 var _ platform.Module = (*Handler)(nil)
 
-// NewHandler sets up dependencies and produces a handler.
-func NewHandler() *Handler {
+// NewModule sets up dependencies and produces a handler.
+func NewModule() *Handler {
 	return &Handler{}
 }
 

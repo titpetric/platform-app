@@ -23,7 +23,7 @@ func start(ctx context.Context) error {
 	svc := platform.New(opts)
 
 	svc.Use(middleware.Logger)
-	svc.Register(user.NewHandler())
+	svc.Register(user.NewModule())
 	svc.Register(blog.NewModule("./data"))
 
 	if err := svc.Start(ctx); err != nil {

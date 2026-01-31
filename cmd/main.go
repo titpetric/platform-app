@@ -34,9 +34,9 @@ func Main(ctx context.Context, options ...*platform.Options) {
 func Register() {
 	platform.Use(middleware.Logger)
 	platform.Use(telemetry.Middleware("user"))
-	platform.Register(email.NewHandler())
+	platform.Register(email.NewModule())
 	platform.Register(blog.NewModule("data"))
-	platform.Register(user.NewHandler())
-	platform.Register(expvar.NewHandler())
+	platform.Register(user.NewModule())
+	platform.Register(expvar.NewModule())
 	platform.Register(daily.NewModule())
 }
