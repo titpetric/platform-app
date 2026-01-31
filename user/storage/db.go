@@ -8,7 +8,8 @@ import (
 )
 
 // DB will return the sqlx.DB in use for the user module.
-// This enables reuse from outside without exposing implementation detail.
+// This enables reuse of the storage package from outside
+// the app without exposing implementation detail.
 func DB(ctx context.Context) (*sqlx.DB, error) {
-	return platform.Database.Connect(ctx)
+	return platform.Database.Connect(ctx, "user")
 }

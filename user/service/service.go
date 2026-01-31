@@ -3,6 +3,8 @@ package service
 import (
 	"io/fs"
 
+	"github.com/titpetric/platform"
+
 	"github.com/titpetric/platform-app/user/storage"
 	"github.com/titpetric/platform-app/user/view"
 )
@@ -23,4 +25,14 @@ func NewService(templateFS fs.FS, u *storage.UserStorage, s *storage.SessionStor
 		view:           view.NewRenderer(templateFS, nil),
 	}
 	return svc
+}
+
+// Mount registers login, logout, and register routes.
+func (s *Service) Mount(r platform.Router) {
+	r.Get("/login", s.LoginView)
+	r.Post("/login", s.Login)
+	r.Get("/logout", s.LogoutView)
+	r.Post("/logout", s.Logout)
+	r.Get("/register", s.RegisterView)
+	r.Post("/register", s.Register)
 }
