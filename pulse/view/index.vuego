@@ -1,7 +1,24 @@
 ---
-layout: page
-title: Pulse - keypress statistics
-description: Your personal vanity keylogger metrics.
+layout: content
 ---
 
-<a href="/pulse/titpetric">Tit Petric</a>
+<template :vars="yamlFile('index.yml')">
+
+<table class="table w-full">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Last 30 days</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="user in vars.users">
+      <td>
+        <a :href="user.href">{{ user.username }}</a>
+      </td>
+      <td>{{ user.count }} characters</td>
+    </tr>
+  </tbody>
+</table>
+
+</template>

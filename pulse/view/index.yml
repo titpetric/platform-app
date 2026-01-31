@@ -1,0 +1,13 @@
+users:
+  - username: alice
+    count: 42
+    href: /pulse/alice
+  - username: bob
+    count: 19
+    href: /pulse/bob
+  - username: charlie
+    count: 87
+    href: /pulse/charlie
+  - username: dana
+    count: 5
+    href: /pulse/dana

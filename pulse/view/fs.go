@@ -6,5 +6,5 @@ import (
 
 // FS contains embedded templates.
 //
-//go:embed *.vuego all:data
+//go:embed *.vuego *.yml all:data all:layouts
 var FS embed.FS
