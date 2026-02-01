@@ -54,7 +54,7 @@ func (m *Module) Start(ctx context.Context) error {
 
 func (m *Module) Mount(_ context.Context, r platform.Router) error {
 	r.Group(func(r platform.Router) {
-		r.Use(user.Middleware)
+		r.Use(user.NewMiddleware(user.AuthCookie()))
 
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
