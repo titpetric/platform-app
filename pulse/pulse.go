@@ -4,6 +4,6 @@ import (
 	"github.com/titpetric/platform-app/pulse/service"
 )
 
-func NewModule() *service.PulseModule {
-	return service.NewPulseModule(service.Options{})
+func NewModule(opts service.Options) *service.PulseModule {
+	return service.NewPulseModule(opts)
 }

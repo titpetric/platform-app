@@ -23,7 +23,7 @@ tasks:
         PLATFORM_DB_USER: sqlite://file:pulse.run.db
         PLATFORM_DB_PULSE: sqlite://file:pulse.run.db
     cmds:
-      - go run ./cmd/pulse server
+      - go run ./cmd/pulse --record --duration 1s
 
   fmt:
     cmds:

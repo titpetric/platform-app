@@ -14,6 +14,7 @@ import (
 
 	"github.com/titpetric/platform-app/pulse/storage"
 	"github.com/titpetric/platform-app/pulse/view"
+	"github.com/titpetric/platform-app/user"
 )
 
 type Handlers struct {
@@ -38,7 +39,10 @@ func (h *Handlers) Mount(r platform.Router) {
 	r.Get("/pulse", h.IndexPage)
 	r.Get("/pulse/{username}", h.UserPage)
 
-	r.Post("/api/pulse/ingest", h.PostIngest)
+	r.Group(func(r platform.Router) {
+		r.Use(user.NewMiddleware(user.AuthHeader()))
+		r.Post("/api/pulse/ingest", h.PostIngest)
+	})
 }
 
 func (h *Handlers) errorHandler(ctx context.Context, w http.ResponseWriter, err error) {

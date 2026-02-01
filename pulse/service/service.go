@@ -2,12 +2,16 @@ package service
 
 import (
 	"context"
+	"log"
+	"time"
 
 	_ "github.com/titpetric/platform/pkg/drivers"
 
 	"github.com/titpetric/platform"
+	"github.com/titpetric/platform/pkg/telemetry"
 
 	"github.com/titpetric/platform-app/pulse/schema"
+	"github.com/titpetric/platform-app/pulse/service/keycounter"
 	"github.com/titpetric/platform-app/pulse/storage"
 )
 
@@ -20,9 +24,6 @@ type PulseModule struct {
 
 	storage *storage.Storage
 }
-
-// Options is a placeholder for options.
-type Options struct{}
 
 func NewPulseModule(opts Options) *PulseModule {
 	return &PulseModule{
@@ -45,6 +46,37 @@ func (p *PulseModule) Start(ctx context.Context) error {
 	}
 
 	p.storage = storage.NewStorage(db)
+
+	if p.Options.Record {
+		log.Printf("[record] enabled recording keypress detail every %s", p.Options.RecordDuration)
+
+		opts := &keycounter.Options{
+			FlushInterval: p.Options.RecordDuration,
+			FlushFn: func(val int32) {
+				if val <= 0 {
+					return
+				}
+
+				ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+				defer cancel()
+
+				if err := p.storage.Pulse(ctx, int64(val)); err != nil {
+					log.Println("error storing pulse:", err)
+					telemetry.CaptureError(ctx, err)
+				}
+			},
+		}
+
+		go func() {
+			log.Println("[keycounter] started")
+			keycounter.KeyboardCounter(ctx, opts)
+			log.Println("[keycounter] exited")
+		}()
+
+	} else {
+		log.Println("[record] recording keypress detail disabled")
+	}
+
 	return nil
 }
 
