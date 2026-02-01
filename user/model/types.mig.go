@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// QueryOption is implemented by each data model type.
 type QueryOption interface {
 	WithTable(name string) QueryOption
 	WithColumns(cols []string) QueryOption
@@ -17,6 +18,7 @@ type QueryOption interface {
 	WithStatement(stmt string) QueryOption
 }
 
+// QueryConfig is a function-chaining SQL statement type.
 type QueryConfig struct {
 	Table       string
 	Columns     []string
@@ -27,61 +29,74 @@ type QueryConfig struct {
 	Statement   string
 }
 
+// WithTable will set the table name for the query.
 func (q *QueryConfig) WithTable(name string) QueryOption {
 	q.Table = name
 	return q
 }
 
+// WithColumns will set the columns to use for the query.
 func (q *QueryConfig) WithColumns(cols []string) QueryOption {
 	q.Columns = cols
 	return q
 }
 
+// WithWhere will set the where condition for the query.
 func (q *QueryConfig) WithWhere(clause string) QueryOption {
 	q.Where = clause
 	return q
 }
 
+// WithOrderBy will set the order by clause for the query.
 func (q *QueryConfig) WithOrderBy(clause string) QueryOption {
 	q.OrderBy = clause
 	return q
 }
 
+// WithLimit will set the limit clause parameters for the query.
 func (q *QueryConfig) WithLimit(start, offset int) QueryOption {
 	q.LimitStart = start
 	q.LimitOffset = offset
 	return q
 }
 
+// WithStatement will change the statement for the query.
 func (q *QueryConfig) WithStatement(stmt string) QueryOption {
 	q.Statement = stmt
 	return q
 }
 
+// WithTable will set the table name for the query.
 func WithTable(name string) QueryOption {
 	return &QueryConfig{Table: name}
 }
 
+// WithColumns will set the columns to use for the query.
 func WithColumns(cols []string) QueryOption {
 	return &QueryConfig{Columns: cols}
 }
 
+// WithWhere will set the where condition for the query.
 func WithWhere(clause string) QueryOption {
 	return &QueryConfig{Where: clause}
 }
 
+// WithOrderBy will set the order by clause for the query.
 func WithOrderBy(clause string) QueryOption {
 	return &QueryConfig{OrderBy: clause}
 }
 
+// WithLimit will set the limit clause parameters for the query.
 func WithLimit(start, offset int) QueryOption {
 	return &QueryConfig{LimitStart: start, LimitOffset: offset}
 }
 
+// WithStatement will change the statement for the query.
 func WithStatement(stmt string) QueryOption {
 	return &QueryConfig{Statement: stmt}
 }
 
+// Apply will use passed query options to populate the query.
 func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 	cfg := *q
 	for _, opt := range opts {
@@ -109,26 +124,64 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 	return &cfg
 }
 
+// Migrations generated for db table `migrations`.
+//
+// Migrations.
+type Migrations struct {
+	// Project
+	Project string `db:"project"`
+
+	// Filename
+	Filename string `db:"filename"`
+
+	// Statement Index
+	StatementIndex int64 `db:"statement_index"`
+
+	// Status
+	Status string `db:"status"`
+}
+
+// GetProject will return the value of Project.
+func (m *Migrations) GetProject() string { return m.Project }
+
+// GetFilename will return the value of Filename.
+func (m *Migrations) GetFilename() string { return m.Filename }
+
+// GetStatementIndex will return the value of StatementIndex.
+func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
+
+// GetStatus will return the value of Status.
+func (m *Migrations) GetStatus() string { return m.Status }
+
+// MigrationsTable is the name of the table in the DB.
+const MigrationsTable = "`migrations`"
+
+// MigrationsFields is a list of all columns in the DB table.
+var MigrationsFields = []string{"project", "filename", "statement_index", "status"}
+
+// MigrationsPrimaryFields are the primary key fields in the DB table.
+var MigrationsPrimaryFields = []string{"project", "filename"}
+
 // User generated for db table `user`.
 //
-// Stores user profile information using ULID as primary key.
+// User.
 type User struct {
-	// Primary key: ULID string
+	// ID
 	ID string `db:"id"`
 
-	// User first name
+	// First Name
 	FirstName string `db:"first_name"`
 
-	// User last name
+	// Last Name
 	LastName string `db:"last_name"`
 
-	// Soft delete timestamp, NULL if active
+	// Deleted At
 	DeletedAt *time.Time `db:"deleted_at"`
 
-	// Record creation timestamp
+	// Created At
 	CreatedAt *time.Time `db:"created_at"`
 
-	// Record update timestamp
+	// Updated At
 	UpdatedAt *time.Time `db:"updated_at"`
 }
 
@@ -170,21 +223,21 @@ var UserPrimaryFields = []string{"id"}
 
 // UserAuth generated for db table `user_auth`.
 //
-// Stores user authentication credentials.
+// User Auth.
 type UserAuth struct {
-	// Reference to user.id (ULID)
+	// User ID
 	UserID string `db:"user_id"`
 
-	// User email address, unique
+	// Email
 	Email string `db:"email"`
 
-	// Hashed password
+	// Password
 	Password string `db:"password"`
 
-	// Record creation timestamp
+	// Created At
 	CreatedAt *time.Time `db:"created_at"`
 
-	// Record update timestamp
+	// Updated At
 	UpdatedAt *time.Time `db:"updated_at"`
 }
 
@@ -220,18 +273,18 @@ var UserAuthPrimaryFields = []string{"user_id"}
 
 // UserGroup generated for db table `user_group`.
 //
-// Stores user group information using ULID as primary key.
+// User Group.
 type UserGroup struct {
-	// Primary key: ULID string
+	// ID
 	ID string `db:"id"`
 
-	// Group name/title
+	// Title
 	Title string `db:"title"`
 
-	// Record creation timestamp
+	// Created At
 	CreatedAt *time.Time `db:"created_at"`
 
-	// Record update timestamp
+	// Updated At
 	UpdatedAt *time.Time `db:"updated_at"`
 }
 
@@ -264,15 +317,15 @@ var UserGroupPrimaryFields = []string{"id"}
 
 // UserGroupMember generated for db table `user_group_member`.
 //
-// Stores user memberships in groups using ULID for IDs.
+// User Group Member.
 type UserGroupMember struct {
-	// Reference to user_group.id (ULID)
+	// User Group ID
 	UserGroupID string `db:"user_group_id"`
 
-	// Reference to user.id (ULID)
+	// User ID
 	UserID string `db:"user_id"`
 
-	// Timestamp when user joined the group
+	// Joined At
 	JoinedAt *time.Time `db:"joined_at"`
 }
 
@@ -299,18 +352,18 @@ var UserGroupMemberPrimaryFields = []string{"user_group_id", "user_id"}
 
 // UserSession generated for db table `user_session`.
 //
-// Stores immutable user sessions with ULID IDs and expiration.
+// User Session.
 type UserSession struct {
-	// Primary key: ULID string, also used as session token
+	// ID
 	ID string `db:"id"`
 
-	// Reference to user.id (ULID)
+	// User ID
 	UserID string `db:"user_id"`
 
-	// Session expiration timestamp
+	// Expires At
 	ExpiresAt *time.Time `db:"expires_at"`
 
-	// Session creation timestamp
+	// Created At
 	CreatedAt *time.Time `db:"created_at"`
 }
 
@@ -341,6 +394,68 @@ var UserSessionFields = []string{"id", "user_id", "expires_at", "created_at"}
 // UserSessionPrimaryFields are the primary key fields in the DB table.
 var UserSessionPrimaryFields = []string{"id"}
 
+// Insert starts building an INSERT INTO query.
+func (m *Migrations) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := MigrationsFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+}
+
+// Select starts building a SELECT query.
+func (m *Migrations) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
+	cols := "*"
+	if len(cfg.Columns) > 0 {
+		cols = strings.Join(cfg.Columns, ", ")
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	if cfg.OrderBy != "" {
+		query += " ORDER BY " + cfg.OrderBy
+	}
+	if cfg.LimitOffset > 0 {
+		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
+	}
+	return query
+}
+
+// Update starts building a UPDATE query.
+func (m *Migrations) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
+	cols := MigrationsFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	setClause := ""
+	for i, col := range cols {
+		if i > 0 {
+			setClause += ", "
+		}
+		setClause += col + "=:" + col
+	}
+	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Delete starts building a DELETE query.
+func (m *Migrations) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
+	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Insert starts building an INSERT INTO query.
 func (u *User) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := UserFields
@@ -350,6 +465,7 @@ func (u *User) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (u *User) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserTable}).Apply(opts...)
 	cols := "*"
@@ -369,6 +485,7 @@ func (u *User) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (u *User) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserTable}).Apply(opts...)
 	cols := UserFields
@@ -389,6 +506,7 @@ func (u *User) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (u *User) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
@@ -398,6 +516,7 @@ func (u *User) Delete(opts ...QueryOption) string {
 	return query
 }
 
+// Insert starts building an INSERT INTO query.
 func (u *UserAuth) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserAuthTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := UserAuthFields
@@ -407,6 +526,7 @@ func (u *UserAuth) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (u *UserAuth) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserAuthTable}).Apply(opts...)
 	cols := "*"
@@ -426,6 +546,7 @@ func (u *UserAuth) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (u *UserAuth) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserAuthTable}).Apply(opts...)
 	cols := UserAuthFields
@@ -446,6 +567,7 @@ func (u *UserAuth) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (u *UserAuth) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserAuthTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
@@ -455,6 +577,7 @@ func (u *UserAuth) Delete(opts ...QueryOption) string {
 	return query
 }
 
+// Insert starts building an INSERT INTO query.
 func (u *UserGroup) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := UserGroupFields
@@ -464,6 +587,7 @@ func (u *UserGroup) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (u *UserGroup) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupTable}).Apply(opts...)
 	cols := "*"
@@ -483,6 +607,7 @@ func (u *UserGroup) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (u *UserGroup) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupTable}).Apply(opts...)
 	cols := UserGroupFields
@@ -503,6 +628,7 @@ func (u *UserGroup) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (u *UserGroup) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
@@ -512,6 +638,7 @@ func (u *UserGroup) Delete(opts ...QueryOption) string {
 	return query
 }
 
+// Insert starts building an INSERT INTO query.
 func (u *UserGroupMember) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupMemberTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := UserGroupMemberFields
@@ -521,6 +648,7 @@ func (u *UserGroupMember) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (u *UserGroupMember) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupMemberTable}).Apply(opts...)
 	cols := "*"
@@ -540,6 +668,7 @@ func (u *UserGroupMember) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (u *UserGroupMember) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupMemberTable}).Apply(opts...)
 	cols := UserGroupMemberFields
@@ -560,6 +689,7 @@ func (u *UserGroupMember) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (u *UserGroupMember) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupMemberTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
@@ -569,6 +699,7 @@ func (u *UserGroupMember) Delete(opts ...QueryOption) string {
 	return query
 }
 
+// Insert starts building an INSERT INTO query.
 func (u *UserSession) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserSessionTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := UserSessionFields
@@ -578,6 +709,7 @@ func (u *UserSession) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (u *UserSession) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserSessionTable}).Apply(opts...)
 	cols := "*"
@@ -597,6 +729,7 @@ func (u *UserSession) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (u *UserSession) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserSessionTable}).Apply(opts...)
 	cols := UserSessionFields
@@ -617,6 +750,7 @@ func (u *UserSession) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (u *UserSession) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserSessionTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)

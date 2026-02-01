@@ -1,0 +1,35 @@
+vars:
+  name: $(basename $(realpath -s .))
+  build:
+    path: ./cmd/pulse
+    goarch: [amd64]
+
+tasks:
+  default:
+    passthru: true
+    steps:
+      - task: fmt
+      - task: test:gotestsum
+
+  migrate: ../.atkins/schema-migrate.yml
+
+  fmt:
+    cmds:
+      - goimports -w .
+      - gofumpt -w .
+      - go fmt ./...
+
+  test:
+    depends_on: migrate
+    cmds:
+      - task: test:gotestsum
+
+  test:gotestsum:
+    passthru: true
+    tty: true
+    env:
+      vars:
+        PLATFORM_DB_USER: sqlite://file:user.test.db
+    cmds:
+      - cp -f user.db user.test.db
+      - gotestsum ./... -- -tags integration

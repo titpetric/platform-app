@@ -13,6 +13,7 @@ import (
 
 	"github.com/titpetric/platform-app/user"
 	"github.com/titpetric/platform-app/user/model"
+	"github.com/titpetric/platform-app/user/schema"
 	"github.com/titpetric/platform-app/user/storage"
 )
 
@@ -24,6 +25,8 @@ func TestNewSessionStorage_integration(t *testing.T) {
 
 	db, err := storage.DB(ctx)
 	require.NoError(t, err)
+
+	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
 
 	s := storage.NewSessionStorage(db)
 	require.NotNil(t, s)

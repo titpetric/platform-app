@@ -26,7 +26,7 @@ func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
 		Email:    email,
 		Password: password,
 	})
-	if err != nil || !user.IsActive() {
+	if err != nil || !user.Ok() {
 		h.Error(r, "Invalid credentials for login", err)
 		h.LoginView(w, r)
 		return
