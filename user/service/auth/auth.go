@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	jwt "github.com/golang-jwt/jwt/v5"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -46,9 +45,6 @@ func (u *JWT) Claims(tokenString string) (*Claims, error) {
 	}
 
 	signingSecret := func(token *jwt.Token) (any, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
 		return []byte(u.secret), nil
 	}
 
