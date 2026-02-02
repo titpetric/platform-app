@@ -175,6 +175,12 @@ type User struct {
 	// Last Name
 	LastName string `db:"last_name"`
 
+	// Username
+	Username string `db:"username"`
+
+	// Slug
+	Slug string `db:"slug"`
+
 	// Deleted At
 	DeletedAt *time.Time `db:"deleted_at"`
 
@@ -193,6 +199,12 @@ func (u *User) GetFirstName() string { return u.FirstName }
 
 // GetLastName will return the value of LastName.
 func (u *User) GetLastName() string { return u.LastName }
+
+// GetUsername will return the value of Username.
+func (u *User) GetUsername() string { return u.Username }
+
+// GetSlug will return the value of Slug.
+func (u *User) GetSlug() string { return u.Slug }
 
 // GetDeletedAt will return the value of DeletedAt.
 func (u *User) GetDeletedAt() *time.Time { return u.DeletedAt }
@@ -216,7 +228,7 @@ func (u *User) SetUpdatedAt(stamp time.Time) { u.UpdatedAt = &stamp }
 const UserTable = "`user`"
 
 // UserFields is a list of all columns in the DB table.
-var UserFields = []string{"id", "first_name", "last_name", "deleted_at", "created_at", "updated_at"}
+var UserFields = []string{"id", "first_name", "last_name", "username", "slug", "deleted_at", "created_at", "updated_at"}
 
 // UserPrimaryFields are the primary key fields in the DB table.
 var UserPrimaryFields = []string{"id"}
