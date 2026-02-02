@@ -1,3 +1,7 @@
+---
+layout: base
+---
+
 <template :require="sessionUser">
   <div class="row justify-content-center my-5">
     <div class="col-md-6 col-lg-4">

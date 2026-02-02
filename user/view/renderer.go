@@ -16,6 +16,10 @@ type Renderer struct {
 
 // NewRenderer creates a new Renderer with the given filesystem and shared data
 func NewRenderer(root fs.FS, data map[string]any) *Renderer {
+	if data == nil {
+		data = make(map[string]any)
+	}
+
 	return &Renderer{
 		root: root,
 		data: data,

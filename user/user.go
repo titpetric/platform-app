@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"io/fs"
 	"net/http"
 	"os"
 
@@ -11,8 +12,9 @@ import (
 
 // NewModule will return the user module.
 func NewModule() *service.UserModule {
+	templatesFS, _ := fs.Sub(templateFS, "templates")
 	return service.NewUserModule(service.Options{
-		TemplateFS: templateFS,
+		TemplateFS: templatesFS,
 	})
 }
 

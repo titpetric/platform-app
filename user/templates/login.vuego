@@ -1,3 +1,7 @@
+---
+layout: base
+---
+
 <div class="row justify-content-center my-5">
   <div class="col-md-6 col-lg-4">
     <div class="card shadow-sm rounded-4">
@@ -13,7 +17,7 @@
                 </td>
 
                 <td class="border-0">
-                  <input type="email" name="email" id="email" class="form-control" :value="data.email" required>
+                  <input type="email" name="email" id="email" class="form-control" :value="email" required>
                 </td>
               </tr>
 
@@ -29,7 +33,7 @@
             </tbody>
           </table>
 
-          <div v-if="data.errorMessage" class="alert alert-warning text-center mt-3">{{data.errorMessage}}</div>
+          <div v-if="errorMessage" class="alert alert-warning text-center mt-3">{{errorMessage}}</div>
 
           <div class="d-grid mt-4">
             <button type="submit" class="btn btn-primary btn-lg rounded-3">Login</button>

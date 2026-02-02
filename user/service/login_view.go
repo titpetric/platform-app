@@ -20,9 +20,17 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 	if err == nil && cookie.Value != "" {
 		if session, err := h.SessionStorage.Get(ctx, cookie.Value); err == nil {
 			if user, err := h.UserStorage.Get(ctx, session.UserID); err == nil {
-				h.view.Logout(view.LogoutData{
+				if err := h.view.Logout(view.LogoutData{
 					SessionUser: user,
-				}).Render(ctx, w)
+					Links: view.Links{
+						Login:    "/login",
+						Logout:   "/logout",
+						Register: "/register",
+					},
+				}).Render(ctx, w); err != nil {
+					telemetry.CaptureError(ctx, err)
+					h.Error(r, "Failed to render logout page", err)
+				}
 				return
 			} else {
 				telemetry.CaptureError(ctx, err)
@@ -32,8 +40,16 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	h.view.Login(view.LoginData{
+	if err := h.view.Login(view.LoginData{
 		ErrorMessage: h.GetError(r),
 		Email:        r.FormValue("email"),
-	}).Render(ctx, w)
+		Links: view.Links{
+			Login:    "/login",
+			Logout:   "/logout",
+			Register: "/register",
+		},
+	}).Render(ctx, w); err != nil {
+		telemetry.CaptureError(ctx, err)
+		h.Error(r, "Failed to render login page", err)
+	}
 }
