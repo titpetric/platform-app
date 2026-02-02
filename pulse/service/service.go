@@ -12,13 +12,12 @@ import (
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
 
-	"github.com/titpetric/platform-app/user"
-	"github.com/titpetric/platform-app/user/service/auth"
-	userstorage "github.com/titpetric/platform-app/user/storage"
-
 	"github.com/titpetric/platform-app/pulse/schema"
 	"github.com/titpetric/platform-app/pulse/service/keycounter"
 	"github.com/titpetric/platform-app/pulse/storage"
+	"github.com/titpetric/platform-app/user"
+	"github.com/titpetric/platform-app/user/service/auth"
+	userstorage "github.com/titpetric/platform-app/user/storage"
 )
 
 // Name is the service module name.
