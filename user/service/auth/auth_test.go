@@ -12,7 +12,7 @@ import (
 func getJwtSecret() string {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
-		jwtSecret = "default"
+		jwtSecret = "test-usage"
 	}
 	return jwtSecret
 }
@@ -34,23 +34,32 @@ func TestAuth(t *testing.T) {
 
 	uid := "2"
 
-	jwtSecret := getJwtSecret()
-	jwtClaims := getJwtUserClaim(uid)
-
-	token, err := getJwt(jwtClaims, jwtSecret)
-	if err != nil {
-		t.Fatal(err)
+	// generate tokens with test code and pkg code
+	tokens := []func() (string, error){
+		func() (string, error) {
+			jwtSecret := getJwtSecret()
+			jwtClaims := getJwtUserClaim(uid)
+			return getJwt(jwtClaims, jwtSecret)
+		},
+		func() (string, error) {
+			return NewJWT(getJwtSecret()).Create("2", time.Hour)
+		},
 	}
 
-	aa := NewJWT(jwtSecret)
-	require.True(t, aa.IsUser(token, uid))
+	for _, tokFn := range tokens {
+		token, err := tokFn()
+		require.NoError(t, err)
 
-	user, err := aa.Claims(token)
-	require.NoError(t, err)
+		validator := NewJWT(getJwtSecret())
+		require.True(t, validator.IsUser(token, uid))
 
-	t.Logf("Generated JWT: %s", token)
-	t.Logf("Claims: %d", len(user.MapClaims))
-	for idx, claim := range user.MapClaims {
-		t.Logf(" - %s: %v (%T)", idx, claim, claim)
+		user, err := validator.Claims(token)
+		require.NoError(t, err)
+
+		t.Logf("Generated JWT: %s", token)
+		t.Logf("Claims: %d", len(user.MapClaims))
+		for idx, claim := range user.MapClaims {
+			t.Logf(" - %s: %v (%T)", idx, claim, claim)
+		}
 	}
 }

@@ -2,13 +2,15 @@ package auth
 
 import (
 	"strings"
+	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 type (
 	JWT struct {
-		secret string
+		secret        string
+		signingMethod *jwt.SigningMethodHMAC
 	}
 
 	Claims struct {
@@ -20,7 +22,8 @@ type (
 
 func NewJWT(secret string) *JWT {
 	return &JWT{
-		secret: secret,
+		secret:        secret,
+		signingMethod: jwt.SigningMethodHS256,
 	}
 }
 
@@ -48,7 +51,7 @@ func (u *JWT) Claims(tokenString string) (*Claims, error) {
 		return []byte(u.secret), nil
 	}
 
-	token, err := jwt.Parse(tokenString, signingSecret, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
+	token, err := jwt.Parse(tokenString, signingSecret, jwt.WithValidMethods([]string{u.signingMethod.Alg()}))
 	if err != nil {
 		return nil, err
 	}
@@ -81,4 +84,17 @@ func (u *JWT) Validate(token string, userID string) (bool, error) {
 func (u *JWT) IsUser(token string, userID string) bool {
 	isUser, _ := u.Validate(token, userID)
 	return isUser
+}
+
+func (u *JWT) Create(userID string, ttl time.Duration) (string, error) {
+	signingSecret := func() []byte {
+		return []byte(u.secret)
+	}
+
+	claims := jwt.MapClaims{}
+	claims["user_id"] = userID
+	claims["exp"] = time.Now().Add(ttl).Unix()
+
+	at := jwt.NewWithClaims(u.signingMethod, claims)
+	return at.SignedString(signingSecret())
 }
