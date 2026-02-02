@@ -31,15 +31,18 @@ func (s *Storage) Pulse(ctx context.Context, count int64) error {
 	return platform.Transaction(ctx, s.db, s.pulseFn(user.ID, count))
 }
 
+// https://github.com/jmoiron/sqlx/issues/368
+// - uses :: to escape non-named params
+// - replaces :count to literal int
 const updatePulseHourly = `
 INSERT INTO
   pulse_hourly (user_id, stamp, count)
 VALUES
-  (:user_id, strftime('%Y-%m-%d %H:00:00', 'now'), :count)
+  (:user_id, strftime('%Y-%m-%d %H::00::00', 'now'), :count)
 ON
   CONFLICT(user_id, stamp)
 DO
-  UPDATE SET count = count + :count;`
+  UPDATE SET count = count + :count`
 
 const updatePulseDaily = `
 INSERT INTO
@@ -49,8 +52,7 @@ VALUES
 ON
   CONFLICT(user_id, stamp)
 DO
-  UPDATE SET count = count + :count;
-`
+  UPDATE SET count = count + :count`
 
 func (s *Storage) pulseFn(userID string, count int64) func(context.Context, *sqlx.Tx) error {
 	params := map[string]any{
@@ -60,12 +62,12 @@ func (s *Storage) pulseFn(userID string, count int64) func(context.Context, *sql
 	return func(ctx context.Context, tx *sqlx.Tx) error {
 		query := strings.ReplaceAll(updatePulseHourly, ":count", fmt.Sprint(count))
 		if _, err := tx.NamedExecContext(ctx, query, params); err != nil {
-			return err
+			return fmt.Errorf("error in %s: %w", query, err)
 		}
 
 		query = strings.ReplaceAll(updatePulseDaily, ":count", fmt.Sprint(count))
 		if _, err := tx.NamedExecContext(ctx, query, params); err != nil {
-			return err
+			return fmt.Errorf("error in %s: %w", query, err)
 		}
 		return nil
 	}

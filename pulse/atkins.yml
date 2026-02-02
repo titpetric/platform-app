@@ -22,6 +22,8 @@ tasks:
         PLATFORM_SERVER_ADDR: :3000
         PLATFORM_DB_USER: sqlite://file:${{name}}.run.db
         PLATFORM_DB_PULSE: sqlite://file:${{name}}.run.db
+        USER_JWT_SIGNING_KEY: 12345678
+        PULSE_AUTH: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzAxNDQ1NzIsInVzZXJfaWQiOiIwMUtHRlJRR0pKSlg0V1E3MTFGUEJOSlQ0RCJ9.PZSqFP9HwcMmaPFKir_n_EKfoHS9lXJ3s1wSceedhco
     cmds:
       - go run ${{build.path}} --record --duration 1s
 
