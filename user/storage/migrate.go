@@ -26,7 +26,7 @@ func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
 		db,
 		migrations,
 		&migrate.Options{
-			Project: "blog",
+			Project: "user",
 			Apply:   true,
 		},
 	)

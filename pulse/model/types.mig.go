@@ -129,16 +129,16 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 // Migrations.
 type Migrations struct {
 	// Project
-	Project string `db:"project"`
+	Project string `db:"project" json:"project"`
 
 	// Filename
-	Filename string `db:"filename"`
+	Filename string `db:"filename" json:"filename"`
 
 	// Statement Index
-	StatementIndex int64 `db:"statement_index"`
+	StatementIndex int64 `db:"statement_index" json:"statement_index"`
 
 	// Status
-	Status string `db:"status"`
+	Status string `db:"status" json:"status"`
 }
 
 // GetProject will return the value of Project.
@@ -167,13 +167,13 @@ var MigrationsPrimaryFields = []string{"project", "filename"}
 // Pulse Daily.
 type PulseDaily struct {
 	// User ID
-	UserID string `db:"user_id"`
+	UserID string `db:"user_id" json:"user_id"`
 
 	// Stamp
-	Stamp *time.Time `db:"stamp"`
+	Stamp *time.Time `db:"stamp" json:"stamp"`
 
 	// Count
-	Count int64 `db:"count"`
+	Count int64 `db:"count" json:"count"`
 }
 
 // GetUserID will return the value of UserID.
@@ -202,13 +202,13 @@ var PulseDailyPrimaryFields = []string{"user_id", "stamp"}
 // Pulse Hourly.
 type PulseHourly struct {
 	// User ID
-	UserID string `db:"user_id"`
+	UserID string `db:"user_id" json:"user_id"`
 
 	// Stamp
-	Stamp *time.Time `db:"stamp"`
+	Stamp *time.Time `db:"stamp" json:"stamp"`
 
 	// Count
-	Count int64 `db:"count"`
+	Count int64 `db:"count" json:"count"`
 }
 
 // GetUserID will return the value of UserID.

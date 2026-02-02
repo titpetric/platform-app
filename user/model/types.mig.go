@@ -129,16 +129,16 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 // Migrations.
 type Migrations struct {
 	// Project
-	Project string `db:"project"`
+	Project string `db:"project" json:"project"`
 
 	// Filename
-	Filename string `db:"filename"`
+	Filename string `db:"filename" json:"filename"`
 
 	// Statement Index
-	StatementIndex int64 `db:"statement_index"`
+	StatementIndex int64 `db:"statement_index" json:"statement_index"`
 
 	// Status
-	Status string `db:"status"`
+	Status string `db:"status" json:"status"`
 }
 
 // GetProject will return the value of Project.
@@ -167,28 +167,28 @@ var MigrationsPrimaryFields = []string{"project", "filename"}
 // User.
 type User struct {
 	// ID
-	ID string `db:"id"`
+	ID string `db:"id" json:"id"`
 
 	// First Name
-	FirstName string `db:"first_name"`
+	FirstName string `db:"first_name" json:"first_name"`
 
 	// Last Name
-	LastName string `db:"last_name"`
+	LastName string `db:"last_name" json:"last_name"`
 
 	// Username
-	Username string `db:"username"`
+	Username string `db:"username" json:"username"`
 
 	// Slug
-	Slug string `db:"slug"`
+	Slug string `db:"slug" json:"slug"`
 
 	// Deleted At
-	DeletedAt *time.Time `db:"deleted_at"`
+	DeletedAt *time.Time `db:"deleted_at" json:"deleted_at"`
 
 	// Created At
-	CreatedAt *time.Time `db:"created_at"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
 
 	// Updated At
-	UpdatedAt *time.Time `db:"updated_at"`
+	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
 }
 
 // GetID will return the value of ID.
@@ -238,19 +238,19 @@ var UserPrimaryFields = []string{"id"}
 // User Auth.
 type UserAuth struct {
 	// User ID
-	UserID string `db:"user_id"`
+	UserID string `db:"user_id" json:"user_id"`
 
 	// Email
-	Email string `db:"email"`
+	Email string `db:"email" json:"email"`
 
 	// Password
-	Password string `db:"password"`
+	Password string `db:"password" json:"password"`
 
 	// Created At
-	CreatedAt *time.Time `db:"created_at"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
 
 	// Updated At
-	UpdatedAt *time.Time `db:"updated_at"`
+	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
 }
 
 // GetUserID will return the value of UserID.
@@ -288,16 +288,16 @@ var UserAuthPrimaryFields = []string{"user_id"}
 // User Group.
 type UserGroup struct {
 	// ID
-	ID string `db:"id"`
+	ID string `db:"id" json:"id"`
 
 	// Title
-	Title string `db:"title"`
+	Title string `db:"title" json:"title"`
 
 	// Created At
-	CreatedAt *time.Time `db:"created_at"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
 
 	// Updated At
-	UpdatedAt *time.Time `db:"updated_at"`
+	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
 }
 
 // GetID will return the value of ID.
@@ -332,13 +332,13 @@ var UserGroupPrimaryFields = []string{"id"}
 // User Group Member.
 type UserGroupMember struct {
 	// User Group ID
-	UserGroupID string `db:"user_group_id"`
+	UserGroupID string `db:"user_group_id" json:"user_group_id"`
 
 	// User ID
-	UserID string `db:"user_id"`
+	UserID string `db:"user_id" json:"user_id"`
 
 	// Joined At
-	JoinedAt *time.Time `db:"joined_at"`
+	JoinedAt *time.Time `db:"joined_at" json:"joined_at"`
 }
 
 // GetUserGroupID will return the value of UserGroupID.
@@ -367,16 +367,16 @@ var UserGroupMemberPrimaryFields = []string{"user_group_id", "user_id"}
 // User Session.
 type UserSession struct {
 	// ID
-	ID string `db:"id"`
+	ID string `db:"id" json:"id"`
 
 	// User ID
-	UserID string `db:"user_id"`
+	UserID string `db:"user_id" json:"user_id"`
 
 	// Expires At
-	ExpiresAt *time.Time `db:"expires_at"`
+	ExpiresAt *time.Time `db:"expires_at" json:"expires_at"`
 
 	// Created At
-	CreatedAt *time.Time `db:"created_at"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
 }
 
 // GetID will return the value of ID.

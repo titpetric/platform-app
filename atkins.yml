@@ -10,6 +10,12 @@ tasks:
       - task: fmt
       - task: test
 
+  migrate:
+    passthru: true
+    steps:
+      - atkins $PWD/.atkins/schema-migrate.yml -w ./user
+      - atkins $PWD/.atkins/schema-migrate.yml -w ./pulse
+
   fmt:
     desc: "Source code formatting"
     steps:

@@ -4,7 +4,7 @@ vars:
 
 tasks:
   migrate:
-    desc: "Run email module migrations"
+    desc: "Run module migrations"
     passthru: true
     env:
       vars:
@@ -13,4 +13,4 @@ tasks:
       - mig migrate --project ${{name}} --path ./schema --apply
       - mig docs --output=./schema/docs
       - mig docs --output=./schema --yaml --output-file schema.yml
-      - mig gen --go.skip-json --output=./model
+      - mig gen --go.fill-json --output=./model

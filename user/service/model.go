@@ -7,6 +7,7 @@ type (
 		Login    string `json:"login"`
 		Logout   string `json:"logout"`
 		Register string `json:"register"`
+		Recover  string `json:"recover"`
 	}
 
 	Data struct {
