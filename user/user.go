@@ -33,11 +33,15 @@ func AuthHeader() MiddlewareOption {
 	return func(mw *Middleware) {
 		mw.options.Header = true
 		mw.options.HeaderName = "Authorization"
-		mw.options.HeaderSigningKey = os.Getenv("USER_JWT_SIGNING_KEY")
-		if mw.options.HeaderSigningKey == "" {
-			mw.options.HeaderSigningKey = "test-usage"
-		}
+		mw.options.HeaderSigningKey = SigningKey()
 	}
+}
+
+func SigningKey() string {
+	if key := os.Getenv("USER_JWT_SIGNING_KEY"); key != "" {
+		return key
+	}
+	return "test-usage"
 }
 
 func AuthCookie() MiddlewareOption {

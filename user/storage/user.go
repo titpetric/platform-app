@@ -59,10 +59,9 @@ func (s *UserStorage) Create(ctx context.Context, u *model.User, userAuth *model
 			return fmt.Errorf("create user: %w", err)
 		}
 
-		userAuth := &model.UserAuth{
-			UserID:   u.ID,
-			Password: string(hashed),
-		}
+		userAuth := *userAuth
+		userAuth.UserID = userData.ID
+		userAuth.Password = string(hashed)
 		userAuth.SetCreatedAt(now)
 		userAuth.SetUpdatedAt(now)
 
