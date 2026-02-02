@@ -38,11 +38,6 @@ func (s *UserStorage) Create(ctx context.Context, u *model.User, userAuth *model
 		return nil, errors.New("missing authentication info: email and password are required")
 	}
 
-	now := time.Now()
-	u.SetCreatedAt(now)
-	u.SetUpdatedAt(now)
-	u.ID = ulid.String()
-
 	_, span2 := telemetry.Start(ctx, "bcrypt.GenerateFromPassword")
 	hashed, err := bcrypt.GenerateFromPassword([]byte(userAuth.Password), bcrypt.DefaultCost)
 	span2.End()
@@ -50,35 +45,37 @@ func (s *UserStorage) Create(ctx context.Context, u *model.User, userAuth *model
 		return nil, fmt.Errorf("hash password: %w", err)
 	}
 
+	userID := ulid.String()
+
 	err = platform.Transaction(ctx, s.db, func(ctx context.Context, tx *sqlx.Tx) error {
-		var err error
-		userQuery := `
-			INSERT INTO user
-			(id, first_name, last_name, deleted_at, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?)
-		`
-		_, err = tx.ExecContext(ctx, userQuery, u.ID, u.FirstName, u.LastName, u.DeletedAt, u.CreatedAt, u.UpdatedAt)
-		if err != nil {
+		now := time.Now()
+
+		userData := *u
+		userData.ID = userID
+		userData.SetCreatedAt(now)
+		userData.SetUpdatedAt(now)
+
+		if _, err = tx.NamedExecContext(ctx, userData.Insert(), userData); err != nil {
 			return fmt.Errorf("create user: %w", err)
 		}
 
-		authQuery := `
-			INSERT INTO user_auth
-				(user_id, email, password, created_at, updated_at)
-			VALUES
-				(?, ?, ?, ?, ?)
-		`
-		_, err = tx.ExecContext(ctx, authQuery, u.ID, userAuth.Email, hashed, now, now)
-		if err != nil {
+		userAuth := &model.UserAuth{
+			UserID:   u.ID,
+			Password: string(hashed),
+		}
+		userAuth.SetCreatedAt(now)
+		userAuth.SetUpdatedAt(now)
+
+		if _, err = tx.NamedExecContext(ctx, userAuth.Insert(), userAuth); err != nil {
 			return fmt.Errorf("create user_auth: %w", err)
 		}
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("transaction failed: %w", err)
 	}
 
-	return s.Get(ctx, u.ID)
+	return s.Get(ctx, userID)
 }
 
 // Update modifies an existing user and updates the updated_at timestamp.

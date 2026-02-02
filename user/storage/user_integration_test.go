@@ -44,4 +44,16 @@ func TestNewUserStorage_integration(t *testing.T) {
 		require.Nil(t, user)
 		require.ErrorIs(t, err, sql.ErrNoRows)
 	}
+
+	{
+		user, err := s.Create(ctx, &model.User{
+			FirstName: "Tit",
+			LastName:  "Petric",
+		}, &model.UserAuth{
+			Email:    "me@titpetric.com",
+			Password: "correct horse battery staple",
+		})
+		require.NoError(t, err)
+		require.NotEmpty(t, user)
+	}
 }

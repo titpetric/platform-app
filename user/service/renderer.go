@@ -4,9 +4,9 @@ import (
 	"io/fs"
 
 	"github.com/titpetric/vuego"
+	"github.com/titpetric/vuego-cli/basecoat"
 
 	"github.com/titpetric/platform-app/user/view"
-	"github.com/titpetric/vuego-cli/basecoat"
 )
 
 // Renderer handles page and layout rendering with vuego templates
