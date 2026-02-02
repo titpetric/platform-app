@@ -12,4 +12,5 @@ tasks:
     cmds:
       - mig migrate --project ${{name}} --path ./schema --apply
       - mig docs --output=./schema/docs
+      - mig docs --output=./schema --yaml --output-file schema.yml
       - mig gen --go.skip-json --output=./model
