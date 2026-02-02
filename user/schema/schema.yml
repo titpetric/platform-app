@@ -1,0 +1,201 @@
+- name: migrations
+  comment: Migrations
+  columns:
+    - name: project
+      type: TEXT
+      key: PRI
+      comment: Project
+      datatype: text
+    - name: filename
+      type: TEXT
+      key: PRI
+      comment: Filename
+      datatype: text
+    - name: statement_index
+      type: INTEGER
+      comment: Statement Index
+      datatype: integer
+    - name: status
+      type: TEXT
+      comment: Status
+      datatype: text
+  indexes:
+    - name: sqlite_autoindex_migrations_1
+      columns:
+        - project
+        - filename
+      primary: true
+      unique: true
+- name: user
+  comment: User
+  columns:
+    - name: id
+      type: TEXT
+      key: PRI
+      comment: ID
+      datatype: text
+    - name: first_name
+      type: TEXT
+      comment: First Name
+      datatype: text
+    - name: last_name
+      type: TEXT
+      comment: Last Name
+      datatype: text
+    - name: username
+      type: TEXT
+      comment: Username
+      datatype: text
+    - name: slug
+      type: TEXT
+      key: MUL
+      comment: Slug
+      datatype: text
+    - name: deleted_at
+      type: DATETIME
+      key: MUL
+      comment: Deleted At
+      datatype: timestamp
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+    - name: updated_at
+      type: DATETIME
+      comment: Updated At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_user_1
+      columns:
+        - id
+      primary: true
+      unique: true
+    - name: idx_user_deleted_at
+      columns:
+        - deleted_at
+    - name: idx_user_slug
+      columns:
+        - slug
+      unique: true
+- name: user_auth
+  comment: User Auth
+  columns:
+    - name: user_id
+      type: TEXT
+      key: PRI
+      comment: User ID
+      datatype: text
+    - name: email
+      type: TEXT
+      key: MUL
+      comment: Email
+      datatype: text
+    - name: password
+      type: TEXT
+      comment: Password
+      datatype: text
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+    - name: updated_at
+      type: DATETIME
+      comment: Updated At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_user_auth_1
+      columns:
+        - user_id
+      primary: true
+      unique: true
+    - name: idx_user_auth_email
+      columns:
+        - email
+      unique: true
+- name: user_group
+  comment: User Group
+  columns:
+    - name: id
+      type: TEXT
+      key: PRI
+      comment: ID
+      datatype: text
+    - name: title
+      type: TEXT
+      comment: Title
+      datatype: text
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+    - name: updated_at
+      type: DATETIME
+      comment: Updated At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_user_group_1
+      columns:
+        - id
+      primary: true
+      unique: true
+- name: user_group_member
+  comment: User Group Member
+  columns:
+    - name: user_group_id
+      type: TEXT
+      key: PRI
+      comment: User Group ID
+      datatype: text
+    - name: user_id
+      type: TEXT
+      key: PRI
+      comment: User ID
+      datatype: text
+    - name: joined_at
+      type: DATETIME
+      comment: Joined At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_user_group_member_1
+      columns:
+        - user_group_id
+        - user_id
+      primary: true
+      unique: true
+    - name: idx_user_group_member_user_id
+      columns:
+        - user_id
+- name: user_session
+  comment: User Session
+  columns:
+    - name: id
+      type: TEXT
+      key: PRI
+      comment: ID
+      datatype: text
+    - name: user_id
+      type: TEXT
+      key: MUL
+      comment: User ID
+      datatype: text
+    - name: expires_at
+      type: DATETIME
+      key: MUL
+      comment: Expires At
+      datatype: timestamp
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_user_session_1
+      columns:
+        - id
+      primary: true
+      unique: true
+    - name: idx_user_session_expires_at
+      columns:
+        - expires_at
+    - name: idx_user_session_user_id
+      columns:
+        - user_id

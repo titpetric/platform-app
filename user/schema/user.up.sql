@@ -3,12 +3,15 @@ CREATE TABLE IF NOT EXISTS user (
     id TEXT PRIMARY KEY NOT NULL,
     first_name TEXT NOT NULL DEFAULT '',
     last_name TEXT NOT NULL DEFAULT '',
+    username TEXT NOT NULL,
+    slug TEXT NOT NULL,
     deleted_at DATETIME,
     created_at DATETIME,
     updated_at DATETIME
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_deleted_at ON user(deleted_at);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_slug ON user(slug);
 
 -- user_auth: Stores user authentication credentials
 CREATE TABLE IF NOT EXISTS user_auth (

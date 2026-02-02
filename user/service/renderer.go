@@ -1,29 +1,34 @@
-package view
+package service
 
 import (
 	"io/fs"
 
 	"github.com/titpetric/vuego"
+
+	"github.com/titpetric/platform-app/user/view"
+	"github.com/titpetric/vuego-cli/basecoat"
 )
 
 // Renderer handles page and layout rendering with vuego templates
 type Renderer struct {
-	root fs.FS
-	tpl  vuego.Template
+	fs    fs.FS
+	vuego vuego.Template
 
 	data map[string]any
 }
 
 // NewRenderer creates a new Renderer with the given filesystem and shared data
-func NewRenderer(root fs.FS, data map[string]any) *Renderer {
+func NewRenderer(data map[string]any) *Renderer {
 	if data == nil {
 		data = make(map[string]any)
 	}
 
+	ofs := vuego.NewOverlayFS(view.FS, basecoat.FS)
+
 	return &Renderer{
-		root: root,
-		data: data,
-		tpl:  vuego.NewFS(root, vuego.WithLessProcessor(), vuego.WithFuncs(Funcs)).Fill(data),
+		fs:    ofs,
+		data:  data,
+		vuego: vuego.NewFS(ofs, vuego.WithLessProcessor(), vuego.WithFuncs(Funcs)).Fill(data),
 	}
 }
 
@@ -31,7 +36,7 @@ func NewRenderer(root fs.FS, data map[string]any) *Renderer {
 // load another template from layouts/%s.vuego; Layouts can be chained so one layout can
 // again trigger another layout, like `blog.vuego -> layouts/post.vuego -> layouts/base.vuego`.
 func (r *Renderer) Load(filename string, data any) vuego.Template {
-	return r.tpl.Load(filename).Fill(data)
+	return r.vuego.Load(filename).Fill(data)
 }
 
 func (r *Renderer) Login(data LoginData) vuego.Template {

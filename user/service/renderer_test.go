@@ -1,66 +1,16 @@
-package view
+package service
 
 import (
 	"bytes"
 	"context"
-	"embed"
-	"io/fs"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-//go:embed all:testdata
-var testdata embed.FS
-
-func TestRenderLayout(t *testing.T) {
-	fsys, err := fs.Sub(testdata, "testdata")
-	assert.NoError(t, err)
-
-	renderer := NewRenderer(fsys, map[string]any{})
-	ctx := context.Background()
-
-	t.Run("blog.vuego", func(t *testing.T) {
-		var buf bytes.Buffer
-		err := renderer.Load("blog.vuego", map[string]any{
-			"content": "Test Content",
-		}).Render(ctx, &buf)
-		assert.NoError(t, err)
-
-		output := buf.String()
-		assert.Contains(t, output, ">Layout: base<")
-		assert.Contains(t, output, ">Test Content<")
-	})
-
-	t.Run("index.vuego", func(t *testing.T) {
-		var buf bytes.Buffer
-		err := renderer.Load("index.vuego", map[string]any{
-			"content": "Test Content",
-		}).Render(ctx, &buf)
-		assert.NoError(t, err)
-
-		output := buf.String()
-		assert.Contains(t, output, ">Layout: base<")
-		assert.Contains(t, output, ">Layout: post<")
-		assert.Contains(t, output, ">Test Content<")
-	})
-}
-
-func getTemplatesFS(t *testing.T) fs.FS {
-	// Get templates directory relative to this file
-	wd, err := os.Getwd()
-	require.NoError(t, err)
-
-	templatesPath := filepath.Join(filepath.Dir(wd), "templates")
-	return os.DirFS(templatesPath)
-}
-
 func TestRendererLogin(t *testing.T) {
-	fsys := getTemplatesFS(t)
-	renderer := NewRenderer(fsys, map[string]any{})
+	renderer := NewRenderer(map[string]any{})
 	ctx := context.Background()
 
 	t.Run("login returns template", func(t *testing.T) {
@@ -97,8 +47,7 @@ func TestRendererLogin(t *testing.T) {
 }
 
 func TestRendererLogout(t *testing.T) {
-	fsys := getTemplatesFS(t)
-	renderer := NewRenderer(fsys, map[string]any{})
+	renderer := NewRenderer(map[string]any{})
 
 	t.Run("logout returns template", func(t *testing.T) {
 		data := LogoutData{
@@ -111,8 +60,7 @@ func TestRendererLogout(t *testing.T) {
 }
 
 func TestRendererRegister(t *testing.T) {
-	fsys := getTemplatesFS(t)
-	renderer := NewRenderer(fsys, map[string]any{})
+	renderer := NewRenderer(map[string]any{})
 	ctx := context.Background()
 
 	t.Run("register returns template", func(t *testing.T) {

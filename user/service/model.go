@@ -1,4 +1,4 @@
-package view
+package service
 
 import "github.com/titpetric/platform-app/user/model"
 

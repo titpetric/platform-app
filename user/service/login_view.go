@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	"github.com/titpetric/platform/pkg/telemetry"
-
-	"github.com/titpetric/platform-app/user/view"
 )
 
 // LoginView renders login.tpl when no valid session exists,
@@ -20,9 +18,9 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 	if err == nil && cookie.Value != "" {
 		if session, err := h.SessionStorage.Get(ctx, cookie.Value); err == nil {
 			if user, err := h.UserStorage.Get(ctx, session.UserID); err == nil {
-				if err := h.view.Logout(view.LogoutData{
+				if err := h.view.Logout(LogoutData{
 					SessionUser: user,
-					Links: view.Links{
+					Links: Links{
 						Login:    "/login",
 						Logout:   "/logout",
 						Register: "/register",
@@ -40,10 +38,10 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if err := h.view.Login(view.LoginData{
+	if err := h.view.Login(LoginData{
 		ErrorMessage: h.GetError(r),
 		Email:        r.FormValue("email"),
-		Links: view.Links{
+		Links: Links{
 			Login:    "/login",
 			Logout:   "/logout",
 			Register: "/register",

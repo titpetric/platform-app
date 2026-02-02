@@ -19,18 +19,14 @@ type UserModule struct {
 }
 
 // Options is passed from user package scope to service.
-type Options struct {
-	TemplateFS fs.FS
-}
+type Options struct{}
 
 // Verify contract.
 var _ platform.Module = (*UserModule)(nil)
 
 // NewUserModule sets up dependencies and produces a UserModule.
 func NewUserModule(opts Options) *UserModule {
-	return &UserModule{
-		templateFS: opts.TemplateFS,
-	}
+	return &UserModule{}
 }
 
 // Name returns the name of the containing package.
@@ -52,7 +48,7 @@ func (h *UserModule) Start(ctx context.Context) error {
 	userStorage := storage.NewUserStorage(db)
 	sessionStorage := storage.NewSessionStorage(db)
 
-	h.svc = NewService(h.templateFS, userStorage, sessionStorage)
+	h.svc = NewService(userStorage, sessionStorage)
 	return nil
 }
 
