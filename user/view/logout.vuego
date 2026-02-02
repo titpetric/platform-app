@@ -1,21 +1,17 @@
 ---
 layout: content
 ---
-
 <template :require="sessionUser">
-  <div class="row justify-content-center my-5">
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm rounded-4">
-        <div class="card-body">
-          <h1 class="mb-4">Welcome, {{ sessionUser.first_name }}</h1>
+  <div class="card w-full max-w-sm">
+    <header>
+      <h2>Welcome, {{ sessionUser.first_name }}</h2>
+      <p>You are currently signed in</p>
+    </header>
 
-          <form method="POST" :action="links.logout">
-            <div class="d-grid mt-3">
-              <button type="submit" class="btn btn-danger btn-lg rounded-3">Logout</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+    <section class="grid gap-4">
+      <form class="form grid gap-6" method="POST" :action="links.logout">
+        <button type="submit" class="btn btn-destructive w-full">Logout</button>
+      </form>
+    </section>
   </div>
 </template>

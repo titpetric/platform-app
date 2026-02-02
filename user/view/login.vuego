@@ -1,51 +1,37 @@
 ---
 layout: content
 ---
+<div class="card w-full max-w-sm">
+  <header>
+    <h2>Login to your account</h2>
+    <p>Enter your details below to login to your account</p>
+  </header>
 
-<div class="row justify-content-center my-5">
-  <div class="col-md-6 col-lg-4">
-    <div class="card shadow-sm rounded-4">
-      <div class="card-body">
-        <h1 class="mb-4">Login</h1>
+  <section class="grid gap-4">
+  <form class="form grid gap-6" method="POST" :action="links.login">
 
-        <form method="POST" :action="links.login">
-          <table class="table border-0 align-middle">
-            <tbody>
-              <tr>
-                <td class="border-0 w-25">
-                  <label for="email" class="form-label fw-semibold mb-0">Email:</label>
-                </td>
-
-                <td class="border-0">
-                  <input type="email" name="email" id="email" class="form-control" :value="email" required>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="border-0">
-                  <label for="password" class="form-label fw-semibold mb-0">Password:</label>
-                </td>
-
-                <td class="border-0">
-                  <input type="password" name="password" id="password" class="form-control" required>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div v-if="errorMessage" class="alert alert-warning text-center mt-3">{{errorMessage}}</div>
-
-          <div class="d-grid mt-4">
-            <button type="submit" class="btn btn-primary btn-lg rounded-3">Login</button>
-          </div>
-        </form>
-
-        <p class="text-center mt-4 mb-0">
-          Don't have an account?
-
-          <a href="/register" class="text-decoration-none">Register here</a>
-        </p>
-      </div>
+    <div class="grid gap-2">
+      <label for="demo-card-form-email">Email</label>
+      <input name="email" type="email" :value="email" id="demo-card-form-email">
     </div>
-  </div>
+
+    <div class="grid gap-2">
+      <div class="flex items-center gap-2">
+        <label for="demo-card-form-password">Password</label>
+        <a v-if="links.recover" :href="links.recover" class="ml-auto inline-block text-sm underline-offset-4 hover:underline">Forgot your password?</a>
+      </div>
+      <input name="password" type="password" id="demo-card-form-password">
+    </div>
+
+    <div class="grid gap-2">
+        <div v-if="errorMessage" class="alert-destructive">
+          <h2>{{ errorMessage }}</h2>
+        </div>
+      <button type="submit" class="btn w-full">Login</button>
+      <button type="button" class="btn-outline w-full" v-for="provider in identity.providers">Login with {{provider.name}}</button>
+      <p class="mt-4 text-center text-sm">Don't have an account? <a :href="links.register" class="underline-offset-4 hover:underline">Sign up</a></p>
+    </div>
+  </form>
+  </section>
 </div>
+
