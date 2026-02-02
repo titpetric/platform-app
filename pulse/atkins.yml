@@ -19,7 +19,7 @@ tasks:
     interactive: true
     env:
       vars:
-        PLATFORM_SERVER_ADDR: :0
+        PLATFORM_SERVER_ADDR: :3000
         PLATFORM_DB_USER: sqlite://file:${{name}}.run.db
         PLATFORM_DB_PULSE: sqlite://file:${{name}}.run.db
     cmds:

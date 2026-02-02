@@ -1,0 +1,76 @@
+- name: migrations
+  comment: Migrations
+  columns:
+    - name: project
+      type: TEXT
+      key: PRI
+      comment: Project
+      datatype: text
+    - name: filename
+      type: TEXT
+      key: PRI
+      comment: Filename
+      datatype: text
+    - name: statement_index
+      type: INTEGER
+      comment: Statement Index
+      datatype: integer
+    - name: status
+      type: TEXT
+      comment: Status
+      datatype: text
+  indexes:
+    - name: sqlite_autoindex_migrations_1
+      columns:
+        - project
+        - filename
+      primary: true
+      unique: true
+- name: pulse_daily
+  comment: Pulse Daily
+  columns:
+    - name: user_id
+      type: CHAR(26)
+      key: PRI
+      comment: User ID
+      datatype: text
+    - name: stamp
+      type: DATE
+      key: PRI
+      comment: Stamp
+      datatype: date
+    - name: count
+      type: INTEGER
+      comment: Count
+      datatype: integer
+  indexes:
+    - name: sqlite_autoindex_pulse_daily_1
+      columns:
+        - user_id
+        - stamp
+      primary: true
+      unique: true
+- name: pulse_hourly
+  comment: Pulse Hourly
+  columns:
+    - name: user_id
+      type: CHAR(26)
+      key: PRI
+      comment: User ID
+      datatype: text
+    - name: stamp
+      type: DATETIME
+      key: PRI
+      comment: Stamp
+      datatype: timestamp
+    - name: count
+      type: INTEGER
+      comment: Count
+      datatype: integer
+  indexes:
+    - name: sqlite_autoindex_pulse_hourly_1
+      columns:
+        - user_id
+        - stamp
+      primary: true
+      unique: true

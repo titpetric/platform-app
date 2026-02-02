@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -45,15 +44,16 @@ func (h *Handlers) Mount(r platform.Router) {
 	})
 }
 
-func (h *Handlers) errorHandler(ctx context.Context, w http.ResponseWriter, err error) {
+func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	if err != nil {
+		ctx := r.Context()
 		telemetry.CaptureError(ctx, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func (h *Handlers) IndexPage(w http.ResponseWriter, r *http.Request) {
-	h.errorHandler(r.Context(), w, h.indexPage(w, r))
+	h.errorHandler(w, r, h.indexPage(w, r))
 }
 
 func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
@@ -72,7 +72,7 @@ func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handlers) UserPage(w http.ResponseWriter, r *http.Request) {
-	h.errorHandler(r.Context(), w, h.userPage(w, r))
+	h.errorHandler(w, r, h.userPage(w, r))
 }
 
 func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
@@ -87,7 +87,7 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handlers) PostIngest(w http.ResponseWriter, r *http.Request) {
-	h.errorHandler(r.Context(), w, h.postIngest(w, r))
+	h.errorHandler(w, r, h.postIngest(w, r))
 }
 
 func (h *Handlers) postIngest(w http.ResponseWriter, r *http.Request) error {
