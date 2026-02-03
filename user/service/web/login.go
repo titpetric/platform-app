@@ -1,4 +1,4 @@
-package service
+package web
 
 import (
 	"net/http"
@@ -22,7 +22,7 @@ func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.UserStorage.Authenticate(r.Context(), model.UserAuth{
+	user, err := h.userStorage.Authenticate(r.Context(), model.UserAuth{
 		Email:    email,
 		Password: password,
 	})
@@ -32,7 +32,7 @@ func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := h.SessionStorage.Create(r.Context(), user.ID)
+	session, err := h.sessionStorage.Create(r.Context(), user.ID)
 	if err != nil {
 		h.Error(r, "Can't create session", err)
 		h.LoginView(w, r)

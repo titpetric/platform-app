@@ -1,4 +1,4 @@
-package service
+package web
 
 import (
 	"github.com/titpetric/platform"
@@ -8,8 +8,8 @@ import (
 
 // Service encapsulates what we need to get from the handler.
 type Service struct {
-	UserStorage    *storage.UserStorage
-	SessionStorage *storage.SessionStorage
+	userStorage    *storage.UserStorage
+	sessionStorage *storage.SessionStorage
 
 	view *Renderer
 }
@@ -17,8 +17,8 @@ type Service struct {
 // NewService takes in required dependencies to support the MVC framework.
 func NewService(u *storage.UserStorage, s *storage.SessionStorage) *Service {
 	svc := &Service{
-		UserStorage:    u,
-		SessionStorage: s,
+		userStorage:    u,
+		sessionStorage: s,
 		view:           NewRenderer(nil),
 	}
 	return svc

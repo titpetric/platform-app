@@ -1,4 +1,4 @@
-package service
+package web
 
 import "github.com/titpetric/platform-app/user/model"
 

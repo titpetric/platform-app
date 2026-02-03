@@ -1,4 +1,4 @@
-package service
+package web
 
 import (
 	"net/http"
@@ -17,7 +17,7 @@ func (h *Service) Logout(w http.ResponseWriter, r *http.Request) {
 
 	if err == nil && cookie.Value != "" {
 		// Delete the session from the database
-		_ = h.SessionStorage.Delete(ctx, cookie.Value)
+		_ = h.sessionStorage.Delete(ctx, cookie.Value)
 
 		// Clear cookie
 		http.SetCookie(w, &http.Cookie{

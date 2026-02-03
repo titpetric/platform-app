@@ -11,7 +11,9 @@ import (
 
 // NewModule will return the user module.
 func NewModule() *service.UserModule {
-	return service.NewUserModule(service.Options{})
+	return service.NewUserModule(service.Options{
+		SigningKey: SigningKey(),
+	})
 }
 
 type MiddlewareOption func(*Middleware)

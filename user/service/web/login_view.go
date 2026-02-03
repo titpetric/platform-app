@@ -1,4 +1,4 @@
-package service
+package web
 
 import (
 	"net/http"
@@ -16,8 +16,8 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 
 	cookie, err := r.Cookie("session_id")
 	if err == nil && cookie.Value != "" {
-		if session, err := h.SessionStorage.Get(ctx, cookie.Value); err == nil {
-			if user, err := h.UserStorage.Get(ctx, session.UserID); err == nil {
+		if session, err := h.sessionStorage.Get(ctx, cookie.Value); err == nil {
+			if user, err := h.userStorage.Get(ctx, session.UserID); err == nil {
 				if err := h.view.Logout(LogoutData{
 					SessionUser: user,
 					Links: Links{

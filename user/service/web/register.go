@@ -1,4 +1,4 @@
-package service
+package web
 
 import (
 	"net/http"
@@ -35,14 +35,14 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 		Password: password,
 	}
 
-	createdUser, err := h.UserStorage.Create(ctx, user, auth)
+	createdUser, err := h.userStorage.Create(ctx, user, auth)
 	if err != nil {
 		h.Error(r, "Failed to create user", err)
 		h.RegisterView(w, r)
 		return
 	}
 
-	session, err := h.SessionStorage.Create(ctx, createdUser.ID)
+	session, err := h.sessionStorage.Create(ctx, createdUser.ID)
 	if err != nil {
 		h.Error(r, "Failed to create session", err)
 		h.RegisterView(w, r)

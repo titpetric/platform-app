@@ -104,7 +104,7 @@ func (s *UserStorage) Get(ctx context.Context, id string) (*model.User, error) {
 	u := &model.User{}
 	query := `SELECT * FROM user WHERE id=?`
 	if err := s.db.GetContext(ctx, u, query, id); err != nil {
-		return nil, fmt.Errorf("get user: %w", err)
+		return nil, fmt.Errorf("get user id=%s: %w", id, err)
 	}
 	return u, nil
 }
