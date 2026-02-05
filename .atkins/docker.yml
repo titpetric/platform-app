@@ -1,0 +1,37 @@
+#!/usr/bin/env atkins
+name: Module docker builds
+
+vars:
+  name: $(basename $(realpath -s .))
+  semver: $(git tag | tail -n 1)
+  image: titpetric/${{name}}
+  goarch: amd64
+
+jobs:
+  default:
+    steps:
+      - task: build
+      - task: test
+
+  build:
+    desc: "Build docker images"
+    passthru: true
+    steps:
+      - if: semver != ""
+        run: docker buildx build --no-cache --platform linux/${{goarch}} -t ${{image}}:${{semver}} -f docker/Dockerfile .
+      - run: docker buildx build --no-cache --platform linux/${{goarch}} -t ${{image}}:latest      -f docker/Dockerfile .
+
+  test:
+    desc: "Test built docker image"
+    passthru: true
+    steps:
+      - docker run --rm ${{image}} version
+
+  push:
+    desc: "Push docker images"
+    passthru: true
+    steps:
+      - if: semver != ""
+        run: docker push ${{image}}:${{semver}}
+      - run: docker push ${{image}}:latest
+
