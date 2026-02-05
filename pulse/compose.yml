@@ -23,9 +23,11 @@ services:
     volumes:
       - $PWD/docker/clientdata:/app
     command:
-      - "--record"
+      - "record"
       - "--server"
       - "http://pulse:8080"
+      - "--duration"
+      - "5m"
 
 networks:
   projects-ingress:

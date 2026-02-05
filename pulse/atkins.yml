@@ -28,7 +28,7 @@ tasks:
     cmds:
       - cmd: env | egrep '(pulse|platform|user)_' -i
         passthru: true
-      - cmd: go run ${{build.path}} --record --duration 1s
+      - cmd: go run ${{build.path}} record --duration 1s
         interactive: true
 
   fmt:

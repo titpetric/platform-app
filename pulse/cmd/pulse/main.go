@@ -11,7 +11,9 @@ import (
 	"github.com/titpetric/platform"
 
 	"github.com/titpetric/platform-app/pulse/cmd/pulse/login"
+	"github.com/titpetric/platform-app/pulse/cmd/pulse/record"
 	"github.com/titpetric/platform-app/pulse/cmd/pulse/register"
+	"github.com/titpetric/platform-app/pulse/cmd/pulse/server"
 	"github.com/titpetric/platform-app/pulse/cmd/pulse/version"
 )
 
@@ -32,8 +34,9 @@ func main() {
 		}
 	}
 
-	app := cli.NewApp("example")
-	app.AddCommand("server", "Run the server process", cmd)
+	app := cli.NewApp("pulse")
+	app.AddCommand("server", server.Name, server.NewCommand)
+	app.AddCommand("record", record.Name, record.NewCommand)
 	app.AddCommand("login", login.Name, login.NewCommand)
 	app.AddCommand("register", register.Name, register.NewCommand)
 	app.AddCommand("version", version.Name, func() *cli.Command {
@@ -46,6 +49,12 @@ func main() {
 	})
 
 	app.DefaultCommand = "server"
+
+	// If no args provided, show help
+	if len(os.Args) == 1 {
+		app.Help()
+		return
+	}
 
 	if err := app.Run(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
