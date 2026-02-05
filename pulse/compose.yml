@@ -4,7 +4,8 @@ services:
     image: titpetric/pulse
     networks:
       - projects-ingress
-    env_file: .env.server
+    environment:
+      - USER_JWT_SIGNING_KEY=change-me
     volumes:
       - $PWD/docker/data:/app
     labels:
