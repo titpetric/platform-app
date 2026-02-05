@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
-
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
 

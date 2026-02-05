@@ -1,0 +1,16 @@
+---
+services:
+  pulse:
+    image: titpetric/pulse
+    networks:
+      - projects-ingress
+    env_file: .env.server
+    volumes:
+      - $PWD/docker/data:/app
+    labels:
+      caddy: pulse.incubator.to, pulse.localhost
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+
+networks:
+  projects-ingress:
+    external: true

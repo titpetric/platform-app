@@ -11,21 +11,25 @@ tasks:
       - task: fmt
       - task: test:gotestsum
       - task: build
+      - task: docker
       - task: install
 
+  docker: ../.atkins/docker.yml
   migrate: ../.atkins/schema-migrate.yml
 
   test:run:
-    interactive: true
     env:
+      include: .env.server
       vars:
         PLATFORM_SERVER_ADDR: :3000
-        PLATFORM_DB_USER: sqlite://file:${{name}}.run.db
-        PLATFORM_DB_PULSE: sqlite://file:${{name}}.run.db
-        USER_JWT_SIGNING_KEY: 12345678
+        PLATFORM_DB_DEFAULT: 'sqlite://:memory:'
+        USER_JWT_SIGNING_KEY: '12345678'
         PULSE_AUTH: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzAxNDQ1NzIsInVzZXJfaWQiOiIwMUtHRlJRR0pKSlg0V1E3MTFGUEJOSlQ0RCJ9.PZSqFP9HwcMmaPFKir_n_EKfoHS9lXJ3s1wSceedhco
     cmds:
-      - go run ${{build.path}} --record --duration 1s
+      - cmd: env | egrep '(pulse|platform|user)_' -i
+        passthru: true
+      - cmd: go run ${{build.path}} --record --duration 1s
+        interactive: true
 
   fmt:
     cmds:
@@ -53,7 +57,7 @@ tasks:
       - etl query tests/insert-with-update.sql
 
   build:
-    desc: "Build ${{name}}"
+    desc: "Build"
     vars:
       goos: linux
     steps:
