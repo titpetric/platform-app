@@ -8,8 +8,23 @@ services:
     volumes:
       - $PWD/docker/data:/app
     labels:
-      caddy: pulse.incubator.to, pulse.localhost
+      caddy: pulse.incubator.to, http://pulse.localhost
       caddy.reverse_proxy: "{{upstreams 8080}}"
+
+  pulse-client:
+    image: titpetric/pulse
+    networks:
+      - projects-ingress
+    devices:
+      - /dev/input:/dev/input:r
+      - /run/udev/data:/run/udev/data:r
+    privileged: true
+    volumes:
+      - $PWD/docker/clientdata:/app
+    command:
+      - "--record"
+      - "--server"
+      - "http://pulse:8080"
 
 networks:
   projects-ingress:
