@@ -8,6 +8,7 @@ RUN id nobody 2>/dev/null || adduser -D -H -u 65534 nobody
 
 COPY ./bin/pulse-linux-${TARGETARCH} /usr/local/bin/pulse
 
+ENV HOME=/app
 VOLUME /app
 WORKDIR /app
 

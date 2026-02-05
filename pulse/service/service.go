@@ -4,17 +4,15 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
 
+	"github.com/titpetric/platform-app/pulse/client"
 	"github.com/titpetric/platform-app/pulse/schema"
 	"github.com/titpetric/platform-app/pulse/service/keycounter"
 	"github.com/titpetric/platform-app/pulse/storage"
-	"github.com/titpetric/platform-app/user"
-	"github.com/titpetric/platform-app/user/service/auth"
 	userstorage "github.com/titpetric/platform-app/user/storage"
 )
 
@@ -82,23 +80,14 @@ func (p *PulseModule) Start(ctx context.Context) error {
 	if p.Options.Record {
 		log.Printf("[record] enabled recording keypress detail every %s", p.Options.RecordDuration)
 
-		token := os.Getenv("PULSE_AUTH")
-		if token == "" {
-			return fmt.Errorf("pulse: PULSE_AUTH undefined")
+		c := client.New(p.Options.Server)
+		if err := c.EnsureToken(); err != nil {
+			return fmt.Errorf("authentication required: %w (run 'pulse login' first)", err)
 		}
 
-		userID, err := auth.NewJWT(user.SigningKey()).UserID(token)
-		if err != nil {
-			return err
-		}
+		log.Printf("[record] sending to server: %s", p.Options.Server)
 
-		userdata, err := p.userStorage.Get(ctx, userID)
-		if err != nil {
-			return err
-		}
-		if err := userdata.Validate(); err != nil {
-			return err
-		}
+		lastRefresh := time.Now()
 
 		opts := &keycounter.Options{
 			FlushInterval: p.Options.RecordDuration,
@@ -107,13 +96,18 @@ func (p *PulseModule) Start(ctx context.Context) error {
 					return
 				}
 
-				ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-				defer cancel()
+				if time.Since(lastRefresh) > 24*time.Hour {
+					if err := c.RefreshToken(); err != nil {
+						log.Printf("[record] token refresh failed: %v", err)
+					} else {
+						lastRefresh = time.Now()
+						log.Println("[record] token refreshed")
+					}
+				}
 
-				ctx = user.SetSessionUser(ctx, userdata)
-
-				if err := p.storage.Pulse(ctx, int64(val)); err != nil {
+				if err := c.SendPulse(int64(val)); err != nil {
 					telemetry.CaptureError(ctx, err)
+					log.Printf("[record] send failed: %v", err)
 				}
 			},
 		}
