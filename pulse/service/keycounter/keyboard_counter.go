@@ -65,12 +65,13 @@ func KeyboardCounter(ctx context.Context, opts *Options) error {
 	done := make(chan struct{})
 
 	// Start readers for each event device
+	var opened int
 	for _, path := range eventFiles {
 		f, err := os.Open(path)
 		if err != nil {
-			// Skip unreadable devices
 			continue
 		}
+		opened++
 
 		go func(file *os.File) {
 			defer file.Close()
@@ -100,6 +101,10 @@ func KeyboardCounter(ctx context.Context, opts *Options) error {
 				}
 			}
 		}(f)
+	}
+
+	if opened == 0 {
+		return fmt.Errorf("no readable input devices found")
 	}
 
 	ticker := time.NewTicker(opts.FlushInterval)
