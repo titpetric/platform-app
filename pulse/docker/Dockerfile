@@ -19,3 +19,4 @@ ENV PLATFORM_DB_PULSE=sqlite://file:pulse.db
 
 USER nobody
 ENTRYPOINT ["/usr/local/bin/pulse"]
+CMD ["server"]
