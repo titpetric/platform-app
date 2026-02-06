@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	chi "github.com/go-chi/chi/v5"
+	"github.com/titpetric/platform"
 
 	"github.com/titpetric/platform-app/blog/model"
 )
@@ -35,7 +35,7 @@ func (h *Handlers) ListArticlesJSON(w http.ResponseWriter, r *http.Request) {
 
 // GetArticleJSON returns a single article as JSON
 func (h *Handlers) GetArticleJSON(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
+	slug := platform.URLParam(r, "slug")
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {

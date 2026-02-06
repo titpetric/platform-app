@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	chi "github.com/go-chi/chi/v5"
+	"github.com/titpetric/platform"
 
 	"github.com/titpetric/platform-app/blog/markdown"
 	"github.com/titpetric/platform-app/blog/view"
@@ -51,7 +51,7 @@ func (h *Handlers) ListArticlesHTML(w http.ResponseWriter, r *http.Request) {
 
 // GetArticleHTML returns a single article as HTML
 func (h *Handlers) GetArticleHTML(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
+	slug := platform.URLParam(r, "slug")
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
