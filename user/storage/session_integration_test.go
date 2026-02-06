@@ -23,9 +23,7 @@ func TestNewSessionStorage_integration(t *testing.T) {
 		ID: "test",
 	})
 
-	db, err := storage.DB(ctx)
-	require.NoError(t, err)
-
+	db := NewTestDB(t)
 	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
 
 	s := storage.NewSessionStorage(db)

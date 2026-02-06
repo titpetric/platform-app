@@ -23,8 +23,7 @@ func TestNewUserStorage_integration(t *testing.T) {
 		ID: "test",
 	})
 
-	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	db := NewTestDB(t)
 	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
 
 	s := storage.NewUserStorage(db)
@@ -46,12 +45,11 @@ func TestNewUserStorage_integration(t *testing.T) {
 	}
 
 	{
-		user, err := s.Create(ctx, &model.User{
+		user, err := s.Create(ctx, &model.UserCreateRequest{
 			FirstName: "Tit",
 			LastName:  "Petric",
-		}, &model.UserAuth{
-			Email:    "me@titpetric.com",
-			Password: "correct horse battery staple",
+			Email:     "me@titpetric.com",
+			Password:  "correct horse battery staple",
 		})
 		require.NoError(t, err)
 		require.NotEmpty(t, user)

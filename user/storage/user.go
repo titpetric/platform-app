@@ -30,13 +30,15 @@ func NewUserStorage(db *sqlx.DB) *UserStorage {
 
 // Create inserts a new user and their authentication credentials.
 // Returns an error if authentication information is missing.
-func (s *UserStorage) Create(ctx context.Context, u *model.User, userAuth *model.UserAuth) (*model.User, error) {
+func (s *UserStorage) Create(ctx context.Context, req *model.UserCreateRequest) (*model.User, error) {
 	ctx, span := telemetry.StartAuto(ctx, s.Create)
 	defer span.End()
 
-	if !userAuth.Valid() {
+	if !req.Valid() {
 		return nil, errors.New("missing authentication info: email and password are required")
 	}
+
+	userAuth := req.UserAuth()
 
 	_, span2 := telemetry.Start(ctx, "bcrypt.GenerateFromPassword")
 	hashed, err := bcrypt.GenerateFromPassword([]byte(userAuth.Password), bcrypt.DefaultCost)
@@ -50,7 +52,7 @@ func (s *UserStorage) Create(ctx context.Context, u *model.User, userAuth *model
 	err = platform.Transaction(ctx, s.db, func(ctx context.Context, tx *sqlx.Tx) error {
 		now := time.Now()
 
-		userData := *u
+		userData := *req.User()
 		userData.ID = userID
 		userData.SetCreatedAt(now)
 		userData.SetUpdatedAt(now)

@@ -32,4 +32,4 @@ tasks:
         PLATFORM_DB_USER: sqlite://file:user.test.db
     cmds:
       - cp -f user.db user.test.db
-      - gotestsum ./... -- -tags integration
+      - gotestsum -- -tags integration ./...
