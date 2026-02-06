@@ -105,5 +105,10 @@ func (h *Handlers) postIngest(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	ctx := r.Context()
-	return h.storage.Pulse(ctx, body.Count)
+	if err := h.storage.Pulse(ctx, body.Count); err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	return nil
 }

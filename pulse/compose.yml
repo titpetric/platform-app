@@ -18,12 +18,11 @@ services:
       - pulse
     networks:
       - projects-ingress
-    devices:
-      - /dev/input:/dev/input:r
-      - /run/udev/data:/run/udev/data:r
+    user: root
     privileged: true
     volumes:
       - $PWD/docker/clientdata:/app
+      - /dev/input:/dev/input:ro
     command:
       - "record"
       - "--server"
