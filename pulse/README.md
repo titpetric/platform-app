@@ -70,3 +70,10 @@ go install github.com/titpetric/platform-app/pulse/cmd/pulse@main
 ```
 
 Run `pulse --help` to discover usage.
+
+## Known limitations
+
+After bringing up the pulse client, the client needs a restart in case
+the input devices on the system change. If you unplug your USB keyboard
+and later plug it back in, the pulse client doesn't react to the systems
+change. It needs to be restarted to reopen the inputs.
