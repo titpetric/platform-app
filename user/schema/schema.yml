@@ -34,13 +34,9 @@
       key: PRI
       comment: ID
       datatype: text
-    - name: first_name
+    - name: full_name
       type: TEXT
-      comment: First Name
-      datatype: text
-    - name: last_name
-      type: TEXT
-      comment: Last Name
+      comment: Full Name
       datatype: text
     - name: username
       type: TEXT

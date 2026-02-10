@@ -169,11 +169,8 @@ type User struct {
 	// ID
 	ID string `db:"id" json:"id"`
 
-	// First Name
-	FirstName string `db:"first_name" json:"first_name"`
-
-	// Last Name
-	LastName string `db:"last_name" json:"last_name"`
+	// Full Name
+	FullName string `db:"full_name" json:"full_name"`
 
 	// Username
 	Username string `db:"username" json:"username"`
@@ -194,11 +191,8 @@ type User struct {
 // GetID will return the value of ID.
 func (u *User) GetID() string { return u.ID }
 
-// GetFirstName will return the value of FirstName.
-func (u *User) GetFirstName() string { return u.FirstName }
-
-// GetLastName will return the value of LastName.
-func (u *User) GetLastName() string { return u.LastName }
+// GetFullName will return the value of FullName.
+func (u *User) GetFullName() string { return u.FullName }
 
 // GetUsername will return the value of Username.
 func (u *User) GetUsername() string { return u.Username }
@@ -228,7 +222,7 @@ func (u *User) SetUpdatedAt(stamp time.Time) { u.UpdatedAt = &stamp }
 const UserTable = "`user`"
 
 // UserFields is a list of all columns in the DB table.
-var UserFields = []string{"id", "first_name", "last_name", "username", "slug", "deleted_at", "created_at", "updated_at"}
+var UserFields = []string{"id", "full_name", "username", "slug", "deleted_at", "created_at", "updated_at"}
 
 // UserPrimaryFields are the primary key fields in the DB table.
 var UserPrimaryFields = []string{"id"}

@@ -9,12 +9,10 @@ import (
 
 func TestUser(t *testing.T) {
 	m1 := NewUser()
-	m1.FirstName = "Tit"
-	m1.LastName = "Petric"
+	m1.FullName = "Tit Petric"
 
 	m2 := NewUser()
-	m2.FirstName = "Tit"
-	m2.LastName = "Petric"
+	m2.FullName = "Tit Petric"
 	m2.SetDeletedAt(time.Now())
 
 	s1 := m1.String()

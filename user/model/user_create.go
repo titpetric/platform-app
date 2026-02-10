@@ -3,18 +3,17 @@ package model
 import "strings"
 
 type UserCreateRequest struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	Username  string `json:"username,omitempty"`
+	FullName string `json:"full_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Username string `json:"username,omitempty"`
 }
 
 func (r *UserCreateRequest) Valid() bool {
 	if r == nil {
 		return false
 	}
-	if r.FirstName == "" || r.LastName == "" {
+	if r.FullName == "" {
 		return false
 	}
 	if r.Email == "" || r.Password == "" {
@@ -29,10 +28,9 @@ func (r *UserCreateRequest) User() *User {
 		username = r.Email
 	}
 	return &User{
-		FirstName: r.FirstName,
-		LastName:  r.LastName,
-		Username:  username,
-		Slug:      strings.ToLower(username),
+		FullName: r.FullName,
+		Username: username,
+		Slug:     strings.ToLower(username),
 	}
 }
 

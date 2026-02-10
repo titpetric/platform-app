@@ -46,10 +46,9 @@ func TestNewUserStorage_integration(t *testing.T) {
 
 	{
 		user, err := s.Create(ctx, &model.UserCreateRequest{
-			FirstName: "Tit",
-			LastName:  "Petric",
-			Email:     "me@titpetric.com",
-			Password:  "correct horse battery staple",
+			FullName: "Tit Petric",
+			Email:    "me@titpetric.com",
+			Password: "correct horse battery staple",
 		})
 		require.NoError(t, err)
 		require.NotEmpty(t, user)

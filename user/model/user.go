@@ -10,7 +10,7 @@ func (u *User) String() string {
 	if u.DeletedAt != nil {
 		return "Deleted user"
 	}
-	return u.FirstName + " " + u.LastName
+	return u.FullName
 }
 
 func (u *User) Ok() bool {

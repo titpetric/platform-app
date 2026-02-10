@@ -86,10 +86,10 @@ func (s *UserStorage) Update(ctx context.Context, u *model.User) (*model.User, e
 
 	u.SetUpdatedAt(time.Now())
 
-	query := `UPDATE user SET first_name=?, last_name=?, deleted_at=?, updated_at=? WHERE id=?`
+	query := `UPDATE user SET full_name=?, deleted_at=?, updated_at=? WHERE id=?`
 
 	_, err := s.db.ExecContext(ctx, query,
-		u.FirstName, u.LastName, u.DeletedAt, u.UpdatedAt, u.ID,
+		u.FullName, u.DeletedAt, u.UpdatedAt, u.ID,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("update user: %w", err)

@@ -123,7 +123,7 @@ func TestRegisterMissingFields(t *testing.T) {
 		opts: Options{SigningKey: getTestSigningKey()},
 	}
 
-	body := `{"first_name": "John", "last_name": "Doe"}`
+	body := `{"full_name": "John Doe"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/user/register", bytes.NewBufferString(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()

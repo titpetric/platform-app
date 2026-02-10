@@ -65,9 +65,8 @@ func TestRendererRegister(t *testing.T) {
 
 	t.Run("register returns template", func(t *testing.T) {
 		data := RegisterData{
-			Email:     "newuser@example.com",
-			FirstName: "John",
-			LastName:  "Doe",
+			Email:    "newuser@example.com",
+			FullName: "John Doe",
 		}
 
 		tpl := renderer.Register(data)
@@ -78,14 +77,12 @@ func TestRendererRegister(t *testing.T) {
 		require.NoError(t, err)
 		output := buf.String()
 		assert.Contains(t, output, "newuser@example.com")
-		assert.Contains(t, output, "John")
-		assert.Contains(t, output, "Doe")
+		assert.Contains(t, output, "John Doe")
 	})
 
 	t.Run("register with error message", func(t *testing.T) {
 		data := RegisterData{
-			FirstName:    "Jane",
-			LastName:     "Smith",
+			FullName:     "Jane Smith",
 			Email:        "jane@example.com",
 			ErrorMessage: "Email already exists",
 		}

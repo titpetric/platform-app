@@ -16,10 +16,9 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	req := &model.UserCreateRequest{
-		FirstName: r.FormValue("first_name"),
-		LastName:  r.FormValue("last_name"),
-		Email:     r.FormValue("email"),
-		Password:  r.FormValue("password"),
+		FullName: r.FormValue("full_name"),
+		Email:    r.FormValue("email"),
+		Password: r.FormValue("password"),
 	}
 
 	if !req.Valid() {

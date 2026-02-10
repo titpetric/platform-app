@@ -4,7 +4,7 @@ layout: content
 <template :require="sessionUser">
   <div class="card w-full max-w-sm">
     <header>
-      <h2>Welcome, {{ sessionUser.first_name }}</h2>
+      <h2>Welcome, {{ sessionUser.full_name }}</h2>
       <p>You are currently signed in</p>
     </header>
 

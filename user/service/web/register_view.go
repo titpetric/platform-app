@@ -13,8 +13,7 @@ func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
 
 	err := h.view.Register(RegisterData{
 		ErrorMessage: h.GetError(r),
-		FirstName:    r.FormValue("first_name"),
-		LastName:     r.FormValue("last_name"),
+		FullName:     r.FormValue("full_name"),
 		Email:        r.FormValue("email"),
 		Links: Links{
 			Login:    "/login",

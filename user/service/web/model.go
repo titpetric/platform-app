@@ -15,8 +15,7 @@ type (
 		User         string      `json:"user"`
 		Email        string      `json:"email"`
 		ErrorMessage string      `json:"errorMessage"`
-		FirstName    string      `json:"firstName"`
-		LastName     string      `json:"lastName"`
+		FullName     string      `json:"fullName"`
 		Links        Links       `json:"links"`
 	}
 

@@ -1,8 +1,7 @@
 -- user: Stores user profile information using ULID as primary key
 CREATE TABLE IF NOT EXISTS user (
     id TEXT PRIMARY KEY NOT NULL,
-    first_name TEXT NOT NULL DEFAULT '',
-    last_name TEXT NOT NULL DEFAULT '',
+    full_name TEXT NOT NULL DEFAULT '',
     username TEXT NOT NULL,
     slug TEXT NOT NULL,
     deleted_at DATETIME,
