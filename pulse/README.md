@@ -1,79 +1,50 @@
 # Pulse
 
-A client that listens to keypress events, counts them and updates the
-count to the server every 5 minutes. You can host your own, or:
+A key counting docker server/client.
 
-- Join [pulse.incubator.to](https://pulse.incubator.to) (WIP)
+## Configuring the client
 
-> TODO: show off a cool graph or two, this is barely an ingest for now.
+Create a `compose.yml` file as such:
 
-## Docker
-
-The suggested way how to run the pulse client and server is via docker.
-No other system service config is provided at this time.
-
-### Running the server
-
-Assuming you want to run the server locally:
-
-```bash
-docker compose up -d pulse
+```
+services:
+  pulse-client:
+    image: titpetric/pulse
+    user: root
+    privileged: true
+    volumes:
+      - $PWD/data:/app
+      - /dev/input:/dev/input:ro
+    command:
+      - "record"
+      - "--name"
+      - "chronos"
+      - "--server"
+      - "http://pulse.incubator.to"
+      - "--duration"
+      - "5m"
 ```
 
-The server does nothing on its own, and even exposes no ports. It
-defines some labels for "production" (stack specific) which can
-safely be deleted for your own use.
+Not great isolation when you want to read from input devices.
 
-### Client authentication
+## Starting the client
 
-I'd love just a pre-shared secret, but the design of the pulse server allows
-for multi tenancy. While you could navigate the web to register, you can also
-do that via the following commands.
-
-To create a user:
+A client first needs to authenticate to a server, and store it's
+configuration. First, create a `data/` folder and give it write
+permissions.
 
 ```bash
-docker compose run --rm pulse-client register --server http://pulse:8080
+mkdir -p data
+chmod a+rwx data
 ```
 
-The registration already gives a JWT access token. The token gets
-rotated on a daily basis and is stored in `$HOME/.config/pulse/token.json`.
-The container mounts the location as configured in `compose.yml`.
-
-If you already have a user:
+You can register (or login) via the following commands:
 
 ```bash
-docker compose run --rm pulse-client login --server http://pulse:8080
+docker compose run --rm pulse-client register --server http://pulse.incubator.to
+docker compose up -d
 ```
 
-### Starting the client
+## Running your own server
 
-After authenticating, to start the client with default options, just run:
-
-```bash
-docker compose up -d pulse-client
-```
-
-This will send your recorded keystrokes to your local pulse server instance.
-
-### Sending data elsewhere
-
-If you want to send your keystrokes and monitor keystrokes on the public
-index, follow the same register/login steps with a custom `--server`.
-
-## Local installation
-
-You can install pulse using `go`:
-
-```bash
-go install github.com/titpetric/platform-app/pulse/cmd/pulse@main
-```
-
-Run `pulse --help` to discover usage.
-
-## Known limitations
-
-After bringing up the pulse client, the client needs a restart in case
-the input devices on the system change. If you unplug your USB keyboard
-and later plug it back in, the pulse client doesn't react to the systems
-change. It needs to be restarted to reopen the inputs.
+See [./compose.yml](./compose.yml) for server configuration.
