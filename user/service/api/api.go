@@ -160,7 +160,7 @@ func (s *Service) register(w http.ResponseWriter, r *http.Request) error {
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") || strings.Contains(err.Error(), "duplicate") {
 			return &RequestError{StatusCode: http.StatusConflict, Err: errors.New("email already exists")}
 		}
-		return &RequestError{StatusCode: http.StatusInternalServerError, Err: errors.New("failed to create user")}
+		return &RequestError{StatusCode: http.StatusInternalServerError, Err: err}
 	}
 
 	ttl := 30 * 24 * time.Hour
