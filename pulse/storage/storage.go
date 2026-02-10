@@ -1,3 +1,4 @@
+// Package storage provides database persistence for pulse data.
 package storage
 
 import (
@@ -12,16 +13,19 @@ import (
 	"github.com/titpetric/platform-app/user"
 )
 
+// Storage provides pulse data persistence.
 type Storage struct {
 	db *sqlx.DB
 }
 
+// NewStorage creates a new storage backed by the given database.
 func NewStorage(db *sqlx.DB) *Storage {
 	return &Storage{
 		db: db,
 	}
 }
 
+// Pulse records keystroke activity for the authenticated user.
 func (s *Storage) Pulse(ctx context.Context, count int64, hostname string) error {
 	user, active := user.GetSessionUser(ctx)
 	if !active {

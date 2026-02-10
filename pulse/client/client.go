@@ -1,3 +1,4 @@
+// Package client provides an HTTP client for the pulse server API.
 package client
 
 import (
@@ -12,18 +13,21 @@ import (
 	"time"
 )
 
+// TokenData holds authentication token data with expiration info.
 type TokenData struct {
 	Token     string    `json:"token"`
 	ExpiresAt time.Time `json:"expires_at"`
 	SavedAt   time.Time `json:"saved_at"`
 }
 
+// Client is an HTTP client for the pulse server.
 type Client struct {
 	ServerURL  string
 	httpClient *http.Client
 	token      *TokenData
 }
 
+// New creates a new pulse client for the given server URL.
 func New(serverURL string) *Client {
 	return &Client{
 		ServerURL:  serverURL,
@@ -42,6 +46,7 @@ func configPath() (string, error) {
 	return filepath.Join(home, ".config", "pulse", "token.json"), nil
 }
 
+// LoadToken reads the saved authentication token from disk.
 func (c *Client) LoadToken() error {
 	path, err := configPath()
 	if err != nil {
@@ -65,6 +70,7 @@ func (c *Client) LoadToken() error {
 	return nil
 }
 
+// SaveToken persists the authentication token to disk.
 func (c *Client) SaveToken(token string, expiresAt time.Time) error {
 	path, err := configPath()
 	if err != nil {
@@ -94,6 +100,7 @@ func (c *Client) SaveToken(token string, expiresAt time.Time) error {
 	return nil
 }
 
+// ShouldRefresh reports whether the token needs refreshing.
 func (c *Client) ShouldRefresh() bool {
 	if c.token == nil {
 		return true
@@ -107,6 +114,7 @@ func (c *Client) ShouldRefresh() bool {
 	return false
 }
 
+// RefreshToken exchanges the current token for a new one.
 func (c *Client) RefreshToken() error {
 	if c.token == nil {
 		return errors.New("no token loaded")
@@ -141,6 +149,7 @@ func (c *Client) RefreshToken() error {
 	return c.SaveToken(result.Token, expiresAt)
 }
 
+// EnsureToken loads and refreshes the token if needed.
 func (c *Client) EnsureToken() error {
 	if err := c.LoadToken(); err != nil {
 		return err
@@ -153,6 +162,7 @@ func (c *Client) EnsureToken() error {
 	return nil
 }
 
+// SendPulse submits a keystroke count to the server.
 func (c *Client) SendPulse(count int64, hostname string) error {
 	if c.token == nil {
 		return errors.New("not authenticated")
@@ -189,6 +199,7 @@ func (c *Client) SendPulse(count int64, hostname string) error {
 	return nil
 }
 
+// Token returns the current authentication token string.
 func (c *Client) Token() string {
 	if c.token == nil {
 		return ""

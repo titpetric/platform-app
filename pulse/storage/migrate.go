@@ -9,6 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Migrate runs SQL migrations for the pulse database.
 func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
 	entries, err := fs.Glob(schema, "*.sql")
 	if err != nil {

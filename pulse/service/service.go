@@ -1,3 +1,4 @@
+// Package service implements the pulse HTTP service module.
 package service
 
 import (
@@ -13,6 +14,7 @@ import (
 // Name is the service module name.
 const Name = "pulse"
 
+// PulseModule is the pulse platform module.
 type PulseModule struct {
 	platform.UnimplementedModule
 
@@ -21,10 +23,12 @@ type PulseModule struct {
 	userStorage *userstorage.UserStorage
 }
 
+// NewPulseModule creates a new pulse module.
 func NewPulseModule() *PulseModule {
 	return &PulseModule{}
 }
 
+// Name returns the module name.
 func (p *PulseModule) Name() string {
 	return Name
 }
@@ -63,6 +67,7 @@ func (p *PulseModule) setupPulseStorage(ctx context.Context) error {
 	return nil
 }
 
+// Start initializes module storage.
 func (p *PulseModule) Start(ctx context.Context) error {
 	if err := p.setupStorage(ctx); err != nil {
 		return err
@@ -70,6 +75,7 @@ func (p *PulseModule) Start(ctx context.Context) error {
 	return nil
 }
 
+// Mount registers module HTTP handlers.
 func (p *PulseModule) Mount(ctx context.Context, r platform.Router) error {
 	handlers := NewHandlers(p.storage)
 	handlers.Mount(r)

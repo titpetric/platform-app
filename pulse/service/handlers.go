@@ -16,12 +16,14 @@ import (
 	"github.com/titpetric/platform-app/user"
 )
 
+// Handlers serves pulse HTTP endpoints.
 type Handlers struct {
 	storage *storage.Storage
 	vuego   vuego.Template
 	fs      fs.FS
 }
 
+// NewHandlers creates handlers backed by the given storage.
 func NewHandlers(storage *storage.Storage) *Handlers {
 	ofs := vuego.NewOverlayFS(view.FS, basecoat.FS)
 
@@ -32,6 +34,7 @@ func NewHandlers(storage *storage.Storage) *Handlers {
 	}
 }
 
+// Mount registers pulse routes on the router.
 func (h *Handlers) Mount(r platform.Router) {
 	r.Get("/assets/*", http.FileServer(http.FS(h.fs)).ServeHTTP)
 
@@ -52,6 +55,7 @@ func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err erro
 	}
 }
 
+// IndexPage serves the pulse index page.
 func (h *Handlers) IndexPage(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.indexPage(w, r))
 }
@@ -71,6 +75,7 @@ func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
 	return indexPage.Render(ctx, w)
 }
 
+// UserPage serves the pulse user page.
 func (h *Handlers) UserPage(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.userPage(w, r))
 }
@@ -86,6 +91,7 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 	return indexPage.Render(ctx, w)
 }
 
+// PostIngest handles pulse data ingestion requests.
 func (h *Handlers) PostIngest(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.postIngest(w, r))
 }

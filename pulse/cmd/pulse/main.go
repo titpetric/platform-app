@@ -17,6 +17,7 @@ import (
 	"github.com/titpetric/platform-app/pulse/cmd/pulse/version"
 )
 
+// ExtendedProvider extends database providers with listing and registration.
 type ExtendedProvider interface {
 	List() []string
 	Register(string, string)
