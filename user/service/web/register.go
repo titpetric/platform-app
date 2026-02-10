@@ -19,6 +19,7 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 		FullName: r.FormValue("full_name"),
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
+		Username: r.FormValue("username"),
 	}
 
 	if !req.Valid() {

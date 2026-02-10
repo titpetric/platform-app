@@ -142,11 +142,21 @@ func (s *Service) register(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if !req.Valid() {
+		// Check for specific username validation errors
+		if req.Username == "" {
+			return &RequestError{StatusCode: http.StatusBadRequest, Err: model.ErrUsernameMissing}
+		}
+		if err := req.ValidateUsername(); err != nil {
+			return &RequestError{StatusCode: http.StatusBadRequest, Err: err}
+		}
 		return &RequestError{StatusCode: http.StatusBadRequest, Err: errors.New("invalid request: all fields are required")}
 	}
 
 	user, err := s.userStorage.Create(r.Context(), &req)
 	if err != nil {
+		if errors.Is(err, model.ErrUsernameTaken) {
+			return &RequestError{StatusCode: http.StatusConflict, Err: model.ErrUsernameTaken}
+		}
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") || strings.Contains(err.Error(), "duplicate") {
 			return &RequestError{StatusCode: http.StatusConflict, Err: errors.New("email already exists")}
 		}

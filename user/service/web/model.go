@@ -14,6 +14,7 @@ type (
 		SessionUser  *model.User `json:"sessionUser"`
 		User         string      `json:"user"`
 		Email        string      `json:"email"`
+		Username     string      `json:"username"`
 		ErrorMessage string      `json:"errorMessage"`
 		FullName     string      `json:"fullName"`
 		Links        Links       `json:"links"`

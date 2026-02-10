@@ -15,6 +15,7 @@ func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
 		ErrorMessage: h.GetError(r),
 		FullName:     r.FormValue("full_name"),
 		Email:        r.FormValue("email"),
+		Username:     r.FormValue("username"),
 		Links: Links{
 			Login:    "/login",
 			Logout:   "/logout",

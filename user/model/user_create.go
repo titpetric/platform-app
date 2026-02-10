@@ -1,6 +1,9 @@
 package model
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 type UserCreateRequest struct {
 	FullName string `json:"full_name"`
@@ -19,7 +22,23 @@ func (r *UserCreateRequest) Valid() bool {
 	if r.Email == "" || r.Password == "" {
 		return false
 	}
-	return true
+	if r.Username == "" {
+		return false
+	}
+	return r.ValidateUsername() == nil
+}
+
+func (r *UserCreateRequest) ValidateUsername() error {
+	if r.Username == "" {
+		return ErrUsernameMissing
+	}
+	if len(r.Username) < 4 {
+		return ErrUsernameMinLength
+	}
+	if !regexp.MustCompile(`^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]{3}$`).MatchString(r.Username) {
+		return ErrUsernameInvalid
+	}
+	return nil
 }
 
 func (r *UserCreateRequest) User() *User {

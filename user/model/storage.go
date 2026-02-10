@@ -15,6 +15,8 @@ type UserStorage interface {
 	Update(context.Context, *User) (*User, error)
 
 	Get(context.Context, string) (*User, error)
+	GetByUsername(context.Context, string) (*User, error)
+	GetByStub(context.Context, string) (*User, error)
 	GetGroups(context.Context, string) ([]UserGroup, error)
 
 	Authenticate(ctx context.Context, auth UserAuth) (*User, error)

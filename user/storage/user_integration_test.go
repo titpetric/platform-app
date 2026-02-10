@@ -38,7 +38,7 @@ func TestNewUserStorage_integration(t *testing.T) {
 	{
 		user, err := s.Authenticate(ctx, model.UserAuth{
 			Email:    "me@titpetric.com",
-			Password: "correct horse battery staple",
+			Password: "horse battery staple",
 		})
 		require.Nil(t, user)
 		require.ErrorIs(t, err, sql.ErrNoRows)
@@ -48,9 +48,20 @@ func TestNewUserStorage_integration(t *testing.T) {
 		user, err := s.Create(ctx, &model.UserCreateRequest{
 			FullName: "Tit Petric",
 			Email:    "me@titpetric.com",
-			Password: "correct horse battery staple",
+			Password: "horse battery staple",
+			Username: "titpetric",
 		})
 		require.NoError(t, err)
 		require.NotEmpty(t, user)
+	}
+
+	{
+		user, err := s.Create(ctx, &model.UserCreateRequest{
+			FullName: "No Username",
+			Email:    "nousername@titpetric.com",
+			Password: "horse battery staple",
+		})
+		require.Nil(t, user)
+		require.ErrorContains(t, err, "username is required")
 	}
 }

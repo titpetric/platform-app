@@ -35,7 +35,27 @@ func (s *UserStorage) Create(ctx context.Context, req *model.UserCreateRequest) 
 	defer span.End()
 
 	if !req.Valid() {
-		return nil, errors.New("missing authentication info: email and password are required")
+		if req.Username == "" {
+			return nil, errors.New("missing authentication info: username is required")
+		}
+		if req.Email == "" || req.Password == "" {
+			return nil, errors.New("missing authentication info: email and password are required")
+		}
+		if req.FullName == "" {
+			return nil, errors.New("missing authentication info: full name is required")
+		}
+		return nil, errors.New("missing authentication info")
+	}
+
+	// Check if username already exists
+	_, err := s.GetByUsername(ctx, req.Username)
+	if err == nil {
+		// User with this username exists
+		return nil, model.ErrUsernameTaken
+	}
+	if err != sql.ErrNoRows {
+		// Unexpected database error
+		return nil, fmt.Errorf("check username: %w", err)
 	}
 
 	userAuth := req.UserAuth()
@@ -107,6 +127,32 @@ func (s *UserStorage) Get(ctx context.Context, id string) (*model.User, error) {
 	query := `SELECT * FROM user WHERE id=?`
 	if err := s.db.GetContext(ctx, u, query, id); err != nil {
 		return nil, fmt.Errorf("get user id=%s: %w", id, err)
+	}
+	return u, nil
+}
+
+// GetByUsername retrieves a user by their username.
+func (s *UserStorage) GetByUsername(ctx context.Context, username string) (*model.User, error) {
+	ctx, span := telemetry.StartAuto(ctx, s.GetByUsername)
+	defer span.End()
+
+	u := &model.User{}
+	query := `SELECT * FROM user WHERE username=?`
+	if err := s.db.GetContext(ctx, u, query, username); err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+// GetByStub retrieves a user by their slug.
+func (s *UserStorage) GetByStub(ctx context.Context, slug string) (*model.User, error) {
+	ctx, span := telemetry.StartAuto(ctx, s.GetByStub)
+	defer span.End()
+
+	u := &model.User{}
+	query := `SELECT * FROM user WHERE slug=?`
+	if err := s.db.GetContext(ctx, u, query, slug); err != nil {
+		return nil, fmt.Errorf("get user slug=%s: %w", slug, err)
 	}
 	return u, nil
 }
