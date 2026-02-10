@@ -153,14 +153,15 @@ func (c *Client) EnsureToken() error {
 	return nil
 }
 
-func (c *Client) SendPulse(count int64) error {
+func (c *Client) SendPulse(count int64, hostname string) error {
 	if c.token == nil {
 		return errors.New("not authenticated")
 	}
 
 	payload := struct {
-		Count int64 `json:"count"`
-	}{Count: count}
+		Count    int64  `json:"count"`
+		Hostname string `json:"hostname"`
+	}{Count: count, Hostname: hostname}
 
 	body, err := json.Marshal(payload)
 	if err != nil {

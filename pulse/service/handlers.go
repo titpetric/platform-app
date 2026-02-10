@@ -92,7 +92,8 @@ func (h *Handlers) PostIngest(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) postIngest(w http.ResponseWriter, r *http.Request) error {
 	type ingestBody struct {
-		Count int64
+		Count    int64  `json:"count"`
+		Hostname string `json:"hostname"`
 	}
 
 	body := ingestBody{}
@@ -105,7 +106,7 @@ func (h *Handlers) postIngest(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	ctx := r.Context()
-	if err := h.storage.Pulse(ctx, body.Count); err != nil {
+	if err := h.storage.Pulse(ctx, body.Count, body.Hostname); err != nil {
 		return err
 	}
 

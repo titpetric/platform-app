@@ -12,7 +12,7 @@ services:
       - /dev/input:/dev/input:ro
     command:
       - "record"
-      - "--hostname"
+      - "--name"
       - "lab"
       - "--server"
       - "http://pulse:8080"

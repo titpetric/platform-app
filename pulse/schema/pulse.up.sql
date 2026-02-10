@@ -4,7 +4,7 @@ CREATE TABLE pulse_hourly (
     stamp     DATETIME NOT NULL,
     count     INTEGER NOT NULL DEFAULT 0,
 
-    PRIMARY KEY (user_id, stamp)
+    PRIMARY KEY (user_id, hostname, stamp)
 );
 
 CREATE TABLE pulse_daily (
@@ -13,5 +13,5 @@ CREATE TABLE pulse_daily (
     stamp     DATE NOT NULL,
     count     INTEGER NOT NULL DEFAULT 0,
 
-    PRIMARY KEY (user_id, stamp)
+    PRIMARY KEY (user_id, hostname, stamp)
 );
