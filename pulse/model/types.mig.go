@@ -169,6 +169,9 @@ type PulseDaily struct {
 	// User ID
 	UserID string `db:"user_id" json:"user_id"`
 
+	// Hostname
+	Hostname string `db:"hostname" json:"hostname"`
+
 	// Stamp
 	Stamp *time.Time `db:"stamp" json:"stamp"`
 
@@ -178,6 +181,9 @@ type PulseDaily struct {
 
 // GetUserID will return the value of UserID.
 func (p *PulseDaily) GetUserID() string { return p.UserID }
+
+// GetHostname will return the value of Hostname.
+func (p *PulseDaily) GetHostname() string { return p.Hostname }
 
 // GetStamp will return the value of Stamp.
 func (p *PulseDaily) GetStamp() *time.Time { return p.Stamp }
@@ -192,7 +198,7 @@ func (p *PulseDaily) GetCount() int64 { return p.Count }
 const PulseDailyTable = "`pulse_daily`"
 
 // PulseDailyFields is a list of all columns in the DB table.
-var PulseDailyFields = []string{"user_id", "stamp", "count"}
+var PulseDailyFields = []string{"user_id", "hostname", "stamp", "count"}
 
 // PulseDailyPrimaryFields are the primary key fields in the DB table.
 var PulseDailyPrimaryFields = []string{"user_id", "stamp"}
@@ -204,6 +210,9 @@ type PulseHourly struct {
 	// User ID
 	UserID string `db:"user_id" json:"user_id"`
 
+	// Hostname
+	Hostname string `db:"hostname" json:"hostname"`
+
 	// Stamp
 	Stamp *time.Time `db:"stamp" json:"stamp"`
 
@@ -213,6 +222,9 @@ type PulseHourly struct {
 
 // GetUserID will return the value of UserID.
 func (p *PulseHourly) GetUserID() string { return p.UserID }
+
+// GetHostname will return the value of Hostname.
+func (p *PulseHourly) GetHostname() string { return p.Hostname }
 
 // GetStamp will return the value of Stamp.
 func (p *PulseHourly) GetStamp() *time.Time { return p.Stamp }
@@ -227,7 +239,7 @@ func (p *PulseHourly) GetCount() int64 { return p.Count }
 const PulseHourlyTable = "`pulse_hourly`"
 
 // PulseHourlyFields is a list of all columns in the DB table.
-var PulseHourlyFields = []string{"user_id", "stamp", "count"}
+var PulseHourlyFields = []string{"user_id", "hostname", "stamp", "count"}
 
 // PulseHourlyPrimaryFields are the primary key fields in the DB table.
 var PulseHourlyPrimaryFields = []string{"user_id", "stamp"}

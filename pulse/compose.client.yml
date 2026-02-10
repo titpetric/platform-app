@@ -1,0 +1,24 @@
+services:
+  pulse-client:
+    image: titpetric/pulse
+    depends_on:
+      - pulse
+    networks:
+      - projects-ingress
+    user: root
+    privileged: true
+    volumes:
+      - $PWD/docker/clientdata:/app
+      - /dev/input:/dev/input:ro
+    command:
+      - "record"
+      - "--hostname"
+      - "lab"
+      - "--server"
+      - "http://pulse:8080"
+      - "--duration"
+      - "5m"
+
+networks:
+  projects-ingress:
+    external: true

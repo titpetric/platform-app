@@ -1,7 +1,10 @@
----
+include:
+  - compose.client.yml
+
 services:
   pulse:
     image: titpetric/pulse
+    restart: always
     networks:
       - projects-ingress
     environment:
@@ -11,24 +14,6 @@ services:
     labels:
       caddy: pulse.incubator.to, http://pulse.localhost
       caddy.reverse_proxy: "{{upstreams 8080}}"
-
-  pulse-client:
-    image: titpetric/pulse
-    depends_on:
-      - pulse
-    networks:
-      - projects-ingress
-    user: root
-    privileged: true
-    volumes:
-      - $PWD/docker/clientdata:/app
-      - /dev/input:/dev/input:ro
-    command:
-      - "record"
-      - "--server"
-      - "http://pulse:8080"
-      - "--duration"
-      - "5m"
 
 networks:
   projects-ingress:
