@@ -10,6 +10,7 @@ tasks:
       vars:
         MIG_DB_DSN: "sqlite://file:${{name}}.db"
     cmds:
+      - defer: rm ${{name}}.db -f
       - mig migrate --project ${{name}} --path ./schema --apply
       - mig docs --output=./schema/docs
       - mig docs --output=./schema --yaml --output-file schema.yml
