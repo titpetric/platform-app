@@ -1,6 +1,8 @@
 # Pulse
 
-A key counting docker server/client.
+A key counting docker server/client. The server will ingest key counts
+from authenticated clients. Clients allow registration and login against
+the server. Multiple clients can be added to a single user.
 
 ## Configuring the client
 
@@ -48,3 +50,9 @@ docker compose up -d
 ## Running your own server
 
 See [./compose.yml](./compose.yml) for server configuration.
+
+Authenticating against the local pulse server:
+
+```bash
+docker compose run --rm pulse-client register --server http://pulse:8080
+```

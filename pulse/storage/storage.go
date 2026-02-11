@@ -58,6 +58,8 @@ ON
 DO
   UPDATE SET count = count + :count`
 
+const updatePulseHosts = `INSERT OR IGNORE INTO pulse_hosts (user_id, hostname, created_at) VALUES (:user_id, :hostname, CURRENT_TIMESTAMP)`
+
 func (s *Storage) pulseFn(userID string, count int64, hostname string) func(context.Context, *sqlx.Tx) error {
 	params := map[string]any{
 		"user_id":  userID,
@@ -74,6 +76,12 @@ func (s *Storage) pulseFn(userID string, count int64, hostname string) func(cont
 		if _, err := tx.NamedExecContext(ctx, query, params); err != nil {
 			return fmt.Errorf("error in %s: %w", query, err)
 		}
+
+		query = updatePulseHosts
+		if _, err := tx.NamedExecContext(ctx, query, params); err != nil {
+			return fmt.Errorf("error in %s: %w", query, err)
+		}
+
 		return nil
 	}
 }

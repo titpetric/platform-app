@@ -201,7 +201,42 @@ const PulseDailyTable = "`pulse_daily`"
 var PulseDailyFields = []string{"user_id", "hostname", "stamp", "count"}
 
 // PulseDailyPrimaryFields are the primary key fields in the DB table.
-var PulseDailyPrimaryFields = []string{"user_id", "stamp"}
+var PulseDailyPrimaryFields = []string{"user_id", "hostname", "stamp"}
+
+// PulseHosts generated for db table `pulse_hosts`.
+//
+// Pulse Hosts.
+type PulseHosts struct {
+	// User ID
+	UserID string `db:"user_id" json:"user_id"`
+
+	// Hostname
+	Hostname string `db:"hostname" json:"hostname"`
+
+	// Created At
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
+}
+
+// GetUserID will return the value of UserID.
+func (p *PulseHosts) GetUserID() string { return p.UserID }
+
+// GetHostname will return the value of Hostname.
+func (p *PulseHosts) GetHostname() string { return p.Hostname }
+
+// GetCreatedAt will return the value of CreatedAt.
+func (p *PulseHosts) GetCreatedAt() *time.Time { return p.CreatedAt }
+
+// SetCreatedAt sets CreatedAt to the provided value.
+func (p *PulseHosts) SetCreatedAt(stamp time.Time) { p.CreatedAt = &stamp }
+
+// PulseHostsTable is the name of the table in the DB.
+const PulseHostsTable = "`pulse_hosts`"
+
+// PulseHostsFields is a list of all columns in the DB table.
+var PulseHostsFields = []string{"user_id", "hostname", "created_at"}
+
+// PulseHostsPrimaryFields are the primary key fields in the DB table.
+var PulseHostsPrimaryFields = []string{"user_id", "hostname"}
 
 // PulseHourly generated for db table `pulse_hourly`.
 //
@@ -242,7 +277,7 @@ const PulseHourlyTable = "`pulse_hourly`"
 var PulseHourlyFields = []string{"user_id", "hostname", "stamp", "count"}
 
 // PulseHourlyPrimaryFields are the primary key fields in the DB table.
-var PulseHourlyPrimaryFields = []string{"user_id", "stamp"}
+var PulseHourlyPrimaryFields = []string{"user_id", "hostname", "stamp"}
 
 // Insert starts building an INSERT INTO query.
 func (m *Migrations) Insert(opts ...QueryOption) string {
@@ -359,6 +394,67 @@ func (p *PulseDaily) Update(opts ...QueryOption) string {
 // Delete starts building a DELETE query.
 func (p *PulseDaily) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: PulseDailyTable}).Apply(opts...)
+	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Insert starts building an INSERT INTO query.
+func (p *PulseHosts) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostsTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := PulseHostsFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+}
+
+// Select starts building a SELECT query.
+func (p *PulseHosts) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostsTable}).Apply(opts...)
+	cols := "*"
+	if len(cfg.Columns) > 0 {
+		cols = strings.Join(cfg.Columns, ", ")
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	if cfg.OrderBy != "" {
+		query += " ORDER BY " + cfg.OrderBy
+	}
+	if cfg.LimitOffset > 0 {
+		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
+	}
+	return query
+}
+
+// Update starts building a UPDATE query.
+func (p *PulseHosts) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostsTable}).Apply(opts...)
+	cols := PulseHostsFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	setClause := ""
+	for i, col := range cols {
+		if i > 0 {
+			setClause += ", "
+		}
+		setClause += col + "=:" + col
+	}
+	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Delete starts building a DELETE query.
+func (p *PulseHosts) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostsTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
 	if cfg.Where != "" {
 		query += " WHERE " + cfg.Where

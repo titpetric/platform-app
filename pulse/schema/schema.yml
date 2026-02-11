@@ -36,6 +36,7 @@
       datatype: text
     - name: hostname
       type: TEXT
+      key: PRI
       comment: Hostname
       datatype: text
     - name: stamp
@@ -51,7 +52,32 @@
     - name: sqlite_autoindex_pulse_daily_1
       columns:
         - user_id
+        - hostname
         - stamp
+      primary: true
+      unique: true
+- name: pulse_hosts
+  comment: Pulse Hosts
+  columns:
+    - name: user_id
+      type: CHAR(26)
+      key: PRI
+      comment: User ID
+      datatype: text
+    - name: hostname
+      type: TEXT
+      key: PRI
+      comment: Hostname
+      datatype: text
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_pulse_hosts_1
+      columns:
+        - user_id
+        - hostname
       primary: true
       unique: true
 - name: pulse_hourly
@@ -64,6 +90,7 @@
       datatype: text
     - name: hostname
       type: TEXT
+      key: PRI
       comment: Hostname
       datatype: text
     - name: stamp
@@ -79,6 +106,7 @@
     - name: sqlite_autoindex_pulse_hourly_1
       columns:
         - user_id
+        - hostname
         - stamp
       primary: true
       unique: true

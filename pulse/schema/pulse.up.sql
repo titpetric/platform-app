@@ -15,3 +15,11 @@ CREATE TABLE pulse_daily (
 
     PRIMARY KEY (user_id, hostname, stamp)
 );
+
+CREATE TABLE pulse_hosts (
+	user_id CHAR(26) NOT NULL,
+	hostname TEXT NOT NULL,
+	created_at DATETIME NOT NULL,
+
+	PRIMARY KEY (user_id, hostname)
+);

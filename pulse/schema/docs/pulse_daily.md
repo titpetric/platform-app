@@ -5,6 +5,6 @@ Pulse Daily.
 | Name     | Type    | Key | Comment  |
 |----------|---------|-----|----------|
 | user_id  | text    | PRI | User ID  |
-| hostname | text    |     | Hostname |
+| hostname | text    | PRI | Hostname |
 | stamp    | date    | PRI | Stamp    |
 | count    | integer |     | Count    |
