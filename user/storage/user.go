@@ -217,4 +217,17 @@ func (s *UserStorage) Authenticate(ctx context.Context, userAuth model.UserAuth)
 	return user, nil
 }
 
+// List returns all active (non-deleted) users.
+func (s *UserStorage) List(ctx context.Context) ([]model.User, error) {
+	ctx, span := telemetry.StartAuto(ctx, s.List)
+	defer span.End()
+
+	var users []model.User
+	query := `SELECT * FROM user WHERE deleted_at IS NULL ORDER BY username`
+	if err := s.db.SelectContext(ctx, &users, query); err != nil {
+		return nil, fmt.Errorf("list users: %w", err)
+	}
+	return users, nil
+}
+
 var _ model.UserStorage = (*UserStorage)(nil)

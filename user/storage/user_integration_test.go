@@ -64,4 +64,10 @@ func TestNewUserStorage_integration(t *testing.T) {
 		require.Nil(t, user)
 		require.ErrorContains(t, err, "username is required")
 	}
+
+	{
+		userlist, err := s.List(ctx)
+		require.NoError(t, err)
+		require.True(t, len(userlist) == 1)
+	}
 }
