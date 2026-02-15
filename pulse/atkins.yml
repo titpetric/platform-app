@@ -78,3 +78,8 @@ tasks:
       - cp -f ./bin/${{name}}-${{goos}}-$(dpkg --print-architecture) /usr/local/bin/${{name}}.new
       - mv -f /usr/local/bin/${{name}} /usr/local/bin/${{name}}.old
       - mv -f /usr/local/bin/${{name}}.new /usr/local/bin/${{name}}
+
+  up:
+    depends_on: pull
+    steps:
+      - docker compose up -d --remove-orphans

@@ -1,26 +1,19 @@
 ---
 layout: content
 ---
-
 <template :require="users">
-
-<div class="w-full max-w-4xl mx-auto">
-<table class="table w-full">
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>Last 30 days</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="user in users">
-      <td>
-        <a :href="user.href">{{ user.username }}</a>
-      </td>
-      <td>{{ user.count }} characters</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+  <table class="table w-full">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Last 30 days</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="user in users">
+        <td> <a :href="user.href">{{ user.username }}</a> </td>
+        <td>{{ user.count }} characters</td>
+      </tr>
+    </tbody>
+  </table>
 </template>
