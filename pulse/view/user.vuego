@@ -1,5 +1,90 @@
 ---
-layout: base
+layout: content
 ---
 
-<a href="/pulse/titpetric">Tit Petric</a>
+<script src="/assets/js/sparklines.js" defer></script>
+
+<style>
+  .hourly-chart td {
+    width: calc(100% / 24);
+    text-align: center;
+  }
+  .hourly-chart .hourly-bars td {
+    height: 180px;
+    vertical-align: bottom;
+  }
+  .hourly-bar {
+    width: 5px;
+    margin: 0 auto;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(to top, var(--color-primary), color-mix(in oklch, var(--color-primary) 60%, transparent));
+  }
+</style>
+
+<template :require="username,fullName,hourly,sparklines,totalCount">
+
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-6">
+  <div>
+    <h1 v-if="fullName" class="text-2xl font-semibold">{{ fullName }}</h1>
+    <h1 v-else class="text-2xl font-semibold">{{ username }}</h1>
+    <p class="text-muted-foreground">@{{ username }}</p>
+    <p class="text-sm text-muted-foreground mt-1">{{ totalCount }} keystrokes</p>
+  </div>
+
+  <div class="card">
+    <header>
+      <h2>Hourly Activity</h2>
+      <p>Keystroke distribution by hour of day</p>
+    </header>
+    <section>
+      <table class="w-full hourly-chart">
+        <tr class="hourly-bars">
+          <td v-for="h in hourly" data-tooltip="{{h.tooltip}}" data-side="top">
+            <div class="hourly-bar" style="{{h.style}}"></div>
+          </td>
+        </tr>
+        <tr class="text-xs text-muted-foreground">
+          <td v-for="h in hourly">{{ h.label }}</td>
+        </tr>
+      </table>
+    </section>
+  </div>
+
+  <div class="card">
+    <header>
+      <h2>Activity by Device</h2>
+      <p>Daily activity per host</p>
+    </header>
+    <section>
+      <div v-if="sparklines.length == 0" class="text-center text-muted-foreground py-6">
+        No activity data available
+      </div>
+      <div v-for="spark in sparklines" class="mb-5 last:mb-0">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{spark.color}}"></span>
+            <span class="font-medium text-sm">{{ spark.hostname }}</span>
+          </div>
+          <span class="text-xs text-muted-foreground">{{ spark.totalLabel }} ({{ spark.numDays }} {{ spark.numLabel }})</span>
+        </div>
+        <div class="flex justify-center">
+          <div
+            data-sparkline="true"
+            data-type="line"
+            data-width="800"
+            data-height="40"
+            data-stroke-width="2"
+            data-colors="{{spark.color}}"
+            data-points="{{spark.points}}"
+          ></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div>
+    <a href="/pulse" class="text-sm text-muted-foreground hover:text-foreground transition-colors">&larr; Back to all users</a>
+  </div>
+</div>
+
+</template>

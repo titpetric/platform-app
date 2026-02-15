@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
@@ -119,14 +121,199 @@ func (h *Handlers) UserPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
-	type viewData struct{}
+	type hourlyBar struct {
+		Hour    int    `json:"hour"`
+		Count   int64  `json:"count"`
+		Percent int    `json:"percent"`
+		Style   string `json:"style"`
+		Tooltip string `json:"tooltip"`
+		Label   string `json:"label"`
+	}
+
+	type hostSparkline struct {
+		Hostname   string `json:"hostname"`
+		Color      string `json:"color"`
+		Points     string `json:"points"`
+		Total      int64  `json:"total"`
+		TotalLabel string `json:"totalLabel"`
+		NumDays    int    `json:"numDays"`
+		NumLabel   string `json:"numLabel"`
+	}
+
+	type viewData struct {
+		Username   string          `json:"username"`
+		FullName   string          `json:"fullName"`
+		Hourly     []hourlyBar     `json:"hourly"`
+		Sparklines []hostSparkline `json:"sparklines"`
+		TotalCount int64           `json:"totalCount"`
+	}
 
 	ctx := r.Context()
-	data := viewData{}
+	username := r.PathValue("username")
 
-	indexPage := vuego.View[viewData](h.vuego, "user.vuego", data)
+	user, err := h.userStorage.GetByUsername(ctx, username)
+	if err != nil {
+		return fmt.Errorf("get user: %w", err)
+	}
 
-	return indexPage.Render(ctx, w)
+	hourlyData, err := h.storage.GetUserHourly(ctx, user.ID)
+	if err != nil {
+		return fmt.Errorf("get hourly data: %w", err)
+	}
+
+	dailyData, err := h.storage.GetUserDaily(ctx, user.ID)
+	if err != nil {
+		return fmt.Errorf("get daily data: %w", err)
+	}
+
+	hosts, err := h.storage.GetUserHosts(ctx, user.ID)
+	if err != nil {
+		return fmt.Errorf("get hosts: %w", err)
+	}
+
+	// Build hourly bars (24 hours, 0-23) with percentages for CSS
+	hourlyMap := make(map[int]int64)
+	var maxHourly int64
+	for _, h := range hourlyData {
+		hourlyMap[h.Hour] = h.Count
+		if h.Count > maxHourly {
+			maxHourly = h.Count
+		}
+	}
+	hourly := make([]hourlyBar, 24)
+	for i := 0; i < 24; i++ {
+		count := hourlyMap[i]
+		percent := 0
+		if maxHourly > 0 && count > 0 {
+			percent = int(count * 100 / maxHourly)
+			if percent < 2 {
+				percent = 2
+			}
+		}
+		tooltip := fmt.Sprintf("%d:00 — %d keystrokes", i, count)
+		var label string
+		if i%3 == 0 {
+			if i == 0 {
+				label = "12a"
+			} else if i < 12 {
+				label = fmt.Sprintf("%da", i)
+			} else if i == 12 {
+				label = "12p"
+			} else {
+				label = fmt.Sprintf("%dp", i-12)
+			}
+		}
+		hourly[i] = hourlyBar{
+			Hour:    i,
+			Count:   count,
+			Percent: percent,
+			Style:   fmt.Sprintf("height: %dpx", percent*180/100),
+			Tooltip: tooltip,
+			Label:   label,
+		}
+	}
+
+	// Find date range from daily data (normalize stamps to just date)
+	var minDate, maxDate string
+	for _, d := range dailyData {
+		stamp := d.Stamp
+		if len(stamp) > 10 {
+			stamp = stamp[:10]
+		}
+		if minDate == "" || stamp < minDate {
+			minDate = stamp
+		}
+		if maxDate == "" || stamp > maxDate {
+			maxDate = stamp
+		}
+	}
+
+	// Build sparklines per host using data directly from dailyData
+	colors := []string{"#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16"}
+	sparklines := make([]hostSparkline, 0, len(hosts))
+	var totalCount int64
+
+	// Build sorted date list and fill missing days
+	var allDates []string
+	if minDate != "" && maxDate != "" {
+		startDate, _ := parseDate(minDate)
+		endDate, _ := parseDate(maxDate)
+		for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
+			allDates = append(allDates, d.Format("2006-01-02"))
+		}
+	}
+
+	for i, host := range hosts {
+		color := colors[i%len(colors)]
+		var hostTotal int64
+		var points []string
+		numDays := 0
+		label := "days"
+
+		// Get counts for this host, keyed by the exact stamp from DB
+		hostCounts := make(map[string]int64)
+		for _, d := range dailyData {
+			if d.Hostname == host {
+				stamp := d.Stamp
+				if len(stamp) > 10 {
+					stamp = stamp[:10]
+				}
+				hostCounts[stamp] = d.Count
+				hostTotal += d.Count
+			}
+		}
+
+		// Build points for all dates
+		for _, date := range allDates {
+			points = append(points, fmt.Sprintf("%d", hostCounts[date]))
+		}
+
+		// Fallback to hourly data if fewer than 2 daily points
+		if len(points) < 2 {
+			hourlyByHost, err := h.storage.GetUserHourlyByHost(ctx, user.ID, host)
+			if err != nil {
+				return fmt.Errorf("get hourly by host: %w", err)
+			}
+			if len(hourlyByHost) >= 2 {
+				points = points[:0]
+				hostTotal = 0
+				for _, h := range hourlyByHost {
+					points = append(points, fmt.Sprintf("%d", h.Count))
+					hostTotal += h.Count
+				}
+				label = "hours"
+			}
+		}
+
+		numDays = len(points)
+		totalCount += hostTotal
+
+		sparklines = append(sparklines, hostSparkline{
+			Hostname:   host,
+			Color:      color,
+			Points:     strings.Join(points, ","),
+			Total:      hostTotal,
+			TotalLabel: fmt.Sprintf("%d keystrokes", hostTotal),
+			NumDays:    numDays,
+			NumLabel:   label,
+		})
+	}
+
+	data := viewData{
+		Username:   user.Username,
+		FullName:   user.FullName,
+		Hourly:     hourly,
+		Sparklines: sparklines,
+		TotalCount: totalCount,
+	}
+
+	userPage := vuego.View[viewData](h.vuego, "user.vuego", data)
+
+	return userPage.Render(ctx, w)
+}
+
+func parseDate(s string) (time.Time, error) {
+	return time.Parse("2006-01-02", s)
 }
 
 // PostIngest handles pulse data ingestion requests.

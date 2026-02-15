@@ -51,6 +51,74 @@ func (s *Storage) ListUserCounts(ctx context.Context) ([]UserCount, error) {
 	return counts, nil
 }
 
+// HourlyCount holds hourly keystroke data.
+type HourlyCount struct {
+	Hour  int   `db:"hour" json:"hour"`
+	Count int64 `db:"count" json:"count"`
+}
+
+// GetUserHourly returns hourly keystroke distribution for a user (aggregated across all days).
+func (s *Storage) GetUserHourly(ctx context.Context, userID string) ([]HourlyCount, error) {
+	var counts []HourlyCount
+	query := `
+		SELECT
+			CAST(strftime('%H', stamp) AS INTEGER) as hour,
+			SUM(count) as count
+		FROM pulse_hourly
+		WHERE user_id = ?
+		GROUP BY hour
+		ORDER BY hour`
+	if err := s.db.SelectContext(ctx, &counts, query, userID); err != nil {
+		return nil, fmt.Errorf("get user hourly: %w", err)
+	}
+	return counts, nil
+}
+
+// DailyHostCount holds daily keystroke data per host.
+type DailyHostCount struct {
+	Hostname string `db:"hostname" json:"hostname"`
+	Stamp    string `db:"stamp" json:"stamp"`
+	Count    int64  `db:"count" json:"count"`
+}
+
+// GetUserDaily returns daily keystroke counts per host for a user over the last 30 days.
+func (s *Storage) GetUserDaily(ctx context.Context, userID string) ([]DailyHostCount, error) {
+	var counts []DailyHostCount
+	query := `
+		SELECT hostname, stamp, count
+		FROM pulse_daily
+		WHERE user_id = ? AND stamp >= date('now', '-30 days')
+		ORDER BY hostname, stamp`
+	if err := s.db.SelectContext(ctx, &counts, query, userID); err != nil {
+		return nil, fmt.Errorf("get user daily: %w", err)
+	}
+	return counts, nil
+}
+
+// GetUserHourlyByHost returns hourly keystroke counts per host for a user over the last 48 hours.
+func (s *Storage) GetUserHourlyByHost(ctx context.Context, userID string, hostname string) ([]DailyHostCount, error) {
+	var counts []DailyHostCount
+	query := `
+		SELECT hostname, stamp, count
+		FROM pulse_hourly
+		WHERE user_id = ? AND hostname = ? AND stamp >= datetime('now', '-48 hours')
+		ORDER BY stamp`
+	if err := s.db.SelectContext(ctx, &counts, query, userID, hostname); err != nil {
+		return nil, fmt.Errorf("get user hourly by host: %w", err)
+	}
+	return counts, nil
+}
+
+// GetUserHosts returns all hostnames for a user.
+func (s *Storage) GetUserHosts(ctx context.Context, userID string) ([]string, error) {
+	var hosts []string
+	query := `SELECT hostname FROM pulse_hosts WHERE user_id = ? ORDER BY hostname`
+	if err := s.db.SelectContext(ctx, &hosts, query, userID); err != nil {
+		return nil, fmt.Errorf("get user hosts: %w", err)
+	}
+	return hosts, nil
+}
+
 // https://github.com/jmoiron/sqlx/issues/368
 // - uses :: to escape non-named params
 // - replaces :count to literal int
