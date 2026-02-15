@@ -35,6 +35,22 @@ func (s *Storage) Pulse(ctx context.Context, count int64, hostname string) error
 	return platform.Transaction(ctx, s.db, s.pulseFn(user.ID, count, hostname))
 }
 
+// UserCount holds a user's total keystroke count.
+type UserCount struct {
+	UserID string `db:"user_id"`
+	Count  int64  `db:"count"`
+}
+
+// ListUserCounts returns the total keystroke count per user for the last 30 days.
+func (s *Storage) ListUserCounts(ctx context.Context) ([]UserCount, error) {
+	var counts []UserCount
+	query := `SELECT user_id, SUM(count) as count FROM pulse_daily WHERE stamp >= date('now', '-30 days') GROUP BY user_id ORDER BY count DESC`
+	if err := s.db.SelectContext(ctx, &counts, query); err != nil {
+		return nil, fmt.Errorf("list user counts: %w", err)
+	}
+	return counts, nil
+}
+
 // https://github.com/jmoiron/sqlx/issues/368
 // - uses :: to escape non-named params
 // - replaces :count to literal int

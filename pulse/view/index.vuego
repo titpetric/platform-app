@@ -2,7 +2,7 @@
 layout: content
 ---
 
-<template :vars="yamlFile('index.yml')">
+<template>
 
 <table class="table w-full">
   <thead>
@@ -12,7 +12,7 @@ layout: content
     </tr>
   </thead>
   <tbody>
-    <tr v-for="user in vars.users">
+    <tr v-for="user in data.users">
       <td>
         <a :href="user.href">{{ user.username }}</a>
       </td>

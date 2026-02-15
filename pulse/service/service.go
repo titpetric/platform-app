@@ -77,7 +77,7 @@ func (p *PulseModule) Start(ctx context.Context) error {
 
 // Mount registers module HTTP handlers.
 func (p *PulseModule) Mount(ctx context.Context, r platform.Router) error {
-	handlers := NewHandlers(p.storage)
+	handlers := NewHandlers(p.storage, p.userStorage)
 	handlers.Mount(r)
 	return nil
 }

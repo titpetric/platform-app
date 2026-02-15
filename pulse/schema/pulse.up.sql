@@ -1,4 +1,4 @@
-CREATE TABLE pulse_hourly (
+CREATE TABLE IF NOT EXISTS pulse_hourly (
     user_id   CHAR(26) NOT NULL,
     hostname  TEXT NOT NULL,
     stamp     DATETIME NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE pulse_hourly (
     PRIMARY KEY (user_id, hostname, stamp)
 );
 
-CREATE TABLE pulse_daily (
+CREATE TABLE IF NOT EXISTS pulse_daily (
     user_id   CHAR(26) NOT NULL,
     hostname  TEXT NOT NULL,
     stamp     DATE NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE pulse_daily (
     PRIMARY KEY (user_id, hostname, stamp)
 );
 
-CREATE TABLE pulse_hosts (
+CREATE TABLE IF NOT EXISTS pulse_hosts (
 	user_id CHAR(26) NOT NULL,
 	hostname TEXT NOT NULL,
 	created_at DATETIME NOT NULL,

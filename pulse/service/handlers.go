@@ -14,23 +14,26 @@ import (
 	"github.com/titpetric/platform-app/pulse/storage"
 	"github.com/titpetric/platform-app/pulse/view"
 	"github.com/titpetric/platform-app/user"
+	userstorage "github.com/titpetric/platform-app/user/storage"
 )
 
 // Handlers serves pulse HTTP endpoints.
 type Handlers struct {
-	storage *storage.Storage
-	vuego   vuego.Template
-	fs      fs.FS
+	storage     *storage.Storage
+	userStorage *userstorage.UserStorage
+	vuego       vuego.Template
+	fs          fs.FS
 }
 
 // NewHandlers creates handlers backed by the given storage.
-func NewHandlers(storage *storage.Storage) *Handlers {
+func NewHandlers(storage *storage.Storage, userStorage *userstorage.UserStorage) *Handlers {
 	ofs := vuego.NewOverlayFS(view.FS, basecoat.FS)
 
 	return &Handlers{
-		fs:      ofs,
-		storage: storage,
-		vuego:   vuego.NewFS(ofs),
+		fs:          ofs,
+		storage:     storage,
+		userStorage: userStorage,
+		vuego:       vuego.NewFS(ofs),
 	}
 }
 
@@ -38,6 +41,9 @@ func NewHandlers(storage *storage.Storage) *Handlers {
 func (h *Handlers) Mount(r platform.Router) {
 	r.Get("/assets/*", http.FileServer(http.FS(h.fs)).ServeHTTP)
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/pulse", http.StatusFound)
+	})
 	r.Get("/pulse", h.IndexPage)
 	r.Get("/pulse/{username}", h.UserPage)
 
@@ -61,13 +67,45 @@ func (h *Handlers) IndexPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
+	type userEntry struct {
+		Username string `json:"username"`
+		Count    int64  `json:"count"`
+		Href     string `json:"href"`
+	}
+
 	type viewData struct {
-		Menu []any `json:"menu"`
+		Menu  []any       `json:"menu"`
+		Users []userEntry `json:"users"`
 	}
 
 	ctx := r.Context()
+
+	users, err := h.userStorage.List(ctx)
+	if err != nil {
+		return fmt.Errorf("list users: %w", err)
+	}
+
+	counts, err := h.storage.ListUserCounts(ctx)
+	if err != nil {
+		return fmt.Errorf("list user counts: %w", err)
+	}
+
+	countByUser := make(map[string]int64, len(counts))
+	for _, c := range counts {
+		countByUser[c.UserID] = c.Count
+	}
+
+	entries := make([]userEntry, 0, len(users))
+	for _, u := range users {
+		entries = append(entries, userEntry{
+			Username: u.Username,
+			Count:    countByUser[u.ID],
+			Href:     "/pulse/" + u.Username,
+		})
+	}
+
 	data := viewData{
-		Menu: []any{},
+		Users: entries,
 	}
 
 	indexPage := vuego.View[viewData](h.vuego, "index.vuego", data)

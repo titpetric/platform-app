@@ -17,7 +17,7 @@ services:
       - "--server"
       - "http://pulse:8080"
       - "--duration"
-      - "5m"
+      - "5s"
 
 networks:
   projects-ingress:
