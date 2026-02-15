@@ -23,8 +23,8 @@ github.com/expr-lang/expr v1.17.7 h1:Q0xY/e/2aCIp8g9s/LGvMDCC5PxYlvHgDZRQ4y16JX8
 github.com/expr-lang/expr v1.17.7/go.mod h1:8/vRC7+7HBzESEqt5kKpYXxrxkr31SaO8r40VO/1IT4=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
-github.com/go-bridget/mig v0.3.1 h1:rtPfsyECH2wo1tPG0SjNZe0H/8N0lNfEjWvAG3qS1uY=
-github.com/go-bridget/mig v0.3.1/go.mod h1:PyvU6AB1ELedmuBQkMMxUuyd1QAANsdDN512X+1ehAQ=
+github.com/go-bridget/mig v0.3.4 h1:m+Bd90i8TgUxkyWA/NuULva/lvFT/TX3IJ5QvEmzh+c=
+github.com/go-bridget/mig v0.3.4/go.mod h1:PyvU6AB1ELedmuBQkMMxUuyd1QAANsdDN512X+1ehAQ=
 github.com/go-chi/chi/v5 v5.2.5 h1:Eg4myHZBjyvJmAFjFvWgrqDTXFyOzjj7YIm3L3mu6Ug=
 github.com/go-chi/chi/v5 v5.2.5/go.mod h1:X7Gx4mteadT3eDOMTsXzmI4/rwUpOwBHLpAfupzFJP0=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
