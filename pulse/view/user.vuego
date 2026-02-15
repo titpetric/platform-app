@@ -17,6 +17,13 @@ layout: content
     border-radius: 3px 3px 0 0;
     background: linear-gradient(to top, var(--color-primary), color-mix(in oklch, var(--color-primary) 60%, transparent));
   }
+
+.device-color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+}
 </style>
 <template :require="username,fullName,hourly,sparklines,totalCount">
   <div>
@@ -50,12 +57,12 @@ layout: content
       <h2>Activity by Device</h2>
       <p>Daily activity per host</p>
     </header>
-    <section>
+    <section class="flex flex-col gap-6">
       <div v-if="sparklines.length == 0" class="text-center text-muted-foreground py-6"> No activity data available </div>
-      <div v-for="spark in sparklines" class="mb-5 last:mb-0">
-        <div class="flex items-center justify-between mb-2">
+      <template v-for="spark in sparklines">
+        <div class="flex justify-between">
           <div class="flex items-center gap-2">
-            <span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{spark.color}}"></span>
+            <span class="device-color" style="background-color: {{spark.color}}"></span>
             <span class="font-medium text-sm">{{ spark.hostname }}</span>
           </div>
           <span class="text-xs text-muted-foreground">{{ spark.totalLabel }} ({{ spark.numDays }} {{ spark.numLabel }})</span>
@@ -63,7 +70,7 @@ layout: content
         <div class="flex justify-center">
           <div data-sparkline="true" data-type="line" data-width="800" data-height="40" data-stroke-width="2" data-colors="{{spark.color}}" data-points="{{spark.points}}"></div>
         </div>
-      </div>
+      </template>
     </section>
   </div>
   <div>

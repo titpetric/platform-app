@@ -230,13 +230,12 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 	var totalCount int64
 
 	// Build sorted hourly stamp list, filling gaps
-	const stampFmt = "2006-01-02 15:04:05"
 	var allStamps []string
 	if minStamp != "" && maxStamp != "" {
-		startTime, _ := time.Parse(stampFmt, minStamp)
-		endTime, _ := time.Parse(stampFmt, maxStamp)
+		startTime, _ := time.Parse(time.RFC3339, minStamp)
+		endTime, _ := time.Parse(time.RFC3339, maxStamp)
 		for t := startTime; !t.After(endTime); t = t.Add(time.Hour) {
-			allStamps = append(allStamps, t.Format(stampFmt))
+			allStamps = append(allStamps, t.Format(time.RFC3339))
 		}
 	}
 
