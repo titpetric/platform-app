@@ -18,9 +18,10 @@ const Name = "pulse"
 type PulseModule struct {
 	platform.UnimplementedModule
 
-	storage *storage.Storage
-
+	storage     *storage.Storage
 	userStorage *userstorage.UserStorage
+
+	handlers *Handlers
 }
 
 // NewPulseModule creates a new pulse module.
@@ -31,6 +32,21 @@ func NewPulseModule() *PulseModule {
 // Name returns the module name.
 func (p *PulseModule) Name() string {
 	return Name
+}
+
+// Start initializes module storage.
+func (p *PulseModule) Start(ctx context.Context) error {
+	if err := p.setupStorage(ctx); err != nil {
+		return err
+	}
+	p.handlers = NewHandlers(p.storage, p.userStorage)
+	return nil
+}
+
+// Mount registers module HTTP handlers.
+func (p *PulseModule) Mount(ctx context.Context, r platform.Router) error {
+	p.handlers.Mount(r)
+	return nil
 }
 
 func (p *PulseModule) setupStorage(ctx context.Context) error {
@@ -64,20 +80,5 @@ func (p *PulseModule) setupPulseStorage(ctx context.Context) error {
 	}
 
 	p.storage = storage.NewStorage(db)
-	return nil
-}
-
-// Start initializes module storage.
-func (p *PulseModule) Start(ctx context.Context) error {
-	if err := p.setupStorage(ctx); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Mount registers module HTTP handlers.
-func (p *PulseModule) Mount(ctx context.Context, r platform.Router) error {
-	handlers := NewHandlers(p.storage, p.userStorage)
-	handlers.Mount(r)
 	return nil
 }

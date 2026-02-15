@@ -2,7 +2,7 @@
 layout: content
 ---
 
-<template>
+<template :require="users">
 
 <table class="table w-full">
   <thead>
@@ -12,7 +12,7 @@ layout: content
     </tr>
   </thead>
   <tbody>
-    <tr v-for="user in data.users">
+    <tr v-for="user in users">
       <td>
         <a :href="user.href">{{ user.username }}</a>
       </td>
