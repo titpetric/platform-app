@@ -76,6 +76,7 @@ func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	type viewData struct {
+		Title string      `json:"title"`
 		Menu  []any       `json:"menu"`
 		Users []userEntry `json:"users"`
 	}
@@ -107,6 +108,7 @@ func (h *Handlers) indexPage(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	data := viewData{
+		Title: fmt.Sprintf("Pulse keystroke analytics"),
 		Users: entries,
 	}
 
@@ -141,6 +143,7 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	type viewData struct {
+		Title      string          `json:"title"`
 		Username   string          `json:"username"`
 		FullName   string          `json:"fullName"`
 		Hourly     []hourlyBar     `json:"hourly"`
@@ -213,30 +216,17 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	// Find stamp range from hourly data (stamps are "YYYY-MM-DD HH:00:00")
-	var minStamp, maxStamp string
-	for _, d := range hourlyAllData {
-		if minStamp == "" || d.Stamp < minStamp {
-			minStamp = d.Stamp
-		}
-		if maxStamp == "" || d.Stamp > maxStamp {
-			maxStamp = d.Stamp
-		}
-	}
-
 	// Build sparklines per host using hourly data
 	colors := []string{"#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16"}
 	sparklines := make([]hostSparkline, 0, len(hosts))
 	var totalCount int64
 
-	// Build sorted hourly stamp list, filling gaps
+	// Build fixed 30-day hourly stamp list so all hosts align
+	now := time.Now().UTC().Truncate(time.Hour)
+	startTime := now.AddDate(0, 0, -30)
 	var allStamps []string
-	if minStamp != "" && maxStamp != "" {
-		startTime, _ := time.Parse(time.RFC3339, minStamp)
-		endTime, _ := time.Parse(time.RFC3339, maxStamp)
-		for t := startTime; !t.After(endTime); t = t.Add(time.Hour) {
-			allStamps = append(allStamps, t.Format(time.RFC3339))
-		}
+	for t := startTime; !t.After(now); t = t.Add(time.Hour) {
+		allStamps = append(allStamps, t.Format(time.RFC3339))
 	}
 
 	for i, host := range hosts {
@@ -266,12 +256,13 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 			Points:     strings.Join(points, ","),
 			Total:      hostTotal,
 			TotalLabel: fmt.Sprintf("%d keystrokes", hostTotal),
-			NumDays:    len(points),
+			NumDays:    len(hostCounts),
 			NumLabel:   "hours",
 		})
 	}
 
 	data := viewData{
+		Title:      fmt.Sprintf("Pulse for %s @%s", user.FullName, user.Username),
 		Username:   user.Username,
 		FullName:   user.FullName,
 		Hourly:     hourly,
