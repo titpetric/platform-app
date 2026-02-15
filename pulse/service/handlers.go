@@ -161,9 +161,9 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("get hourly data: %w", err)
 	}
 
-	dailyData, err := h.storage.GetUserDaily(ctx, user.ID)
+	hourlyAllData, err := h.storage.GetUserHourlyAll(ctx, user.ID)
 	if err != nil {
-		return fmt.Errorf("get daily data: %w", err)
+		return fmt.Errorf("get hourly all data: %w", err)
 	}
 
 	hosts, err := h.storage.GetUserHosts(ctx, user.ID)
@@ -213,33 +213,30 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	// Find date range from daily data (normalize stamps to just date)
-	var minDate, maxDate string
-	for _, d := range dailyData {
-		stamp := d.Stamp
-		if len(stamp) > 10 {
-			stamp = stamp[:10]
+	// Find stamp range from hourly data (stamps are "YYYY-MM-DD HH:00:00")
+	var minStamp, maxStamp string
+	for _, d := range hourlyAllData {
+		if minStamp == "" || d.Stamp < minStamp {
+			minStamp = d.Stamp
 		}
-		if minDate == "" || stamp < minDate {
-			minDate = stamp
-		}
-		if maxDate == "" || stamp > maxDate {
-			maxDate = stamp
+		if maxStamp == "" || d.Stamp > maxStamp {
+			maxStamp = d.Stamp
 		}
 	}
 
-	// Build sparklines per host using data directly from dailyData
+	// Build sparklines per host using hourly data
 	colors := []string{"#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16"}
 	sparklines := make([]hostSparkline, 0, len(hosts))
 	var totalCount int64
 
-	// Build sorted date list and fill missing days
-	var allDates []string
-	if minDate != "" && maxDate != "" {
-		startDate, _ := parseDate(minDate)
-		endDate, _ := parseDate(maxDate)
-		for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
-			allDates = append(allDates, d.Format("2006-01-02"))
+	// Build sorted hourly stamp list, filling gaps
+	const stampFmt = "2006-01-02 15:04:05"
+	var allStamps []string
+	if minStamp != "" && maxStamp != "" {
+		startTime, _ := time.Parse(stampFmt, minStamp)
+		endTime, _ := time.Parse(stampFmt, maxStamp)
+		for t := startTime; !t.After(endTime); t = t.Add(time.Hour) {
+			allStamps = append(allStamps, t.Format(stampFmt))
 		}
 	}
 
@@ -247,45 +244,21 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		color := colors[i%len(colors)]
 		var hostTotal int64
 		var points []string
-		numDays := 0
-		label := "days"
 
-		// Get counts for this host, keyed by the exact stamp from DB
+		// Index counts for this host by stamp
 		hostCounts := make(map[string]int64)
-		for _, d := range dailyData {
+		for _, d := range hourlyAllData {
 			if d.Hostname == host {
-				stamp := d.Stamp
-				if len(stamp) > 10 {
-					stamp = stamp[:10]
-				}
-				hostCounts[stamp] = d.Count
+				hostCounts[d.Stamp] = d.Count
 				hostTotal += d.Count
 			}
 		}
 
-		// Build points for all dates
-		for _, date := range allDates {
-			points = append(points, fmt.Sprintf("%d", hostCounts[date]))
+		// Build points for every hour in the range, filling gaps with 0
+		for _, stamp := range allStamps {
+			points = append(points, fmt.Sprintf("%d", hostCounts[stamp]))
 		}
 
-		// Fallback to hourly data if fewer than 2 daily points
-		if len(points) < 2 {
-			hourlyByHost, err := h.storage.GetUserHourlyByHost(ctx, user.ID, host)
-			if err != nil {
-				return fmt.Errorf("get hourly by host: %w", err)
-			}
-			if len(hourlyByHost) >= 2 {
-				points = points[:0]
-				hostTotal = 0
-				for _, h := range hourlyByHost {
-					points = append(points, fmt.Sprintf("%d", h.Count))
-					hostTotal += h.Count
-				}
-				label = "hours"
-			}
-		}
-
-		numDays = len(points)
 		totalCount += hostTotal
 
 		sparklines = append(sparklines, hostSparkline{
@@ -294,8 +267,8 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 			Points:     strings.Join(points, ","),
 			Total:      hostTotal,
 			TotalLabel: fmt.Sprintf("%d keystrokes", hostTotal),
-			NumDays:    numDays,
-			NumLabel:   label,
+			NumDays:    len(points),
+			NumLabel:   "hours",
 		})
 	}
 
@@ -310,10 +283,6 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 	userPage := vuego.View[viewData](h.vuego, "user.vuego", data)
 
 	return userPage.Render(ctx, w)
-}
-
-func parseDate(s string) (time.Time, error) {
-	return time.Parse("2006-01-02", s)
 }
 
 // PostIngest handles pulse data ingestion requests.

@@ -109,6 +109,20 @@ func (s *Storage) GetUserHourlyByHost(ctx context.Context, userID string, hostna
 	return counts, nil
 }
 
+// GetUserHourlyAll returns hourly keystroke counts per host for a user over the last 30 days.
+func (s *Storage) GetUserHourlyAll(ctx context.Context, userID string) ([]DailyHostCount, error) {
+	var counts []DailyHostCount
+	query := `
+		SELECT hostname, stamp, count
+		FROM pulse_hourly
+		WHERE user_id = ? AND stamp >= datetime('now', '-30 days')
+		ORDER BY hostname, stamp`
+	if err := s.db.SelectContext(ctx, &counts, query, userID); err != nil {
+		return nil, fmt.Errorf("get user hourly all: %w", err)
+	}
+	return counts, nil
+}
+
 // GetUserHosts returns all hostnames for a user.
 func (s *Storage) GetUserHosts(ctx context.Context, userID string) ([]string, error) {
 	var hosts []string
