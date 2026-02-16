@@ -85,7 +85,7 @@ type DailyHostCount struct {
 func (s *Storage) GetUserDaily(ctx context.Context, userID string) ([]DailyHostCount, error) {
 	var counts []DailyHostCount
 	query := `
-		SELECT hostname, stamp, count
+		SELECT hostname, date(stamp) as stamp, count
 		FROM pulse_daily
 		WHERE user_id = ? AND stamp >= date('now', '-30 days')
 		ORDER BY hostname, stamp`

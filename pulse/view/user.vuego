@@ -1,7 +1,6 @@
 ---
 layout: content
 ---
-<script src="/assets/js/sparklines.js" defer></script>
 <style>
 .hourly-chart td {
     width: calc(100% / 24);
@@ -18,6 +17,21 @@ layout: content
     background: linear-gradient(to top, var(--color-primary), color-mix(in oklch, var(--color-primary) 60%, transparent));
   }
 
+.device-chart td {
+  width: calc(100% / 30);
+  text-align: center;
+}
+.device-chart .device-bars td {
+  height: 40px;
+  vertical-align: bottom;
+}
+.device-bar {
+  width: 5px;
+  margin: 0 auto;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(to top, var(--bar-color), color-mix(in oklch, var(--bar-color) 60%, transparent));
+}
+
 .device-color {
   display: inline-block;
   width: 10px;
@@ -25,7 +39,7 @@ layout: content
   border-radius: 5px;
 }
 </style>
-<template :require="username,fullName,hourly,sparklines,totalCount">
+<template :require="username,fullName,hourly,devices,totalCount">
   <div>
     <h1 v-if="fullName" class="text-2xl font-semibold">{{ fullName }}</h1>
     <h1 v-else class="text-2xl font-semibold">{{ username }}</h1>
@@ -58,18 +72,24 @@ layout: content
       <p>Daily activity per host</p>
     </header>
     <section class="flex flex-col gap-6">
-      <div v-if="sparklines.length == 0" class="text-center text-muted-foreground py-6"> No activity data available </div>
-      <template v-for="spark in sparklines">
+      <div v-if="devices.length == 0" class="text-center text-muted-foreground py-6"> No activity data available </div>
+      <template v-for="device in devices">
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
-            <span class="device-color" style="background-color: {{spark.color}}"></span>
-            <span class="font-medium text-sm">{{ spark.hostname }}</span>
+            <span class="device-color" style="background-color: {{device.color}}"></span>
+            <span class="font-medium text-sm">{{ device.hostname }}</span>
           </div>
-          <span class="text-xs text-muted-foreground">{{ spark.totalLabel }} ({{ spark.numDays }} {{ spark.numLabel }})</span>
+          <span class="text-xs text-muted-foreground">{{ device.totalLabel }} ({{ device.numDays }} {{ device.numLabel }})</span>
         </div>
-        <div class="flex justify-center">
-          <div data-sparkline="true" data-type="line" data-width="800" data-height="40" data-stroke-width="2" data-colors="{{spark.color}}" data-points="{{spark.points}}"></div>
-        </div>
+        <table class="w-full device-chart" style="--bar-color: {{device.color}}">
+          <tbody>
+            <tr class="device-bars">
+              <td v-for="bar in device.bars" data-tooltip="{{bar.tooltip}}" data-side="top">
+                <div class="device-bar" style="{{bar.style}}"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </template>
     </section>
   </div>

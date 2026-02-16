@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/titpetric/platform"
@@ -132,23 +131,28 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		Label   string `json:"label"`
 	}
 
-	type hostSparkline struct {
-		Hostname   string `json:"hostname"`
-		Color      string `json:"color"`
-		Points     string `json:"points"`
-		Total      int64  `json:"total"`
-		TotalLabel string `json:"totalLabel"`
-		NumDays    int    `json:"numDays"`
-		NumLabel   string `json:"numLabel"`
+	type dailyBar struct {
+		Style   string `json:"style"`
+		Tooltip string `json:"tooltip"`
+	}
+
+	type hostDaily struct {
+		Hostname   string     `json:"hostname"`
+		Color      string     `json:"color"`
+		Total      int64      `json:"total"`
+		TotalLabel string     `json:"totalLabel"`
+		NumDays    int        `json:"numDays"`
+		NumLabel   string     `json:"numLabel"`
+		Bars       []dailyBar `json:"bars"`
 	}
 
 	type viewData struct {
-		Title      string          `json:"title"`
-		Username   string          `json:"username"`
-		FullName   string          `json:"fullName"`
-		Hourly     []hourlyBar     `json:"hourly"`
-		Sparklines []hostSparkline `json:"sparklines"`
-		TotalCount int64           `json:"totalCount"`
+		Title      string      `json:"title"`
+		Username   string      `json:"username"`
+		FullName   string      `json:"fullName"`
+		Hourly     []hourlyBar `json:"hourly"`
+		Devices    []hostDaily `json:"devices"`
+		TotalCount int64       `json:"totalCount"`
 	}
 
 	ctx := r.Context()
@@ -164,9 +168,9 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("get hourly data: %w", err)
 	}
 
-	hourlyAllData, err := h.storage.GetUserHourlyAll(ctx, user.ID)
+	dailyData, err := h.storage.GetUserDaily(ctx, user.ID)
 	if err != nil {
-		return fmt.Errorf("get hourly all data: %w", err)
+		return fmt.Errorf("get daily data: %w", err)
 	}
 
 	hosts, err := h.storage.GetUserHosts(ctx, user.ID)
@@ -210,54 +214,77 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 			Hour:    i,
 			Count:   count,
 			Percent: percent,
-			Style:   fmt.Sprintf("height: %dpx", percent*180/100),
+			Style:   fmt.Sprintf("height: %dpx", percent*180/100+3),
 			Tooltip: tooltip,
 			Label:   label,
 		}
 	}
 
-	// Build sparklines per host using hourly data
+	// Build daily bar charts per host
 	colors := []string{"#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16"}
-	sparklines := make([]hostSparkline, 0, len(hosts))
+	devices := make([]hostDaily, 0, len(hosts))
 	var totalCount int64
 
-	// Build fixed 30-day hourly stamp list so all hosts align
-	now := time.Now().UTC().Truncate(time.Hour)
-	startTime := now.AddDate(0, 0, -30)
-	var allStamps []string
-	for t := startTime; !t.After(now); t = t.Add(time.Hour) {
-		allStamps = append(allStamps, t.Format(time.RFC3339))
+	// Build fixed list of 30 date stamps (29 days ago to today)
+	now := time.Now().UTC()
+	var dateStamps []string
+	for i := 29; i >= 0; i-- {
+		dateStamps = append(dateStamps, now.AddDate(0, 0, -i).Format("2006-01-02"))
+	}
+
+	// Index daily data by host
+	hostDailyMap := make(map[string]map[string]int64)
+	for _, d := range dailyData {
+		if hostDailyMap[d.Hostname] == nil {
+			hostDailyMap[d.Hostname] = make(map[string]int64)
+		}
+		hostDailyMap[d.Hostname][d.Stamp] = d.Count
 	}
 
 	for i, host := range hosts {
 		color := colors[i%len(colors)]
-		var hostTotal int64
-		var points []string
+		counts := hostDailyMap[host]
 
-		// Index counts for this host by stamp
-		hostCounts := make(map[string]int64)
-		for _, d := range hourlyAllData {
-			if d.Hostname == host {
-				hostCounts[d.Stamp] = d.Count
-				hostTotal += d.Count
+		var hostTotal int64
+		var maxCount int64
+		var activeDays int
+		for _, stamp := range dateStamps {
+			c := counts[stamp]
+			hostTotal += c
+			if c > maxCount {
+				maxCount = c
+			}
+			if c > 0 {
+				activeDays++
 			}
 		}
 
-		// Build points for every hour in the range, filling gaps with 0
-		for _, stamp := range allStamps {
-			points = append(points, fmt.Sprintf("%d", hostCounts[stamp]))
+		bars := make([]dailyBar, len(dateStamps))
+		for j, stamp := range dateStamps {
+			c := counts[stamp]
+			percent := 0
+			if maxCount > 0 && c > 0 {
+				percent = int(c * 100 / maxCount)
+				if percent < 2 {
+					percent = 2
+				}
+			}
+			bars[j] = dailyBar{
+				Style:   fmt.Sprintf("height: %dpx", percent*37/100+3),
+				Tooltip: fmt.Sprintf("%s — %d keystrokes", stamp, c),
+			}
 		}
 
 		totalCount += hostTotal
 
-		sparklines = append(sparklines, hostSparkline{
+		devices = append(devices, hostDaily{
 			Hostname:   host,
 			Color:      color,
-			Points:     strings.Join(points, ","),
 			Total:      hostTotal,
 			TotalLabel: fmt.Sprintf("%d keystrokes", hostTotal),
-			NumDays:    len(hostCounts),
-			NumLabel:   "hours",
+			NumDays:    activeDays,
+			NumLabel:   "days",
+			Bars:       bars,
 		})
 	}
 
@@ -266,7 +293,7 @@ func (h *Handlers) userPage(w http.ResponseWriter, r *http.Request) error {
 		Username:   user.Username,
 		FullName:   user.FullName,
 		Hourly:     hourly,
-		Sparklines: sparklines,
+		Devices:    devices,
 		TotalCount: totalCount,
 	}
 
