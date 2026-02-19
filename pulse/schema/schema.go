@@ -2,9 +2,13 @@ package schema
 
 import (
 	"embed"
+	"io/fs"
 )
 
-// Migrations contains sql migrations contained in this folder.
-//
 //go:embed *.up.sql
-var Migrations embed.FS
+var migrations embed.FS
+
+// Migrations returns the embedded migrations filesystem.
+func Migrations() fs.FS {
+	return migrations
+}

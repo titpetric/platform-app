@@ -21,7 +21,7 @@ func newTestStorage(t *testing.T) *Storage {
 	require.NoError(t, err)
 	t.Cleanup(func() { db.Close() })
 
-	err = Migrate(context.Background(), db, schema.Migrations)
+	err = Migrate(context.Background(), db, schema.Migrations())
 	require.NoError(t, err)
 
 	return NewStorage(db)

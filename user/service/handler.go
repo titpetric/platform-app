@@ -50,7 +50,7 @@ func (h *UserModule) Start(ctx context.Context) error {
 		return err
 	}
 
-	if err := storage.Migrate(ctx, db, schema.Migrations); err != nil {
+	if err := storage.Migrate(ctx, db, schema.Migrations()); err != nil {
 		return err
 	}
 

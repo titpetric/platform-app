@@ -80,6 +80,5 @@ tasks:
       - mv -f /usr/local/bin/${{name}}.new /usr/local/bin/${{name}}
 
   up:
-    depends_on: pull
     steps:
       - docker compose up -d --remove-orphans
