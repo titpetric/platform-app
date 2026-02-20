@@ -7,7 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
 	"github.com/titpetric/vuego"
 	"github.com/titpetric/vuego-cli/basecoat"
 

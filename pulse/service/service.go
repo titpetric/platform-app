@@ -39,7 +39,8 @@ func (p *PulseModule) Start(ctx context.Context) error {
 	if err := p.setupStorage(ctx); err != nil {
 		return err
 	}
-	p.handlers = NewHandlers(p.storage, p.userStorage)
+
+	p.handlers = NewHandlers(p.storage, p.userStorage, FS(ctx))
 	return nil
 }
 

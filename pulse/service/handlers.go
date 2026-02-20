@@ -10,10 +10,8 @@ import (
 	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
 	"github.com/titpetric/vuego"
-	"github.com/titpetric/vuego-cli/basecoat"
 
 	"github.com/titpetric/platform-app/pulse/storage"
-	"github.com/titpetric/platform-app/pulse/view"
 	"github.com/titpetric/platform-app/user"
 	userstorage "github.com/titpetric/platform-app/user/storage"
 )
@@ -27,14 +25,12 @@ type Handlers struct {
 }
 
 // NewHandlers creates handlers backed by the given storage.
-func NewHandlers(storage *storage.Storage, userStorage *userstorage.UserStorage) *Handlers {
-	ofs := vuego.NewOverlayFS(view.FS, basecoat.FS)
-
+func NewHandlers(storage *storage.Storage, userStorage *userstorage.UserStorage, viewFS fs.FS) *Handlers {
 	return &Handlers{
-		fs:          ofs,
+		fs:          viewFS,
 		storage:     storage,
 		userStorage: userStorage,
-		vuego:       vuego.NewFS(ofs),
+		vuego:       vuego.NewFS(viewFS),
 	}
 }
 

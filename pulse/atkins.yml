@@ -8,7 +8,7 @@ tasks:
   default:
     passthru: true
     steps:
-      - task: fmt
+      - atkins go:fmt
       - task: test:gotestsum
       - task: build
       - atkins docker:build
@@ -29,12 +29,6 @@ tasks:
         passthru: true
       - cmd: go run ${{build.path}} record --duration 1s
         interactive: true
-
-  fmt:
-    cmds:
-      - goimports -w .
-      - gofumpt -w .
-      - go fmt ./...
 
   test:
     cmds:

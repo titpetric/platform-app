@@ -1,0 +1,5 @@
+theme:
+  header:
+    title: Pulse
+    subtitle: Keystroke Analytics
+    icon: activity
