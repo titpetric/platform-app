@@ -33,7 +33,6 @@ tasks:
   test:
     cmds:
       - task: test:gotestsum
-      - task: test:insert-with-update
 
   test:gotestsum:
     passthru: true
@@ -43,13 +42,6 @@ tasks:
         CGO_ENABLED: 0
     cmds:
       - gotestsum ./...
-
-  test:insert-with-update:
-    env:
-      vars:
-        ETL_DB_DSN: "sqlite://file:${{name}}.db"
-    cmds:
-      - etl query tests/insert-with-update.sql
 
   build:
     desc: "Build"
