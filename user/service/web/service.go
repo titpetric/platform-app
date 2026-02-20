@@ -1,6 +1,8 @@
 package web
 
 import (
+	"io/fs"
+
 	"github.com/titpetric/platform"
 
 	"github.com/titpetric/platform-app/user/storage"
@@ -15,11 +17,12 @@ type Service struct {
 }
 
 // NewService takes in required dependencies to support the MVC framework.
-func NewService(u *storage.UserStorage, s *storage.SessionStorage) *Service {
+// Context should be passed from Start() to access platform options.
+func NewService(u *storage.UserStorage, s *storage.SessionStorage, viewFS fs.FS) *Service {
 	svc := &Service{
 		userStorage:    u,
 		sessionStorage: s,
-		view:           NewRenderer(nil),
+		view:           NewRenderer(viewFS, nil),
 	}
 	return svc
 }

@@ -4,31 +4,25 @@ import (
 	"io/fs"
 
 	"github.com/titpetric/vuego"
-	"github.com/titpetric/vuego-cli/basecoat"
-
-	"github.com/titpetric/platform-app/user/view"
 )
 
 // Renderer handles page and layout rendering with vuego templates
 type Renderer struct {
-	fs    fs.FS
-	vuego vuego.Template
+	viewFS fs.FS
+	vuego  vuego.Template
 
 	data map[string]any
 }
 
 // NewRenderer creates a new Renderer with the given filesystem and shared data
-func NewRenderer(data map[string]any) *Renderer {
+func NewRenderer(viewFS fs.FS, data map[string]any) *Renderer {
 	if data == nil {
 		data = make(map[string]any)
 	}
 
-	ofs := vuego.NewOverlayFS(view.FS, basecoat.FS)
-
 	return &Renderer{
-		fs:    ofs,
 		data:  data,
-		vuego: vuego.NewFS(ofs, vuego.WithLessProcessor(), vuego.WithFuncs(Funcs)).Fill(data),
+		vuego: vuego.NewFS(viewFS, vuego.WithLessProcessor(), vuego.WithFuncs(Funcs)).Fill(data),
 	}
 }
 

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"io/fs"
 
 	"github.com/titpetric/platform"
 
@@ -15,8 +14,6 @@ import (
 // UserModule implements a module contract.
 type UserModule struct {
 	platform.UnimplementedModule
-
-	templateFS fs.FS
 
 	opts Options
 	web  *web.Service
@@ -57,7 +54,7 @@ func (h *UserModule) Start(ctx context.Context) error {
 	userStorage := storage.NewUserStorage(db)
 	sessionStorage := storage.NewSessionStorage(db)
 
-	h.web = web.NewService(userStorage, sessionStorage)
+	h.web = web.NewService(userStorage, sessionStorage, FS(ctx))
 	h.api = api.NewService(userStorage, api.Options{
 		SigningKey: h.opts.SigningKey,
 	})

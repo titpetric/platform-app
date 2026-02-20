@@ -24,7 +24,7 @@ func TestNewUserStorage_integration(t *testing.T) {
 	})
 
 	db := NewTestDB(t)
-	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
+	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations()))
 
 	s := storage.NewUserStorage(db)
 	require.NotNil(t, s)

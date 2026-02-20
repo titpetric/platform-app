@@ -1,20 +1,30 @@
-package web
+package web_test
 
 import (
 	"bytes"
-	"context"
+	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/titpetric/vuego"
+	"github.com/titpetric/vuego-cli/basecoat"
+
+	"github.com/titpetric/platform-app/user/service/web"
+	"github.com/titpetric/platform-app/user/view"
 )
 
+func newViewFS() fs.FS {
+	return vuego.NewOverlayFS(basecoat.FS, view.FS)
+}
+
 func TestRendererLogin(t *testing.T) {
-	renderer := NewRenderer(map[string]any{})
-	ctx := context.Background()
+	renderer := web.NewRenderer(newViewFS(), map[string]any{})
 
 	t.Run("login returns template", func(t *testing.T) {
-		data := LoginData{
+		ctx := t.Context()
+		data := web.LoginData{
 			Email: "test@example.com",
 		}
 
@@ -29,7 +39,8 @@ func TestRendererLogin(t *testing.T) {
 	})
 
 	t.Run("login with error message", func(t *testing.T) {
-		data := LoginData{
+		ctx := t.Context()
+		data := web.LoginData{
 			Email:        "user@example.com",
 			ErrorMessage: "Invalid credentials",
 		}
@@ -47,10 +58,10 @@ func TestRendererLogin(t *testing.T) {
 }
 
 func TestRendererLogout(t *testing.T) {
-	renderer := NewRenderer(map[string]any{})
+	renderer := web.NewRenderer(newViewFS(), map[string]any{})
 
 	t.Run("logout returns template", func(t *testing.T) {
-		data := LogoutData{
+		data := web.LogoutData{
 			User: "testuser",
 		}
 
@@ -60,11 +71,11 @@ func TestRendererLogout(t *testing.T) {
 }
 
 func TestRendererRegister(t *testing.T) {
-	renderer := NewRenderer(map[string]any{})
-	ctx := context.Background()
+	renderer := web.NewRenderer(newViewFS(), map[string]any{})
 
 	t.Run("register returns template", func(t *testing.T) {
-		data := RegisterData{
+		ctx := t.Context()
+		data := web.RegisterData{
 			Email:    "newuser@example.com",
 			FullName: "John Doe",
 		}
@@ -81,7 +92,8 @@ func TestRendererRegister(t *testing.T) {
 	})
 
 	t.Run("register with error message", func(t *testing.T) {
-		data := RegisterData{
+		ctx := t.Context()
+		data := web.RegisterData{
 			FullName:     "Jane Smith",
 			Email:        "jane@example.com",
 			ErrorMessage: "Email already exists",
