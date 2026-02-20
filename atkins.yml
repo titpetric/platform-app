@@ -13,8 +13,8 @@ tasks:
   migrate:
     passthru: true
     steps:
-      - atkins $PWD/.atkins/schema-migrate.yml -w ./user
-      - atkins $PWD/.atkins/schema-migrate.yml -w ./pulse
+      - atkins $HOME/.atkins/skills/schema.yml -w ./user migrate
+      - atkins $HOME/.atkins/skills/schema.yml -w ./pulse migrate
 
   fmt:
     desc: "Source code formatting"

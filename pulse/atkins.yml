@@ -11,11 +11,10 @@ tasks:
       - task: fmt
       - task: test:gotestsum
       - task: build
-      - task: docker
+      - atkins docker:build
+      - atkins compose:up
       - task: install
 
-  docker: ../.atkins/docker.yml
-  migrate: ../.atkins/schema-migrate.yml
 
   test:run:
     env:
@@ -38,7 +37,6 @@ tasks:
       - go fmt ./...
 
   test:
-    depends_on: migrate
     cmds:
       - task: test:gotestsum
       - task: test:insert-with-update
@@ -46,6 +44,9 @@ tasks:
   test:gotestsum:
     passthru: true
     tty: true
+    env:
+      vars:
+        CGO_ENABLED: 0
     cmds:
       - gotestsum ./...
 

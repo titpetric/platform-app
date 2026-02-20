@@ -1,5 +1,5 @@
 #!/usr/bin/env atkins
-name: Module docker builds
+name: Docker build and push
 
 vars:
   name: $(basename $(realpath -s .))
