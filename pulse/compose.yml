@@ -1,6 +1,3 @@
-include:
-  - compose.client.yml
-
 services:
   pulse:
     image: titpetric/pulse
