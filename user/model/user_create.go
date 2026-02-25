@@ -35,6 +35,9 @@ func (r *UserCreateRequest) ValidateUsername() error {
 	if len(r.Username) < 4 {
 		return ErrUsernameMinLength
 	}
+	if len(r.Username) > 20 {
+		return ErrUsernameMaxLength
+	}
 	if !regexp.MustCompile(`^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]{3}$`).MatchString(r.Username) {
 		return ErrUsernameInvalid
 	}

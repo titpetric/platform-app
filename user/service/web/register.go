@@ -23,7 +23,12 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !req.Valid() {
-		h.Error(r, "All fields are required", nil)
+		if err := req.ValidateUsername(); err != nil {
+			h.Error(r, err.Error(), nil)
+		} else {
+			h.Error(r, "All fields are required", nil)
+		}
+		h.RegisterView(w, r)
 		return
 	}
 
