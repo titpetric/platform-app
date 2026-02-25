@@ -11,18 +11,16 @@ import (
 	"github.com/titpetric/platform-app/user/storage"
 )
 
+// Name is the service module name.
+const Name = "user"
+
 // UserModule implements a module contract.
 type UserModule struct {
 	platform.UnimplementedModule
 
 	opts Options
-	web  *web.Service
-	api  *api.Service
-}
-
-// Options is passed from user package scope.
-type Options struct {
-	SigningKey string
+	web  *web.Handlers
+	api  *api.Handlers
 }
 
 // Verify contract.
@@ -37,7 +35,7 @@ func NewUserModule(opts Options) *UserModule {
 
 // Name returns the name of the containing package.
 func (h *UserModule) Name() string {
-	return "user"
+	return Name
 }
 
 // Start will initialize the service to handle requests.
@@ -54,8 +52,8 @@ func (h *UserModule) Start(ctx context.Context) error {
 	userStorage := storage.NewUserStorage(db)
 	sessionStorage := storage.NewSessionStorage(db)
 
-	h.web = web.NewService(userStorage, sessionStorage, FS(ctx))
-	h.api = api.NewService(userStorage, api.Options{
+	h.web = web.NewHandlers(userStorage, sessionStorage, FS(ctx))
+	h.api = api.NewHandlers(userStorage, api.Options{
 		SigningKey: h.opts.SigningKey,
 	})
 	return nil

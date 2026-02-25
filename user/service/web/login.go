@@ -9,7 +9,11 @@ import (
 )
 
 // Login handles user authentication via HTML form submission.
-func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.login(w, r))
+}
+
+func (h *Handlers) login(w http.ResponseWriter, r *http.Request) error {
 	r, span := telemetry.StartRequest(r, "user.service.Login")
 	defer span.End()
 
@@ -19,7 +23,7 @@ func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
 	if email == "" || password == "" {
 		h.Error(r, "Email and Password are required", nil)
 		h.LoginView(w, r)
-		return
+		return nil
 	}
 
 	user, err := h.userStorage.Authenticate(r.Context(), model.UserAuth{
@@ -29,14 +33,14 @@ func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil || !user.Ok() {
 		h.Error(r, "Invalid credentials for login", err)
 		h.LoginView(w, r)
-		return
+		return nil
 	}
 
 	session, err := h.sessionStorage.Create(r.Context(), user.ID)
 	if err != nil {
 		h.Error(r, "Can't create session", err)
 		h.LoginView(w, r)
-		return
+		return nil
 	}
 
 	cookie := &http.Cookie{
@@ -44,10 +48,11 @@ func (h *Service) Login(w http.ResponseWriter, r *http.Request) {
 		Value:    session.ID,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   true, // set false for local dev if needed
+		Secure:   true,
 		Expires:  *session.ExpiresAt,
 	}
 	http.SetCookie(w, cookie)
 
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	return nil
 }

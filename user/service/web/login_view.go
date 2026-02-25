@@ -8,7 +8,11 @@ import (
 
 // LoginView renders login.tpl when no valid session exists,
 // or logout.tpl with the full user model when a valid session is found.
-func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) LoginView(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.loginView(w, r))
+}
+
+func (h *Handlers) loginView(w http.ResponseWriter, r *http.Request) error {
 	r, span := telemetry.StartRequest(r, "user.service.LoginView")
 	defer span.End()
 
@@ -18,18 +22,14 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 	if err == nil && cookie.Value != "" {
 		if session, err := h.sessionStorage.Get(ctx, cookie.Value); err == nil {
 			if user, err := h.userStorage.Get(ctx, session.UserID); err == nil {
-				if err := h.view.Logout(LogoutData{
+				return h.view.Logout(LogoutData{
 					SessionUser: user,
 					Links: Links{
 						Login:    "/login",
 						Logout:   "/logout",
 						Register: "/register",
 					},
-				}).Render(ctx, w); err != nil {
-					telemetry.CaptureError(ctx, err)
-					h.Error(r, "Failed to render logout page", err)
-				}
-				return
+				}).Render(ctx, w)
 			} else {
 				telemetry.CaptureError(ctx, err)
 			}
@@ -38,7 +38,7 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if err := h.view.Login(LoginData{
+	return h.view.Login(LoginData{
 		ErrorMessage: h.GetError(r),
 		Email:        r.FormValue("email"),
 		Links: Links{
@@ -46,8 +46,5 @@ func (h *Service) LoginView(w http.ResponseWriter, r *http.Request) {
 			Logout:   "/logout",
 			Register: "/register",
 		},
-	}).Render(ctx, w); err != nil {
-		telemetry.CaptureError(ctx, err)
-		h.Error(r, "Failed to render login page", err)
-	}
+	}).Render(ctx, w)
 }

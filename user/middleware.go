@@ -27,6 +27,7 @@ type Middleware struct {
 	sessionStorage *storage.SessionStorage
 }
 
+// ServeHTTP authenticates the request and passes it to the next handler.
 func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	m.init(r.Context())
 

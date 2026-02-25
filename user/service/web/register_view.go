@@ -7,11 +7,15 @@ import (
 )
 
 // RegisterView renders the registration page.
-func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) RegisterView(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.registerView(w, r))
+}
+
+func (h *Handlers) registerView(w http.ResponseWriter, r *http.Request) error {
 	r, span := telemetry.StartRequest(r, "user.service.RegisterView")
 	defer span.End()
 
-	err := h.view.Register(RegisterData{
+	return h.view.Register(RegisterData{
 		ErrorMessage: h.GetError(r),
 		FullName:     r.FormValue("full_name"),
 		Email:        r.FormValue("email"),
@@ -22,8 +26,4 @@ func (h *Service) RegisterView(w http.ResponseWriter, r *http.Request) {
 			Register: "/register",
 		},
 	}).Render(r.Context(), w)
-	if err != nil {
-		telemetry.CaptureError(r.Context(), err)
-		h.Error(r, "Failed to render register page", err)
-	}
 }

@@ -16,6 +16,7 @@ func NewModule() *service.UserModule {
 	})
 }
 
+// MiddlewareOption configures the user authentication middleware.
 type MiddlewareOption func(*Middleware)
 
 // NewMiddleware will populate context for IsLoggedIn, GetSessionUser.
@@ -31,6 +32,7 @@ func NewMiddleware(opts ...MiddlewareOption) func(http.Handler) http.Handler {
 	}
 }
 
+// AuthHeader enables JWT-based authentication via the Authorization header.
 func AuthHeader() MiddlewareOption {
 	return func(mw *Middleware) {
 		mw.options.Header = true
@@ -46,6 +48,7 @@ func SigningKey() string {
 	return "test-usage"
 }
 
+// AuthCookie enables session-based authentication via a cookie.
 func AuthCookie() MiddlewareOption {
 	return func(mw *Middleware) {
 		mw.options.Cookie = true

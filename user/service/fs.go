@@ -11,6 +11,7 @@ import (
 	"github.com/titpetric/platform-app/user/view"
 )
 
+// FS returns a layered filesystem combining theme, view, and basecoat assets.
 func FS(ctx context.Context) fs.FS {
 	platformOpts := platform.OptionsFromContext(ctx)
 

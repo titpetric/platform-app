@@ -9,7 +9,11 @@ import (
 )
 
 // Register handles creating a new user and starting a session via HTML form submission.
-func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) Register(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.register(w, r))
+}
+
+func (h *Handlers) register(w http.ResponseWriter, r *http.Request) error {
 	r, span := telemetry.StartRequest(r, "user.service.Register")
 	defer span.End()
 
@@ -29,21 +33,21 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 			h.Error(r, "All fields are required", nil)
 		}
 		h.RegisterView(w, r)
-		return
+		return nil
 	}
 
 	createdUser, err := h.userStorage.Create(ctx, req)
 	if err != nil {
 		h.Error(r, "Failed to create user", err)
 		h.RegisterView(w, r)
-		return
+		return nil
 	}
 
 	session, err := h.sessionStorage.Create(ctx, createdUser.ID)
 	if err != nil {
 		h.Error(r, "Failed to create session", err)
 		h.RegisterView(w, r)
-		return
+		return nil
 	}
 
 	cookie := &http.Cookie{
@@ -56,4 +60,5 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	return nil
 }

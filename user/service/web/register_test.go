@@ -17,7 +17,7 @@ func TestRegisterValidationRendersView(t *testing.T) {
 	renderer := web.NewRenderer(newViewFS(), nil)
 
 	t.Run("missing all fields renders register view with error", func(t *testing.T) {
-		svc := web.NewService(nil, nil, newViewFS())
+		svc := web.NewHandlers(nil, nil, newViewFS())
 		_ = renderer
 
 		form := url.Values{}
@@ -32,7 +32,7 @@ func TestRegisterValidationRendersView(t *testing.T) {
 	})
 
 	t.Run("missing username renders register view with username error", func(t *testing.T) {
-		svc := web.NewService(nil, nil, newViewFS())
+		svc := web.NewHandlers(nil, nil, newViewFS())
 
 		form := url.Values{
 			"full_name": {"John Doe"},
@@ -52,7 +52,7 @@ func TestRegisterValidationRendersView(t *testing.T) {
 	})
 
 	t.Run("short username renders register view with error", func(t *testing.T) {
-		svc := web.NewService(nil, nil, newViewFS())
+		svc := web.NewHandlers(nil, nil, newViewFS())
 
 		form := url.Values{
 			"full_name": {"John Doe"},
@@ -73,7 +73,7 @@ func TestRegisterValidationRendersView(t *testing.T) {
 	})
 
 	t.Run("form preserves submitted values on error", func(t *testing.T) {
-		svc := web.NewService(nil, nil, newViewFS())
+		svc := web.NewHandlers(nil, nil, newViewFS())
 
 		form := url.Values{
 			"full_name": {"Jane Smith"},

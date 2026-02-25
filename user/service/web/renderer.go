@@ -6,7 +6,7 @@ import (
 	"github.com/titpetric/vuego"
 )
 
-// Renderer handles page and layout rendering with vuego templates
+// Renderer handles page and layout rendering with vuego templates.
 type Renderer struct {
 	viewFS fs.FS
 	vuego  vuego.Template
@@ -14,7 +14,7 @@ type Renderer struct {
 	data map[string]any
 }
 
-// NewRenderer creates a new Renderer with the given filesystem and shared data
+// NewRenderer creates a new Renderer with the given filesystem and shared data.
 func NewRenderer(viewFS fs.FS, data map[string]any) *Renderer {
 	if data == nil {
 		data = make(map[string]any)
@@ -26,9 +26,7 @@ func NewRenderer(viewFS fs.FS, data map[string]any) *Renderer {
 	}
 }
 
-// Render loads a template, and if the template contains "layout" in the metadata, it will
-// load another template from layouts/%s.vuego; Layouts can be chained so one layout can
-// again trigger another layout, like `blog.vuego -> layouts/post.vuego -> layouts/base.vuego`.
+// Load loads a template, chaining any layouts declared in template metadata.
 func (r *Renderer) Load(filename string, data any) vuego.Template {
 	return r.vuego.Load(filename).Fill(data)
 }

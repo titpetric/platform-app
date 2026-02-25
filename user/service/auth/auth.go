@@ -7,6 +7,7 @@ import (
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
+// JWT and Claims provide JWT token creation and validation.
 type (
 	JWT struct {
 		secret        string
@@ -20,6 +21,7 @@ type (
 	}
 )
 
+// NewJWT creates a new JWT instance with the given secret.
 func NewJWT(secret string) *JWT {
 	return &JWT{
 		secret:        secret,
@@ -27,7 +29,7 @@ func NewJWT(secret string) *JWT {
 	}
 }
 
-// UserID retrieves the `user_id` claim from the JWT token
+// UserID retrieves the `user_id` claim from the JWT token.
 func (u *JWT) UserID(token string) (string, error) {
 	claims, err := u.Claims(token)
 	if err != nil {
@@ -36,7 +38,7 @@ func (u *JWT) UserID(token string) (string, error) {
 	return string(claims.UserID), nil
 }
 
-// Claims returns the complete JWT claims object
+// Claims returns the complete JWT claims object.
 func (u *JWT) Claims(tokenString string) (*Claims, error) {
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
@@ -71,7 +73,7 @@ func (u *JWT) Claims(tokenString string) (*Claims, error) {
 	return nil, errInvalidClaims
 }
 
-// Validate just checks if the JWT claims match an userID
+// Validate checks if the JWT claims match a userID.
 func (u *JWT) Validate(token string, userID string) (bool, error) {
 	uid, err := u.UserID(token)
 	if err != nil {
@@ -80,12 +82,13 @@ func (u *JWT) Validate(token string, userID string) (bool, error) {
 	return uid == userID, nil
 }
 
-// IsUser is a simpler version of Validate, throwing away the error
+// IsUser is a simpler version of Validate, discarding the error.
 func (u *JWT) IsUser(token string, userID string) bool {
 	isUser, _ := u.Validate(token, userID)
 	return isUser
 }
 
+// Create generates a signed JWT token for the given userID with the specified TTL.
 func (u *JWT) Create(userID string, ttl time.Duration) (string, error) {
 	signingSecret := func() []byte {
 		return []byte(u.secret)

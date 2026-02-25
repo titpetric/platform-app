@@ -9,6 +9,7 @@ import (
 	"github.com/titpetric/vuego"
 )
 
+// Funcs provides template helper functions for vuego rendering.
 var Funcs = vuego.FuncMap{
 	"postDate": func(val any) any {
 		layoutStr := "2006/01/02 15:04"

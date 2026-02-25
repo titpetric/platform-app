@@ -28,7 +28,7 @@ func TestRefreshToken(t *testing.T) {
 		originalToken, err := jwtAuth.Create(userID, time.Hour)
 		require.NoError(t, err)
 
-		svc := &Service{
+		svc := &Handlers{
 			opts: Options{SigningKey: signingKey},
 		}
 
@@ -55,7 +55,7 @@ func TestRefreshToken(t *testing.T) {
 	})
 
 	t.Run("missing authorization header", func(t *testing.T) {
-		svc := &Service{
+		svc := &Handlers{
 			opts: Options{SigningKey: getTestSigningKey()},
 		}
 
@@ -68,7 +68,7 @@ func TestRefreshToken(t *testing.T) {
 	})
 
 	t.Run("invalid token", func(t *testing.T) {
-		svc := &Service{
+		svc := &Handlers{
 			opts: Options{SigningKey: getTestSigningKey()},
 		}
 
@@ -85,7 +85,7 @@ func TestRefreshToken(t *testing.T) {
 func TestCreateTokenInvalidBody(t *testing.T) {
 	t.Parallel()
 
-	svc := &Service{
+	svc := &Handlers{
 		opts: Options{SigningKey: getTestSigningKey()},
 	}
 
@@ -102,7 +102,7 @@ func TestCreateTokenInvalidBody(t *testing.T) {
 func TestRegisterInvalidBody(t *testing.T) {
 	t.Parallel()
 
-	svc := &Service{
+	svc := &Handlers{
 		opts: Options{SigningKey: getTestSigningKey()},
 	}
 
@@ -119,7 +119,7 @@ func TestRegisterInvalidBody(t *testing.T) {
 func TestRegisterMissingFields(t *testing.T) {
 	t.Parallel()
 
-	svc := &Service{
+	svc := &Handlers{
 		opts: Options{SigningKey: getTestSigningKey()},
 	}
 

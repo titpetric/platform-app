@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// UserCreateRequest holds the fields required to create a new user.
 type UserCreateRequest struct {
 	FullName string `json:"full_name"`
 	Email    string `json:"email"`
@@ -12,6 +13,7 @@ type UserCreateRequest struct {
 	Username string `json:"username,omitempty"`
 }
 
+// Valid reports whether the UserCreateRequest has all required fields.
 func (r *UserCreateRequest) Valid() bool {
 	if r == nil {
 		return false
@@ -28,6 +30,7 @@ func (r *UserCreateRequest) Valid() bool {
 	return r.ValidateUsername() == nil
 }
 
+// ValidateUsername checks that the username meets length and format requirements.
 func (r *UserCreateRequest) ValidateUsername() error {
 	if r.Username == "" {
 		return ErrUsernameMissing
@@ -44,6 +47,7 @@ func (r *UserCreateRequest) ValidateUsername() error {
 	return nil
 }
 
+// User converts the UserCreateRequest into a User.
 func (r *UserCreateRequest) User() *User {
 	username := r.Username
 	if username == "" {
@@ -56,6 +60,7 @@ func (r *UserCreateRequest) User() *User {
 	}
 }
 
+// UserAuth converts the UserCreateRequest into a UserAuth.
 func (r *UserCreateRequest) UserAuth() *UserAuth {
 	return &UserAuth{
 		Email:    r.Email,

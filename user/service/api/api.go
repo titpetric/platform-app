@@ -14,19 +14,22 @@ import (
 	"github.com/titpetric/platform-app/user/storage"
 )
 
-type Service struct {
+// Handlers provides HTTP handlers for user authentication endpoints.
+type Handlers struct {
 	opts        Options
 	userStorage *storage.UserStorage
 }
 
-func NewService(userStorage *storage.UserStorage, opts Options) *Service {
-	return &Service{
+// NewHandlers returns a new Handlers instance with the given storage and options.
+func NewHandlers(userStorage *storage.UserStorage, opts Options) *Handlers {
+	return &Handlers{
 		userStorage: userStorage,
 		opts:        opts,
 	}
 }
 
-func (s *Service) Mount(r platform.Router) {
+// Mount registers the user API routes on the given router.
+func (s *Handlers) Mount(r platform.Router) {
 	r.Group(func(r platform.Router) {
 		r.Post("/api/user/register", s.Register)
 		r.Post("/api/user/token/create", s.CreateToken)
@@ -35,11 +38,12 @@ func (s *Service) Mount(r platform.Router) {
 	})
 }
 
-func (s *Service) Register(w http.ResponseWriter, r *http.Request) {
+// Register handles user registration requests.
+func (s *Handlers) Register(w http.ResponseWriter, r *http.Request) {
 	s.errorHandler(w, r, s.register(w, r))
 }
 
-func (s *Service) errorHandler(w http.ResponseWriter, r *http.Request, err error) {
+func (s *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	if err == nil {
 		return
 	}
@@ -52,19 +56,22 @@ func (s *Service) errorHandler(w http.ResponseWriter, r *http.Request, err error
 	}
 }
 
-func (s *Service) CreateToken(w http.ResponseWriter, r *http.Request) {
+// CreateToken handles token creation requests.
+func (s *Handlers) CreateToken(w http.ResponseWriter, r *http.Request) {
 	s.errorHandler(w, r, s.createToken(w, r))
 }
 
-func (s *Service) RefreshToken(w http.ResponseWriter, r *http.Request) {
+// RefreshToken handles token refresh requests.
+func (s *Handlers) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	s.errorHandler(w, r, s.refreshToken(w, r))
 }
 
-func (s *Service) RevokeToken(w http.ResponseWriter, r *http.Request) {
+// RevokeToken handles token revocation requests.
+func (s *Handlers) RevokeToken(w http.ResponseWriter, r *http.Request) {
 	s.errorHandler(w, r, s.revokeToken(w, r))
 }
 
-func (s *Service) createToken(w http.ResponseWriter, r *http.Request) error {
+func (s *Handlers) createToken(w http.ResponseWriter, r *http.Request) error {
 	var req struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -101,7 +108,7 @@ func (s *Service) createToken(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Service) refreshToken(w http.ResponseWriter, r *http.Request) error {
+func (s *Handlers) refreshToken(w http.ResponseWriter, r *http.Request) error {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
 		return &RequestError{StatusCode: http.StatusUnauthorized, Err: errors.New("missing authorization header")}
@@ -131,11 +138,11 @@ func (s *Service) refreshToken(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Service) revokeToken(w http.ResponseWriter, r *http.Request) error {
+func (s *Handlers) revokeToken(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Service) register(w http.ResponseWriter, r *http.Request) error {
+func (s *Handlers) register(w http.ResponseWriter, r *http.Request) error {
 	var req model.UserCreateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return &RequestError{StatusCode: http.StatusBadRequest, Err: errors.New("invalid request body")}

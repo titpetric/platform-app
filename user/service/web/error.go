@@ -16,7 +16,8 @@ type errorMessageKey struct{}
 
 var errorMessageContext = httpcontext.NewValue[string](errorMessageKey{})
 
-func (h *Service) Error(r *http.Request, message string, err error) {
+// Error records an error message into the request context and captures telemetry.
+func (h *Handlers) Error(r *http.Request, message string, err error) {
 	errorMessageContext.Set(r, message)
 	if errors.Is(err, sql.ErrNoRows) {
 		err = nil
@@ -27,6 +28,15 @@ func (h *Service) Error(r *http.Request, message string, err error) {
 	telemetry.CaptureError(r.Context(), err)
 }
 
-func (h *Service) GetError(r *http.Request) string {
+// GetError returns the error message stored in the request context.
+func (h *Handlers) GetError(r *http.Request) string {
 	return errorMessageContext.Get(r)
+}
+
+func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err error) {
+	if err != nil {
+		ctx := r.Context()
+		telemetry.CaptureError(ctx, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

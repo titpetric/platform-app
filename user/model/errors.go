@@ -2,6 +2,7 @@ package model
 
 import "errors"
 
+// Errors returned by user validation and storage operations.
 var (
 	ErrSessionExpired    = errors.New("Your session has expired")
 	ErrUsernameMissing   = errors.New("username is required")
