@@ -6,11 +6,14 @@ env:
 
 tasks:
   default:
+    desc: "Runs migrations, fmt, test"
     steps:
+      - task: migrate
       - task: fmt
       - task: test
 
   migrate:
+    desc: "Run migrations on projects"
     passthru: true
     steps:
       - atkins $HOME/.atkins/skills/schema.yml -w ./user migrate
@@ -25,12 +28,14 @@ tasks:
       - go mod tidy
 
   test:
+    desc: "Run go tests"
     tty: true
     passthru: true
     steps:
       - gotestsum ./... -- -count 1
 
   pre-commit:
+    desc: "Pre-commit hook (fmt, test)"
     steps:
       - task: fmt
       - task: test
