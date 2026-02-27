@@ -161,6 +161,57 @@
     - name: idx_user_group_member_user_id
       columns:
         - user_id
+- name: user_passkey
+  comment: User Passkey
+  columns:
+    - name: id
+      type: TEXT
+      key: PRI
+      comment: ID
+      datatype: text
+    - name: user_id
+      type: TEXT
+      key: MUL
+      comment: User ID
+      datatype: text
+    - name: credential_id
+      type: BLOB
+      key: MUL
+      comment: Credential ID
+      datatype: blob
+    - name: public_key
+      type: BLOB
+      comment: Public Key
+      datatype: blob
+    - name: attestation_type
+      type: TEXT
+      comment: Attestation Type
+      datatype: text
+    - name: transport
+      type: TEXT
+      comment: Transport
+      datatype: text
+    - name: sign_count
+      type: INTEGER
+      comment: Sign Count
+      datatype: integer
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_user_passkey_1
+      columns:
+        - id
+      primary: true
+      unique: true
+    - name: idx_user_passkey_credential_id
+      columns:
+        - credential_id
+      unique: true
+    - name: idx_user_passkey_user_id
+      columns:
+        - user_id
 - name: user_session
   comment: User Session
   columns:

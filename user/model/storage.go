@@ -24,3 +24,12 @@ type UserStorage interface {
 
 	Authenticate(ctx context.Context, auth UserAuth) (*User, error)
 }
+
+// PasskeyStorage defines the storage operations for WebAuthn passkeys.
+type PasskeyStorage interface {
+	Create(ctx context.Context, passkey *UserPasskey) (*UserPasskey, error)
+	Delete(ctx context.Context, id string) error
+	ListByUser(ctx context.Context, userID string) ([]UserPasskey, error)
+	GetByCredentialID(ctx context.Context, credentialID []byte) (*UserPasskey, error)
+	UpdateSignCount(ctx context.Context, id string, signCount int64) error
+}

@@ -356,6 +356,71 @@ var UserGroupMemberFields = []string{"user_group_id", "user_id", "joined_at"}
 // UserGroupMemberPrimaryFields are the primary key fields in the DB table.
 var UserGroupMemberPrimaryFields = []string{"user_group_id", "user_id"}
 
+// UserPasskey generated for db table `user_passkey`.
+//
+// User Passkey.
+type UserPasskey struct {
+	// ID
+	ID string `db:"id" json:"id"`
+
+	// User ID
+	UserID string `db:"user_id" json:"user_id"`
+
+	// Credential ID
+	CredentialID []byte `db:"credential_id" json:"credential_id"`
+
+	// Public Key
+	PublicKey []byte `db:"public_key" json:"public_key"`
+
+	// Attestation Type
+	AttestationType string `db:"attestation_type" json:"attestation_type"`
+
+	// Transport
+	Transport string `db:"transport" json:"transport"`
+
+	// Sign Count
+	SignCount int64 `db:"sign_count" json:"sign_count"`
+
+	// Created At
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
+}
+
+// GetID will return the value of ID.
+func (u *UserPasskey) GetID() string { return u.ID }
+
+// GetUserID will return the value of UserID.
+func (u *UserPasskey) GetUserID() string { return u.UserID }
+
+// GetCredentialID will return the value of CredentialID.
+func (u *UserPasskey) GetCredentialID() []byte { return u.CredentialID }
+
+// GetPublicKey will return the value of PublicKey.
+func (u *UserPasskey) GetPublicKey() []byte { return u.PublicKey }
+
+// GetAttestationType will return the value of AttestationType.
+func (u *UserPasskey) GetAttestationType() string { return u.AttestationType }
+
+// GetTransport will return the value of Transport.
+func (u *UserPasskey) GetTransport() string { return u.Transport }
+
+// GetSignCount will return the value of SignCount.
+func (u *UserPasskey) GetSignCount() int64 { return u.SignCount }
+
+// GetCreatedAt will return the value of CreatedAt.
+func (u *UserPasskey) GetCreatedAt() *time.Time { return u.CreatedAt }
+
+// SetCreatedAt sets CreatedAt to the provided value.
+func (u *UserPasskey) SetCreatedAt(stamp time.Time) { u.CreatedAt = &stamp }
+
+// UserPasskeyTable is the name of the table in the DB.
+const UserPasskeyTable = "`user_passkey`"
+
+// UserPasskeyFields is a list of all columns in the DB table.
+var UserPasskeyFields = []string{"id", "user_id", "credential_id", "public_key", "attestation_type", "transport", "sign_count", "created_at"}
+
+// UserPasskeyPrimaryFields are the primary key fields in the DB table.
+var UserPasskeyPrimaryFields = []string{"id"}
+
 // UserSession generated for db table `user_session`.
 //
 // User Session.
@@ -698,6 +763,67 @@ func (u *UserGroupMember) Update(opts ...QueryOption) string {
 // Delete starts building a DELETE query.
 func (u *UserGroupMember) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserGroupMemberTable}).Apply(opts...)
+	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Insert starts building an INSERT INTO query.
+func (u *UserPasskey) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserPasskeyTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := UserPasskeyFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+}
+
+// Select starts building a SELECT query.
+func (u *UserPasskey) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserPasskeyTable}).Apply(opts...)
+	cols := "*"
+	if len(cfg.Columns) > 0 {
+		cols = strings.Join(cfg.Columns, ", ")
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	if cfg.OrderBy != "" {
+		query += " ORDER BY " + cfg.OrderBy
+	}
+	if cfg.LimitOffset > 0 {
+		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
+	}
+	return query
+}
+
+// Update starts building a UPDATE query.
+func (u *UserPasskey) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserPasskeyTable}).Apply(opts...)
+	cols := UserPasskeyFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	setClause := ""
+	for i, col := range cols {
+		if i > 0 {
+			setClause += ", "
+		}
+		setClause += col + "=:" + col
+	}
+	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Delete starts building a DELETE query.
+func (u *UserPasskey) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserPasskeyTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
 	if cfg.Where != "" {
 		query += " WHERE " + cfg.Where

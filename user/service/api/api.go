@@ -11,20 +11,25 @@ import (
 
 	"github.com/titpetric/platform-app/user/model"
 	"github.com/titpetric/platform-app/user/service/auth"
+	"github.com/titpetric/platform-app/user/service/passkey"
 	"github.com/titpetric/platform-app/user/storage"
 )
 
 // Handlers provides HTTP handlers for user authentication endpoints.
 type Handlers struct {
-	opts        Options
-	userStorage *storage.UserStorage
+	signingKey     string
+	userStorage    *storage.UserStorage
+	sessionStorage *storage.SessionStorage
+	passkeySvc     *passkey.Service
 }
 
-// NewHandlers returns a new Handlers instance with the given storage and options.
-func NewHandlers(userStorage *storage.UserStorage, opts Options) *Handlers {
+// NewHandlers returns a new Handlers instance with the given options.
+func NewHandlers(opts Options) *Handlers {
 	return &Handlers{
-		userStorage: userStorage,
-		opts:        opts,
+		signingKey:     opts.SigningKey,
+		userStorage:    opts.UserStorage,
+		sessionStorage: opts.SessionStorage,
+		passkeySvc:     opts.PasskeyService,
 	}
 }
 
@@ -35,6 +40,11 @@ func (s *Handlers) Mount(r platform.Router) {
 		r.Post("/api/user/token/create", s.CreateToken)
 		r.Post("/api/user/token/refresh", s.RefreshToken)
 		r.Post("/api/user/token/revoke", s.RevokeToken)
+
+		r.Post("/api/passkey/register/begin", s.PasskeyRegisterBegin)
+		r.Post("/api/passkey/register/finish", s.PasskeyRegisterFinish)
+		r.Post("/api/passkey/login/begin", s.PasskeyLoginBegin)
+		r.Post("/api/passkey/login/finish", s.PasskeyLoginFinish)
 	})
 }
 
@@ -91,7 +101,7 @@ func (s *Handlers) createToken(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	ttl := 30 * 24 * time.Hour
-	token, err := auth.NewJWT(s.opts.SigningKey).Create(user.ID, ttl)
+	token, err := auth.NewJWT(s.signingKey).Create(user.ID, ttl)
 	if err != nil {
 		return &RequestError{StatusCode: http.StatusInternalServerError, Err: errors.New("failed to create token")}
 	}
@@ -114,7 +124,7 @@ func (s *Handlers) refreshToken(w http.ResponseWriter, r *http.Request) error {
 		return &RequestError{StatusCode: http.StatusUnauthorized, Err: errors.New("missing authorization header")}
 	}
 
-	jwtAuth := auth.NewJWT(s.opts.SigningKey)
+	jwtAuth := auth.NewJWT(s.signingKey)
 	userID, err := jwtAuth.UserID(authHeader)
 	if err != nil {
 		return &RequestError{StatusCode: http.StatusUnauthorized, Err: errors.New("invalid token")}
@@ -139,6 +149,129 @@ func (s *Handlers) refreshToken(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Handlers) revokeToken(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
+
+// PasskeyRegisterBegin starts passkey registration.
+func (s *Handlers) PasskeyRegisterBegin(w http.ResponseWriter, r *http.Request) {
+	s.errorHandler(w, r, s.passkeyRegisterBegin(w, r))
+}
+
+func (s *Handlers) passkeyRegisterBegin(w http.ResponseWriter, r *http.Request) error {
+	var req model.UserCreateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return &RequestError{StatusCode: http.StatusBadRequest, Err: errors.New("invalid request body")}
+	}
+
+	if req.Username == "" {
+		return &RequestError{StatusCode: http.StatusBadRequest, Err: model.ErrUsernameMissing}
+	}
+	if err := req.ValidateUsername(); err != nil {
+		return &RequestError{StatusCode: http.StatusBadRequest, Err: err}
+	}
+	if req.FullName == "" || req.Email == "" {
+		return &RequestError{StatusCode: http.StatusBadRequest, Err: errors.New("full name and email are required")}
+	}
+
+	token, options, err := s.passkeySvc.BeginRegistration(&req)
+	if err != nil {
+		return err
+	}
+
+	platform.JSON(w, r, http.StatusOK, struct {
+		Token   string `json:"token"`
+		Options any    `json:"options"`
+	}{Token: token, Options: options})
+	return nil
+}
+
+// PasskeyRegisterFinish completes passkey registration.
+func (s *Handlers) PasskeyRegisterFinish(w http.ResponseWriter, r *http.Request) {
+	s.errorHandler(w, r, s.passkeyRegisterFinish(w, r))
+}
+
+func (s *Handlers) passkeyRegisterFinish(w http.ResponseWriter, r *http.Request) error {
+	token := r.Header.Get("X-Passkey-Token")
+	if token == "" {
+		return &RequestError{StatusCode: http.StatusBadRequest, Err: errors.New("missing passkey token")}
+	}
+
+	result, err := s.passkeySvc.FinishRegistration(token, r)
+	if err != nil {
+		return err
+	}
+
+	session, err := s.sessionStorage.Create(r.Context(), result.UserID)
+	if err != nil {
+		return &RequestError{StatusCode: http.StatusInternalServerError, Err: errors.New("failed to create session")}
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    session.ID,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		Expires:  *session.ExpiresAt,
+	})
+
+	platform.JSON(w, r, http.StatusCreated, struct {
+		UserID string `json:"user_id"`
+	}{UserID: result.UserID})
+	return nil
+}
+
+// PasskeyLoginBegin starts passkey login.
+func (s *Handlers) PasskeyLoginBegin(w http.ResponseWriter, r *http.Request) {
+	s.errorHandler(w, r, s.passkeyLoginBegin(w, r))
+}
+
+func (s *Handlers) passkeyLoginBegin(w http.ResponseWriter, r *http.Request) error {
+	token, options, err := s.passkeySvc.BeginLogin()
+	if err != nil {
+		return err
+	}
+
+	platform.JSON(w, r, http.StatusOK, struct {
+		Token   string `json:"token"`
+		Options any    `json:"options"`
+	}{Token: token, Options: options})
+	return nil
+}
+
+// PasskeyLoginFinish completes passkey login.
+func (s *Handlers) PasskeyLoginFinish(w http.ResponseWriter, r *http.Request) {
+	s.errorHandler(w, r, s.passkeyLoginFinish(w, r))
+}
+
+func (s *Handlers) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) error {
+	token := r.Header.Get("X-Passkey-Token")
+	if token == "" {
+		return &RequestError{StatusCode: http.StatusBadRequest, Err: errors.New("missing passkey token")}
+	}
+
+	result, err := s.passkeySvc.FinishLogin(token, r)
+	if err != nil {
+		return err
+	}
+
+	session, err := s.sessionStorage.Create(r.Context(), result.UserID)
+	if err != nil {
+		return &RequestError{StatusCode: http.StatusInternalServerError, Err: errors.New("failed to create session")}
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    session.ID,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		Expires:  *session.ExpiresAt,
+	})
+
+	platform.JSON(w, r, http.StatusOK, struct {
+		UserID string `json:"user_id"`
+	}{UserID: result.UserID})
 	return nil
 }
 
@@ -171,7 +304,7 @@ func (s *Handlers) register(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	ttl := 30 * 24 * time.Hour
-	token, err := auth.NewJWT(s.opts.SigningKey).Create(user.ID, ttl)
+	token, err := auth.NewJWT(s.signingKey).Create(user.ID, ttl)
 	if err != nil {
 		return &RequestError{StatusCode: http.StatusInternalServerError, Err: errors.New("failed to create token")}
 	}

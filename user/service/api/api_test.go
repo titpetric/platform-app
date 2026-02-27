@@ -28,9 +28,7 @@ func TestRefreshToken(t *testing.T) {
 		originalToken, err := jwtAuth.Create(userID, time.Hour)
 		require.NoError(t, err)
 
-		svc := &Handlers{
-			opts: Options{SigningKey: signingKey},
-		}
+		svc := NewHandlers(Options{SigningKey: signingKey})
 
 		req := httptest.NewRequest(http.MethodPost, "/api/user/token/refresh", nil)
 		req.Header.Set("Authorization", "Bearer "+originalToken)
@@ -55,9 +53,7 @@ func TestRefreshToken(t *testing.T) {
 	})
 
 	t.Run("missing authorization header", func(t *testing.T) {
-		svc := &Handlers{
-			opts: Options{SigningKey: getTestSigningKey()},
-		}
+		svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
 
 		req := httptest.NewRequest(http.MethodPost, "/api/user/token/refresh", nil)
 		w := httptest.NewRecorder()
@@ -68,9 +64,7 @@ func TestRefreshToken(t *testing.T) {
 	})
 
 	t.Run("invalid token", func(t *testing.T) {
-		svc := &Handlers{
-			opts: Options{SigningKey: getTestSigningKey()},
-		}
+		svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
 
 		req := httptest.NewRequest(http.MethodPost, "/api/user/token/refresh", nil)
 		req.Header.Set("Authorization", "Bearer invalid-token")
@@ -85,9 +79,7 @@ func TestRefreshToken(t *testing.T) {
 func TestCreateTokenInvalidBody(t *testing.T) {
 	t.Parallel()
 
-	svc := &Handlers{
-		opts: Options{SigningKey: getTestSigningKey()},
-	}
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
 
 	body := `invalid json`
 	req := httptest.NewRequest(http.MethodPost, "/api/user/token/create", bytes.NewBufferString(body))
@@ -102,9 +94,7 @@ func TestCreateTokenInvalidBody(t *testing.T) {
 func TestRegisterInvalidBody(t *testing.T) {
 	t.Parallel()
 
-	svc := &Handlers{
-		opts: Options{SigningKey: getTestSigningKey()},
-	}
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
 
 	body := `invalid json`
 	req := httptest.NewRequest(http.MethodPost, "/api/user/register", bytes.NewBufferString(body))
@@ -119,9 +109,7 @@ func TestRegisterInvalidBody(t *testing.T) {
 func TestRegisterMissingFields(t *testing.T) {
 	t.Parallel()
 
-	svc := &Handlers{
-		opts: Options{SigningKey: getTestSigningKey()},
-	}
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
 
 	body := `{"full_name": "John Doe"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/user/register", bytes.NewBufferString(body))
@@ -129,6 +117,62 @@ func TestRegisterMissingFields(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	svc.Register(w, req)
+
+	require.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestPasskeyRegisterBeginInvalidBody(t *testing.T) {
+	t.Parallel()
+
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
+
+	body := `invalid json`
+	req := httptest.NewRequest(http.MethodPost, "/api/passkey/register/begin", bytes.NewBufferString(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	svc.PasskeyRegisterBegin(w, req)
+
+	require.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestPasskeyRegisterBeginMissingFields(t *testing.T) {
+	t.Parallel()
+
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
+
+	body := `{"full_name": "John Doe"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/passkey/register/begin", bytes.NewBufferString(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	svc.PasskeyRegisterBegin(w, req)
+
+	require.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestPasskeyRegisterFinishMissingToken(t *testing.T) {
+	t.Parallel()
+
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/passkey/register/finish", nil)
+	w := httptest.NewRecorder()
+
+	svc.PasskeyRegisterFinish(w, req)
+
+	require.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestPasskeyLoginFinishMissingToken(t *testing.T) {
+	t.Parallel()
+
+	svc := NewHandlers(Options{SigningKey: getTestSigningKey()})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/passkey/login/finish", nil)
+	w := httptest.NewRecorder()
+
+	svc.PasskeyLoginFinish(w, req)
 
 	require.Equal(t, http.StatusBadRequest, w.Code)
 }

@@ -37,6 +37,13 @@ layout: content
 
         <button type="submit" class="btn w-full">Register</button>
 
+        <div class="relative my-2">
+          <div class="absolute inset-0 flex items-center"><span class="w-full border-t"></span></div>
+          <div class="relative flex justify-center text-xs uppercase"><span class="bg-background px-2 text-muted-foreground">Or</span></div>
+        </div>
+
+        <button type="button" id="passkey-register" class="btn-outline w-full">Register with Passkey</button>
+
         <p class="mt-4 text-center text-sm">
           Already have an account?
           <a :href="links.login" class="underline-offset-4 hover:underline">Login</a>
@@ -45,4 +52,78 @@ layout: content
     </form>
   </section>
 </div>
+
+<script>
+document.getElementById('passkey-register').addEventListener('click', async function() {
+    var fullName = document.getElementById('full_name').value;
+    var username = document.getElementById('username').value;
+    var email = document.getElementById('email').value;
+
+    if (!fullName || !username || !email) {
+        alert('Please fill in Full Name, Username, and Email.');
+        return;
+    }
+
+    try {
+        var beginResp = await fetch('/api/passkey/register/begin', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({full_name: fullName, username: username, email: email})
+        });
+        if (!beginResp.ok) {
+            var errData = await beginResp.json();
+            throw new Error(errData.error || 'Failed to start passkey registration');
+        }
+        var beginData = await beginResp.json();
+        var opts = beginData.options;
+
+        opts.publicKey.challenge = base64urlDecode(opts.publicKey.challenge);
+        opts.publicKey.user.id = base64urlDecode(opts.publicKey.user.id);
+        if (opts.publicKey.excludeCredentials) {
+            for (var i = 0; i < opts.publicKey.excludeCredentials.length; i++) {
+                opts.publicKey.excludeCredentials[i].id = base64urlDecode(opts.publicKey.excludeCredentials[i].id);
+            }
+        }
+
+        var credential = await navigator.credentials.create(opts);
+
+        var finishResp = await fetch('/api/passkey/register/finish', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-Passkey-Token': beginData.token},
+            body: JSON.stringify({
+                id: credential.id,
+                rawId: base64urlEncode(credential.rawId),
+                type: credential.type,
+                response: {
+                    attestationObject: base64urlEncode(credential.response.attestationObject),
+                    clientDataJSON: base64urlEncode(credential.response.clientDataJSON)
+                }
+            })
+        });
+        if (!finishResp.ok) {
+            var errFinish = await finishResp.json();
+            throw new Error(errFinish.error || 'Failed to complete registration');
+        }
+        window.location.href = '/login';
+    } catch(e) {
+        if (e.name !== 'NotAllowedError') {
+            alert('Passkey registration failed: ' + e.message);
+        }
+    }
+});
+
+function base64urlDecode(s) {
+    s = s.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes.buffer;
+}
+
+function base64urlEncode(buf) {
+    var bytes = new Uint8Array(buf), bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+</script>
 

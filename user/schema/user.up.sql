@@ -51,3 +51,18 @@ CREATE TABLE IF NOT EXISTS user_session (
 
 CREATE INDEX IF NOT EXISTS idx_user_session_user_id ON user_session(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_session_expires_at ON user_session(expires_at);
+
+-- user_passkey: Stores WebAuthn passkey credentials for passwordless authentication
+CREATE TABLE IF NOT EXISTS user_passkey (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    credential_id BLOB NOT NULL,
+    public_key BLOB NOT NULL,
+    attestation_type TEXT NOT NULL DEFAULT '',
+    transport TEXT NOT NULL DEFAULT '[]',
+    sign_count INTEGER NOT NULL DEFAULT 0,
+    created_at DATETIME
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_passkey_user_id ON user_passkey(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_passkey_credential_id ON user_passkey(credential_id);
