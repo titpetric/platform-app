@@ -12,6 +12,10 @@ type AuthOptions struct {
 	Header     bool
 	HeaderName string
 
+	// Query if true will read QueryName for a JWT token from URL query params.
+	Query     bool
+	QueryName string
+
 	// This is a JWT specific option.
 	HeaderSigningKey string
 }

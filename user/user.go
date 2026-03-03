@@ -59,6 +59,16 @@ func AuthCookie() MiddlewareOption {
 	}
 }
 
+// AuthQuery enables JWT-based authentication via URL query parameter.
+// Useful for headless browsers that can't set Authorization headers.
+func AuthQuery(paramName string) MiddlewareOption {
+	return func(mw *Middleware) {
+		mw.options.Query = true
+		mw.options.QueryName = paramName
+		mw.options.HeaderSigningKey = SigningKey()
+	}
+}
+
 // GetSessionUser will return the user bound to the session.
 // If there's no active user bound, the return is nil, false.
 func GetSessionUser(ctx context.Context) (*model.User, bool) {

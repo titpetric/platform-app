@@ -42,6 +42,19 @@ func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (m *Middleware) serveHTTP(w http.ResponseWriter, r *http.Request) error {
 	if m.options.Header {
 		err := m.authorizeJWT(w, r)
+		if err == nil {
+			return nil
+		}
+		if !m.options.Cookie && !m.options.Query {
+			return err
+		}
+	}
+
+	if m.options.Query {
+		err := m.authorizeQuery(w, r)
+		if err == nil {
+			return nil
+		}
 		if !m.options.Cookie {
 			return err
 		}
@@ -91,6 +104,23 @@ func (m *Middleware) authorizeCookie(w http.ResponseWriter, r *http.Request) err
 
 func (m *Middleware) authorizeJWT(w http.ResponseWriter, r *http.Request) error {
 	token := r.Header.Get(m.options.HeaderName)
+	if token == "" {
+		return ErrLoginRequired
+	}
+
+	userID, err := auth.NewJWT(m.options.HeaderSigningKey).UserID(token)
+	if err != nil {
+		return err
+	}
+
+	if _, err := m.authorizeUser(w, r, userID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Middleware) authorizeQuery(w http.ResponseWriter, r *http.Request) error {
+	token := r.URL.Query().Get(m.options.QueryName)
 	if token == "" {
 		return ErrLoginRequired
 	}
