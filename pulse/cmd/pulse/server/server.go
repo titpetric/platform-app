@@ -10,7 +10,7 @@ import (
 	"github.com/titpetric/platform"
 
 	"github.com/titpetric/platform-app/pulse"
-	"github.com/titpetric/platform-app/pulse/view"
+	"github.com/titpetric/platform-app/pulse/config"
 	"github.com/titpetric/platform-app/user"
 )
 
@@ -44,7 +44,7 @@ func NewCommand() *cli.Command {
 // Run starts the pulse HTTP server.
 func Run(ctx context.Context, opts Options) error {
 	platformOpts := platform.NewOptions()
-	platformOpts.ThemeFS = view.FS
+	platformOpts.ConfigFS = config.ConfigFS()
 
 	svc := platform.New(platformOpts)
 
