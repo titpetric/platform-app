@@ -127,8 +127,8 @@ github.com/titpetric/platform v0.4.1 h1:t0p5J7zUsy1yevViwSZ7d5REErqTY4WIqvZ/q1aj
 github.com/titpetric/platform v0.4.1/go.mod h1:/k8YO53RBN2Pj1uUFsx0H1/oc7qEOE4v6MV4iIgpGxY=
 github.com/titpetric/vuego v0.8.7 h1:h1zbrYrWPLCNejC6wtNPlrOnKN7srBM3bc1fj5dwl+U=
 github.com/titpetric/vuego v0.8.7/go.mod h1:V61JppjhLoMlNldqpjhleFDMZCzF6WDnpleA6hAJm+k=
-github.com/titpetric/vuego-cli v0.0.10 h1:YLlfom5phUQjAy9RrDWyIb2wis0L4xcx92Zl3A2ijnc=
-github.com/titpetric/vuego-cli v0.0.10/go.mod h1:rfXpAOAcxAdRrdAEDdh5769fvuw5LXvtDJXXOYq56gc=
+github.com/titpetric/vuego-cli v0.0.11 h1:OFOfMW+RTPS14p84cSkA9zj88LG17ufkWVPnFQOvgPI=
+github.com/titpetric/vuego-cli v0.0.11/go.mod h1:+yw+mLTMmoAQgraNCkoQEAz6laOjtifwgCf1RELbJNE=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 go.opentelemetry.io/auto/sdk v1.2.1 h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=

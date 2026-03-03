@@ -2,9 +2,13 @@ package view
 
 import (
 	"embed"
+	"io/fs"
 )
 
-// FS contains embedded templates.
-//
 //go:embed *.vuego
-var FS embed.FS
+var templateFS embed.FS
+
+// Templates returns the embedded templates for the user module.
+func Templates() fs.FS {
+	return templateFS
+}

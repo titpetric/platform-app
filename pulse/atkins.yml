@@ -8,13 +8,12 @@ tasks:
   default:
     passthru: true
     steps:
-      - atkins go:fmt
+      - task: go:fmt
       - task: test:gotestsum
       - task: build
-      - atkins docker:build
-      - atkins compose:up
+      - task: docker:build
+      - task: compose:up
       - task: install
-
 
   test:run:
     env:
@@ -65,7 +64,3 @@ tasks:
       - cp -f ./bin/${{name}}-${{goos}}-$(dpkg --print-architecture) /usr/local/bin/${{name}}.new
       - mv -f /usr/local/bin/${{name}} /usr/local/bin/${{name}}.old
       - mv -f /usr/local/bin/${{name}}.new /usr/local/bin/${{name}}
-
-  up:
-    steps:
-      - docker compose up -d --remove-orphans

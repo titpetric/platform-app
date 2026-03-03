@@ -16,7 +16,7 @@ require (
 	github.com/titpetric/cli v0.2.6
 	github.com/titpetric/platform v0.4.1
 	github.com/titpetric/vuego v0.8.7
-	github.com/titpetric/vuego-cli v0.0.10
+	github.com/titpetric/vuego-cli v0.0.11
 	golang.org/x/crypto v0.48.0
 	golang.org/x/term v0.40.0
 	gopkg.in/yaml.v3 v3.0.1

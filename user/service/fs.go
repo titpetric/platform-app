@@ -15,6 +15,5 @@ import (
 func FS(ctx context.Context) fs.FS {
 	platformOpts := platform.OptionsFromContext(ctx)
 
-	// Build FS layers: theme (app-level) > views (module-level) > basecoat (base theme)
-	return vuego.NewOverlayFS(platformOpts.ConfigFS, view.FS, basecoat.FS)
+	return vuego.NewOverlayFS(platformOpts.ConfigFS, view.Templates(), basecoat.Templates())
 }

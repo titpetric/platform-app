@@ -15,7 +15,7 @@ import (
 )
 
 func newViewFS() fs.FS {
-	return vuego.NewOverlayFS(basecoat.FS, view.FS)
+	return vuego.NewOverlayFS(view.Templates(), basecoat.Templates())
 }
 
 func TestRendererLogin(t *testing.T) {
