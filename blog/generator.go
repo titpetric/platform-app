@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/titpetric/platform-app/blog/handlers"
 	"github.com/titpetric/platform-app/blog/markdown"
+	"github.com/titpetric/platform-app/blog/service/web"
 	"github.com/titpetric/platform-app/blog/view"
 )
 
@@ -42,10 +42,7 @@ func (g *Generator) Generate(ctx context.Context) error {
 	}
 
 	// Create handlers for rendering
-	h, err := handlers.NewHandlers(g.module.repository, g.module.themeFS)
-	if err != nil {
-		return fmt.Errorf("failed to create handlers: %w", err)
-	}
+	h := web.NewHandlers(g.module.repository, g.module.themeFS)
 
 	// Generate index page
 	fmt.Println("Generating index.html...")
@@ -98,7 +95,7 @@ func (g *Generator) Generate(ctx context.Context) error {
 }
 
 // generateIndexPage generates the index.html file
-func (g *Generator) generateIndexPage(ctx context.Context, h *handlers.Handlers) error {
+func (g *Generator) generateIndexPage(ctx context.Context, h *web.Handlers) error {
 	articles, err := h.Repository().GetArticles(ctx, 0, 5)
 	if err != nil {
 		return err
@@ -116,11 +113,11 @@ func (g *Generator) generateIndexPage(ctx context.Context, h *handlers.Handlers)
 }
 
 // generateStaticPages generates all .vuego pages from theme/pages directory recursively
-func (g *Generator) generateStaticPages(ctx context.Context, h *handlers.Handlers) error {
+func (g *Generator) generateStaticPages(ctx context.Context, h *web.Handlers) error {
 	return g.walkPages(ctx, h, "pages", "")
 }
 
-func (g *Generator) walkPages(ctx context.Context, h *handlers.Handlers, dirPath string, relPath string) error {
+func (g *Generator) walkPages(ctx context.Context, h *web.Handlers, dirPath string, relPath string) error {
 	entries, err := fs.ReadDir(g.module.themeFS, dirPath)
 	if err != nil {
 		return fmt.Errorf("failed to read pages directory %s: %w", dirPath, err)
@@ -213,7 +210,7 @@ func (g *Generator) walkPages(ctx context.Context, h *handlers.Handlers, dirPath
 }
 
 // generateArticlePage generates an individual article page
-func (g *Generator) generateArticlePage(ctx context.Context, h *handlers.Handlers, postData *view.PostData) error {
+func (g *Generator) generateArticlePage(ctx context.Context, h *web.Handlers, postData *view.PostData) error {
 	var buf bytes.Buffer
 	if err := h.Views().Post(postData).Render(ctx, &buf); err != nil {
 		return err
@@ -229,7 +226,7 @@ func (g *Generator) generateArticlePage(ctx context.Context, h *handlers.Handler
 }
 
 // generateFeed generates the feed.xml file
-func (g *Generator) generateFeed(ctx context.Context, h *handlers.Handlers) error {
+func (g *Generator) generateFeed(ctx context.Context, h *web.Handlers) error {
 	articles, err := h.Repository().GetArticles(ctx, 0, 20)
 	if err != nil {
 		return err

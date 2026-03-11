@@ -1,15 +1,14 @@
-package handlers
+package web
 
 import (
-	"io/fs"
 	"net/http"
 
 	"github.com/titpetric/platform"
 )
 
-// RegisterAssets registers static asset routes with the router
-func RegisterAssets(r platform.Router, themeFS fs.FS) {
-	assetFS := http.FileServer(http.FS(themeFS))
+// registerAssets registers static asset routes with the router
+func (h *Handlers) registerAssets(r platform.Router) {
+	assetFS := http.FileServer(http.FS(h.themeFS))
 
 	r.Group(func(r platform.Router) {
 		// CSS assets

@@ -15,8 +15,9 @@ import (
 	"github.com/titpetric/vuego"
 	yaml "gopkg.in/yaml.v3"
 
-	"github.com/titpetric/platform-app/blog/handlers"
 	"github.com/titpetric/platform-app/blog/model"
+	"github.com/titpetric/platform-app/blog/service/api"
+	"github.com/titpetric/platform-app/blog/service/web"
 	"github.com/titpetric/platform-app/blog/storage"
 )
 
@@ -62,8 +63,9 @@ func (m *Module) Name() string {
 
 // Mount registers the blog routes with the router
 func (m *Module) Mount(_ context.Context, r platform.Router) error {
-	// Register all routes (public, admin, API, HTML, assets)
-	return handlers.RegisterRoutes(r, m.repository, m.themeFS)
+	web.NewHandlers(m.repository, m.themeFS).Mount(r)
+	api.NewHandlers(m.repository).Mount(r)
+	return nil
 }
 
 // Start initializes the blog module by scanning markdown files and building the index
