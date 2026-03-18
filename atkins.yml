@@ -33,6 +33,7 @@ tasks:
     passthru: true
     steps:
       - gotestsum ./... -- -count 1
+      - go run ./internal/cmd/structurelint | tee docs/structurelint.md
 
   pre-commit:
     desc: "Pre-commit hook (fmt, test)"

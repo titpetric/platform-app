@@ -17,32 +17,19 @@ import (
 // Name is the command title.
 const Name = "Run the server process"
 
-// Options holds server command configuration.
-type Options struct{}
-
-// Bind registers server flags with the flag set.
-func (o *Options) Bind(flag *cli.FlagSet) {
-	// Server has no CLI options
-}
-
 // NewCommand creates a new server command.
 func NewCommand() *cli.Command {
-	var opts Options
-
 	return &cli.Command{
 		Name:  "server",
 		Title: Name,
-		Bind: func(flag *cli.FlagSet) {
-			opts.Bind(flag)
-		},
 		Run: func(ctx context.Context, args []string) error {
-			return Run(ctx, opts)
+			return Run(ctx)
 		},
 	}
 }
 
 // Run starts the pulse HTTP server.
-func Run(ctx context.Context, opts Options) error {
+func Run(ctx context.Context) error {
 	platformOpts := platform.NewOptions()
 	platformOpts.ConfigFS = config.ConfigFS()
 

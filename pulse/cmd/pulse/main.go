@@ -17,13 +17,20 @@ import (
 	"github.com/titpetric/platform-app/pulse/cmd/pulse/version"
 )
 
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
 // ExtendedProvider extends database providers with listing and registration.
 type ExtendedProvider interface {
 	List() []string
 	Register(string, string)
 }
 
-func main() {
+func run() error {
 	// Add default storage for pulse.
 	if val, ok := platform.Database.(ExtendedProvider); ok {
 		connectionList := val.List()
@@ -51,14 +58,5 @@ func main() {
 
 	app.DefaultCommand = "server"
 
-	// If no args provided, show help
-	if len(os.Args) == 1 {
-		app.Help()
-		return
-	}
-
-	if err := app.Run(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	return app.Run()
 }
