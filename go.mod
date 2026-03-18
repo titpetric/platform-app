@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/alecthomas/chroma/v2 v2.23.1
-	github.com/go-bridget/mig v0.3.7
+	github.com/go-bridget/mig v0.3.8
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-webauthn/webauthn v0.16.1
 	github.com/golang-jwt/jwt/v5 v5.3.1
@@ -14,7 +14,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.11.1
 	github.com/titpetric/cli v0.4.2
-	github.com/titpetric/platform v0.4.2
+	github.com/titpetric/platform v0.4.4
 	github.com/titpetric/vuego v0.9.1
 	github.com/titpetric/vuego-cli v0.0.18
 	golang.org/x/crypto v0.49.0
