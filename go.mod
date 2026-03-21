@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/alecthomas/chroma/v2 v2.23.1
-	github.com/go-bridget/mig v0.3.8
+	github.com/go-bridget/mig v0.3.9
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-webauthn/webauthn v0.16.1
 	github.com/golang-jwt/jwt/v5 v5.3.1
@@ -13,10 +13,10 @@ require (
 	github.com/qri-io/jsonschema v0.2.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.11.1
-	github.com/titpetric/cli v0.4.2
-	github.com/titpetric/platform v0.4.4
-	github.com/titpetric/vuego v0.9.1
-	github.com/titpetric/vuego-cli v0.0.18
+	github.com/titpetric/cli v0.4.3
+	github.com/titpetric/platform v0.4.5
+	github.com/titpetric/vuego v0.9.2
+	github.com/titpetric/vuego-cli v0.0.19
 	golang.org/x/crypto v0.49.0
 	golang.org/x/term v0.41.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -56,7 +56,7 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/riandyrn/otelchi v0.12.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/titpetric/lessgo v0.1.0 // indirect
+	github.com/titpetric/lessgo v0.1.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.42.0 // indirect
