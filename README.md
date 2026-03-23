@@ -1,4 +1,4 @@
-# Platform app
+# platform-app - An example platform application tree
 
 This is an example [titpetric/platform](https://github.com/titpetric/platform) application tree.
 
