@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -41,10 +40,13 @@ func (h *Handlers) Mount(r platform.Router) {
 
 // ListArticlesJSON returns a JSON list of all articles
 func (h *Handlers) ListArticlesJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.listArticlesJSON(w, r))
+}
+
+func (h *Handlers) listArticlesJSON(w http.ResponseWriter, r *http.Request) error {
 	articles, err := h.repository.GetArticles(r.Context(), 0, 9999)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to fetch articles: %v", err), http.StatusInternalServerError)
-		return
+		return ErrInternal("failed to fetch articles", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -58,40 +60,47 @@ func (h *Handlers) ListArticlesJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return ErrInternal("failed to encode response", err)
 	}
+	return nil
 }
 
 // GetArticleJSON returns a single article as JSON
 func (h *Handlers) GetArticleJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.getArticleJSON(w, r))
+}
+
+func (h *Handlers) getArticleJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("article not found: %v", err), http.StatusNotFound)
-		return
+		return ErrNotFound("article not found", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 
 	if err := json.NewEncoder(w).Encode(article); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return ErrInternal("failed to encode response", err)
 	}
+	return nil
 }
 
 // SearchArticlesJSON performs full-text search on articles
 func (h *Handlers) SearchArticlesJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.searchArticlesJSON(w, r))
+}
+
+func (h *Handlers) searchArticlesJSON(w http.ResponseWriter, r *http.Request) error {
 	query := r.URL.Query().Get("q")
 	if query == "" {
-		http.Error(w, "missing 'q' query parameter", http.StatusBadRequest)
-		return
+		return ErrBadRequest("missing 'q' query parameter", nil)
 	}
 
 	articles, err := h.repository.SearchArticles(r.Context(), query)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("search failed: %v", err), http.StatusInternalServerError)
-		return
+		return ErrInternal("search failed", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -104,12 +113,17 @@ func (h *Handlers) SearchArticlesJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(result); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return ErrInternal("failed to encode response", err)
 	}
+	return nil
 }
 
 // ListArticlesAdminJSON returns a paginated JSON list of articles for admin
 func (h *Handlers) ListArticlesAdminJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.listArticlesAdminJSON(w, r))
+}
+
+func (h *Handlers) listArticlesAdminJSON(w http.ResponseWriter, r *http.Request) error {
 	page := r.URL.Query().Get("page")
 	pageSize := r.URL.Query().Get("pageSize")
 
@@ -137,15 +151,13 @@ func (h *Handlers) ListArticlesAdminJSON(w http.ResponseWriter, r *http.Request)
 	// Get total count
 	total, err := h.repository.CountArticles(r.Context())
 	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to count articles: %v", err), http.StatusInternalServerError)
-		return
+		return ErrInternal("failed to count articles", err)
 	}
 
 	// Get paginated articles
 	articles, err := h.repository.GetArticles(r.Context(), offset, pageSz)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to fetch articles: %v", err), http.StatusInternalServerError)
-		return
+		return ErrInternal("failed to fetch articles", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -160,28 +172,32 @@ func (h *Handlers) ListArticlesAdminJSON(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return ErrInternal("failed to encode response", err)
 	}
+	return nil
 }
 
 // GetArticleAdminJSON returns a single article as JSON for admin
 func (h *Handlers) GetArticleAdminJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.getArticleAdminJSON(w, r))
+}
+
+func (h *Handlers) getArticleAdminJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := chi.URLParam(r, "slug")
 	if slug == "" {
-		http.Error(w, "slug parameter is required", http.StatusBadRequest)
-		return
+		return ErrBadRequest("slug parameter is required", nil)
 	}
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("article not found: %v", err), http.StatusNotFound)
-		return
+		return ErrNotFound("article not found", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-cache")
 
 	if err := json.NewEncoder(w).Encode(article); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return ErrInternal("failed to encode response", err)
 	}
+	return nil
 }
