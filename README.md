@@ -64,7 +64,6 @@ This document serves as a structural guide for the repository:
 
 - `./docker` - docker build environments for apps
 - `./docs` - some generated docs, this structure guide
-- `./cmd` - the initial app entrypoint (deprecated)
 
 No other root packages except the modules are expected.
 

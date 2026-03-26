@@ -7,7 +7,7 @@ import (
 	"context"
 	"testing"
 
-	_ "github.com/titpetric/platform-app/autoload"
+	_ "github.com/titpetric/platform/pkg/drivers"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"

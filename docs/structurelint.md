@@ -1,6 +1,6 @@
 | folder   | README.md | docs | compose.yml | docker | cmd/*          | config | model | schema | storage | service | service/*               | view | *                     |
 | -------- | --------- | ---- | ----------- | ------ | -------------- | ------ | ----- | ------ | ------- | ------- | ----------------------- | ---- | --------------------- |
-| blog     | [x]       | [x]  | [ ]         | [ ]    | blog, generate | [ ]    | [x]   | [x]    | [x]     | [x]     | api, web                | [x]  | data, markdown, theme |
+| blog     | [x]       | [x]  | [x]         | [x]    | blog, generate | [x]    | [x]   | [x]    | [x]     | [x]     | admin, api, web         | [x]  | data, markdown, theme |
 | cms      | [ ]       | [ ]  | [ ]         | [ ]    |                | [ ]    | [ ]   | [x]    | [ ]     | [ ]     |                         | [ ]  | templates, testdata   |
 | daily    | [ ]       | [x]  | [ ]         | [ ]    |                | [ ]    | [x]   | [x]    | [x]     | [ ]     |                         | [x]  | templates             |
 | email    | [x]       | [x]  | [ ]         | [ ]    |                | [ ]    | [x]   | [x]    | [x]     | [ ]     |                         | [ ]  | smtp                  |
