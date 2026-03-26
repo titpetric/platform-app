@@ -20,6 +20,7 @@ import (
 	"github.com/titpetric/platform-app/blog/service/api"
 	"github.com/titpetric/platform-app/blog/service/web"
 	"github.com/titpetric/platform-app/blog/storage"
+	"github.com/titpetric/platform-app/blog/theme"
 )
 
 // Module implements the blog module for the platform.
@@ -44,13 +45,10 @@ type Module struct {
 
 // NewModule creates a new blog module instance.
 func NewModule() *Module {
-	// Sub into the theme directory since embed.FS includes the directory name
-	themeSub, _ := fs.Sub(themeFS, "theme")
-
 	// Check if local theme directory exists
-	var overlay fs.FS = themeSub
+	var overlay fs.FS = theme.Templates()
 	if _, err := os.Stat("theme"); err == nil {
-		overlay = vuego.NewOverlayFS(os.DirFS("theme"), themeSub)
+		overlay = vuego.NewOverlayFS(os.DirFS("theme"), theme.Templates())
 	}
 
 	return &Module{
