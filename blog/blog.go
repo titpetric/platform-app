@@ -49,29 +49,23 @@ type Module struct {
 // NewModule creates a new blog module instance.
 func NewModule() *Module {
 	// Build layered FS: local theme > config data > embedded theme > user views > basecoat
-	var overlay fs.FS
+	overlayfs := []fs.FS{
+		config.ConfigFS(),
+		theme.Templates(),
+		userview.Templates(),
+		basecoat.Templates(),
+	}
 
 	// Check if local theme directory exists (for development)
+	// TODO: check theme is a dir
+	var customFS fs.FS
 	if _, err := os.Stat("theme"); err == nil {
-		overlay = vuego.NewOverlayFS(
-			os.DirFS("theme"),
-			config.ConfigFS(),
-			theme.Templates(),
-			userview.Templates(),
-			basecoat.Templates(),
-		)
-	} else {
-		overlay = vuego.NewOverlayFS(
-			config.ConfigFS(),
-			theme.Templates(),
-			userview.Templates(),
-			basecoat.Templates(),
-		)
+		customFS = os.DirFS("theme")
 	}
 
 	return &Module{
 		dataDir:  "./src",
-		themeFS:  overlay,
+		themeFS:  vuego.NewOverlayFS(customFS, overlayfs...),
 		articles: make(map[string]*model.Article),
 	}
 }

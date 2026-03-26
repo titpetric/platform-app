@@ -125,8 +125,6 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 }
 
 // Article generated for db table `article`.
-//
-// Article.
 type Article struct {
 	// ID
 	ID string `db:"id" json:"id"`
@@ -226,8 +224,6 @@ var ArticleFields = []string{"id", "slug", "title", "filename", "description", "
 var ArticlePrimaryFields = []string{"id"}
 
 // Migrations generated for db table `migrations`.
-//
-// Migrations.
 type Migrations struct {
 	// Project
 	Project string `db:"project" json:"project"`
