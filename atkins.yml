@@ -18,6 +18,8 @@ tasks:
     steps:
       - atkins $HOME/.atkins/skills/schema.yml -w ./user migrate
       - atkins $HOME/.atkins/skills/schema.yml -w ./pulse migrate
+      - atkins $HOME/.atkins/skills/schema.yml -w ./daily migrate
+      - atkins $HOME/.atkins/skills/schema.yml -w ./blog migrate
 
   fmt:
     desc: "Source code formatting"

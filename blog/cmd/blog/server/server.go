@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/titpetric/cli"
 	"github.com/titpetric/platform"
+	"github.com/titpetric/vuego"
 
 	"github.com/titpetric/platform-app/blog"
 	"github.com/titpetric/platform-app/blog/config"
@@ -31,7 +32,7 @@ func NewCommand() *cli.Command {
 // Run starts the blog HTTP server.
 func Run(ctx context.Context) error {
 	platformOpts := platform.NewOptions()
-	platformOpts.ConfigFS = config.ConfigFS()
+	platformOpts.ConfigFS = vuego.NewOverlayFS(config.ConfigFS())
 
 	svc := platform.New(platformOpts)
 

@@ -11,10 +11,13 @@ type Views struct {
 	Loader *Loader
 }
 
+// AdminViews provides views for the admin panel.
+type AdminViews Views
+
 // NewViews creates a view object. All views are implemented here.
 func NewViews(filesystem fs.FS) *Views {
 	return &Views{
-		Loader: NewLoader(vuego.NewFS(filesystem, vuego.WithLessProcessor(), vuego.WithFuncs(Funcs))),
+		Loader: NewLoader(vuego.NewFS(filesystem, vuego.WithFuncs(Funcs))),
 	}
 }
 
@@ -33,17 +36,24 @@ func (v *Views) Post(data *PostData) vuego.Template {
 	return v.Loader.Load("layouts/post.vuego").Fill(data.Map())
 }
 
-// AdminDashboard renders the admin dashboard page.
-func (v *Views) AdminDashboard(data *AdminDashboardData) vuego.Template {
-	return v.Loader.Load("admin/dashboard.vuego").Fill(data.Map())
+// NewAdminViews creates a view object. All views are implemented here.
+func NewAdminViews(filesystem fs.FS) *AdminViews {
+	return &AdminViews{
+		Loader: NewLoader(vuego.NewFS(filesystem, vuego.WithFuncs(Funcs))),
+	}
 }
 
-// AdminList renders the admin article list page.
-func (v *Views) AdminList(data *AdminListData) vuego.Template {
-	return v.Loader.Load("admin/list.vuego").Fill(data.Map())
+// Dashboard renders the admin dashboard page.
+func (v *AdminViews) Dashboard(data *AdminDashboardData) vuego.Template {
+	return v.Loader.Load("dashboard.vuego").Fill(data.Map())
 }
 
-// AdminEdit renders the admin article edit page.
-func (v *Views) AdminEdit(data *AdminEditData) vuego.Template {
-	return v.Loader.Load("admin/edit.vuego").Fill(data.Map())
+// List renders the admin article list page.
+func (v *AdminViews) List(data *AdminListData) vuego.Template {
+	return v.Loader.Load("list.vuego").Fill(data.Map())
+}
+
+// Edit renders the admin article edit page.
+func (v *AdminViews) Edit(data *AdminEditData) vuego.Template {
+	return v.Loader.Load("edit.vuego").Fill(data.Map())
 }

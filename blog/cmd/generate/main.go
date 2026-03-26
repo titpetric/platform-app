@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/titpetric/platform-app/blog"
+	"github.com/titpetric/platform-app/blog/service"
 	"github.com/titpetric/platform-app/blog/storage"
 )
 
@@ -33,7 +33,7 @@ func generate(ctx context.Context, outputDir string) error {
 	}
 
 	// Create module and load articles
-	module := blog.NewModule()
+	module := service.NewBlogModule()
 
 	// Create storage and schema
 	repo, err := storage.NewStorage(ctx, db)
@@ -52,7 +52,7 @@ func generate(ctx context.Context, outputDir string) error {
 	fmt.Printf("Scanned %d markdown files\n", count)
 
 	// Generate static files
-	gen := blog.NewGenerator(module, outputDir)
+	gen := service.NewGenerator(module, outputDir)
 	if err := gen.Generate(ctx); err != nil {
 		return fmt.Errorf("generation failed: %w", err)
 	}

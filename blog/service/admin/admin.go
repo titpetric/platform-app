@@ -8,6 +8,8 @@ import (
 	"strconv"
 
 	"github.com/titpetric/platform"
+	"github.com/titpetric/vuego"
+	"github.com/titpetric/vuego-cli/basecoat"
 
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/storage"
@@ -18,7 +20,7 @@ import (
 type Handlers struct {
 	repository *storage.Storage
 	contentFS  *storage.GitFS
-	views      *view.Views
+	views      *view.AdminViews
 	themeFS    fs.FS
 }
 
@@ -27,8 +29,8 @@ func NewHandlers(repo *storage.Storage, contentFS *storage.GitFS, themeFS fs.FS)
 	return &Handlers{
 		repository: repo,
 		contentFS:  contentFS,
-		views:      view.NewViews(themeFS),
-		themeFS:    themeFS,
+		views:      view.NewAdminViews(themeFS),
+		themeFS:    vuego.NewOverlayFS(themeFS, basecoat.Templates()),
 	}
 }
 
@@ -36,23 +38,23 @@ func NewHandlers(repo *storage.Storage, contentFS *storage.GitFS, themeFS fs.FS)
 func (h *Handlers) Mount(r platform.Router) {
 	r.Group(func(r platform.Router) {
 		// Admin HTML Routes
-		r.Get("/admin/blog", h.DashboardHTML)
-		r.Get("/admin/blog/drafts", h.ListDraftsHTML)
-		r.Get("/admin/blog/scheduled", h.ListScheduledHTML)
-		r.Get("/admin/blog/published", h.ListPublishedHTML)
-		r.Get("/admin/blog/articles/{slug}", h.EditArticleHTML)
-		r.Get("/admin/blog/articles/{slug}/edit", h.EditArticleHTML)
-		r.Get("/admin/blog/new", h.NewArticleHTML)
+		r.Get("/admin/", h.DashboardHTML)
+		r.Get("/admin/drafts", h.ListDraftsHTML)
+		r.Get("/admin/scheduled", h.ListScheduledHTML)
+		r.Get("/admin/published", h.ListPublishedHTML)
+		r.Get("/admin/articles/{slug}", h.EditArticleHTML)
+		r.Get("/admin/articles/{slug}/edit", h.EditArticleHTML)
+		r.Get("/admin/new", h.NewArticleHTML)
 
 		// Admin JSON API Routes
-		r.Get("/admin/blog/drafts.json", h.ListDraftsJSON)
-		r.Get("/admin/blog/scheduled.json", h.ListScheduledJSON)
-		r.Get("/admin/blog/published.json", h.ListPublishedJSON)
-		r.Get("/admin/blog/articles/{slug}.json", h.GetArticleJSON)
+		r.Get("/admin/drafts.json", h.ListDraftsJSON)
+		r.Get("/admin/scheduled.json", h.ListScheduledJSON)
+		r.Get("/admin/published.json", h.ListPublishedJSON)
+		r.Get("/admin/articles/{slug}.json", h.GetArticleJSON)
 
-		r.Post("/admin/blog/articles", h.CreateArticleJSON)
-		r.Put("/admin/blog/articles/{slug}", h.UpdateArticleJSON)
-		r.Delete("/admin/blog/articles/{slug}", h.DeleteArticleJSON)
+		r.Post("/admin/articles", h.CreateArticleJSON)
+		r.Put("/admin/articles/{slug}", h.UpdateArticleJSON)
+		r.Delete("/admin/articles/{slug}", h.DeleteArticleJSON)
 	})
 }
 
@@ -82,7 +84,7 @@ func (h *Handlers) dashboardHTML(w http.ResponseWriter, r *http.Request) error {
 	data := view.NewAdminDashboardData(drafts, scheduled, published)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.views.AdminDashboard(data).Render(ctx, w); err != nil {
+	if err := h.views.Dashboard(data).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -111,7 +113,7 @@ func (h *Handlers) listDraftsHTML(w http.ResponseWriter, r *http.Request) error 
 	data := view.NewAdminListData("Drafts", articles, total, page, pageSize)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.views.AdminList(data).Render(ctx, w); err != nil {
+	if err := h.views.List(data).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -140,7 +142,7 @@ func (h *Handlers) listScheduledHTML(w http.ResponseWriter, r *http.Request) err
 	data := view.NewAdminListData("Scheduled", articles, total, page, pageSize)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.views.AdminList(data).Render(ctx, w); err != nil {
+	if err := h.views.List(data).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -169,7 +171,7 @@ func (h *Handlers) listPublishedHTML(w http.ResponseWriter, r *http.Request) err
 	data := view.NewAdminListData("Published", articles, total, page, pageSize)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.views.AdminList(data).Render(ctx, w); err != nil {
+	if err := h.views.List(data).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -198,7 +200,7 @@ func (h *Handlers) editArticleHTML(w http.ResponseWriter, r *http.Request) error
 	data := view.NewAdminEditData(article, string(content))
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.views.AdminEdit(data).Render(ctx, w); err != nil {
+	if err := h.views.Edit(data).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -213,7 +215,7 @@ func (h *Handlers) newArticleHTML(w http.ResponseWriter, r *http.Request) error 
 	data := view.NewAdminEditData(nil, "")
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.views.AdminEdit(data).Render(r.Context(), w); err != nil {
+	if err := h.views.Edit(data).Render(r.Context(), w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil

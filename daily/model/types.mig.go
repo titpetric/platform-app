@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// QueryOption is implemented by each data model type.
 type QueryOption interface {
 	WithTable(name string) QueryOption
 	WithColumns(cols []string) QueryOption
@@ -17,6 +18,7 @@ type QueryOption interface {
 	WithStatement(stmt string) QueryOption
 }
 
+// QueryConfig is a function-chaining SQL statement type.
 type QueryConfig struct {
 	Table       string
 	Columns     []string
@@ -27,61 +29,74 @@ type QueryConfig struct {
 	Statement   string
 }
 
+// WithTable will set the table name for the query.
 func (q *QueryConfig) WithTable(name string) QueryOption {
 	q.Table = name
 	return q
 }
 
+// WithColumns will set the columns to use for the query.
 func (q *QueryConfig) WithColumns(cols []string) QueryOption {
 	q.Columns = cols
 	return q
 }
 
+// WithWhere will set the where condition for the query.
 func (q *QueryConfig) WithWhere(clause string) QueryOption {
 	q.Where = clause
 	return q
 }
 
+// WithOrderBy will set the order by clause for the query.
 func (q *QueryConfig) WithOrderBy(clause string) QueryOption {
 	q.OrderBy = clause
 	return q
 }
 
+// WithLimit will set the limit clause parameters for the query.
 func (q *QueryConfig) WithLimit(start, offset int) QueryOption {
 	q.LimitStart = start
 	q.LimitOffset = offset
 	return q
 }
 
+// WithStatement will change the statement for the query.
 func (q *QueryConfig) WithStatement(stmt string) QueryOption {
 	q.Statement = stmt
 	return q
 }
 
+// WithTable will set the table name for the query.
 func WithTable(name string) QueryOption {
 	return &QueryConfig{Table: name}
 }
 
+// WithColumns will set the columns to use for the query.
 func WithColumns(cols []string) QueryOption {
 	return &QueryConfig{Columns: cols}
 }
 
+// WithWhere will set the where condition for the query.
 func WithWhere(clause string) QueryOption {
 	return &QueryConfig{Where: clause}
 }
 
+// WithOrderBy will set the order by clause for the query.
 func WithOrderBy(clause string) QueryOption {
 	return &QueryConfig{OrderBy: clause}
 }
 
+// WithLimit will set the limit clause parameters for the query.
 func WithLimit(start, offset int) QueryOption {
 	return &QueryConfig{LimitStart: start, LimitOffset: offset}
 }
 
+// WithStatement will change the statement for the query.
 func WithStatement(stmt string) QueryOption {
 	return &QueryConfig{Statement: stmt}
 }
 
+// Apply will use passed query options to populate the query.
 func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 	cfg := *q
 	for _, opt := range opts {
@@ -112,16 +127,16 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 // Migrations generated for db table `migrations`.
 type Migrations struct {
 	// Project
-	Project string `db:"project"`
+	Project string `db:"project" json:"project"`
 
 	// Filename
-	Filename string `db:"filename"`
+	Filename string `db:"filename" json:"filename"`
 
 	// Statement Index
-	StatementIndex int64 `db:"statement_index"`
+	StatementIndex int64 `db:"statement_index" json:"statement_index"`
 
 	// Status
-	Status string `db:"status"`
+	Status string `db:"status" json:"status"`
 }
 
 // GetProject will return the value of Project.
@@ -143,30 +158,30 @@ const MigrationsTable = "`migrations`"
 var MigrationsFields = []string{"project", "filename", "statement_index", "status"}
 
 // MigrationsPrimaryFields are the primary key fields in the DB table.
-var MigrationsPrimaryFields = []string{"project"}
+var MigrationsPrimaryFields = []string{"project", "filename"}
 
 // Todo generated for db table `todo`.
 type Todo struct {
 	// ID
-	ID string `db:"id"`
+	ID string `db:"id" json:"id"`
 
 	// User ID
-	UserID string `db:"user_id"`
+	UserID string `db:"user_id" json:"user_id"`
 
 	// Title
-	Title string `db:"title"`
+	Title string `db:"title" json:"title"`
 
 	// Completed
-	Completed bool `db:"completed"`
+	Completed bool `db:"completed" json:"completed"`
 
 	// Created At
-	CreatedAt *time.Time `db:"created_at"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
 
 	// Updated At
-	UpdatedAt *time.Time `db:"updated_at"`
+	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
 
 	// Deleted At
-	DeletedAt *time.Time `db:"deleted_at"`
+	DeletedAt *time.Time `db:"deleted_at" json:"deleted_at"`
 }
 
 // GetID will return the value of ID.
@@ -208,6 +223,7 @@ var TodoFields = []string{"id", "user_id", "title", "completed", "created_at", "
 // TodoPrimaryFields are the primary key fields in the DB table.
 var TodoPrimaryFields = []string{"id"}
 
+// Insert starts building an INSERT INTO query.
 func (m *Migrations) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: MigrationsTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := MigrationsFields
@@ -217,6 +233,7 @@ func (m *Migrations) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (m *Migrations) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
 	cols := "*"
@@ -236,6 +253,7 @@ func (m *Migrations) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (m *Migrations) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
 	cols := MigrationsFields
@@ -256,6 +274,7 @@ func (m *Migrations) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (m *Migrations) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
@@ -265,6 +284,7 @@ func (m *Migrations) Delete(opts ...QueryOption) string {
 	return query
 }
 
+// Insert starts building an INSERT INTO query.
 func (t *Todo) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: TodoTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := TodoFields
@@ -274,6 +294,7 @@ func (t *Todo) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (t *Todo) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: TodoTable}).Apply(opts...)
 	cols := "*"
@@ -293,6 +314,7 @@ func (t *Todo) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (t *Todo) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: TodoTable}).Apply(opts...)
 	cols := TodoFields
@@ -313,6 +335,7 @@ func (t *Todo) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (t *Todo) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: TodoTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)

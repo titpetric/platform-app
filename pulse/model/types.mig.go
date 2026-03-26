@@ -125,8 +125,6 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 }
 
 // Migrations generated for db table `migrations`.
-//
-// Migrations.
 type Migrations struct {
 	// Project
 	Project string `db:"project" json:"project"`

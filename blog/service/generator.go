@@ -1,4 +1,4 @@
-package blog
+package service
 
 import (
 	"bytes"
@@ -9,6 +9,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/titpetric/vuego"
+
+	"github.com/titpetric/platform-app/blog/config"
 	"github.com/titpetric/platform-app/blog/markdown"
 	"github.com/titpetric/platform-app/blog/service/web"
 	"github.com/titpetric/platform-app/blog/view"
@@ -16,14 +19,23 @@ import (
 
 // Generator generates static HTML files from blog content.
 type Generator struct {
-	module    *Module
+	module    *BlogModule
 	outputDir string
+	themeFS   fs.FS
 }
 
 // NewGenerator creates a new Generator instance.
-func NewGenerator(m *Module, outputDir string) *Generator {
+func NewGenerator(m *BlogModule, outputDir string) *Generator {
+	var themeFS fs.FS
+	if _, err := os.Stat("theme"); err == nil {
+		themeFS = os.DirFS("theme")
+	} else {
+		themeFS = config.ConfigFS()
+	}
+
 	return &Generator{
 		module:    m,
+		themeFS:   vuego.NewOverlayFS(themeFS, view.Templates()),
 		outputDir: outputDir,
 	}
 }
@@ -42,7 +54,7 @@ func (g *Generator) Generate(ctx context.Context) error {
 	}
 
 	// Create handlers for rendering
-	h := web.NewHandlers(g.module.repository, g.module.themeFS)
+	h := web.NewHandlers(g.module.repository, g.themeFS)
 
 	// Generate index page
 	fmt.Println("Generating index.html...")
@@ -118,7 +130,7 @@ func (g *Generator) generateStaticPages(ctx context.Context, h *web.Handlers) er
 }
 
 func (g *Generator) walkPages(ctx context.Context, h *web.Handlers, dirPath string, relPath string) error {
-	entries, err := fs.ReadDir(g.module.themeFS, dirPath)
+	entries, err := fs.ReadDir(g.themeFS, dirPath)
 	if err != nil {
 		return fmt.Errorf("failed to read pages directory %s: %w", dirPath, err)
 	}
@@ -260,7 +272,7 @@ func (g *Generator) copyAssets() error {
 
 // copyEmbeddedAssets copies assets from the embedded theme filesystem.
 func (g *Generator) copyEmbeddedAssets(assetsDestDir string) error {
-	return fs.WalkDir(g.module.themeFS, "assets", func(path string, d fs.DirEntry, err error) error {
+	return fs.WalkDir(g.themeFS, "assets", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -278,7 +290,7 @@ func (g *Generator) copyEmbeddedAssets(assetsDestDir string) error {
 		}
 
 		// Read from embedded FS and write to dest
-		data, err := fs.ReadFile(g.module.themeFS, path)
+		data, err := fs.ReadFile(g.themeFS, path)
 		if err != nil {
 			return err
 		}

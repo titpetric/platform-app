@@ -16,6 +16,11 @@ func (h *Handlers) registerAssets(r platform.Router) {
 			assetFS.ServeHTTP(w, r)
 		})
 
+		// JS assets
+		r.Get("/assets/js/*", func(w http.ResponseWriter, r *http.Request) {
+			assetFS.ServeHTTP(w, r)
+		})
+
 		// Font assets
 		r.Get("/assets/fonts/*", func(w http.ResponseWriter, r *http.Request) {
 			assetFS.ServeHTTP(w, r)

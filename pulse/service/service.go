@@ -11,9 +11,6 @@ import (
 	userstorage "github.com/titpetric/platform-app/user/storage"
 )
 
-// Name is the service module name.
-const Name = "pulse"
-
 // PulseModule is the pulse platform module.
 type PulseModule struct {
 	platform.UnimplementedModule
