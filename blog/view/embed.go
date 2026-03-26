@@ -1,4 +1,4 @@
-package theme
+package view
 
 import (
 	"embed"

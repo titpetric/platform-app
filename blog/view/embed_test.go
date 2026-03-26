@@ -1,4 +1,4 @@
-package theme_test
+package view_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/titpetric/platform-app/blog/theme"
+	"github.com/titpetric/platform-app/blog/view"
 )
 
 func PrintTree(fsys fs.FS) error {
@@ -36,5 +36,5 @@ func PrintTree(fsys fs.FS) error {
 }
 
 func TestFS(t *testing.T) {
-	PrintTree(theme.Templates())
+	PrintTree(view.Templates())
 }
