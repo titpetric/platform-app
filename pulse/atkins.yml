@@ -24,8 +24,6 @@ tasks:
         USER_JWT_SIGNING_KEY: '12345678'
         PULSE_AUTH: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzAxNDQ1NzIsInVzZXJfaWQiOiIwMUtHRlJRR0pKSlg0V1E3MTFGUEJOSlQ0RCJ9.PZSqFP9HwcMmaPFKir_n_EKfoHS9lXJ3s1wSceedhco
     cmds:
-      - cmd: env | egrep '(pulse|platform|user)_' -i
-        passthru: true
       - cmd: go run ${{build.path}} record --duration 1s
         interactive: true
 
