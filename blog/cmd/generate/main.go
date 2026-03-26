@@ -13,18 +13,17 @@ import (
 
 func main() {
 	outputDir := flag.String("output", "public", "Output directory for generated files")
-	dataDir := flag.String("data", "data", "Data directory for markdown files")
 	flag.Parse()
 
 	ctx := context.Background()
 
 	// Initialize platform (database only)
-	if err := generate(ctx, *dataDir, *outputDir); err != nil {
+	if err := generate(ctx, *outputDir); err != nil {
 		log.Fatalf("generation failed: %v", err)
 	}
 }
 
-func generate(ctx context.Context, dataDir, outputDir string) error {
+func generate(ctx context.Context, outputDir string) error {
 	start := time.Now()
 
 	// Get database from platform
@@ -34,7 +33,7 @@ func generate(ctx context.Context, dataDir, outputDir string) error {
 	}
 
 	// Create module and load articles
-	module := blog.NewModule(dataDir)
+	module := blog.NewModule()
 
 	// Create storage and schema
 	repo, err := storage.NewStorage(ctx, db)
