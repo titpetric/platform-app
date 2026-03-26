@@ -1,0 +1,9 @@
+ARG DOCKER_IMAGE
+
+FROM ${DOCKER_IMAGE}
+
+ARG NAME
+
+RUN /usr/local/bin/$NAME --help
+
+CMD ["--help"]

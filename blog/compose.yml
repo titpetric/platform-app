@@ -1,0 +1,17 @@
+services:
+  blog:
+    image: titpetric/blog
+    restart: always
+    networks:
+      - projects-ingress
+    environment:
+      - USER_JWT_SIGNING_KEY=change-me
+    volumes:
+      - $PWD/docker/data:/app
+    labels:
+      caddy: blog.localhost
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+
+networks:
+  projects-ingress:
+    external: true

@@ -1,0 +1,53 @@
+vars:
+  name: $(basename $(realpath -s .))
+  build:
+    path: ./cmd/blog
+    goarch: [amd64]
+
+tasks:
+  default:
+    passthru: true
+    steps:
+      - task: go:fmt
+      - task: test:gotestsum
+      - task: build
+      - task: docker:build
+      - task: docker:test
+      - task: compose:up
+
+  test:run:
+    env:
+      include: .env.server
+      vars:
+        PLATFORM_SERVER_ADDR: :3000
+        PLATFORM_DB_DEFAULT: 'sqlite://:memory:'
+        USER_JWT_SIGNING_KEY: '12345678'
+    cmds:
+      - cmd: go run ${{build.path}} record --duration 1s
+        interactive: true
+
+  test:
+    cmds:
+      - task: test:gotestsum
+
+  test:gotestsum:
+    passthru: true
+    tty: true
+    env:
+      vars:
+        CGO_ENABLED: 0
+    cmds:
+      - gotestsum ./...
+
+  build:
+    desc: "Build"
+    vars:
+      goos: linux
+    steps:
+      - for: goarch in ${{build.goarch}}
+        env:
+          vars:
+            CGO_ENABLED: 0
+            GOOS: ${{ goos }}
+            GOARCH: ${{ goarch }}
+        run: go build -trimpath -ldflags="-X 'main.Version=${GIT_TAG}' -X 'main.Commit=${GIT_COMMIT}' -X 'main.CommitTime=${GIT_TIME}' -X 'main.Branch=${GIT_BRANCH}' -X 'main.Modified=${GIT_MODIFIED}'" -o bin/${{name}}-${GOOS}-${GOARCH} ${{build.path}}
