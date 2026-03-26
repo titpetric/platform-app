@@ -506,3 +506,133 @@ func BenchmarkSearchArticles(b *testing.B) {
 		storage.SearchArticles(ctx, "test")
 	}
 }
+
+// TestGetDraftArticles tests retrieving draft articles
+func TestGetDraftArticles(t *testing.T) {
+	db := setupTestDB(t)
+
+	storage, err := NewStorage(t.Context(), db)
+	require.NoError(t, err)
+	ctx := t.Context()
+
+	// Insert draft and published articles
+	draft := &model.Article{
+		ID:    "draft-1",
+		Slug:  "draft-article",
+		Title: "Draft Article",
+		Draft: 1,
+	}
+	published := &model.Article{
+		ID:    "pub-1",
+		Slug:  "published-article",
+		Title: "Published Article",
+		Draft: 0,
+	}
+
+	storage.InsertArticle(ctx, draft)
+	storage.InsertArticle(ctx, published)
+
+	// Get drafts
+	drafts, err := storage.GetDraftArticles(ctx, 0, 10)
+	require.NoError(t, err)
+	require.Len(t, drafts, 1)
+	require.Equal(t, "draft-article", drafts[0].Slug)
+}
+
+// TestCountDraftArticles tests counting draft articles
+func TestCountDraftArticles(t *testing.T) {
+	db := setupTestDB(t)
+
+	storage, err := NewStorage(t.Context(), db)
+	require.NoError(t, err)
+	ctx := t.Context()
+
+	// Insert draft articles
+	for i := 0; i < 3; i++ {
+		draft := &model.Article{
+			ID:    "draft-count-" + string(rune(i)),
+			Slug:  "draft-" + string(rune(i)),
+			Title: "Draft",
+			Draft: 1,
+		}
+		storage.InsertArticle(ctx, draft)
+	}
+
+	count, err := storage.CountDraftArticles(ctx)
+	require.NoError(t, err)
+	require.Equal(t, 3, count)
+}
+
+// TestUpdateArticle tests updating an existing article
+func TestUpdateArticle(t *testing.T) {
+	db := setupTestDB(t)
+
+	storage, err := NewStorage(t.Context(), db)
+	require.NoError(t, err)
+	ctx := t.Context()
+
+	// Insert article
+	article := &model.Article{
+		ID:    "update-test",
+		Slug:  "update-me",
+		Title: "Original",
+	}
+	storage.InsertArticle(ctx, article)
+
+	// Update title
+	article.Title = "Updated"
+	err = storage.UpdateArticle(ctx, article)
+	require.NoError(t, err)
+
+	// Verify
+	retrieved, err := storage.GetArticleBySlug(ctx, "update-me")
+	require.NoError(t, err)
+	require.Equal(t, "Updated", retrieved.Title)
+}
+
+// TestDeleteArticle tests deleting an article
+func TestDeleteArticle(t *testing.T) {
+	db := setupTestDB(t)
+
+	storage, err := NewStorage(t.Context(), db)
+	require.NoError(t, err)
+	ctx := t.Context()
+
+	// Insert article
+	article := &model.Article{
+		ID:    "delete-test",
+		Slug:  "delete-me",
+		Title: "Delete Me",
+	}
+	storage.InsertArticle(ctx, article)
+
+	// Delete
+	err = storage.DeleteArticle(ctx, "delete-me")
+	require.NoError(t, err)
+
+	// Verify deleted
+	_, err = storage.GetArticleBySlug(ctx, "delete-me")
+	require.Error(t, err)
+}
+
+// TestGetArticleByID tests retrieving an article by ID
+func TestGetArticleByID(t *testing.T) {
+	db := setupTestDB(t)
+
+	storage, err := NewStorage(t.Context(), db)
+	require.NoError(t, err)
+	ctx := t.Context()
+
+	// Insert article
+	article := &model.Article{
+		ID:    "id-test-123",
+		Slug:  "id-test",
+		Title: "ID Test",
+	}
+	storage.InsertArticle(ctx, article)
+
+	// Retrieve by ID
+	retrieved, err := storage.GetArticleByID(ctx, "id-test-123")
+	require.NoError(t, err)
+	require.Equal(t, "ID Test", retrieved.Title)
+}

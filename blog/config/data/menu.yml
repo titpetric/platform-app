@@ -1,0 +1,61 @@
+# Menu configuration for blog module
+# menu: shown to all users
+# menuLoggedIn: shown to authenticated users instead of menu
+
+menu:
+  - type: group
+    label: Blog
+    items:
+      - label: Articles
+        url: /blog
+        icon: file-text
+      - label: RSS Feed
+        url: /feed.xml
+        icon: rss
+  - type: group
+    label: Account
+    items:
+      - label: Login
+        url: /login
+        icon: log-in
+      - label: Register
+        url: /register
+        icon: user-plus
+
+menuLoggedIn:
+  - type: group
+    label: Blog
+    items:
+      - label: Articles
+        url: /blog
+        icon: file-text
+      - label: RSS Feed
+        url: /feed.xml
+        icon: rss
+  - type: group
+    label: Admin
+    items:
+      - label: Dashboard
+        url: /admin/blog
+        icon: layout-dashboard
+      - label: Drafts
+        url: /admin/blog/drafts
+        icon: file-edit
+      - label: Scheduled
+        url: /admin/blog/scheduled
+        icon: calendar
+      - label: Published
+        url: /admin/blog/published
+        icon: check-circle
+      - label: New Article
+        url: /admin/blog/new
+        icon: plus
+  - type: group
+    label: Account
+    items:
+      - label: Profile
+        url: /profile
+        icon: user
+      - label: Logout
+        url: /logout
+        icon: log-out

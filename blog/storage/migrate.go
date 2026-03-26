@@ -9,6 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Migrate runs database migrations from the given schema filesystem.
 func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
 	entries, err := fs.Glob(schema, "*.sql")
 	if err != nil {

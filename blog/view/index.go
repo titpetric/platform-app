@@ -11,7 +11,7 @@ import (
 	"github.com/titpetric/platform-app/blog/model"
 )
 
-// IndexData holds the data required for rendering the index page
+// IndexData holds the data required for rendering the index page.
 type IndexData struct {
 	Articles []model.Article
 	Data     map[string]any
@@ -29,6 +29,7 @@ func NewIndexData(articles []model.Article) *IndexData {
 	return result
 }
 
+// Map converts IndexData to a map for template rendering.
 func (d *IndexData) Map() map[string]any {
 	data := d.Data
 	data["articles"] = d.Articles
@@ -37,6 +38,7 @@ func (d *IndexData) Map() map[string]any {
 	return data
 }
 
+// Fill populates the data from configuration files.
 func (d *IndexData) Fill() {
 	if err := loadFileYaml(&d.Data, "config/meta.yml"); err != nil {
 		log.Println("warn:", err)

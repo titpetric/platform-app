@@ -6,7 +6,7 @@ import (
 	"github.com/titpetric/platform-app/blog/model"
 )
 
-// PostData holds the data required for rendering the post layout
+// PostData holds the data required for rendering the post layout.
 type PostData struct {
 	Slug        string     `json:"slug"`
 	Title       string     `json:"title"`
@@ -17,7 +17,7 @@ type PostData struct {
 	Class       string     `json:"class"`
 }
 
-// NewPostData creates PostData from an Article
+// NewPostData creates PostData from an Article.
 func NewPostData(article *model.Article, content string) *PostData {
 	return &PostData{
 		Slug:        article.Slug,
@@ -30,7 +30,7 @@ func NewPostData(article *model.Article, content string) *PostData {
 	}
 }
 
-// Map converts PostData to a map[string]any
+// Map converts PostData to a map[string]any.
 func (d *PostData) Map() map[string]any {
 	return map[string]any{
 		"slug":        d.Slug,

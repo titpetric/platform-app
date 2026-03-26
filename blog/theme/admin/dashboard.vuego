@@ -1,0 +1,54 @@
+---
+layout: content
+title: Blog Dashboard
+---
+<template :require="title,drafts,scheduled,published">
+  <div class="flex flex-col gap-6">
+    <div>
+      <h1 class="text-2xl font-semibold">{{ title }}</h1>
+      <p class="text-muted-foreground">Manage your blog articles</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <a href="/admin/blog/drafts" class="card hover:border-primary transition-colors">
+        <header>
+          <h2>Drafts</h2>
+          <p>Unpublished articles</p>
+        </header>
+        <section>
+          <span class="text-4xl font-bold">{{ drafts }}</span>
+        </section>
+      </a>
+
+      <a href="/admin/blog/scheduled" class="card hover:border-primary transition-colors">
+        <header>
+          <h2>Scheduled</h2>
+          <p>Future publication</p>
+        </header>
+        <section>
+          <span class="text-4xl font-bold">{{ scheduled }}</span>
+        </section>
+      </a>
+
+      <a href="/admin/blog/published" class="card hover:border-primary transition-colors">
+        <header>
+          <h2>Published</h2>
+          <p>Live articles</p>
+        </header>
+        <section>
+          <span class="text-4xl font-bold">{{ published }}</span>
+        </section>
+      </a>
+    </div>
+
+    <div class="card">
+      <header>
+        <h2>Quick Actions</h2>
+      </header>
+      <section class="flex gap-4">
+        <a href="/admin/blog/new" class="btn btn-primary">New Article</a>
+        <a href="/blog" class="btn btn-secondary">View Blog</a>
+      </section>
+    </div>
+  </div>
+</template>

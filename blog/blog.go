@@ -16,12 +16,13 @@ import (
 	yaml "gopkg.in/yaml.v3"
 
 	"github.com/titpetric/platform-app/blog/model"
+	"github.com/titpetric/platform-app/blog/service/admin"
 	"github.com/titpetric/platform-app/blog/service/api"
 	"github.com/titpetric/platform-app/blog/service/web"
 	"github.com/titpetric/platform-app/blog/storage"
 )
 
-// Module implements the blog module for the platform
+// Module implements the blog module for the platform.
 type Module struct {
 	platform.UnimplementedModule
 
@@ -31,6 +32,9 @@ type Module struct {
 	// Storage for database operations
 	repository *storage.Storage
 
+	// GitFS for content management with automatic commits
+	contentFS *storage.GitFS
+
 	// Articles index for in-memory access
 	articles map[string]*model.Article
 
@@ -38,8 +42,8 @@ type Module struct {
 	themeFS fs.FS
 }
 
-// NewModule creates a new blog module instance
-func NewModule(dataDir string) *Module {
+// NewModule creates a new blog module instance.
+func NewModule() *Module {
 	// Sub into the theme directory since embed.FS includes the directory name
 	themeSub, _ := fs.Sub(themeFS, "theme")
 
@@ -50,25 +54,26 @@ func NewModule(dataDir string) *Module {
 	}
 
 	return &Module{
-		dataDir:  dataDir,
+		dataDir:  "./src",
 		themeFS:  overlay,
 		articles: make(map[string]*model.Article),
 	}
 }
 
-// Name returns the module name
+// Name returns the module name.
 func (m *Module) Name() string {
 	return "blog"
 }
 
-// Mount registers the blog routes with the router
+// Mount registers the blog routes with the router.
 func (m *Module) Mount(_ context.Context, r platform.Router) error {
 	web.NewHandlers(m.repository, m.themeFS).Mount(r)
 	api.NewHandlers(m.repository).Mount(r)
+	admin.NewHandlers(m.repository, m.contentFS, m.themeFS).Mount(r)
 	return nil
 }
 
-// Start initializes the blog module by scanning markdown files and building the index
+// Start initializes the blog module by scanning markdown files and building the index.
 func (m *Module) Start(ctx context.Context) error {
 	// Create storage instance (includes migrations)
 	var err error
@@ -76,6 +81,13 @@ func (m *Module) Start(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to create storage: %w", err)
 	}
+
+	// Initialize GitFS for content directory
+	m.contentFS, err = storage.NewGitFS(m.dataDir)
+	if err != nil {
+		return fmt.Errorf("failed to initialize content filesystem: %w", err)
+	}
+	fmt.Printf("[blog] initialized git content store at %s\n", m.contentFS.Root())
 
 	// Scan and index markdown files
 	count, err := m.scanMarkdownFiles(ctx)
@@ -95,25 +107,25 @@ func (m *Module) Start(ctx context.Context) error {
 	return nil
 }
 
-// Stop is called when the module is shutting down
+// Stop is called when the module is shutting down.
 func (m *Module) Stop(context.Context) error {
 	// Nothing to clean up - database is managed by platform
 	return nil
 }
 
-// SetRepository sets the repository on the module
+// SetRepository sets the repository on the module.
 func (m *Module) SetRepository(repo *storage.Storage) {
 	m.repository = repo
 }
 
-// ScanMarkdownFiles scans the data directory for markdown files and indexes them
-// Returns the count of scanned files
+// ScanMarkdownFiles scans the data directory for markdown files and indexes them.
+// It returns the count of scanned files.
 func (m *Module) ScanMarkdownFiles(ctx context.Context) (int, error) {
 	return m.scanMarkdownFiles(ctx)
 }
 
-// scanMarkdownFiles scans the data directory for markdown files and indexes them
-// Returns the count of scanned files
+// scanMarkdownFiles scans the data directory for markdown files and indexes them.
+// It returns the count of scanned files.
 func (m *Module) scanMarkdownFiles(ctx context.Context) (int, error) {
 	count := 0
 	err := filepath.WalkDir(m.dataDir, func(path string, d os.DirEntry, err error) error {
@@ -147,7 +159,7 @@ func (m *Module) scanMarkdownFiles(ctx context.Context) (int, error) {
 	return count, err
 }
 
-// parseMarkdownFile parses a markdown file and extracts metadata
+// parseMarkdownFile parses a markdown file and extracts metadata.
 func (m *Module) parseMarkdownFile(filePath string) (*model.Article, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -187,6 +199,12 @@ func (m *Module) parseMarkdownFile(filePath string) (*model.Article, error) {
 		layout = "post"
 	}
 
+	// Set draft status from metadata
+	var draft int64
+	if meta.Draft {
+		draft = 1
+	}
+
 	article := &model.Article{
 		ID:          id,
 		Slug:        slug,
@@ -198,6 +216,7 @@ func (m *Module) parseMarkdownFile(filePath string) (*model.Article, error) {
 		Layout:      layout,
 		Source:      meta.Source,
 		URL:         "/blog/" + slug + "/",
+		Draft:       draft,
 		CreatedAt:   &now,
 		UpdatedAt:   &now,
 	}
@@ -205,7 +224,7 @@ func (m *Module) parseMarkdownFile(filePath string) (*model.Article, error) {
 	return article, nil
 }
 
-// generateID creates a unique ID from slug
+// generateID creates a unique ID from slug.
 func generateID(slug string) string {
 	return slug + "-" + time.Now().Format("20060102150405")
 }

@@ -18,17 +18,32 @@ func NewViews(filesystem fs.FS) *Views {
 	}
 }
 
-// Index renders the blog index/list page
+// Index renders the blog index/list page.
 func (v *Views) Index(data *IndexData) vuego.Template {
 	return v.Loader.Load("pages/index.vuego").Fill(data.Map())
 }
 
-// Blog renders the blog list page
+// Blog renders the blog list page.
 func (v *Views) Blog(data *IndexData) vuego.Template {
 	return v.Loader.Load("pages/blog.vuego").Fill(data.Map())
 }
 
-// Post renders the post layout template
+// Post renders the post layout template.
 func (v *Views) Post(data *PostData) vuego.Template {
 	return v.Loader.Load("layouts/post.vuego").Fill(data.Map())
+}
+
+// AdminDashboard renders the admin dashboard page.
+func (v *Views) AdminDashboard(data *AdminDashboardData) vuego.Template {
+	return v.Loader.Load("admin/dashboard.vuego").Fill(data.Map())
+}
+
+// AdminList renders the admin article list page.
+func (v *Views) AdminList(data *AdminListData) vuego.Template {
+	return v.Loader.Load("admin/list.vuego").Fill(data.Map())
+}
+
+// AdminEdit renders the admin article edit page.
+func (v *Views) AdminEdit(data *AdminEditData) vuego.Template {
+	return v.Loader.Load("admin/edit.vuego").Fill(data.Map())
 }

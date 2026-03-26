@@ -1,0 +1,118 @@
+- name: article
+  comment: Article
+  columns:
+    - name: id
+      type: TEXT
+      key: PRI
+      comment: ID
+      datatype: text
+    - name: slug
+      type: TEXT
+      key: MUL
+      comment: Slug
+      datatype: text
+    - name: title
+      type: TEXT
+      comment: Title
+      datatype: text
+    - name: filename
+      type: TEXT
+      comment: Filename
+      datatype: text
+    - name: description
+      type: TEXT
+      comment: Description
+      datatype: text
+    - name: date
+      type: DATETIME
+      key: MUL
+      comment: Date
+      datatype: timestamp
+    - name: og_image
+      type: TEXT
+      comment: Og Image
+      datatype: text
+    - name: layout
+      type: TEXT
+      key: MUL
+      comment: Layout
+      datatype: text
+    - name: source
+      type: TEXT
+      comment: Source
+      datatype: text
+    - name: url
+      type: TEXT
+      comment: URL
+      datatype: text
+    - name: draft
+      type: INTEGER
+      key: MUL
+      comment: Draft
+      datatype: integer
+    - name: created_at
+      type: DATETIME
+      key: MUL
+      comment: Created At
+      datatype: timestamp
+    - name: updated_at
+      type: DATETIME
+      comment: Updated At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_article_1
+      columns:
+        - id
+      primary: true
+      unique: true
+    - name: idx_article_created_at
+      columns:
+        - created_at
+    - name: idx_article_date
+      columns:
+        - date
+    - name: idx_article_draft
+      columns:
+        - draft
+    - name: idx_article_published
+      columns:
+        - draft
+        - date
+    - name: idx_article_layout
+      columns:
+        - layout
+    - name: idx_article_slug
+      columns:
+        - slug
+    - name: sqlite_autoindex_article_2
+      columns:
+        - slug
+      unique: true
+- name: migrations
+  comment: Migrations
+  columns:
+    - name: project
+      type: TEXT
+      key: PRI
+      comment: Project
+      datatype: text
+    - name: filename
+      type: TEXT
+      key: PRI
+      comment: Filename
+      datatype: text
+    - name: statement_index
+      type: INTEGER
+      comment: Statement Index
+      datatype: integer
+    - name: status
+      type: TEXT
+      comment: Status
+      datatype: text
+  indexes:
+    - name: sqlite_autoindex_migrations_1
+      columns:
+        - project
+        - filename
+      primary: true
+      unique: true

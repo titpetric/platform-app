@@ -1,0 +1,78 @@
+---
+layout: content
+---
+<template :require="title,articles,total,page,pageSize">
+  <div class="flex flex-col gap-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-semibold">{{ title }}</h1>
+        <p class="text-muted-foreground">{{ total }} articles</p>
+      </div>
+      <a href="/admin/blog/new" class="btn btn-primary">New Article</a>
+    </div>
+
+    <nav class="flex gap-2 text-sm">
+      <a href="/admin/blog" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+      <span class="text-muted-foreground">/</span>
+      <span>{{ title }}</span>
+    </nav>
+
+    <div class="card">
+      <section class="p-0">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Slug</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-if="articles">
+              <tr v-for="article in articles">
+                <td>
+                  <a :href="'/admin/blog/articles/' + article.Slug" class="font-medium hover:text-primary">
+                    {{ article.Title }}
+                  </a>
+                </td>
+                <td class="text-muted-foreground text-sm">{{ article.Slug }}</td>
+                <td class="text-muted-foreground text-sm">
+                  <template v-if="article.Date">{{ article.Date }}</template>
+                  <template v-else>-</template>
+                </td>
+                <td>
+                  <div class="flex gap-2">
+                    <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-sm btn-secondary">Edit</a>
+                    <a :href="'/blog/' + article.Slug" class="btn btn-sm btn-ghost" target="_blank">View</a>
+                  </div>
+                </td>
+              </tr>
+            </template>
+            <tr v-if="!articles || articles.length == 0">
+              <td colspan="4" class="text-center text-muted-foreground py-8">
+                No articles found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <template v-if="total > pageSize">
+      <div class="flex justify-center gap-2">
+        <template v-if="page > 1">
+          <a :href="'?page=' + (page - 1) + '&pageSize=' + pageSize" class="btn btn-sm btn-secondary">Previous</a>
+        </template>
+        <span class="btn btn-sm btn-ghost">Page {{ page }}</span>
+        <template v-if="page * pageSize < total">
+          <a :href="'?page=' + (page + 1) + '&pageSize=' + pageSize" class="btn btn-sm btn-secondary">Next</a>
+        </template>
+      </div>
+    </template>
+
+    <a href="/admin/blog" class="text-sm text-muted-foreground hover:text-foreground">
+      ← Back to Dashboard
+    </a>
+  </div>
+</template>

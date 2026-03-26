@@ -1,10 +1,13 @@
+/docker/data
 /data
 /appdata
 /blog
-/blog.db
+/*.db
 /public
 /appdata/public
 /*.cov
 /*.json
 /*.test
 /*.out
+.flatnotes
+/bin

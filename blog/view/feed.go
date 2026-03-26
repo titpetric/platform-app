@@ -11,7 +11,7 @@ import (
 	"github.com/titpetric/platform-app/blog/model"
 )
 
-// AtomFeed generates an Atom XML feed for articles
+// AtomFeed generates an Atom XML feed for articles.
 func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Article, meta map[string]any) error {
 	var author map[string]any
 	if m, ok := meta["author"].(map[string]any); ok {
@@ -80,7 +80,7 @@ func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Arti
 	return nil
 }
 
-// escapeXML escapes special XML characters
+// escapeXML escapes special XML characters.
 func escapeXML(s any) string {
 	switch v := s.(type) {
 	case string:

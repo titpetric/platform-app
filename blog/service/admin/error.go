@@ -1,10 +1,9 @@
-package api
+package admin
 
 import (
 	"log"
 	"net/http"
 
-	"github.com/titpetric/platform"
 	"github.com/titpetric/platform/pkg/telemetry"
 )
 
@@ -39,6 +38,16 @@ func ErrBadRequest(message string, cause error) *Error {
 	return NewError(http.StatusBadRequest, message, cause)
 }
 
+// ErrUnauthorized creates a 401 Unauthorized error.
+func ErrUnauthorized(message string, cause error) *Error {
+	return NewError(http.StatusUnauthorized, message, cause)
+}
+
+// ErrForbidden creates a 403 Forbidden error.
+func ErrForbidden(message string, cause error) *Error {
+	return NewError(http.StatusForbidden, message, cause)
+}
+
 // ErrNotFound creates a 404 Not Found error.
 func ErrNotFound(message string, cause error) *Error {
 	return NewError(http.StatusNotFound, message, cause)
@@ -64,10 +73,10 @@ func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err erro
 		} else {
 			log.Printf("error: %s", val.Message)
 		}
-		platform.Error(w, r, val.StatusCode, val)
+		http.Error(w, val.Message, val.StatusCode)
 	default:
 		log.Printf("error: %v", err)
 		telemetry.CaptureError(ctx, err)
-		platform.Error(w, r, http.StatusInternalServerError, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

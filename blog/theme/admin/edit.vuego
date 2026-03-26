@@ -1,0 +1,350 @@
+---
+layout: content
+---
+<style>
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.form-full {
+  grid-column: 1 / -1;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.form-group label {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+.form-error {
+  font-size: 0.75rem;
+  color: var(--destructive);
+  display: none;
+}
+.form-group.has-error .form-error {
+  display: block;
+}
+.form-group.has-error input,
+.form-group.has-error textarea,
+.form-group.has-error select {
+  border-color: var(--destructive);
+}
+</style>
+<template :require="title,isNew,slug,articleTitle,description,content,date,layout,draft">
+  <div class="flex flex-col gap-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-semibold">{{ title }}</h1>
+        <template v-if="!isNew">
+          <p class="text-muted-foreground">Editing: {{ slug }}</p>
+        </template>
+      </div>
+      <template v-if="!isNew">
+        <a :href="'/blog/' + slug" class="btn btn-secondary" target="_blank">View Article</a>
+      </template>
+    </div>
+
+    <nav class="flex gap-2 text-sm">
+      <a href="/admin/blog" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+      <span class="text-muted-foreground">/</span>
+      <span>{{ title }}</span>
+    </nav>
+
+    <form id="article-form" class="flex flex-col gap-6" novalidate>
+      <div class="card">
+        <header>
+          <h2>Article Details</h2>
+        </header>
+        <section>
+          <div class="form-grid">
+            <div class="form-group" id="slug-group">
+              <label for="slug">Slug <span class="text-destructive">*</span></label>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                :value="slug"
+                class="input"
+                placeholder="my-article-slug"
+                pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                maxlength="100"
+                required
+                :disabled="!isNew"
+              />
+              <p class="form-hint">URL-safe identifier (lowercase letters, numbers, hyphens only)</p>
+              <p class="form-error">Slug must be lowercase alphanumeric with hyphens</p>
+            </div>
+
+            <div class="form-group" id="date-group">
+              <label for="date">Publication Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                :value="date"
+                class="input"
+              />
+              <p class="form-hint">Future dates will schedule the article for auto-publish</p>
+            </div>
+
+            <div class="form-group form-full" id="title-group">
+              <label for="title">Title <span class="text-destructive">*</span></label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                :value="articleTitle"
+                class="input"
+                placeholder="Article Title"
+                maxlength="200"
+                required
+              />
+              <p class="form-error">Title is required (max 200 characters)</p>
+            </div>
+
+            <div class="form-group form-full" id="description-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                class="input"
+                rows="2"
+                maxlength="500"
+                placeholder="Brief description for SEO and previews (max 500 characters)">{{ description }}</textarea>
+              <p class="form-hint">Used in meta tags and article previews</p>
+            </div>
+
+            <div class="form-group" id="layout-group">
+              <label for="layout">Layout</label>
+              <select id="layout" name="layout" class="input">
+                <option value="post" :selected="layout == 'post' || !layout">Post</option>
+                <option value="page" :selected="layout == 'page'">Page</option>
+              </select>
+              <p class="form-hint">Post for blog entries, Page for static content</p>
+            </div>
+
+            <div class="form-group flex-row items-center gap-3">
+              <input
+                type="checkbox"
+                id="draft"
+                name="draft"
+                :checked="draft"
+                class="checkbox"
+              />
+              <label for="draft" class="mb-0 cursor-pointer">Save as draft (unpublished)</label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card">
+        <header>
+          <h2>Content <span class="text-destructive">*</span></h2>
+          <p>Write your article in Markdown format</p>
+        </header>
+        <section>
+          <div class="form-group" id="content-group">
+            <textarea
+              id="content"
+              name="content"
+              class="input font-mono"
+              rows="20"
+              required
+              placeholder="# Your Article
+
+Write your content here using Markdown...
+
+## Subheading
+
+- List item 1
+- List item 2
+
+**Bold text** and *italic text*">{{ content }}</textarea>
+            <p class="form-error">Content is required</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="flex gap-4">
+        <button type="submit" class="btn btn-primary" id="submit-btn">
+          <template v-if="isNew">Create Article</template>
+          <template v-else>Save Changes</template>
+        </button>
+        <a href="/admin/blog" class="btn btn-secondary">Cancel</a>
+        <template v-if="!isNew">
+          <button type="button" id="delete-btn" class="btn btn-destructive ml-auto">Delete</button>
+        </template>
+      </div>
+
+      <div id="form-message" class="hidden p-4 rounded-md"></div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('article-form');
+      const deleteBtn = document.getElementById('delete-btn');
+      const submitBtn = document.getElementById('submit-btn');
+      const formMessage = document.getElementById('form-message');
+      const isNew = {{ json isNew }};
+      const currentSlug = {{ json slug }};
+
+      // Validation patterns
+      const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+      function showError(groupId, show) {
+        const group = document.getElementById(groupId);
+        if (group) {
+          group.classList.toggle('has-error', show);
+        }
+      }
+
+      function showMessage(message, isError) {
+        formMessage.textContent = message;
+        formMessage.className = 'p-4 rounded-md ' + (isError ? 'bg-destructive/10 text-destructive' : 'bg-primary/10 text-primary');
+        formMessage.classList.remove('hidden');
+        if (!isError) {
+          setTimeout(() => formMessage.classList.add('hidden'), 3000);
+        }
+      }
+
+      function validateForm() {
+        let valid = true;
+        const formData = new FormData(form);
+
+        // Validate slug (only for new articles)
+        if (isNew) {
+          const slug = formData.get('slug').trim();
+          const slugValid = slug && slugPattern.test(slug) && slug.length <= 100;
+          showError('slug-group', !slugValid);
+          if (!slugValid) valid = false;
+        }
+
+        // Validate title
+        const title = formData.get('title').trim();
+        const titleValid = title && title.length <= 200;
+        showError('title-group', !titleValid);
+        if (!titleValid) valid = false;
+
+        // Validate content
+        const content = formData.get('content').trim();
+        const contentValid = content && content.length > 0;
+        showError('content-group', !contentValid);
+        if (!contentValid) valid = false;
+
+        return valid;
+      }
+
+      // Real-time validation
+      document.getElementById('slug')?.addEventListener('input', function(e) {
+        const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        e.target.value = value;
+        showError('slug-group', value && !slugPattern.test(value));
+      });
+
+      document.getElementById('title')?.addEventListener('blur', function(e) {
+        showError('title-group', !e.target.value.trim());
+      });
+
+      document.getElementById('content')?.addEventListener('blur', function(e) {
+        showError('content-group', !e.target.value.trim());
+      });
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+          showMessage('Please fix the validation errors above.', true);
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+
+        const formData = new FormData(form);
+        const data = {
+          slug: isNew ? formData.get('slug').trim() : currentSlug,
+          title: formData.get('title').trim(),
+          description: formData.get('description')?.trim() || '',
+          content: formData.get('content').trim(),
+          date: formData.get('date') || '',
+          layout: formData.get('layout') || 'post',
+          draft: formData.get('draft') === 'on'
+        };
+
+        try {
+          const url = isNew ? '/admin/blog/articles' : '/admin/blog/articles/' + currentSlug;
+          const method = isNew ? 'POST' : 'PUT';
+
+          const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            showMessage('Article saved successfully!', false);
+            setTimeout(() => {
+              window.location.href = '/admin/blog/articles/' + result.slug;
+            }, 500);
+          } else {
+            const error = await response.text();
+            showMessage('Error: ' + error, true);
+            submitBtn.disabled = false;
+            submitBtn.textContent = isNew ? 'Create Article' : 'Save Changes';
+          }
+        } catch (err) {
+          showMessage('Failed to save: ' + err.message, true);
+          submitBtn.disabled = false;
+          submitBtn.textContent = isNew ? 'Create Article' : 'Save Changes';
+        }
+      });
+
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', async function() {
+          if (!confirm('Are you sure you want to delete this article? This action cannot be undone.')) {
+            return;
+          }
+
+          deleteBtn.disabled = true;
+          deleteBtn.textContent = 'Deleting...';
+
+          try {
+            const response = await fetch('/admin/blog/articles/' + currentSlug, {
+              method: 'DELETE'
+            });
+
+            if (response.ok) {
+              showMessage('Article deleted successfully!', false);
+              setTimeout(() => {
+                window.location.href = '/admin/blog';
+              }, 500);
+            } else {
+              const error = await response.text();
+              showMessage('Error: ' + error, true);
+              deleteBtn.disabled = false;
+              deleteBtn.textContent = 'Delete';
+            }
+          } catch (err) {
+            showMessage('Failed to delete: ' + err.message, true);
+            deleteBtn.disabled = false;
+            deleteBtn.textContent = 'Delete';
+          }
+        });
+      }
+    });
+  </script>
+</template>

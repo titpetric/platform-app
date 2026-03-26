@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// QueryOption is implemented by each data model type.
 type QueryOption interface {
 	WithTable(name string) QueryOption
 	WithColumns(cols []string) QueryOption
@@ -17,6 +18,7 @@ type QueryOption interface {
 	WithStatement(stmt string) QueryOption
 }
 
+// QueryConfig is a function-chaining SQL statement type.
 type QueryConfig struct {
 	Table       string
 	Columns     []string
@@ -27,61 +29,74 @@ type QueryConfig struct {
 	Statement   string
 }
 
+// WithTable will set the table name for the query.
 func (q *QueryConfig) WithTable(name string) QueryOption {
 	q.Table = name
 	return q
 }
 
+// WithColumns will set the columns to use for the query.
 func (q *QueryConfig) WithColumns(cols []string) QueryOption {
 	q.Columns = cols
 	return q
 }
 
+// WithWhere will set the where condition for the query.
 func (q *QueryConfig) WithWhere(clause string) QueryOption {
 	q.Where = clause
 	return q
 }
 
+// WithOrderBy will set the order by clause for the query.
 func (q *QueryConfig) WithOrderBy(clause string) QueryOption {
 	q.OrderBy = clause
 	return q
 }
 
+// WithLimit will set the limit clause parameters for the query.
 func (q *QueryConfig) WithLimit(start, offset int) QueryOption {
 	q.LimitStart = start
 	q.LimitOffset = offset
 	return q
 }
 
+// WithStatement will change the statement for the query.
 func (q *QueryConfig) WithStatement(stmt string) QueryOption {
 	q.Statement = stmt
 	return q
 }
 
+// WithTable will set the table name for the query.
 func WithTable(name string) QueryOption {
 	return &QueryConfig{Table: name}
 }
 
+// WithColumns will set the columns to use for the query.
 func WithColumns(cols []string) QueryOption {
 	return &QueryConfig{Columns: cols}
 }
 
+// WithWhere will set the where condition for the query.
 func WithWhere(clause string) QueryOption {
 	return &QueryConfig{Where: clause}
 }
 
+// WithOrderBy will set the order by clause for the query.
 func WithOrderBy(clause string) QueryOption {
 	return &QueryConfig{OrderBy: clause}
 }
 
+// WithLimit will set the limit clause parameters for the query.
 func WithLimit(start, offset int) QueryOption {
 	return &QueryConfig{LimitStart: start, LimitOffset: offset}
 }
 
+// WithStatement will change the statement for the query.
 func WithStatement(stmt string) QueryOption {
 	return &QueryConfig{Statement: stmt}
 }
 
+// Apply will use passed query options to populate the query.
 func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 	cfg := *q
 	for _, opt := range opts {
@@ -109,79 +124,48 @@ func (q *QueryConfig) Apply(opts ...QueryOption) *QueryConfig {
 	return &cfg
 }
 
-// Migrations generated for db table `migrations`.
-type Migrations struct {
-	// Project
-	Project string `db:"project"`
-
-	// Filename
-	Filename string `db:"filename"`
-
-	// Statement Index
-	StatementIndex int64 `db:"statement_index"`
-
-	// Status
-	Status string `db:"status"`
-}
-
-// GetProject will return the value of Project.
-func (m *Migrations) GetProject() string { return m.Project }
-
-// GetFilename will return the value of Filename.
-func (m *Migrations) GetFilename() string { return m.Filename }
-
-// GetStatementIndex will return the value of StatementIndex.
-func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
-
-// GetStatus will return the value of Status.
-func (m *Migrations) GetStatus() string { return m.Status }
-
-// MigrationsTable is the name of the table in the DB.
-const MigrationsTable = "`migrations`"
-
-// MigrationsFields is a list of all columns in the DB table.
-var MigrationsFields = []string{"project", "filename", "statement_index", "status"}
-
-// MigrationsPrimaryFields are the primary key fields in the DB table.
-var MigrationsPrimaryFields = []string{"project"}
-
 // Article generated for db table `article`.
+//
+// Article.
 type Article struct {
 	// ID
-	ID string `db:"id"`
+	ID string `db:"id" json:"id"`
 
 	// Slug
-	Slug string `db:"slug"`
+	Slug string `db:"slug" json:"slug"`
 
 	// Title
-	Title string `db:"title"`
+	Title string `db:"title" json:"title"`
 
 	// Filename
-	Filename string `db:"filename"`
+	Filename string `db:"filename" json:"filename"`
 
 	// Description
-	Description string `db:"description"`
+	Description string `db:"description" json:"description"`
 
 	// Date
-	Date *time.Time `db:"date"`
+	Date *time.Time `db:"date" json:"date"`
 
 	// Og Image
-	OgImage string `db:"og_image"`
+	OgImage string `db:"og_image" json:"og_image"`
 
 	// Layout
-	Layout string `db:"layout"`
+	Layout string `db:"layout" json:"layout"`
 
 	// Source
-	Source string `db:"source"`
+	Source string `db:"source" json:"source"`
 
 	// URL
-	URL string `db:"url"`
+	URL string `db:"url" json:"url"`
+
+	// Draft
+	Draft int64 `db:"draft" json:"draft"`
 
 	// Created At
-	CreatedAt *time.Time `db:"created_at"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
 
 	// Updated At
-	UpdatedAt *time.Time `db:"updated_at"`
+	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
 }
 
 // GetID will return the value of ID.
@@ -217,6 +201,9 @@ func (a *Article) GetSource() string { return a.Source }
 // GetURL will return the value of URL.
 func (a *Article) GetURL() string { return a.URL }
 
+// GetDraft will return the value of Draft.
+func (a *Article) GetDraft() int64 { return a.Draft }
+
 // GetCreatedAt will return the value of CreatedAt.
 func (a *Article) GetCreatedAt() *time.Time { return a.CreatedAt }
 
@@ -233,68 +220,50 @@ func (a *Article) SetUpdatedAt(stamp time.Time) { a.UpdatedAt = &stamp }
 const ArticleTable = "`article`"
 
 // ArticleFields is a list of all columns in the DB table.
-var ArticleFields = []string{"id", "slug", "title", "filename", "description", "date", "og_image", "layout", "source", "url", "created_at", "updated_at"}
+var ArticleFields = []string{"id", "slug", "title", "filename", "description", "date", "og_image", "layout", "source", "url", "draft", "created_at", "updated_at"}
 
 // ArticlePrimaryFields are the primary key fields in the DB table.
 var ArticlePrimaryFields = []string{"id"}
 
-func (m *Migrations) Insert(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: MigrationsTable, Statement: "INSERT INTO"}).Apply(opts...)
-	cols := MigrationsFields
-	if len(cfg.Columns) > 0 {
-		cols = cfg.Columns
-	}
-	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+// Migrations generated for db table `migrations`.
+//
+// Migrations.
+type Migrations struct {
+	// Project
+	Project string `db:"project" json:"project"`
+
+	// Filename
+	Filename string `db:"filename" json:"filename"`
+
+	// Statement Index
+	StatementIndex int64 `db:"statement_index" json:"statement_index"`
+
+	// Status
+	Status string `db:"status" json:"status"`
 }
 
-func (m *Migrations) Select(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
-	cols := "*"
-	if len(cfg.Columns) > 0 {
-		cols = strings.Join(cfg.Columns, ", ")
-	}
-	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
-	if cfg.Where != "" {
-		query += " WHERE " + cfg.Where
-	}
-	if cfg.OrderBy != "" {
-		query += " ORDER BY " + cfg.OrderBy
-	}
-	if cfg.LimitOffset > 0 {
-		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
-	}
-	return query
-}
+// GetProject will return the value of Project.
+func (m *Migrations) GetProject() string { return m.Project }
 
-func (m *Migrations) Update(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
-	cols := MigrationsFields
-	if len(cfg.Columns) > 0 {
-		cols = cfg.Columns
-	}
-	setClause := ""
-	for i, col := range cols {
-		if i > 0 {
-			setClause += ", "
-		}
-		setClause += col + "=:" + col
-	}
-	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
-	if cfg.Where != "" {
-		query += " WHERE " + cfg.Where
-	}
-	return query
-}
+// GetFilename will return the value of Filename.
+func (m *Migrations) GetFilename() string { return m.Filename }
 
-func (m *Migrations) Delete(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
-	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
-	if cfg.Where != "" {
-		query += " WHERE " + cfg.Where
-	}
-	return query
-}
+// GetStatementIndex will return the value of StatementIndex.
+func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
 
+// GetStatus will return the value of Status.
+func (m *Migrations) GetStatus() string { return m.Status }
+
+// MigrationsTable is the name of the table in the DB.
+const MigrationsTable = "`migrations`"
+
+// MigrationsFields is a list of all columns in the DB table.
+var MigrationsFields = []string{"project", "filename", "statement_index", "status"}
+
+// MigrationsPrimaryFields are the primary key fields in the DB table.
+var MigrationsPrimaryFields = []string{"project", "filename"}
+
+// Insert starts building an INSERT INTO query.
 func (a *Article) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: ArticleTable, Statement: "INSERT INTO"}).Apply(opts...)
 	cols := ArticleFields
@@ -304,6 +273,7 @@ func (a *Article) Insert(opts ...QueryOption) string {
 	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
 }
 
+// Select starts building a SELECT query.
 func (a *Article) Select(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: ArticleTable}).Apply(opts...)
 	cols := "*"
@@ -323,6 +293,7 @@ func (a *Article) Select(opts ...QueryOption) string {
 	return query
 }
 
+// Update starts building a UPDATE query.
 func (a *Article) Update(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: ArticleTable}).Apply(opts...)
 	cols := ArticleFields
@@ -343,8 +314,70 @@ func (a *Article) Update(opts ...QueryOption) string {
 	return query
 }
 
+// Delete starts building a DELETE query.
 func (a *Article) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: ArticleTable}).Apply(opts...)
+	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Insert starts building an INSERT INTO query.
+func (m *Migrations) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := MigrationsFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+}
+
+// Select starts building a SELECT query.
+func (m *Migrations) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
+	cols := "*"
+	if len(cfg.Columns) > 0 {
+		cols = strings.Join(cfg.Columns, ", ")
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	if cfg.OrderBy != "" {
+		query += " ORDER BY " + cfg.OrderBy
+	}
+	if cfg.LimitOffset > 0 {
+		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
+	}
+	return query
+}
+
+// Update starts building a UPDATE query.
+func (m *Migrations) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
+	cols := MigrationsFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	setClause := ""
+	for i, col := range cols {
+		if i > 0 {
+			setClause += ", "
+		}
+		setClause += col + "=:" + col
+	}
+	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Delete starts building a DELETE query.
+func (m *Migrations) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
 	if cfg.Where != "" {
 		query += " WHERE " + cfg.Where

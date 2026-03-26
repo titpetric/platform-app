@@ -2,7 +2,7 @@ package view
 
 import "bytes"
 
-// StripFrontMatter removes YAML front matter from content and returns just the body
+// StripFrontMatter removes YAML front matter from content and returns just the body.
 func StripFrontMatter(content []byte) []byte {
 	marker := []byte(`---`)
 

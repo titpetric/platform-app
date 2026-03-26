@@ -38,7 +38,7 @@ func (h *Handlers) Mount(r platform.Router) {
 	})
 }
 
-// ListArticlesJSON returns a JSON list of all articles
+// ListArticlesJSON returns a JSON list of all articles.
 func (h *Handlers) ListArticlesJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.listArticlesJSON(w, r))
 }
@@ -65,7 +65,7 @@ func (h *Handlers) listArticlesJSON(w http.ResponseWriter, r *http.Request) erro
 	return nil
 }
 
-// GetArticleJSON returns a single article as JSON
+// GetArticleJSON returns a single article as JSON.
 func (h *Handlers) GetArticleJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.getArticleJSON(w, r))
 }
@@ -87,7 +87,7 @@ func (h *Handlers) getArticleJSON(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 
-// SearchArticlesJSON performs full-text search on articles
+// SearchArticlesJSON performs full-text search on articles.
 func (h *Handlers) SearchArticlesJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.searchArticlesJSON(w, r))
 }
@@ -118,7 +118,7 @@ func (h *Handlers) searchArticlesJSON(w http.ResponseWriter, r *http.Request) er
 	return nil
 }
 
-// ListArticlesAdminJSON returns a paginated JSON list of articles for admin
+// ListArticlesAdminJSON returns a paginated JSON list of articles for admin.
 func (h *Handlers) ListArticlesAdminJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.listArticlesAdminJSON(w, r))
 }
@@ -177,7 +177,7 @@ func (h *Handlers) listArticlesAdminJSON(w http.ResponseWriter, r *http.Request)
 	return nil
 }
 
-// GetArticleAdminJSON returns a single article as JSON for admin
+// GetArticleAdminJSON returns a single article as JSON for admin.
 func (h *Handlers) GetArticleAdminJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.getArticleAdminJSON(w, r))
 }

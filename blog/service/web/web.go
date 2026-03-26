@@ -30,12 +30,12 @@ func NewHandlers(repo *storage.Storage, themeFS fs.FS) *Handlers {
 	}
 }
 
-// Repository returns the storage repository
+// Repository returns the storage repository.
 func (h *Handlers) Repository() *storage.Storage {
 	return h.repository
 }
 
-// Views returns the views instance
+// Views returns the views instance.
 func (h *Handlers) Views() *view.Views {
 	return h.views
 }
@@ -61,7 +61,7 @@ func (h *Handlers) Mount(r platform.Router) {
 	})
 }
 
-// IndexHTML returns an HTML index page listing blogs
+// IndexHTML returns an HTML index page listing blogs.
 func (h *Handlers) IndexHTML(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.indexHTML(w, r))
 }
@@ -84,7 +84,7 @@ func (h *Handlers) indexHTML(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// ListArticlesHTML returns an HTML list of articles
+// ListArticlesHTML returns an HTML list of articles.
 func (h *Handlers) ListArticlesHTML(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.listArticlesHTML(w, r))
 }
@@ -107,7 +107,7 @@ func (h *Handlers) listArticlesHTML(w http.ResponseWriter, r *http.Request) erro
 	return nil
 }
 
-// GetArticleHTML returns a single article as HTML
+// GetArticleHTML returns a single article as HTML.
 func (h *Handlers) GetArticleHTML(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.getArticleHTML(w, r))
 }
@@ -141,7 +141,7 @@ func (h *Handlers) getArticleHTML(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 
-// GetAtomFeed returns an Atom XML feed of all articles
+// GetAtomFeed returns an Atom XML feed of all articles.
 func (h *Handlers) GetAtomFeed(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.getAtomFeed(w, r))
 }
@@ -161,7 +161,7 @@ func (h *Handlers) getAtomFeed(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// ListArticlesAdminHTML renders the admin articles list as HTML using CMS layout
+// ListArticlesAdminHTML renders the admin articles list as HTML using CMS layout.
 func (h *Handlers) ListArticlesAdminHTML(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.listArticlesAdminHTML(w, r))
 }

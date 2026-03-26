@@ -14,13 +14,13 @@ import (
 	"github.com/titpetric/platform-app/blog/view"
 )
 
-// Generator generates static HTML files from blog content
+// Generator generates static HTML files from blog content.
 type Generator struct {
 	module    *Module
 	outputDir string
 }
 
-// NewGenerator creates a new Generator instance
+// NewGenerator creates a new Generator instance.
 func NewGenerator(m *Module, outputDir string) *Generator {
 	return &Generator{
 		module:    m,
@@ -28,7 +28,7 @@ func NewGenerator(m *Module, outputDir string) *Generator {
 	}
 }
 
-// Generate generates all static HTML files
+// Generate generates all static HTML files.
 func (g *Generator) Generate(ctx context.Context) error {
 	// Ensure output directory exists
 	if err := os.MkdirAll(g.outputDir, 0o755); err != nil {
@@ -94,7 +94,7 @@ func (g *Generator) Generate(ctx context.Context) error {
 	return nil
 }
 
-// generateIndexPage generates the index.html file
+// generateIndexPage generates the index.html file.
 func (g *Generator) generateIndexPage(ctx context.Context, h *web.Handlers) error {
 	articles, err := h.Repository().GetArticles(ctx, 0, 5)
 	if err != nil {
@@ -112,7 +112,7 @@ func (g *Generator) generateIndexPage(ctx context.Context, h *web.Handlers) erro
 	return os.WriteFile(indexPath, buf.Bytes(), 0o644)
 }
 
-// generateStaticPages generates all .vuego pages from theme/pages directory recursively
+// generateStaticPages generates all .vuego pages from theme/pages directory recursively.
 func (g *Generator) generateStaticPages(ctx context.Context, h *web.Handlers) error {
 	return g.walkPages(ctx, h, "pages", "")
 }
@@ -209,7 +209,7 @@ func (g *Generator) walkPages(ctx context.Context, h *web.Handlers, dirPath stri
 	return nil
 }
 
-// generateArticlePage generates an individual article page
+// generateArticlePage generates an individual article page.
 func (g *Generator) generateArticlePage(ctx context.Context, h *web.Handlers, postData *view.PostData) error {
 	var buf bytes.Buffer
 	if err := h.Views().Post(postData).Render(ctx, &buf); err != nil {
@@ -225,7 +225,7 @@ func (g *Generator) generateArticlePage(ctx context.Context, h *web.Handlers, po
 	return os.WriteFile(articlePath, buf.Bytes(), 0o644)
 }
 
-// generateFeed generates the feed.xml file
+// generateFeed generates the feed.xml file.
 func (g *Generator) generateFeed(ctx context.Context, h *web.Handlers) error {
 	articles, err := h.Repository().GetArticles(ctx, 0, 20)
 	if err != nil {
@@ -241,7 +241,7 @@ func (g *Generator) generateFeed(ctx context.Context, h *web.Handlers) error {
 	return os.WriteFile(feedPath, buf.Bytes(), 0o644)
 }
 
-// copyAssets copies static assets from theme/assets (both embedded and local) to output directory
+// copyAssets copies static assets from theme/assets (both embedded and local) to output directory.
 func (g *Generator) copyAssets() error {
 	assetsDestDir := filepath.Join(g.outputDir, "assets")
 
@@ -258,7 +258,7 @@ func (g *Generator) copyAssets() error {
 	return nil
 }
 
-// copyEmbeddedAssets copies assets from the embedded theme filesystem
+// copyEmbeddedAssets copies assets from the embedded theme filesystem.
 func (g *Generator) copyEmbeddedAssets(assetsDestDir string) error {
 	return fs.WalkDir(g.module.themeFS, "assets", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -287,7 +287,7 @@ func (g *Generator) copyEmbeddedAssets(assetsDestDir string) error {
 	})
 }
 
-// copyLocalAssets copies assets from local theme/assets directory, overriding embedded assets
+// copyLocalAssets copies assets from local theme/assets directory, overriding embedded assets.
 func (g *Generator) copyLocalAssets(assetsDestDir string) error {
 	assetsSrcDir := filepath.Join("theme", "assets")
 

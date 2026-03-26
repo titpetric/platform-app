@@ -13,13 +13,13 @@ import (
 	blackfriday "github.com/russross/blackfriday/v2"
 )
 
-// Renderer renders markdown content to HTML with syntax highlighting
+// Renderer renders markdown content to HTML with syntax highlighting.
 type Renderer struct {
 	// codeBlockPattern matches HTML code blocks for highlighting
 	codeBlockPattern *regexp.Regexp
 }
 
-// NewRenderer creates a new markdown renderer with syntax highlighting support
+// NewRenderer creates a new markdown renderer with syntax highlighting support.
 func NewRenderer() *Renderer {
 	return &Renderer{
 		codeBlockPattern: regexp.MustCompile(`<pre><code(?:\s+class="language-([^"]+)")?>([.\s\S]*?)</code></pre>`),
@@ -39,7 +39,7 @@ func (r *Renderer) Render(content []byte) []byte {
 	return highlighted
 }
 
-// highlightCodeBlocks applies syntax highlighting to all code blocks in the HTML
+// highlightCodeBlocks applies syntax highlighting to all code blocks in the HTML.
 func (r *Renderer) highlightCodeBlocks(html []byte) []byte {
 	htmlStr := string(html)
 
@@ -51,7 +51,7 @@ func (r *Renderer) highlightCodeBlocks(html []byte) []byte {
 	return []byte(result)
 }
 
-// processCodeBlock processes a single code block and applies syntax highlighting
+// processCodeBlock processes a single code block and applies syntax highlighting.
 func (r *Renderer) processCodeBlock(match string) string {
 	// Extract language and code from the match
 	m := r.codeBlockPattern.FindStringSubmatch(match)
@@ -71,7 +71,7 @@ func (r *Renderer) processCodeBlock(match string) string {
 	return string(highlighted)
 }
 
-// highlightCode applies syntax highlighting to code using Chroma
+// highlightCode applies syntax highlighting to code using Chroma.
 func highlightCode(code []byte, language string) []byte {
 	if len(code) == 0 {
 		return []byte("<pre><code></code></pre>")
@@ -133,7 +133,7 @@ func highlightCode(code []byte, language string) []byte {
 	return []byte(result)
 }
 
-// wrapCodePlain wraps code without highlighting
+// wrapCodePlain wraps code without highlighting.
 func wrapCodePlain(code []byte, language string) []byte {
 	languageClass := ""
 	if language != "" {
@@ -146,7 +146,7 @@ func wrapCodePlain(code []byte, language string) []byte {
 	))
 }
 
-// escapeHTML escapes HTML special characters
+// escapeHTML escapes HTML special characters.
 func escapeHTML(s string) string {
 	return strings.NewReplacer(
 		"&", "&amp;",
@@ -157,7 +157,7 @@ func escapeHTML(s string) string {
 	).Replace(s)
 }
 
-// unescapeHTML unescapes HTML special characters
+// unescapeHTML unescapes HTML special characters.
 func unescapeHTML(s string) string {
 	return strings.NewReplacer(
 		"&amp;", "&",

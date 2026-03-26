@@ -14,10 +14,12 @@ type Error struct {
 	Cause      error `json:"-"`
 }
 
+// Error returns the error message.
 func (e *Error) Error() string {
 	return e.Message
 }
 
+// Unwrap returns the underlying cause.
 func (e *Error) Unwrap() error {
 	return e.Cause
 }

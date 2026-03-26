@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS article (
     `layout` TEXT DEFAULT 'post',
     `source` TEXT,
     `url` TEXT NOT NULL,
+    `draft` INTEGER NOT NULL DEFAULT 0,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -25,3 +26,9 @@ CREATE INDEX IF NOT EXISTS idx_article_layout ON article(layout);
 
 -- Index for recent articles
 CREATE INDEX IF NOT EXISTS idx_article_created_at ON article(created_at DESC);
+
+-- Index for draft filtering
+CREATE INDEX IF NOT EXISTS idx_article_draft ON article(draft);
+
+-- Index for published articles (not draft, date <= now)
+CREATE INDEX IF NOT EXISTS idx_article_published ON article(draft, date DESC);
