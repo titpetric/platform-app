@@ -1,0 +1,9 @@
+appearances:
+  - id: light
+    value: light
+    label: Light mode
+    icon: sun
+  - id: dark
+    value: dark
+    label: Dark mode
+    icon: moon

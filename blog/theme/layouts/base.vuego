@@ -27,7 +27,7 @@
     <meta property="og:image" :content="ogImage | metaOGImage" />
 
     <!-- [deep breath] me, me, me, me, meeee -->
-    <link v-for="item in navigation.social" :href="item.url" rel="me" />
+    <link v-for="item in social" :href="item.url" rel="me" />
 
     <link v-if="features.webmention.enable" rel="webmention" href="https://incubator.to/webmention" />
     <link v-if="features.pingback.enable" rel="pingback" href="https://incubator.to/xmlrpc" />
@@ -50,7 +50,7 @@
     </script>
 
     <!-- assets the situation -->
-    <link rel="stylesheet" href="/assets/css/{{module}}.less" />
+    <link rel="stylesheet" href="/assets/css/{{module}}.css" />
     <style v-html="getCss(page.url)"></style>
   </head>
   <body>

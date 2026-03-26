@@ -46,7 +46,7 @@ layout: "base"
     fork and toot or whatever.
   </p>
   <ul class="multi-column" role="list">
-    <li v-for="item in navigation.social">
+    <li v-for="item in social">
       <a class="social-link cluster" :href="item.url" target="_blank" rel="me">
         <inline-svg
           class="icon"

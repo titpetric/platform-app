@@ -5,7 +5,7 @@ import (
 	"io/fs"
 )
 
-//go:embed all:assets all:components all:layouts
+//go:embed all:admin all:assets all:components all:layouts all:pages blog_admin_articles.vuego
 var templateFS embed.FS
 
 // Templates returns the embedded templates for Basecoat.

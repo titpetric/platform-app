@@ -1,0 +1,19 @@
+meta:
+  lang: en
+  url: https://blog.localhost
+  author:
+    name: Blog Author
+  subtitle: A blog about things
+  headshot: /assets/images/headshot.jpg
+
+page:
+  url: /
+
+navigation:
+  social: []
+
+features:
+  webmention:
+    enable: false
+  pingback:
+    enable: false

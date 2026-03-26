@@ -54,4 +54,7 @@ var Funcs = vuego.FuncMap{
 		b, err := json.MarshalIndent(in, "", "  ")
 		return string(b), err
 	},
+	"getCss": func(pageURL string) string {
+		return ""
+	},
 }

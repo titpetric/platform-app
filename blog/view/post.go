@@ -32,13 +32,17 @@ func NewPostData(article *model.Article, content string) *PostData {
 
 // Map converts PostData to a map[string]any.
 func (d *PostData) Map() map[string]any {
-	return map[string]any{
-		"slug":        d.Slug,
-		"title":       d.Title,
-		"description": d.Description,
-		"ogImage":     d.OgImage,
-		"content":     d.Content,
-		"date":        d.Date,
-		"class":       d.Class,
+	m := make(map[string]any)
+	m["slug"] = d.Slug
+	m["title"] = d.Title
+	m["description"] = d.Description
+	m["ogImage"] = d.OgImage
+	m["content"] = d.Content
+	m["date"] = d.Date
+	m["class"] = d.Class
+	m["module"] = "blog"
+	m["page"] = map[string]any{
+		"url": "/blog/" + d.Slug + "/",
 	}
+	return m
 }

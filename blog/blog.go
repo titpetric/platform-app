@@ -13,14 +13,17 @@ import (
 
 	"github.com/titpetric/platform"
 	"github.com/titpetric/vuego"
+	"github.com/titpetric/vuego-cli/basecoat"
 	yaml "gopkg.in/yaml.v3"
 
+	"github.com/titpetric/platform-app/blog/config"
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/service/admin"
 	"github.com/titpetric/platform-app/blog/service/api"
 	"github.com/titpetric/platform-app/blog/service/web"
 	"github.com/titpetric/platform-app/blog/storage"
 	"github.com/titpetric/platform-app/blog/theme"
+	userview "github.com/titpetric/platform-app/user/view"
 )
 
 // Module implements the blog module for the platform.
@@ -45,10 +48,25 @@ type Module struct {
 
 // NewModule creates a new blog module instance.
 func NewModule() *Module {
-	// Check if local theme directory exists
-	var overlay fs.FS = theme.Templates()
+	// Build layered FS: local theme > config data > embedded theme > user views > basecoat
+	var overlay fs.FS
+
+	// Check if local theme directory exists (for development)
 	if _, err := os.Stat("theme"); err == nil {
-		overlay = vuego.NewOverlayFS(os.DirFS("theme"), theme.Templates())
+		overlay = vuego.NewOverlayFS(
+			os.DirFS("theme"),
+			config.ConfigFS(),
+			theme.Templates(),
+			userview.Templates(),
+			basecoat.Templates(),
+		)
+	} else {
+		overlay = vuego.NewOverlayFS(
+			config.ConfigFS(),
+			theme.Templates(),
+			userview.Templates(),
+			basecoat.Templates(),
+		)
 	}
 
 	return &Module{

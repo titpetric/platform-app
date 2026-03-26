@@ -1,7 +1,7 @@
 theme:
   header:
-    title: Pulse
-    subtitle: Keystroke Analytics
-    icon: activity
+    title: Blog
+    subtitle: Articles and thoughts
+    icon: book-open
 
-github: https://github.com/titpetric/platform-app/tree/main/pulse
+github: https://github.com/titpetric/platform-app/tree/main/blog

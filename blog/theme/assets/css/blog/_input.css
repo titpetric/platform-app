@@ -23,34 +23,6 @@ button.link {
   line-height: inherit;
 }
 
-@mixin range-track {
-  background-color: var(--color-track);
-  border-radius: var(--radius-track);
-  height: var(--height-track);
-  width: 100%;
-}
-
-@mixin range-thumb {
-  appearance: none;
-  margin-top: calc((var(--height-thumb) / 2 - var(--height-track) / 2) * -1);
-  background-color: var(--color-thumb);
-  border: none;
-  border-radius: var(--radius-thumb);
-  height: var(--height-thumb);
-  width: var(--width-thumb);
-  box-shadow: var(--color-bg) 0 0 0 4px;
-
-  @media (forced-colors: active) {
-    background-color: CanvasText;
-    box-shadow: Canvas 0 0 0 4px;
-  }
-}
-
-@mixin range-thumb-focus {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-outline-offset);
-}
-
 input[type="range"] {
   --color-track: var(--color-theme);
   --color-thumb: var(--color-theme-offset);
@@ -79,25 +51,59 @@ input[type="range"]:active {
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  @apply range-track;
+  background-color: var(--color-track);
+  border-radius: var(--radius-track);
+  height: var(--height-track);
+  width: 100%;
 }
 
 input[type="range"]::-moz-range-track {
-  @apply range-track;
+  background-color: var(--color-track);
+  border-radius: var(--radius-track);
+  height: var(--height-track);
+  width: 100%;
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  @apply range-thumb;
+  appearance: none;
+  margin-top: calc((var(--height-thumb) / 2 - var(--height-track) / 2) * -1);
+  background-color: var(--color-thumb);
+  border: none;
+  border-radius: var(--radius-thumb);
+  height: var(--height-thumb);
+  width: var(--width-thumb);
+  box-shadow: var(--color-bg) 0 0 0 4px;
 }
 
 input[type="range"]::-moz-range-thumb {
-  @apply range-thumb;
+  appearance: none;
+  margin-top: calc((var(--height-thumb) / 2 - var(--height-track) / 2) * -1);
+  background-color: var(--color-thumb);
+  border: none;
+  border-radius: var(--radius-thumb);
+  height: var(--height-thumb);
+  width: var(--width-thumb);
+  box-shadow: var(--color-bg) 0 0 0 4px;
+}
+
+@media (forced-colors: active) {
+  input[type="range"]::-webkit-slider-thumb {
+    background-color: CanvasText;
+    box-shadow: Canvas 0 0 0 4px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    background-color: CanvasText;
+    box-shadow: Canvas 0 0 0 4px;
+  }
 }
 
 input[type="range"]:focus-visible::-webkit-slider-thumb {
-  @apply range-thumb-focus;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }
 
 input[type="range"]:focus-visible::-moz-range-thumb {
-  @apply range-thumb-focus;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }

@@ -14,9 +14,11 @@
   </p>
 
   <ul class="cluster" style="--gap: var(--space-2xs)" role="list">
-    <li v-for="item in navigation.menu">
-      <a :href="item.url" :aria-current="item.url === page?.url ? 'page' : null" :target="item.target" :ref="item.target ? 'noreferrer noopener' : null">{{ item.label }}</a>
-    </li>
+    <template v-for="group in menu">
+      <li v-for="item in group.items">
+        <a :href="item.url" :aria-current="item.url === page?.url ? 'page' : null" :target="item.target" :ref="item.target ? 'noreferrer noopener' : null">{{ item.label }}</a>
+      </li>
+    </template>
   </ul>
 </footer>
 <style type="text/css+less">
