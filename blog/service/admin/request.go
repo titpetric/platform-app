@@ -2,6 +2,7 @@ package admin
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 	"time"
@@ -18,8 +19,10 @@ type ArticleRequest struct {
 	Description string `json:"description"`
 	Content     string `json:"content"`
 	Date        string `json:"date"`
+	Time        string `json:"time"`
 	Layout      string `json:"layout"`
 	Draft       bool   `json:"draft"`
+	CustomYaml  string `json:"customYaml"`
 }
 
 // Validation constants.
@@ -37,8 +40,8 @@ var allowedLayouts = map[string]bool{
 }
 
 var (
-	slugRegex = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
-	dateRegex = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
+	slugRegex     = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
+	datetimeRegex = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$`)
 )
 
 // Validate validates the request with strict input checking.
@@ -87,13 +90,13 @@ func (r *ArticleRequest) Validate() error {
 		return errors.New("invalid layout")
 	}
 
-	// Date validation - must be YYYY-MM-DD format if provided
+	// Date validation - must be YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS format if provided
 	if r.Date != "" {
-		if !dateRegex.MatchString(r.Date) {
-			return errors.New("date must be in YYYY-MM-DD format")
+		if !datetimeRegex.MatchString(r.Date) {
+			return errors.New("date must be in YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS format")
 		}
-		if _, err := time.Parse("2006-01-02", r.Date); err != nil {
-			return errors.New("invalid date")
+		if _, err := parseDateTime(r.Date); err != nil {
+			return errors.New("invalid date/time")
 		}
 	}
 
@@ -101,6 +104,26 @@ func (r *ArticleRequest) Validate() error {
 	r.Content = sanitizeContent(r.Content)
 
 	return nil
+}
+
+func parseDateTime(s string) (time.Time, error) {
+	formats := []string{
+		time.RFC3339,
+		time.RFC3339Nano,
+		"2006-01-02T15:04:05",
+		"2006-01-02T15:04",
+		"2006-01-02 15:04:05",
+		"2006-01-02 15:04",
+		"2006-01-02",
+	}
+
+	for _, format := range formats {
+		if t, err := time.Parse(format, s); err == nil {
+			return t.UTC(), nil
+		}
+	}
+
+	return time.Time{}, fmt.Errorf("unable to parse datetime: %s", s)
 }
 
 // sanitizeContent removes potentially dangerous HTML content.
@@ -133,8 +156,8 @@ func (r *ArticleRequest) ToArticle() *model.Article {
 	}
 
 	if r.Date != "" {
-		if t, err := time.Parse("2006-01-02", r.Date); err == nil {
-			article.Date = &t
+		if t := r.parseCombinedDateTime(); t != nil {
+			article.Date = t
 		}
 	}
 
@@ -157,12 +180,42 @@ func (r *ArticleRequest) UpdateArticle(existing *model.Article) *model.Article {
 	}
 
 	if r.Date != "" {
-		if t, err := time.Parse("2006-01-02", r.Date); err == nil {
-			existing.Date = &t
+		if t := r.parseCombinedDateTime(); t != nil {
+			existing.Date = t
 		}
 	}
 
 	return existing
+}
+
+// parseCombinedDateTime combines date and time fields into a single time.Time.
+func (r *ArticleRequest) parseCombinedDateTime() *time.Time {
+	if r.Date == "" {
+		return nil
+	}
+
+	dateTime := r.Date
+	if r.Time != "" {
+		dateTime = r.Date + " " + r.Time
+	} else {
+		dateTime = r.Date + " 00:00:00"
+	}
+
+	if t, err := parseDateTime(dateTime); err == nil {
+		return &t
+	}
+	return nil
+}
+
+// formatDateTimeForFrontmatter formats date+time for YAML frontmatter.
+func (r *ArticleRequest) formatDateTimeForFrontmatter() string {
+	if r.Date == "" {
+		return ""
+	}
+	if r.Time != "" {
+		return r.Date + " " + r.Time
+	}
+	return r.Date
 }
 
 // BuildMarkdownContent builds the markdown content with front matter.
@@ -176,8 +229,8 @@ func (r *ArticleRequest) BuildMarkdownContent() string {
 		sb.WriteString("description: \"" + escapeYAML(r.Description) + "\"\n")
 	}
 
-	if r.Date != "" {
-		sb.WriteString("date: \"" + r.Date + "\"\n")
+	if dateStr := r.formatDateTimeForFrontmatter(); dateStr != "" {
+		sb.WriteString("date: \"" + dateStr + "\"\n")
 	}
 
 	if r.Layout != "" && r.Layout != "post" {
@@ -186,6 +239,17 @@ func (r *ArticleRequest) BuildMarkdownContent() string {
 
 	if r.Draft {
 		sb.WriteString("draft: true\n")
+	}
+
+	// Add custom YAML fields if provided
+	if r.CustomYaml != "" {
+		customYaml := strings.TrimSpace(r.CustomYaml)
+		if customYaml != "" {
+			sb.WriteString(customYaml)
+			if !strings.HasSuffix(customYaml, "\n") {
+				sb.WriteString("\n")
+			}
+		}
 	}
 
 	sb.WriteString("---\n\n")

@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	git "github.com/go-git/go-git/v5"
@@ -73,29 +74,40 @@ func (g *GitFS) initNewRepo() error {
 	return nil
 }
 
+// normalizePath strips the root prefix from a path if present.
+func (g *GitFS) normalizePath(name string) string {
+	if strings.HasPrefix(name, g.root+"/") {
+		return strings.TrimPrefix(name, g.root+"/")
+	}
+	if strings.HasPrefix(name, g.root) {
+		return strings.TrimPrefix(name, g.root)
+	}
+	return name
+}
+
 // Open implements fs.FS.
 func (g *GitFS) Open(name string) (fs.File, error) {
-	return os.Open(filepath.Join(g.root, name))
+	return os.Open(filepath.Join(g.root, g.normalizePath(name)))
 }
 
 // ReadDir implements fs.ReadDirFS.
 func (g *GitFS) ReadDir(name string) ([]fs.DirEntry, error) {
-	return os.ReadDir(filepath.Join(g.root, name))
+	return os.ReadDir(filepath.Join(g.root, g.normalizePath(name)))
 }
 
 // ReadFile implements fs.ReadFileFS.
 func (g *GitFS) ReadFile(name string) ([]byte, error) {
-	return os.ReadFile(filepath.Join(g.root, name))
+	return os.ReadFile(filepath.Join(g.root, g.normalizePath(name)))
 }
 
 // Stat implements fs.StatFS.
 func (g *GitFS) Stat(name string) (fs.FileInfo, error) {
-	return os.Stat(filepath.Join(g.root, name))
+	return os.Stat(filepath.Join(g.root, g.normalizePath(name)))
 }
 
 // WriteFile writes content to a file and commits the change.
 func (g *GitFS) WriteFile(name string, data []byte, perm fs.FileMode, auditMsg string) error {
-	fullPath := filepath.Join(g.root, name)
+	fullPath := filepath.Join(g.root, g.normalizePath(name))
 
 	// Ensure parent directory exists
 	dir := filepath.Dir(fullPath)
@@ -113,7 +125,7 @@ func (g *GitFS) WriteFile(name string, data []byte, perm fs.FileMode, auditMsg s
 
 // Remove removes a file and commits the change.
 func (g *GitFS) Remove(name string, auditMsg string) error {
-	fullPath := filepath.Join(g.root, name)
+	fullPath := filepath.Join(g.root, g.normalizePath(name))
 
 	if err := os.Remove(fullPath); err != nil {
 		return fmt.Errorf("failed to remove file: %w", err)

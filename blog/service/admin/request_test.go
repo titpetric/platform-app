@@ -46,7 +46,7 @@ func TestArticleRequest_Validate(t *testing.T) {
 		{
 			name:    "invalid date format",
 			req:     ArticleRequest{Slug: "test-slug", Title: "Test", Content: "Content", Date: "15-01-2024"},
-			wantErr: "date must be in YYYY-MM-DD format",
+			wantErr: "date must be in YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS format",
 		},
 		{
 			name:    "valid request",

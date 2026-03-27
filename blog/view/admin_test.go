@@ -59,7 +59,7 @@ func TestAdminListData_TotalPages(t *testing.T) {
 }
 
 func TestNewAdminEditData_NewArticle(t *testing.T) {
-	data := NewAdminEditData(nil, "")
+	data := NewAdminEditData(nil, "", "")
 
 	assert.Equal(t, "New Article", data.Title)
 	assert.True(t, data.IsNew)
@@ -76,12 +76,13 @@ func TestNewAdminEditData_ExistingArticle(t *testing.T) {
 		Draft:       1,
 	}
 
-	data := NewAdminEditData(article, "# Content")
+	data := NewAdminEditData(article, "# Content", "og_image: /test.jpg")
 
 	assert.Equal(t, "Edit: Test Article", data.Title)
 	assert.False(t, data.IsNew)
 	assert.NotNil(t, data.Article)
 	assert.Equal(t, "# Content", data.Content)
+	assert.Equal(t, "og_image: /test.jpg", data.CustomYaml)
 }
 
 func TestAdminEditData_Map(t *testing.T) {
@@ -94,7 +95,7 @@ func TestAdminEditData_Map(t *testing.T) {
 		Draft:       1,
 	}
 
-	data := NewAdminEditData(article, "# Content")
+	data := NewAdminEditData(article, "# Content", "")
 	m := data.Map()
 
 	assert.Equal(t, "Edit: Test Article", m["title"])

@@ -10,7 +10,7 @@ title: Blog Dashboard
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <a href="/admin/blog/drafts" class="card hover:border-primary transition-colors">
+      <a href="/admin/drafts" class="card hover:border-primary transition-colors">
         <header>
           <h2>Drafts</h2>
           <p>Unpublished articles</p>
@@ -20,7 +20,7 @@ title: Blog Dashboard
         </section>
       </a>
 
-      <a href="/admin/blog/scheduled" class="card hover:border-primary transition-colors">
+      <a href="/admin/scheduled" class="card hover:border-primary transition-colors">
         <header>
           <h2>Scheduled</h2>
           <p>Future publication</p>
@@ -30,7 +30,7 @@ title: Blog Dashboard
         </section>
       </a>
 
-      <a href="/admin/blog/published" class="card hover:border-primary transition-colors">
+      <a href="/admin/published" class="card hover:border-primary transition-colors">
         <header>
           <h2>Published</h2>
           <p>Live articles</p>
@@ -46,7 +46,7 @@ title: Blog Dashboard
         <h2>Quick Actions</h2>
       </header>
       <section class="flex gap-4">
-        <a href="/admin/blog/new" class="btn btn-primary">New Article</a>
+        <a href="/admin/new" class="btn btn-primary">New Article</a>
         <a href="/blog" class="btn btn-secondary">View Blog</a>
       </section>
     </div>

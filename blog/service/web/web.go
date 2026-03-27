@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/titpetric/platform"
@@ -17,14 +16,16 @@ import (
 // Handlers provides HTTP handlers for blog web endpoints.
 type Handlers struct {
 	repository *storage.Storage
+	contentFS  *storage.GitFS
 	views      *view.Views
 	themeFS    fs.FS
 }
 
 // NewHandlers returns a new Handlers instance.
-func NewHandlers(repo *storage.Storage, themeFS fs.FS) *Handlers {
+func NewHandlers(repo *storage.Storage, contentFS *storage.GitFS, themeFS fs.FS) *Handlers {
 	return &Handlers{
 		repository: repo,
+		contentFS:  contentFS,
 		views:      view.NewViews(themeFS),
 		themeFS:    themeFS,
 	}
@@ -123,7 +124,7 @@ func (h *Handlers) getArticleHTML(w http.ResponseWriter, r *http.Request) error 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 
-	content, err := os.ReadFile(article.Filename)
+	content, err := h.contentFS.ReadFile(article.Filename)
 	if err != nil {
 		return ErrNotFound("article content not found", err)
 	}

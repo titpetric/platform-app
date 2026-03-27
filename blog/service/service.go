@@ -112,7 +112,7 @@ func (m *BlogModule) initHandlers(ctx context.Context) error {
 	}
 
 	m.mountFns = []func(platform.Router){
-		web.NewHandlers(m.repository, webFS).Mount,
+		web.NewHandlers(m.repository, m.contentFS, webFS).Mount,
 		api.NewHandlers(m.repository).Mount,
 		admin.NewHandlers(m.repository, m.contentFS, adminFS).Mount,
 	}
@@ -153,7 +153,13 @@ func (m *BlogModule) scanMarkdownFiles(ctx context.Context) (int, error) {
 
 		count++
 
-		article, err := m.parseMarkdownFile(path)
+		// Get path relative to dataDir for storage
+		relPath, err := filepath.Rel(m.dataDir, path)
+		if err != nil {
+			return fmt.Errorf("failed to get relative path for %s: %w", path, err)
+		}
+
+		article, err := m.parseMarkdownFile(path, relPath)
 		if err != nil {
 			return fmt.Errorf("failed to parse %s: %w", path, err)
 		}
@@ -173,7 +179,8 @@ func (m *BlogModule) scanMarkdownFiles(ctx context.Context) (int, error) {
 }
 
 // parseMarkdownFile parses a markdown file and extracts metadata.
-func (m *BlogModule) parseMarkdownFile(filePath string) (*model.Article, error) {
+// relPath is the path relative to the data directory for storage.
+func (m *BlogModule) parseMarkdownFile(filePath string, relPath string) (*model.Article, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
@@ -223,7 +230,7 @@ func (m *BlogModule) parseMarkdownFile(filePath string) (*model.Article, error) 
 		Slug:        slug,
 		Title:       meta.Title,
 		Description: meta.Description,
-		Filename:    filePath,
+		Filename:    relPath,
 		Date:        stamp,
 		OgImage:     meta.OgImage,
 		Layout:      layout,

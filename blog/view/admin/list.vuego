@@ -8,11 +8,11 @@ layout: content
         <h1 class="text-2xl font-semibold">{{ title }}</h1>
         <p class="text-muted-foreground">{{ total }} articles</p>
       </div>
-      <a href="/admin/blog/new" class="btn btn-primary">New Article</a>
+      <a href="/admin/new" class="btn btn-primary">New Article</a>
     </div>
 
     <nav class="flex gap-2 text-sm">
-      <a href="/admin/blog" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+      <a href="/admin/" class="text-muted-foreground hover:text-foreground">Dashboard</a>
       <span class="text-muted-foreground">/</span>
       <span>{{ title }}</span>
     </nav>
@@ -32,7 +32,7 @@ layout: content
             <template v-if="articles">
               <tr v-for="article in articles">
                 <td>
-                  <a :href="'/admin/blog/articles/' + article.Slug" class="font-medium hover:text-primary">
+                  <a :href="'/admin/articles/' + article.Slug" class="font-medium hover:text-primary">
                     {{ article.Title }}
                   </a>
                 </td>
@@ -43,17 +43,19 @@ layout: content
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-sm btn-secondary">Edit</a>
+                    <a :href="'/admin/articles/' + article.Slug + '/edit'" class="btn btn-sm btn-secondary">Edit</a>
                     <a :href="'/blog/' + article.Slug" class="btn btn-sm btn-ghost" target="_blank">View</a>
                   </div>
                 </td>
               </tr>
             </template>
-            <tr v-if="!articles || articles.length == 0">
-              <td colspan="4" class="text-center text-muted-foreground py-8">
-                No articles found
-              </td>
-            </tr>
+            <template v-else>
+              <tr>
+                <td colspan="4" class="text-center text-muted-foreground py-8">
+                  No articles found
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </section>
@@ -71,7 +73,7 @@ layout: content
       </div>
     </template>
 
-    <a href="/admin/blog" class="text-sm text-muted-foreground hover:text-foreground">
+    <a href="/admin/" class="text-sm text-muted-foreground hover:text-foreground">
       ← Back to Dashboard
     </a>
   </div>

@@ -54,7 +54,7 @@ func (g *Generator) Generate(ctx context.Context) error {
 	}
 
 	// Create handlers for rendering
-	h := web.NewHandlers(g.module.repository, g.themeFS)
+	h := web.NewHandlers(g.module.repository, g.module.contentFS, g.themeFS)
 
 	// Generate index page
 	fmt.Println("Generating index.html...")

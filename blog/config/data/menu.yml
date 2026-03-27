@@ -36,19 +36,19 @@ menuLoggedIn:
     label: Admin
     items:
       - label: Dashboard
-        url: /admin/blog
+        url: /admin/
         icon: layout-dashboard
       - label: Drafts
-        url: /admin/blog/drafts
+        url: /admin/drafts
         icon: file-edit
       - label: Scheduled
-        url: /admin/blog/scheduled
+        url: /admin/scheduled
         icon: calendar
       - label: Published
-        url: /admin/blog/published
+        url: /admin/published
         icon: check-circle
       - label: New Article
-        url: /admin/blog/new
+        url: /admin/new
         icon: plus
   - type: group
     label: Account

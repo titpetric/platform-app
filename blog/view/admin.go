@@ -73,18 +73,22 @@ func (d *AdminListData) TotalPages() int {
 
 // AdminEditData holds data for the article edit page.
 type AdminEditData struct {
-	Title   string
-	Article *model.Article
-	Content string
-	IsNew   bool
+	Title      string
+	Article    *model.Article
+	Content    string
+	CustomYaml string
+	IsNew      bool
 }
 
 // NewAdminEditData creates AdminEditData for editing or creating an article.
-func NewAdminEditData(article *model.Article, content string) *AdminEditData {
+// rawContent is the full file content including frontmatter (for custom YAML extraction).
+// bodyContent is the content without frontmatter.
+func NewAdminEditData(article *model.Article, bodyContent string, customYaml string) *AdminEditData {
 	data := &AdminEditData{
-		Article: article,
-		Content: content,
-		IsNew:   article == nil,
+		Article:    article,
+		Content:    bodyContent,
+		CustomYaml: customYaml,
+		IsNew:      article == nil,
 	}
 
 	if article != nil {
@@ -112,8 +116,23 @@ func (d *AdminEditData) Map() map[string]any {
 		data["layout"] = d.Article.Layout
 		data["draft"] = d.Article.Draft != 0
 		if d.Article.Date != nil {
-			data["date"] = d.Article.Date.Format("2006-01-02")
+			data["date"] = d.Article.Date.UTC().Format("2006-01-02")
+			data["time"] = d.Article.Date.UTC().Format("15:04:05")
+		} else {
+			data["date"] = ""
+			data["time"] = ""
 		}
+		data["customYaml"] = d.CustomYaml
+	} else {
+		// Provide default values for new article form
+		data["slug"] = ""
+		data["articleTitle"] = ""
+		data["description"] = ""
+		data["layout"] = "post"
+		data["draft"] = false
+		data["date"] = ""
+		data["time"] = ""
+		data["customYaml"] = ""
 	}
 
 	return data

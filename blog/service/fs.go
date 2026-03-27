@@ -9,9 +9,9 @@ import (
 	"github.com/titpetric/platform-app/blog/view"
 )
 
-// FS returns a layered filesystem combining config and blog view assets.
+// FS returns a layered filesystem combining config, blog view assets, and basecoat.
 func FS(configFS fs.FS) fs.FS {
-	return vuego.NewOverlayFS(configFS, view.Templates())
+	return vuego.NewOverlayFS(configFS, view.Templates(), basecoat.Templates())
 }
 
 // AdminFS roots the template FS in admin/ for custom layouts.

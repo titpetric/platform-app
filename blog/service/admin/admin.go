@@ -52,6 +52,7 @@ func (h *Handlers) Mount(r platform.Router) {
 		r.Get("/admin/published.json", h.ListPublishedJSON)
 		r.Get("/admin/articles/{slug}.json", h.GetArticleJSON)
 
+		r.Get("/admin/articles/{slug}/check", h.CheckSlugJSON)
 		r.Post("/admin/articles", h.CreateArticleJSON)
 		r.Put("/admin/articles/{slug}", h.UpdateArticleJSON)
 		r.Delete("/admin/articles/{slug}", h.DeleteArticleJSON)
@@ -191,13 +192,16 @@ func (h *Handlers) editArticleHTML(w http.ResponseWriter, r *http.Request) error
 		return ErrNotFound("article not found", err)
 	}
 
-	// Read the markdown content
+	// Read the markdown content and strip frontmatter (metadata is from DB)
 	content, err := h.contentFS.ReadFile(article.Filename)
 	if err != nil {
 		return ErrInternal("failed to read article content", err)
 	}
 
-	data := view.NewAdminEditData(article, string(content))
+	// Strip frontmatter and extract custom YAML
+	bodyContent := view.StripFrontMatter(content)
+	customYaml := view.ExtractCustomYAML(content)
+	data := view.NewAdminEditData(article, string(bodyContent), customYaml)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := h.views.Edit(data).Render(ctx, w); err != nil {
@@ -212,7 +216,7 @@ func (h *Handlers) NewArticleHTML(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) newArticleHTML(w http.ResponseWriter, r *http.Request) error {
-	data := view.NewAdminEditData(nil, "")
+	data := view.NewAdminEditData(nil, "", "")
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := h.views.Edit(data).Render(r.Context(), w); err != nil {
@@ -305,6 +309,22 @@ func (h *Handlers) listPublishedJSON(w http.ResponseWriter, r *http.Request) err
 	})
 }
 
+// CheckSlugJSON checks if a slug is available for use.
+func (h *Handlers) CheckSlugJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.checkSlugJSON(w, r))
+}
+
+func (h *Handlers) checkSlugJSON(w http.ResponseWriter, r *http.Request) error {
+	slug := platform.URLParam(r, "slug")
+
+	_, err := h.repository.GetArticleBySlug(r.Context(), slug)
+	if err != nil {
+		return writeJSON(w, map[string]bool{"available": true})
+	}
+
+	return writeJSON(w, map[string]bool{"available": false})
+}
+
 // GetArticleJSON returns a single article as JSON.
 func (h *Handlers) GetArticleJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.getArticleJSON(w, r))
@@ -345,7 +365,7 @@ func (h *Handlers) createArticleJSON(w http.ResponseWriter, r *http.Request) err
 		return ErrInternal("failed to write article file", err)
 	}
 
-	article.Filename = h.contentFS.Root() + "/" + filename
+	article.Filename = filename
 
 	// Insert into database
 	if err := h.repository.InsertArticle(r.Context(), article); err != nil {

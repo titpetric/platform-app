@@ -41,8 +41,15 @@ layout: content
 .form-group.has-error select {
   border-color: var(--destructive);
 }
+.slug-status {
+  font-size: 0.75rem;
+  margin-top: 0.125rem;
+}
+.slug-status.available { color: var(--primary); }
+.slug-status.taken { color: var(--destructive); }
+.slug-status.checking { color: var(--muted-foreground); }
 </style>
-<template :require="title,isNew,slug,articleTitle,description,content,date,layout,draft">
+<template :require="title,isNew,slug,articleTitle,description,content,date,time,layout,draft,customYaml">
   <div class="flex flex-col gap-6">
     <div class="flex justify-between items-center">
       <div>
@@ -57,122 +64,88 @@ layout: content
     </div>
 
     <nav class="flex gap-2 text-sm">
-      <a href="/admin/blog" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+      <a href="/admin/" class="text-muted-foreground hover:text-foreground">Dashboard</a>
       <span class="text-muted-foreground">/</span>
       <span>{{ title }}</span>
     </nav>
 
-    <form id="article-form" class="flex flex-col gap-6" novalidate>
+    <form id="article-form" class="flex flex-col gap-4" novalidate>
       <div class="card">
-        <header>
-          <h2>Article Details</h2>
-        </header>
         <section>
-          <div class="form-grid">
-            <div class="form-group" id="slug-group">
-              <label for="slug">Slug <span class="text-destructive">*</span></label>
-              <input
-                type="text"
-                id="slug"
-                name="slug"
-                :value="slug"
-                class="input"
-                placeholder="my-article-slug"
-                pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
-                maxlength="100"
-                required
-                :disabled="!isNew"
-              />
-              <p class="form-hint">URL-safe identifier (lowercase letters, numbers, hyphens only)</p>
-              <p class="form-error">Slug must be lowercase alphanumeric with hyphens</p>
-            </div>
-
-            <div class="form-group" id="date-group">
-              <label for="date">Publication Date</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                :value="date"
-                class="input"
-              />
-              <p class="form-hint">Future dates will schedule the article for auto-publish</p>
-            </div>
-
-            <div class="form-group form-full" id="title-group">
+          <div class="flex flex-col gap-4">
+            <div class="form-group" id="title-group">
               <label for="title">Title <span class="text-destructive">*</span></label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                :value="articleTitle"
-                class="input"
-                placeholder="Article Title"
-                maxlength="200"
-                required
-              />
+              <input type="text" id="title" name="title" :value="articleTitle" class="input" placeholder="Article Title" maxlength="200" required />
               <p class="form-error">Title is required (max 200 characters)</p>
             </div>
 
-            <div class="form-group form-full" id="description-group">
+            <div class="form-grid">
+              <div class="form-group" id="slug-group">
+                <label for="slug">Slug <span class="text-destructive">*</span></label>
+                <input type="text" id="slug" name="slug" :value="slug" class="input" placeholder="my-article-slug" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" maxlength="100" required :disabled="!isNew" />
+                <p class="form-hint">URL-safe identifier (lowercase, numbers, hyphens)</p>
+                <p class="form-error">Slug must be lowercase alphanumeric with hyphens</p>
+                <template v-if="isNew">
+                  <p id="slug-status" class="slug-status"></p>
+                </template>
+              </div>
+              <div class="form-group" id="layout-group">
+                <label for="layout">Layout</label>
+                <select id="layout" name="layout" class="select">
+                  <option value="post" :selected="layout == 'post' || layout == ''">Post</option>
+                  <option value="page" :selected="layout == 'page'">Page</option>
+                </select>
+                <p class="form-hint">Post for blog entries, Page for static content</p>
+              </div>
+            </div>
+
+            <div class="form-group" id="description-group">
               <label for="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                class="input"
-                rows="2"
-                maxlength="500"
-                placeholder="Brief description for SEO and previews (max 500 characters)">{{ description }}</textarea>
+              <textarea id="description" name="description" class="input" rows="2" maxlength="500" placeholder="Brief description for SEO and previews">{{ description }}</textarea>
               <p class="form-hint">Used in meta tags and article previews</p>
-            </div>
-
-            <div class="form-group" id="layout-group">
-              <label for="layout">Layout</label>
-              <select id="layout" name="layout" class="input">
-                <option value="post" :selected="layout == 'post' || !layout">Post</option>
-                <option value="page" :selected="layout == 'page'">Page</option>
-              </select>
-              <p class="form-hint">Post for blog entries, Page for static content</p>
-            </div>
-
-            <div class="form-group flex-row items-center gap-3">
-              <input
-                type="checkbox"
-                id="draft"
-                name="draft"
-                :checked="draft"
-                class="checkbox"
-              />
-              <label for="draft" class="mb-0 cursor-pointer">Save as draft (unpublished)</label>
             </div>
           </div>
         </section>
       </div>
 
       <div class="card">
-        <header>
-          <h2>Content <span class="text-destructive">*</span></h2>
-          <p>Write your article in Markdown format</p>
-        </header>
         <section>
           <div class="form-group" id="content-group">
-            <textarea
-              id="content"
-              name="content"
-              class="input font-mono"
-              rows="20"
-              required
-              placeholder="# Your Article
-
-Write your content here using Markdown...
-
-## Subheading
-
-- List item 1
-- List item 2
-
-**Bold text** and *italic text*">{{ content }}</textarea>
+            <label for="content">Content <span class="text-destructive">*</span></label>
+            <textarea id="content" name="content" class="input font-mono" rows="20" required placeholder="Write your article in Markdown...">{{ content }}</textarea>
             <p class="form-error">Content is required</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="card">
+        <section>
+          <div class="flex flex-col gap-4">
+            <div class="form-grid">
+              <div class="form-group" id="date-group">
+                <label for="date">Publication Date (UTC)</label>
+                <input type="date" id="date" name="date" :value="date" class="input" />
+                <p class="form-hint">Future dates schedule for auto-publish</p>
+              </div>
+              <div class="form-group" id="time-group">
+                <label for="time">Publication Time (UTC)</label>
+                <input type="time" id="time" name="time" :value="time" class="input" step="1" />
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="draft" name="draft" :checked="draft" class="checkbox" />
+              <label for="draft" class="cursor-pointer" style="font-size:0.875rem;font-weight:500">Save as draft (unpublished)</label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card">
+        <section>
+          <div class="form-group" id="custom-yaml-group">
+            <label for="customYaml">Custom Metadata (YAML)</label>
+            <textarea id="customYaml" name="customYaml" class="input font-mono" rows="3">{{ customYaml }}</textarea>
+            <p class="form-hint">Additional YAML fields for frontmatter (e.g., og_image: /images/cover.jpg)</p>
           </div>
         </section>
       </div>
@@ -182,7 +155,7 @@ Write your content here using Markdown...
           <template v-if="isNew">Create Article</template>
           <template v-else>Save Changes</template>
         </button>
-        <a href="/admin/blog" class="btn btn-secondary">Cancel</a>
+        <a href="/admin/" class="btn btn-secondary">Cancel</a>
         <template v-if="!isNew">
           <button type="button" id="delete-btn" class="btn btn-destructive ml-auto">Delete</button>
         </template>
@@ -201,8 +174,9 @@ Write your content here using Markdown...
       const isNew = {{ json isNew }};
       const currentSlug = {{ json slug }};
 
-      // Validation patterns
       const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+      let slugAvailable = !isNew;
+      let slugCheckTimer = null;
 
       function showError(groupId, show) {
         const group = document.getElementById(groupId);
@@ -220,25 +194,93 @@ Write your content here using Markdown...
         }
       }
 
+      function slugify(text) {
+        return text.toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .substring(0, 100);
+      }
+
+      function setSlugStatus(text, className) {
+        const el = document.getElementById('slug-status');
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'slug-status ' + className;
+      }
+
+      function checkSlug(slug) {
+        if (!slug || !slugPattern.test(slug)) {
+          slugAvailable = false;
+          setSlugStatus('', '');
+          return;
+        }
+        setSlugStatus('Checking availability…', 'checking');
+        fetch('/admin/articles/' + encodeURIComponent(slug) + '/check')
+          .then(r => r.json())
+          .then(data => {
+            slugAvailable = data.available;
+            if (data.available) {
+              setSlugStatus('✓ Slug is available', 'available');
+              showError('slug-group', false);
+            } else {
+              setSlugStatus('✗ Slug already exists', 'taken');
+              showError('slug-group', true);
+            }
+          })
+          .catch(() => {
+            slugAvailable = false;
+            setSlugStatus('Unable to verify', 'checking');
+          });
+      }
+
+      function debouncedCheckSlug(slug) {
+        clearTimeout(slugCheckTimer);
+        slugCheckTimer = setTimeout(() => checkSlug(slug), 300);
+      }
+
+      // Auto-generate slug from title on new articles
+      if (isNew) {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        let slugManuallyEdited = false;
+
+        slugInput.addEventListener('input', function(e) {
+          const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+          e.target.value = value;
+          slugManuallyEdited = true;
+          showError('slug-group', value && !slugPattern.test(value));
+          debouncedCheckSlug(value);
+        });
+
+        titleInput.addEventListener('input', function() {
+          if (slugManuallyEdited) return;
+          const generated = slugify(titleInput.value);
+          slugInput.value = generated;
+          debouncedCheckSlug(generated);
+        });
+
+        slugInput.addEventListener('focus', function() {
+          slugManuallyEdited = true;
+        });
+      }
+
       function validateForm() {
         let valid = true;
         const formData = new FormData(form);
 
-        // Validate slug (only for new articles)
         if (isNew) {
           const slug = formData.get('slug').trim();
           const slugValid = slug && slugPattern.test(slug) && slug.length <= 100;
           showError('slug-group', !slugValid);
-          if (!slugValid) valid = false;
+          if (!slugValid || !slugAvailable) valid = false;
         }
 
-        // Validate title
         const title = formData.get('title').trim();
         const titleValid = title && title.length <= 200;
         showError('title-group', !titleValid);
         if (!titleValid) valid = false;
 
-        // Validate content
         const content = formData.get('content').trim();
         const contentValid = content && content.length > 0;
         showError('content-group', !contentValid);
@@ -246,13 +288,6 @@ Write your content here using Markdown...
 
         return valid;
       }
-
-      // Real-time validation
-      document.getElementById('slug')?.addEventListener('input', function(e) {
-        const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
-        e.target.value = value;
-        showError('slug-group', value && !slugPattern.test(value));
-      });
 
       document.getElementById('title')?.addEventListener('blur', function(e) {
         showError('title-group', !e.target.value.trim());
@@ -280,12 +315,13 @@ Write your content here using Markdown...
           description: formData.get('description')?.trim() || '',
           content: formData.get('content').trim(),
           date: formData.get('date') || '',
+          time: formData.get('time') || '',
           layout: formData.get('layout') || 'post',
           draft: formData.get('draft') === 'on'
         };
 
         try {
-          const url = isNew ? '/admin/blog/articles' : '/admin/blog/articles/' + currentSlug;
+          const url = isNew ? '/admin/articles' : '/admin/articles/' + currentSlug;
           const method = isNew ? 'POST' : 'PUT';
 
           const response = await fetch(url, {
@@ -298,7 +334,7 @@ Write your content here using Markdown...
             const result = await response.json();
             showMessage('Article saved successfully!', false);
             setTimeout(() => {
-              window.location.href = '/admin/blog/articles/' + result.slug;
+              window.location.href = '/admin/articles/' + result.slug;
             }, 500);
           } else {
             const error = await response.text();
@@ -323,14 +359,14 @@ Write your content here using Markdown...
           deleteBtn.textContent = 'Deleting...';
 
           try {
-            const response = await fetch('/admin/blog/articles/' + currentSlug, {
+            const response = await fetch('/admin/articles/' + currentSlug, {
               method: 'DELETE'
             });
 
             if (response.ok) {
               showMessage('Article deleted successfully!', false);
               setTimeout(() => {
-                window.location.href = '/admin/blog';
+                window.location.href = '/admin/';
               }, 500);
             } else {
               const error = await response.text();
