@@ -19,5 +19,11 @@
 @import "blog/_input.css";
 @import "blog/_quote.css";
 
+/* Components */
+@import "blog/_theme-machine.css";
+@import "blog/_site-header.css";
+@import "blog/_site-footer.css";
+@import "blog/_article-list.css";
+
 /* Utilities */
 @import "blog/_utils.css";
