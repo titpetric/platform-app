@@ -1,6 +1,22 @@
 ---
 layout: content
 ---
+<link rel="stylesheet" href="/assets/markdown/editor.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/assets/markdown/editor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const elem = document.querySelector('input.datepicker-input');
+  const datepicker = new Datepicker(elem, {
+    autohide: true,
+    format: 'yyyy-mm-dd',
+  });
+});
+</script>
+
 <style>
 .form-grid {
   display: grid;
@@ -48,8 +64,15 @@ layout: content
 .slug-status.available { color: var(--primary); }
 .slug-status.taken { color: var(--destructive); }
 .slug-status.checking { color: var(--muted-foreground); }
+#markdown-editor .md-editor-content-area {
+  height: 400px;
+}
+#markdown-editor .md-markdown-area,
+#markdown-editor .md-editable-area {
+  height: 100%;
+}
 </style>
-<template :require="title,isNew,slug,articleTitle,description,content,date,time,layout,draft,customYaml">
+<template :require="title,isNew,slug,articleTitle,description,bodyContent,date,time,layout,draft,customYaml">
   <div class="flex flex-col gap-6">
     <div class="flex justify-between items-center">
       <div>
@@ -101,7 +124,7 @@ layout: content
 
             <div class="form-group" id="description-group">
               <label for="description">Description</label>
-              <textarea id="description" name="description" class="input" rows="2" maxlength="500" placeholder="Brief description for SEO and previews">{{ description }}</textarea>
+              <textarea id="description" name="description" class="textarea" rows="2" maxlength="500" placeholder="Brief description for SEO and previews">{{ description }}</textarea>
               <p class="form-hint">Used in meta tags and article previews</p>
             </div>
           </div>
@@ -111,8 +134,9 @@ layout: content
       <div class="card">
         <section>
           <div class="form-group" id="content-group">
-            <label for="content">Content <span class="text-destructive">*</span></label>
-            <textarea id="content" name="content" class="input font-mono" rows="20" required placeholder="Write your article in Markdown...">{{ content }}</textarea>
+            <label for="body-content">Content <span class="text-destructive">*</span></label>
+            <div id="markdown-editor"></div>
+            <textarea id="body-content" name="content" style="display:none" required>{{ bodyContent }}</textarea>
             <p class="form-error">Content is required</p>
           </div>
         </section>
@@ -124,12 +148,18 @@ layout: content
             <div class="form-grid">
               <div class="form-group" id="date-group">
                 <label for="date">Publication Date (UTC)</label>
-                <input type="date" id="date" name="date" :value="date" class="input" />
+                <div style="position:relative">
+                  <input type="text" id="date" name="date" :value="date" class="input datepicker-input" style="padding-right:2.5rem" />
+                  <i data-lucide="calendar-days" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);width:1rem;height:1rem;pointer-events:none;color:var(--muted-foreground)"></i>
+                </div>
                 <p class="form-hint">Future dates schedule for auto-publish</p>
               </div>
               <div class="form-group" id="time-group">
                 <label for="time">Publication Time (UTC)</label>
-                <input type="time" id="time" name="time" :value="time" class="input" step="1" />
+                <div style="position:relative">
+                  <input type="text" id="time" name="time" :value="time" class="input" style="padding-right:2.5rem" step="1" />
+                  <i data-lucide="clock-10" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);width:1rem;height:1rem;pointer-events:none;color:var(--muted-foreground)"></i>
+                </div>
               </div>
             </div>
             <div class="flex items-center gap-2">
@@ -144,7 +174,7 @@ layout: content
         <section>
           <div class="form-group" id="custom-yaml-group">
             <label for="customYaml">Custom Metadata (YAML)</label>
-            <textarea id="customYaml" name="customYaml" class="input font-mono" rows="3">{{ customYaml }}</textarea>
+            <textarea id="customYaml" name="customYaml" class="textarea font-mono" rows="3">{{ customYaml }}</textarea>
             <p class="form-hint">Additional YAML fields for frontmatter (e.g., og_image: /images/cover.jpg)</p>
           </div>
         </section>
@@ -171,8 +201,18 @@ layout: content
       const deleteBtn = document.getElementById('delete-btn');
       const submitBtn = document.getElementById('submit-btn');
       const formMessage = document.getElementById('form-message');
-      const isNew = {{ json isNew }};
-      const currentSlug = {{ json slug }};
+      const contentTextarea = document.getElementById('body-content');
+      const isNew = {{ json(isNew) }};
+      const currentSlug = {{ json(slug) }};
+
+      const mdEditor = new MarkdownWYSIWYG('markdown-editor', {
+        initialValue: contentTextarea.value,
+        initialMode: 'markdown',
+        showToolbar: true,
+        onUpdate: function(markdownContent) {
+          contentTextarea.value = markdownContent;
+        }
+      });
 
       const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
       let slugAvailable = !isNew;
@@ -281,7 +321,7 @@ layout: content
         showError('title-group', !titleValid);
         if (!titleValid) valid = false;
 
-        const content = formData.get('content').trim();
+        const content = mdEditor.getValue().trim();
         const contentValid = content && content.length > 0;
         showError('content-group', !contentValid);
         if (!contentValid) valid = false;
@@ -291,10 +331,6 @@ layout: content
 
       document.getElementById('title')?.addEventListener('blur', function(e) {
         showError('title-group', !e.target.value.trim());
-      });
-
-      document.getElementById('content')?.addEventListener('blur', function(e) {
-        showError('content-group', !e.target.value.trim());
       });
 
       form.addEventListener('submit', async function(e) {
@@ -313,7 +349,7 @@ layout: content
           slug: isNew ? formData.get('slug').trim() : currentSlug,
           title: formData.get('title').trim(),
           description: formData.get('description')?.trim() || '',
-          content: formData.get('content').trim(),
+          content: mdEditor.getValue().trim(),
           date: formData.get('date') || '',
           time: formData.get('time') || '',
           layout: formData.get('layout') || 'post',

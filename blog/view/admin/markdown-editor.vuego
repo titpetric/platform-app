@@ -1,0 +1,46 @@
+---
+---
+<!--
+  Markdown Editor Component
+
+  This is the markdown WYSIWYG editor. Styles are in /assets/markdown/editor.css
+  and use the basecoat CSS variables (--background, --foreground, --primary, etc.)
+
+  Usage:
+  1. Include in your page:
+     <link rel="stylesheet" href="/assets/markdown/editor.css">
+     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+     <script src="/assets/markdown/editor.js"></script>
+
+  2. Create a container element:
+     <div id="my-editor"></div>
+     <textarea id="content" name="content" style="display:none">{{ content }}</textarea>
+
+  3. Initialize the editor:
+     const mdEditor = new MarkdownWYSIWYG('my-editor', {
+       initialValue: document.getElementById('content').value,
+       initialMode: 'markdown',  // or 'wysiwyg'
+       showToolbar: true,
+       onUpdate: function(markdownContent) {
+         document.getElementById('content').value = markdownContent;
+       }
+     });
+
+  4. Get/set content programmatically:
+     const content = mdEditor.getValue();
+     mdEditor.setValue('# New content');
+
+  Icons:
+  The editor uses Lucide icons via data-lucide attributes. Ensure Lucide is loaded
+  (typically in footer.vuego) before initializing the editor.
+
+  Toolbar buttons use these Lucide icons:
+  - heading, bold, italic, strikethrough, link
+  - list, list-ordered, outdent, indent
+  - text-quote, minus (hr), table
+  - code, braces (inline code), image
+  - between-vertical-start/end (row above/below)
+  - between-horizontal-start/end (column left/right)
+-->
+<template>
+</template>
