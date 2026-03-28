@@ -11,6 +11,24 @@ import (
 
 // Funcs provides template helper functions for the blog views.
 var Funcs = vuego.FuncMap{
+	"formatDate": func(val any, showTime bool) string {
+		var t time.Time
+		switch v := val.(type) {
+		case time.Time:
+			t = v
+		case *time.Time:
+			if v == nil {
+				return ""
+			}
+			t = *v
+		default:
+			return fmt.Sprintf("%v", val)
+		}
+		if showTime {
+			return t.Format("January 2, 2006 at 3:04 PM")
+		}
+		return t.Format("January 2, 2006")
+	},
 	"postDate": func(val any) any {
 		layoutStr := "2006/01/02 15:04"
 

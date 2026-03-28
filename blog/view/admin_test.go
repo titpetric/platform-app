@@ -99,7 +99,7 @@ func TestAdminEditData_Map(t *testing.T) {
 	m := data.Map()
 
 	assert.Equal(t, "Edit: Test Article", m["title"])
-	assert.Equal(t, "# Content", m["content"])
+	assert.Equal(t, "# Content", m["bodyContent"])
 	assert.False(t, m["isNew"].(bool))
 	assert.Equal(t, "test", m["slug"])
 	assert.Equal(t, "Test Article", m["articleTitle"])

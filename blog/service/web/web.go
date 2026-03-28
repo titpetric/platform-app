@@ -156,7 +156,7 @@ func (h *Handlers) getAtomFeed(w http.ResponseWriter, r *http.Request) error {
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 
-	if err := h.views.AtomFeed(r.Context(), w, articles, nil); err != nil {
+	if err := h.views.AtomFeed(r.Context(), w, articles, h.contentFS); err != nil {
 		return fmt.Errorf("feed generation failed: %w", err)
 	}
 	return nil

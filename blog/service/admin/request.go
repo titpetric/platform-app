@@ -100,7 +100,8 @@ func (r *ArticleRequest) Validate() error {
 		}
 	}
 
-	// Sanitize content - remove script tags and event handlers
+	// Trim and sanitize content - remove script tags and event handlers
+	r.Content = strings.TrimSpace(r.Content)
 	r.Content = sanitizeContent(r.Content)
 
 	return nil

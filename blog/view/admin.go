@@ -1,6 +1,9 @@
 package view
 
 import (
+	"strings"
+	"time"
+
 	"github.com/titpetric/platform-app/blog/model"
 )
 
@@ -86,7 +89,7 @@ type AdminEditData struct {
 func NewAdminEditData(article *model.Article, bodyContent string, customYaml string) *AdminEditData {
 	data := &AdminEditData{
 		Article:    article,
-		Content:    bodyContent,
+		Content:    strings.TrimSpace(bodyContent),
 		CustomYaml: customYaml,
 		IsNew:      article == nil,
 	}
@@ -103,10 +106,12 @@ func NewAdminEditData(article *model.Article, bodyContent string, customYaml str
 // Map converts AdminEditData to a map[string]any.
 func (d *AdminEditData) Map() map[string]any {
 	data := map[string]any{
-		"title":   d.Title,
-		"content": d.Content,
-		"isNew":   d.IsNew,
+		"title":       d.Title,
+		"bodyContent": d.Content,
+		"isNew":       d.IsNew,
 	}
+
+	utcdate := time.Now().UTC()
 
 	if d.Article != nil {
 		data["article"] = d.Article
@@ -115,13 +120,11 @@ func (d *AdminEditData) Map() map[string]any {
 		data["description"] = d.Article.Description
 		data["layout"] = d.Article.Layout
 		data["draft"] = d.Article.Draft != 0
+
 		if d.Article.Date != nil {
-			data["date"] = d.Article.Date.UTC().Format("2006-01-02")
-			data["time"] = d.Article.Date.UTC().Format("15:04:05")
-		} else {
-			data["date"] = ""
-			data["time"] = ""
+			utcdate = d.Article.Date.UTC()
 		}
+
 		data["customYaml"] = d.CustomYaml
 	} else {
 		// Provide default values for new article form
@@ -130,10 +133,11 @@ func (d *AdminEditData) Map() map[string]any {
 		data["description"] = ""
 		data["layout"] = "post"
 		data["draft"] = false
-		data["date"] = ""
-		data["time"] = ""
 		data["customYaml"] = ""
 	}
+
+	data["date"] = utcdate.Format(time.DateTime)
+	data["time"] = utcdate.Format("15:04:05")
 
 	return data
 }

@@ -13,44 +13,11 @@
     Assembled with a coffee budget that rivals small nations
   </p>
 
-  <ul class="cluster" style="--gap: var(--space-2xs)" role="list">
+  <ul class="cluster" role="list">
     <template v-for="group in menu">
       <li v-for="item in group.items">
-        <a :href="item.url" :aria-current="item.url === page?.url ? 'page' : null" :target="item.target" :ref="item.target ? 'noreferrer noopener' : null">{{ item.label }}</a>
+        <a :href="item.url" :target="item.target" :rel="item.target != '' ? 'noreferrer noopener' : ''">{{ item.label }}</a>
       </li>
     </template>
   </ul>
 </footer>
-<style type="text/css+less">
-.site-footer {
-    position: sticky;
-    top: 100vh;
-    padding-block: var(--space-2xl);
-    font-size: 0.75em;
-
-    p {
-      text-wrap: balance;
-    }
-
-    .copyright {
-      margin-inline-start: -0.1em;
-    }
-
-    .icon {
-      --_size: 1.2em;
-
-      position: relative;
-      top: 0.2em;
-      margin-inline: 0.1em;
-      width: var(--_size);
-      height: var(--_size);
-      color: red;
-    }
-
-    li {
-      display: flex;
-      align-items: center;
-      gap: 0.2em;
-    }
-  }
-</style>

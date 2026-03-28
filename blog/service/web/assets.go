@@ -31,6 +31,11 @@ func (h *Handlers) registerAssets(r platform.Router) {
 			assetFS.ServeHTTP(w, r)
 		})
 
+		// Markdown editor assets
+		r.Get("/assets/markdown/*", func(w http.ResponseWriter, r *http.Request) {
+			assetFS.ServeHTTP(w, r)
+		})
+
 		// Favicon assets
 		r.Get("/assets/favicon/*", func(w http.ResponseWriter, r *http.Request) {
 			assetFS.ServeHTTP(w, r)

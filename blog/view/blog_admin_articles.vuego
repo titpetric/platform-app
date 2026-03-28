@@ -147,36 +147,3 @@ columns:
         <p>Showing {{ (page - 1) * pageSize + 1 }} to {{ Math.min(page * pageSize, total) }} of {{ total }} articles</p>
     </div>
 </div>
-
-<style>
-.articles-container {
-    max-width: 1200px;
-}
-
-.articles-header {
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 1rem;
-}
-
-.articles-filters {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 0.25rem;
-}
-
-.articles-table {
-    background-color: white;
-    border: 1px solid #e9ecef;
-    border-radius: 0.25rem;
-    overflow-x: auto;
-}
-
-.articles-table table {
-    margin-bottom: 0;
-}
-
-.articles-pagination {
-    display: flex;
-    justify-content: center;
-}
-</style>

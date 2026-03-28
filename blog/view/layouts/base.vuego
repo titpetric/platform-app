@@ -67,11 +67,11 @@
   })();
     </script>
 
-    <vuego include="components/site-header.vuego"></vuego>
+    <template include="components/site-header.vuego"></template>
 
     <main id="main" class="breakout flow {{ class }}" v-html="content"></main>
 
-    <vuego include="components/site-footer.vuego"></vuego>
+    <template include="components/site-footer.vuego"></template>
 
     <script async defer v-if="module" src="/assets/js/{{module}}.js"></script>
     <script async defer src="https://scripts.withcabin.com/hello.js"></script>

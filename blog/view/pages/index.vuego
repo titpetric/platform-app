@@ -10,7 +10,7 @@ layout: "base"
   </p>
   <p class="subtitle">{{meta.subtitle}}</p>
   <h2>Most recent articles</h2>
-  <vuego include="components/article-list.vuego" :articles="articles"></vuego>
+  <template include="components/article-list.vuego" :articles="articles"></template>
   <p class="cta arrow-end">
     <a href="/blog/">Read more articles</a>
   </p>

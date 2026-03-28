@@ -5,43 +5,66 @@ import (
 	"fmt"
 	"html"
 	"io"
-	"os"
+	"io/fs"
 	"time"
 
 	"github.com/titpetric/platform-app/blog/model"
 )
 
-// AtomFeed generates an Atom XML feed for articles.
-func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Article, meta map[string]any) error {
-	var author map[string]any
-	if m, ok := meta["author"].(map[string]any); ok {
-		author = m
-	}
+// FeedConfig holds configuration for generating Atom feeds.
+type FeedConfig struct {
+	URL      string `json:"url"`
+	Title    string `json:"title"`
+	Subtitle string `json:"subtitle"`
+	Language string `json:"language"`
+	Author   Author `json:"author"`
+}
 
+// Author holds author information for the feed.
+type Author struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+// DefaultFeedConfig returns a default feed configuration.
+func DefaultFeedConfig() *FeedConfig {
+	return &FeedConfig{
+		URL:      "https://blog.localhost",
+		Title:    "Blog",
+		Subtitle: "Articles and thoughts",
+		Language: "en",
+		Author: Author{
+			Name:  "Author",
+			Email: "author@example.com",
+		},
+	}
+}
+
+// AtomFeed generates an Atom XML feed for articles.
+func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Article, contentFS fs.FS) error {
+	config := DefaultFeedConfig()
+	return v.atomFeed(ctx, w, articles, config, contentFS)
+}
+
+// AtomFeedWithConfig generates an Atom XML feed with custom configuration.
+func (v *Views) AtomFeedWithConfig(ctx context.Context, w io.Writer, articles []model.Article, config *FeedConfig, contentFS fs.FS) error {
+	return v.atomFeed(ctx, w, articles, config, contentFS)
+}
+
+func (v *Views) atomFeed(ctx context.Context, w io.Writer, articles []model.Article, config *FeedConfig, contentFS fs.FS) error {
 	// Find the most recent article date
 	newestDate := time.Now()
-	if len(articles) > 0 {
-		newestDate = *articles[0].Date
-		for _, a := range articles {
-			if a.Date == nil {
-				continue
-			}
-			articleDate := *a.Date
-			if articleDate.After(newestDate) {
-				newestDate = articleDate
-			}
+	for _, a := range articles {
+		if a.Date != nil && a.Date.After(newestDate) {
+			newestDate = *a.Date
 		}
 	}
 
-	var language string
-	if lang, ok := meta["language"].(string); ok {
-		language = lang
-	}
-
-	io.WriteString(w, fmt.Sprintf(`<?xml version="1.0" encoding="utf-8"?>
+	// Write feed header
+	fmt.Fprintf(w, `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="%s">
   <title>%s</title>
-  <subtitle>Blogging general thoughts and rambles, code snippets, and front-end web dev discoveries</subtitle>
+  <subtitle>%s</subtitle>
   <link href="%s/feed.xml" rel="self"/>
   <link href="%s"/>
   <updated>%s</updated>
@@ -50,44 +73,59 @@ func (v *Views) AtomFeed(ctx context.Context, w io.Writer, articles []model.Arti
     <name>%s</name>
     <email>%s</email>
   </author>
-`, meta["url"], escapeXML(meta["title"]), meta["url"], meta["url"], newestDate.Format(time.RFC3339), meta["url"], escapeXML(author["name"]), author["email"]))
+`,
+		escapeXML(config.URL),
+		escapeXML(config.Title),
+		escapeXML(config.Subtitle),
+		escapeXML(config.URL),
+		escapeXML(config.URL),
+		newestDate.Format(time.RFC3339),
+		escapeXML(config.URL),
+		escapeXML(config.Author.Name),
+		escapeXML(config.Author.Email),
+	)
 
 	// Add entries for each article
 	for _, article := range articles {
-
-		content, err := os.ReadFile(article.Filename)
-		if err != nil {
-			return err
+		if article.Date == nil {
+			continue
 		}
 
-		// Strip front matter from content
-		content = StripFrontMatter(content)
+		var contentStr string
+		if contentFS != nil {
+			content, err := fs.ReadFile(contentFS, article.Filename)
+			if err == nil {
+				content = StripFrontMatter(content)
+				contentStr = string(content)
+			}
+		}
 
-		entryXML := fmt.Sprintf(`  <entry>
+		fmt.Fprintf(w, `  <entry>
     <title>%s</title>
-    <link href="%s/blog/%s"/>
+    <link href="%s%s"/>
     <updated>%s</updated>
-    <id>%s/blog/%s</id>
+    <id>%s%s</id>
+    <summary>%s</summary>
     <content xml:lang="%s" type="html">%s</content>
   </entry>
-`, escapeXML(article.Title), meta["url"], article.Slug, article.Date.Format(time.RFC3339), meta["url"], article.Slug, language, escapeXML(content))
-
-		io.WriteString(w, entryXML)
+`,
+			escapeXML(article.Title),
+			escapeXML(config.URL),
+			escapeXML(article.URL),
+			article.Date.Format(time.RFC3339),
+			escapeXML(config.URL),
+			escapeXML(article.URL),
+			escapeXML(article.Description),
+			escapeXML(config.Language),
+			escapeXML(contentStr),
+		)
 	}
 
 	io.WriteString(w, `</feed>`)
-
 	return nil
 }
 
 // escapeXML escapes special XML characters.
-func escapeXML(s any) string {
-	switch v := s.(type) {
-	case string:
-		return html.EscapeString(v)
-	case []byte:
-		return html.EscapeString(string(v))
-	default:
-		return html.EscapeString(fmt.Sprintf("%v", v))
-	}
+func escapeXML(s string) string {
+	return html.EscapeString(s)
 }

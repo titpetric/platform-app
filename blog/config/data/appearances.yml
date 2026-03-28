@@ -7,3 +7,7 @@ appearances:
     value: dark
     label: Dark mode
     icon: moon
+  - id: system
+    value: ""
+    label: System preference
+    icon: monitor
