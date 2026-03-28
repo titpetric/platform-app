@@ -1,0 +1,23 @@
+.article-list {
+    --flow-space: var(--space-m);
+}
+
+.article-list .info {
+    --icon-size: 1em;
+    font-size: 0.7em;
+    font-weight: var(--font-semibold);
+    letter-spacing: -0.01em;
+}
+
+.article-list li:has(a:hover, a:focus-visible) :is(time, .source) {
+    color: var(--color-theme-offset);
+}
+
+.article-list a {
+    text-wrap: balance;
+    outline-offset: 3px;
+}
+
+.article-list a:not(:hover, :focus-visible) {
+    text-decoration: none;
+}
