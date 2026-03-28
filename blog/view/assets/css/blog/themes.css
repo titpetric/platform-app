@@ -10,6 +10,7 @@
   --color-theme: #ffedd5;
   --color-theme-muted: #fff5e7;
   --color-theme-accent: #fed7aa;
+  --color-theme-offset: #9a3412;
 }
 
 :root [data-theme=default] {
@@ -24,36 +25,42 @@
   --color-theme: #ffedd5;
   --color-theme-muted: #fff5e7;
   --color-theme-accent: #fed7aa;
+  --color-theme-offset: #9a3412;
 }
 
 :root [data-theme=pink] {
   --color-theme: #fce7f3;
   --color-theme-muted: #fff5fb;
   --color-theme-accent: #f9a8d4;
+  --color-theme-offset: #9d174d;
 }
 
 :root [data-theme=blue] {
   --color-theme: #dbeafe;
   --color-theme-muted: #edf4ff;
   --color-theme-accent: #93c5fd;
+  --color-theme-offset: #1e40af;
 }
 
 :root [data-theme=green] {
   --color-theme: #d1fae5;
   --color-theme-muted: #f0fff7;
   --color-theme-accent: #6ee7b7;
+  --color-theme-offset: #047857;
 }
 
 :root [data-theme=purple] {
   --color-theme: #f3e8ff;
   --color-theme-muted: #f9f4ff;
   --color-theme-accent: #d8b4fe;
+  --color-theme-offset: #7c3aed;
 }
 
 :root [data-theme=slate] {
   --color-theme: #f1f5f9;
   --color-theme-muted: #e6edf2;
   --color-theme-accent: #cbd5e1;
+  --color-theme-offset: #475569;
 }
 
 @media (prefers-color-scheme:dark) {
@@ -68,6 +75,7 @@
     --color-theme: #172554;
     --color-theme-muted: #0e1737;
     --color-theme-accent: #1e3a8a;
+    --color-theme-offset: #93c5fd;
   }
   :root:not([data-appearance]) [data-theme=default] {
     --color-bg: #020617;
@@ -80,6 +88,7 @@
     --color-theme: #172554;
     --color-theme-muted: #0e1737;
     --color-theme-accent: #1e3a8a;
+    --color-theme-offset: #93c5fd;
   }
   :root:not([data-appearance]) [data-theme=pink] {
     --color-bg: #0c0508;
@@ -88,11 +97,13 @@
     --color-theme: #4f0c27;
     --color-theme-muted: #3b0a1e;
     --color-theme-accent: #9d174d;
+    --color-theme-offset: #f9a8d4;
   }
   :root:not([data-appearance]) [data-theme=blue] {
     --color-theme: #082f49;
     --color-theme-muted: #072437;
     --color-theme-accent: #0284c7;
+    --color-theme-offset: #7dd3fc;
   }
   :root:not([data-appearance]) [data-theme=green] {
     --color-bg: #0d1110;
@@ -101,6 +112,7 @@
     --color-theme: #064e3b;
     --color-theme-muted: #0b4032;
     --color-theme-accent: #047857;
+    --color-theme-offset: #6ee7b7;
   }
   :root:not([data-appearance]) [data-theme=purple] {
     --color-bg: #0f031a;
@@ -109,12 +121,14 @@
     --color-theme: #581c87;
     --color-theme-muted: #491f6a;
     --color-theme-accent: #9333ea;
+    --color-theme-offset: #d8b4fe;
   }
   :root:not([data-appearance]) [data-theme=slate] {
     --color-bg: #020617;
     --color-theme: #1e293b;
     --color-theme-muted: #1c232e;
     --color-theme-accent: #334155;
+    --color-theme-offset: #94a3b8;
   }
 }
 
@@ -130,6 +144,7 @@
     --color-theme: #172554;
     --color-theme-muted: #0e1737;
     --color-theme-accent: #1e3a8a;
+    --color-theme-offset: #93c5fd;
   }
   [data-appearance=dark] [data-theme=default] {
     --color-bg: #020617;
@@ -142,6 +157,7 @@
     --color-theme: #172554;
     --color-theme-muted: #0e1737;
     --color-theme-accent: #1e3a8a;
+    --color-theme-offset: #93c5fd;
   }
   [data-appearance=dark] [data-theme=pink] {
     --color-bg: #0c0508;
@@ -150,11 +166,13 @@
     --color-theme: #4f0c27;
     --color-theme-muted: #3b0a1e;
     --color-theme-accent: #9d174d;
+    --color-theme-offset: #f9a8d4;
   }
   [data-appearance=dark] [data-theme=blue] {
     --color-theme: #082f49;
     --color-theme-muted: #072437;
     --color-theme-accent: #0284c7;
+    --color-theme-offset: #7dd3fc;
   }
   [data-appearance=dark] [data-theme=green] {
     --color-bg: #0d1110;
@@ -163,6 +181,7 @@
     --color-theme: #064e3b;
     --color-theme-muted: #0b4032;
     --color-theme-accent: #047857;
+    --color-theme-offset: #6ee7b7;
   }
   [data-appearance=dark] [data-theme=purple] {
     --color-bg: #0f031a;
@@ -171,12 +190,14 @@
     --color-theme: #581c87;
     --color-theme-muted: #491f6a;
     --color-theme-accent: #9333ea;
+    --color-theme-offset: #d8b4fe;
   }
   [data-appearance=dark] [data-theme=slate] {
     --color-bg: #020617;
     --color-theme: #1e293b;
     --color-theme-muted: #1c232e;
     --color-theme-accent: #334155;
+    --color-theme-offset: #94a3b8;
   }
 }
 
