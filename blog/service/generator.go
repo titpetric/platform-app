@@ -88,8 +88,8 @@ func (g *Generator) Generate(ctx context.Context) error {
 
 		htmlContent := mdRenderer.Render(contentWithoutFrontMatter)
 
-		// Create PostData
-		postData := view.NewPostData(&modelArticle, string(htmlContent))
+		// Create PostData (static generation is always logged out)
+		postData := view.NewPostData(&modelArticle, string(htmlContent), false)
 
 		if err := g.generateArticlePage(ctx, h, postData); err != nil {
 			return fmt.Errorf("failed to generate article page for %s: %w", modelArticle.Slug, err)
@@ -113,7 +113,7 @@ func (g *Generator) generateIndexPage(ctx context.Context, h *web.Handlers) erro
 		return err
 	}
 
-	indexData := view.NewIndexData(articles)
+	indexData := view.NewIndexData(articles, false)
 
 	var buf bytes.Buffer
 	if err := h.Views().Index(indexData).Render(ctx, &buf); err != nil {

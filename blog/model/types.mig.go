@@ -259,6 +259,138 @@ var MigrationsFields = []string{"project", "filename", "statement_index", "statu
 // MigrationsPrimaryFields are the primary key fields in the DB table.
 var MigrationsPrimaryFields = []string{"project", "filename"}
 
+// Setting generated for db table `setting`.
+type Setting struct {
+	// User ID
+	UserID string `db:"user_id" json:"user_id"`
+
+	// Meta Lang
+	MetaLang string `db:"meta_lang" json:"meta_lang"`
+
+	// Meta URL
+	MetaURL string `db:"meta_url" json:"meta_url"`
+
+	// Meta Author Name
+	MetaAuthorName string `db:"meta_author_name" json:"meta_author_name"`
+
+	// Meta Subtitle
+	MetaSubtitle string `db:"meta_subtitle" json:"meta_subtitle"`
+
+	// Meta Headshot
+	MetaHeadshot string `db:"meta_headshot" json:"meta_headshot"`
+
+	// Posts Per Page
+	PostsPerPage int64 `db:"posts_per_page" json:"posts_per_page"`
+
+	// Social Github
+	SocialGithub string `db:"social_github" json:"social_github"`
+
+	// Social Twitter
+	SocialTwitter string `db:"social_twitter" json:"social_twitter"`
+
+	// Social Linkedin
+	SocialLinkedin string `db:"social_linkedin" json:"social_linkedin"`
+
+	// Feature Webmention
+	FeatureWebmention int64 `db:"feature_webmention" json:"feature_webmention"`
+
+	// Feature Pingback
+	FeaturePingback int64 `db:"feature_pingback" json:"feature_pingback"`
+
+	// Feature Comments
+	FeatureComments int64 `db:"feature_comments" json:"feature_comments"`
+
+	// Feature Rss
+	FeatureRss int64 `db:"feature_rss" json:"feature_rss"`
+
+	// Seo Title Suffix
+	SeoTitleSuffix string `db:"seo_title_suffix" json:"seo_title_suffix"`
+
+	// Seo Default Image
+	SeoDefaultImage string `db:"seo_default_image" json:"seo_default_image"`
+
+	// Analytics ID
+	AnalyticsID string `db:"analytics_id" json:"analytics_id"`
+
+	// Created At
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
+
+	// Updated At
+	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
+}
+
+// GetUserID will return the value of UserID.
+func (s *Setting) GetUserID() string { return s.UserID }
+
+// GetMetaLang will return the value of MetaLang.
+func (s *Setting) GetMetaLang() string { return s.MetaLang }
+
+// GetMetaURL will return the value of MetaURL.
+func (s *Setting) GetMetaURL() string { return s.MetaURL }
+
+// GetMetaAuthorName will return the value of MetaAuthorName.
+func (s *Setting) GetMetaAuthorName() string { return s.MetaAuthorName }
+
+// GetMetaSubtitle will return the value of MetaSubtitle.
+func (s *Setting) GetMetaSubtitle() string { return s.MetaSubtitle }
+
+// GetMetaHeadshot will return the value of MetaHeadshot.
+func (s *Setting) GetMetaHeadshot() string { return s.MetaHeadshot }
+
+// GetPostsPerPage will return the value of PostsPerPage.
+func (s *Setting) GetPostsPerPage() int64 { return s.PostsPerPage }
+
+// GetSocialGithub will return the value of SocialGithub.
+func (s *Setting) GetSocialGithub() string { return s.SocialGithub }
+
+// GetSocialTwitter will return the value of SocialTwitter.
+func (s *Setting) GetSocialTwitter() string { return s.SocialTwitter }
+
+// GetSocialLinkedin will return the value of SocialLinkedin.
+func (s *Setting) GetSocialLinkedin() string { return s.SocialLinkedin }
+
+// GetFeatureWebmention will return the value of FeatureWebmention.
+func (s *Setting) GetFeatureWebmention() int64 { return s.FeatureWebmention }
+
+// GetFeaturePingback will return the value of FeaturePingback.
+func (s *Setting) GetFeaturePingback() int64 { return s.FeaturePingback }
+
+// GetFeatureComments will return the value of FeatureComments.
+func (s *Setting) GetFeatureComments() int64 { return s.FeatureComments }
+
+// GetFeatureRss will return the value of FeatureRss.
+func (s *Setting) GetFeatureRss() int64 { return s.FeatureRss }
+
+// GetSeoTitleSuffix will return the value of SeoTitleSuffix.
+func (s *Setting) GetSeoTitleSuffix() string { return s.SeoTitleSuffix }
+
+// GetSeoDefaultImage will return the value of SeoDefaultImage.
+func (s *Setting) GetSeoDefaultImage() string { return s.SeoDefaultImage }
+
+// GetAnalyticsID will return the value of AnalyticsID.
+func (s *Setting) GetAnalyticsID() string { return s.AnalyticsID }
+
+// GetCreatedAt will return the value of CreatedAt.
+func (s *Setting) GetCreatedAt() *time.Time { return s.CreatedAt }
+
+// SetCreatedAt sets CreatedAt to the provided value.
+func (s *Setting) SetCreatedAt(stamp time.Time) { s.CreatedAt = &stamp }
+
+// GetUpdatedAt will return the value of UpdatedAt.
+func (s *Setting) GetUpdatedAt() *time.Time { return s.UpdatedAt }
+
+// SetUpdatedAt sets UpdatedAt to the provided value.
+func (s *Setting) SetUpdatedAt(stamp time.Time) { s.UpdatedAt = &stamp }
+
+// SettingTable is the name of the table in the DB.
+const SettingTable = "`setting`"
+
+// SettingFields is a list of all columns in the DB table.
+var SettingFields = []string{"user_id", "meta_lang", "meta_url", "meta_author_name", "meta_subtitle", "meta_headshot", "posts_per_page", "social_github", "social_twitter", "social_linkedin", "feature_webmention", "feature_pingback", "feature_comments", "feature_rss", "seo_title_suffix", "seo_default_image", "analytics_id", "created_at", "updated_at"}
+
+// SettingPrimaryFields are the primary key fields in the DB table.
+var SettingPrimaryFields = []string{"user_id"}
+
 // Insert starts building an INSERT INTO query.
 func (a *Article) Insert(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: ArticleTable, Statement: "INSERT INTO"}).Apply(opts...)
@@ -374,6 +506,67 @@ func (m *Migrations) Update(opts ...QueryOption) string {
 // Delete starts building a DELETE query.
 func (m *Migrations) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: MigrationsTable}).Apply(opts...)
+	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Insert starts building an INSERT INTO query.
+func (s *Setting) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: SettingTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := SettingFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+}
+
+// Select starts building a SELECT query.
+func (s *Setting) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: SettingTable}).Apply(opts...)
+	cols := "*"
+	if len(cfg.Columns) > 0 {
+		cols = strings.Join(cfg.Columns, ", ")
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	if cfg.OrderBy != "" {
+		query += " ORDER BY " + cfg.OrderBy
+	}
+	if cfg.LimitOffset > 0 {
+		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
+	}
+	return query
+}
+
+// Update starts building a UPDATE query.
+func (s *Setting) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: SettingTable}).Apply(opts...)
+	cols := SettingFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	setClause := ""
+	for i, col := range cols {
+		if i > 0 {
+			setClause += ", "
+		}
+		setClause += col + "=:" + col
+	}
+	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Delete starts building a DELETE query.
+func (s *Setting) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: SettingTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
 	if cfg.Where != "" {
 		query += " WHERE " + cfg.Where

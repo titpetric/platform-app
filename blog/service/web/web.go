@@ -11,6 +11,7 @@ import (
 	"github.com/titpetric/platform-app/blog/markdown"
 	"github.com/titpetric/platform-app/blog/storage"
 	"github.com/titpetric/platform-app/blog/view"
+	"github.com/titpetric/platform-app/user"
 )
 
 // Handlers provides HTTP handlers for blog web endpoints.
@@ -47,6 +48,8 @@ func (h *Handlers) Mount(r platform.Router) {
 	h.registerAssets(r)
 
 	r.Group(func(r platform.Router) {
+		r.Use(user.NewMiddleware(user.AuthCookie(), user.AuthOptional()))
+
 		// Public HTML Routes
 		r.Get("/", h.IndexHTML)
 		r.Get("/blog", h.ListArticlesHTML)
@@ -58,7 +61,7 @@ func (h *Handlers) Mount(r platform.Router) {
 		r.Get("/feed.xml", h.GetAtomFeed)
 
 		// Admin HTML Routes
-		r.Get("/admin/articles", h.ListArticlesAdminHTML)
+		r.Get("/admin/blog/articles", h.ListArticlesAdminHTML)
 	})
 }
 
@@ -68,18 +71,21 @@ func (h *Handlers) IndexHTML(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) indexHTML(w http.ResponseWriter, r *http.Request) error {
-	articles, err := h.repository.GetArticles(r.Context(), 0, 5)
+	ctx := r.Context()
+	articles, err := h.repository.GetArticles(ctx, 0, 5)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}
+
+	_, loggedIn := user.GetSessionUser(ctx)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=300")
 
 	// Create index component to render list
-	indexData := view.NewIndexData(articles)
+	indexData := view.NewIndexData(articles, loggedIn)
 
-	if err := h.views.Index(indexData).Render(r.Context(), w); err != nil {
+	if err := h.views.Index(indexData).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -91,18 +97,21 @@ func (h *Handlers) ListArticlesHTML(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) listArticlesHTML(w http.ResponseWriter, r *http.Request) error {
-	articles, err := h.repository.GetArticles(r.Context(), 0, 9999)
+	ctx := r.Context()
+	articles, err := h.repository.GetArticles(ctx, 0, 9999)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}
+
+	_, loggedIn := user.GetSessionUser(ctx)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=300")
 
 	// Create blog list and render
-	blogData := view.NewIndexData(articles)
+	blogData := view.NewIndexData(articles, loggedIn)
 
-	if err := h.views.Blog(blogData).Render(r.Context(), w); err != nil {
+	if err := h.views.Blog(blogData).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -114,12 +123,15 @@ func (h *Handlers) GetArticleHTML(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) getArticleHTML(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
 	slug := platform.URLParam(r, "slug")
 
-	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
+	article, err := h.repository.GetArticleBySlug(ctx, slug)
 	if err != nil {
 		return ErrNotFound("article not found", err)
 	}
+
+	_, loggedIn := user.GetSessionUser(ctx)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
@@ -134,9 +146,9 @@ func (h *Handlers) getArticleHTML(w http.ResponseWriter, r *http.Request) error 
 	htmlContent := mdRenderer.Render(contentWithoutFrontMatter)
 
 	// Create PostData and render
-	postData := view.NewPostData(article, string(htmlContent))
+	postData := view.NewPostData(article, string(htmlContent), loggedIn)
 
-	if err := h.views.Post(postData).Render(r.Context(), w); err != nil {
+	if err := h.views.Post(postData).Render(ctx, w); err != nil {
 		return fmt.Errorf("render failed: %w", err)
 	}
 	return nil
@@ -168,6 +180,7 @@ func (h *Handlers) ListArticlesAdminHTML(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *Handlers) listArticlesAdminHTML(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
 	page := r.URL.Query().Get("page")
 	pageSize := r.URL.Query().Get("pageSize")
 
@@ -193,16 +206,18 @@ func (h *Handlers) listArticlesAdminHTML(w http.ResponseWriter, r *http.Request)
 	offset := (pageNum - 1) * pageSz
 
 	// Get total count
-	total, err := h.repository.CountArticles(r.Context())
+	total, err := h.repository.CountArticles(ctx)
 	if err != nil {
 		return ErrInternal("failed to count articles", err)
 	}
 
 	// Get paginated articles
-	articles, err := h.repository.GetArticles(r.Context(), offset, pageSz)
+	articles, err := h.repository.GetArticles(ctx, offset, pageSz)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}
+
+	_, loggedIn := user.GetSessionUser(ctx)
 
 	// Prepare data for template rendering
 	data := map[string]interface{}{
@@ -212,10 +227,11 @@ func (h *Handlers) listArticlesAdminHTML(w http.ResponseWriter, r *http.Request)
 		"pageSize":    pageSz,
 		"breadcrumbs": []map[string]string{},
 		"articles":    articles,
+		"loggedIn":    loggedIn,
 	}
 
 	// Render using layout renderer with blog_admin_articles.vuego
-	err = h.views.Loader.Load("blog_admin_articles.vuego").Fill(data).Render(r.Context(), w)
+	err = h.views.Loader.Load("blog_admin_articles.vuego").Fill(data).Render(ctx, w)
 	if err != nil {
 		return fmt.Errorf("failed to render template: %w", err)
 	}

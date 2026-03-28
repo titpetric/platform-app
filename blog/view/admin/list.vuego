@@ -1,5 +1,5 @@
 ---
-layout: content
+layout: default
 ---
 <template :require="title,articles,total,page,pageSize">
   <div class="flex flex-col gap-6">
@@ -8,7 +8,7 @@ layout: content
         <h1 class="text-2xl font-semibold">{{ title }}</h1>
         <p class="text-muted-foreground">{{ total }} articles</p>
       </div>
-      <a href="/admin/new" class="btn btn-primary">New Article</a>
+      <a href="/admin/blog/new" class="btn btn-primary">New Article</a>
     </div>
 
     <nav class="flex gap-2 text-sm">
@@ -32,7 +32,7 @@ layout: content
             <template v-if="articles">
               <tr v-for="article in articles">
                 <td>
-                  <a :href="'/admin/articles/' + article.Slug" class="font-medium hover:text-primary">
+                  <a :href="'/admin/blog/articles/' + article.Slug" class="font-medium hover:text-primary">
                     {{ article.Title }}
                   </a>
                 </td>
@@ -43,7 +43,7 @@ layout: content
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <a :href="'/admin/articles/' + article.Slug + '/edit'" class="btn btn-sm btn-secondary">Edit</a>
+                    <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-sm btn-secondary">Edit</a>
                     <a :href="'/blog/' + article.Slug" class="btn btn-sm btn-ghost" target="_blank">View</a>
                   </div>
                 </td>

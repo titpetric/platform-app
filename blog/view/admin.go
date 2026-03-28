@@ -9,29 +9,29 @@ import (
 
 // AdminDashboardData holds data for the admin dashboard page.
 type AdminDashboardData struct {
-	Title     string
-	Drafts    int
-	Scheduled int
-	Published int
+	Title          string `json:"title"`
+	DraftsCount    int    `json:"draftsCount"`
+	ScheduledCount int    `json:"scheduledCount"`
+	PublishedCount int    `json:"publishedCount"`
+
+	Drafts    []model.Article `json:"drafts"`
+	Scheduled []model.Article `json:"scheduled"`
+	Published []model.Article `json:"publishes"`
+
+	LoggedIn bool `json:"loggedIn"`
 }
 
-// NewAdminDashboardData creates AdminDashboardData with counts.
-func NewAdminDashboardData(drafts, scheduled, published int) *AdminDashboardData {
+// NewAdminDashboardData creates AdminDashboardData with counts and article lists.
+func NewAdminDashboardData(draftsCount, scheduledCount, publishedCount int, drafts, scheduled, published []model.Article) *AdminDashboardData {
 	return &AdminDashboardData{
-		Title:     "Blog Dashboard",
-		Drafts:    drafts,
-		Scheduled: scheduled,
-		Published: published,
-	}
-}
-
-// Map converts AdminDashboardData to a map[string]any.
-func (d *AdminDashboardData) Map() map[string]any {
-	return map[string]any{
-		"title":     d.Title,
-		"drafts":    d.Drafts,
-		"scheduled": d.Scheduled,
-		"published": d.Published,
+		Title:          "Blog Dashboard",
+		DraftsCount:    draftsCount,
+		ScheduledCount: scheduledCount,
+		PublishedCount: publishedCount,
+		Drafts:         drafts,
+		Scheduled:      scheduled,
+		Published:      published,
+		LoggedIn:       true,
 	}
 }
 
@@ -63,6 +63,7 @@ func (d *AdminListData) Map() map[string]any {
 		"total":    d.Total,
 		"page":     d.Page,
 		"pageSize": d.PageSize,
+		"loggedIn": true, // Admin area requires login
 	}
 }
 
@@ -138,6 +139,7 @@ func (d *AdminEditData) Map() map[string]any {
 
 	data["date"] = utcdate.Format(time.DateTime)
 	data["time"] = utcdate.Format("15:04:05")
+	data["loggedIn"] = true // Admin area requires login
 
 	return data
 }

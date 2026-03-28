@@ -12,17 +12,17 @@ navigation:
       icon: bi-question-circle
   side:
     - label: Articles
-      url: /admin/articles
+      url: /admin/blog/articles
       icon: bi-file-text
       active: true
     - label: Categories
-      url: /admin/categories
+      url: /admin/blog/categories
       icon: bi-folder
     - label: Authors
-      url: /admin/authors
+      url: /admin/blog/authors
       icon: bi-person-circle
     - label: Settings
-      url: /admin/settings
+      url: /admin/blog/settings
       icon: bi-gear
 columns:
   - key: slug
@@ -37,14 +37,14 @@ columns:
     <div class="articles-header mb-4">
         <div class="d-flex justify-content-between align-items-center">
             <h3>Articles</h3>
-            <a href="/admin/articles/new" class="btn btn-primary">
+            <a href="/admin/blog/articles/new" class="btn btn-primary">
                 <span class="me-2">+</span> New Article
             </a>
         </div>
     </div>
 
     <div class="articles-filters mb-3">
-        <form class="row g-3" method="GET" action="/admin/articles">
+        <form class="row g-3" method="GET" action="/admin/blog/articles">
             <div class="col-md-4">
                 <input 
                     type="text" 
@@ -111,12 +111,12 @@ columns:
             <ul class="pagination">
                 <template v-if="page > 1">
                 <li class="page-item">
-                    <a class="page-link" :href="/admin/articles?page=1&pageSize={{pageSize}}">
+                    <a class="page-link" :href="/admin/blog/articles?page=1&pageSize={{pageSize}}">
                         First
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" :href="/admin/articles?page={{page - 1}&pageSize={{pageSize}}">
+                    <a class="page-link" :href="/admin/blog/articles?page={{page - 1}&pageSize={{pageSize}}">
                         Previous
                     </a>
                 </li>
@@ -128,12 +128,12 @@ columns:
 
                 <template v-if="page < Math.ceil(total / pageSize)">
                 <li class="page-item">
-                    <a class="page-link" :href="/admin/articles?page={{page + 1}&pageSize={{pageSize}}">
+                    <a class="page-link" :href="/admin/blog/articles?page={{page + 1}&pageSize={{pageSize}}">
                         Next
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" :href="/admin/articles?page={{ceil(total / pageSize)}&pageSize={{pageSize}}">
+                    <a class="page-link" :href="/admin/blog/articles?page={{ceil(total / pageSize)}&pageSize={{pageSize}}">
                         Last
                     </a>
                 </li>

@@ -9,23 +9,13 @@ import (
 	"github.com/titpetric/platform-app/blog/model"
 )
 
-func TestNewAdminDashboardData(t *testing.T) {
-	data := NewAdminDashboardData(5, 3, 10)
+func TestAdminDashboardData_Map(t *testing.T) {
+	data := NewAdminDashboardData(5, 3, 10, nil, nil, nil)
 
 	assert.Equal(t, "Blog Dashboard", data.Title)
-	assert.Equal(t, 5, data.Drafts)
-	assert.Equal(t, 3, data.Scheduled)
-	assert.Equal(t, 10, data.Published)
-}
-
-func TestAdminDashboardData_Map(t *testing.T) {
-	data := NewAdminDashboardData(5, 3, 10)
-	m := data.Map()
-
-	assert.Equal(t, "Blog Dashboard", m["title"])
-	assert.Equal(t, 5, m["drafts"])
-	assert.Equal(t, 3, m["scheduled"])
-	assert.Equal(t, 10, m["published"])
+	assert.Equal(t, 5, data.DraftsCount)
+	assert.Equal(t, 3, data.ScheduledCount)
+	assert.Equal(t, 10, data.PublishedCount)
 }
 
 func TestNewAdminListData(t *testing.T) {

@@ -45,7 +45,7 @@ func NewAdminViews(filesystem fs.FS) *AdminViews {
 
 // Dashboard renders the admin dashboard page.
 func (v *AdminViews) Dashboard(data *AdminDashboardData) vuego.Template {
-	return v.Loader.Load("dashboard.vuego").Fill(data.Map())
+	return v.Loader.Load("dashboard.vuego").Assign("data", data)
 }
 
 // List renders the admin article list page.

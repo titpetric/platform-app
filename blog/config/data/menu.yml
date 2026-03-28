@@ -18,9 +18,6 @@ menu:
       - label: Login
         url: /login
         icon: log-in
-      - label: Register
-        url: /register
-        icon: user-plus
 
 menuLoggedIn:
   - type: group
@@ -38,18 +35,24 @@ menuLoggedIn:
       - label: Dashboard
         url: /admin/
         icon: layout-dashboard
+  - type: group
+    label: Blog
+    items:
       - label: Drafts
-        url: /admin/drafts
+        url: /admin/blog/drafts
         icon: file-edit
       - label: Scheduled
-        url: /admin/scheduled
+        url: /admin/blog/scheduled
         icon: calendar
       - label: Published
-        url: /admin/published
+        url: /admin/blog/published
         icon: check-circle
       - label: New Article
-        url: /admin/new
+        url: /admin/blog/new
         icon: plus
+      - label: Settings
+        url: /admin/blog/settings
+        icon: settings
   - type: group
     label: Account
     items:

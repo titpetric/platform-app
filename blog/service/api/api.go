@@ -32,9 +32,9 @@ func (h *Handlers) Mount(r platform.Router) {
 		r.Get("/api/blog/articles/{slug}", h.GetArticleJSON)
 		r.Get("/api/blog/search", h.SearchArticlesJSON)
 
-		// Admin Routes (JSON)
-		r.Get("/admin/articles.json", h.ListArticlesAdminJSON)
-		r.Get("/admin/articles/{slug}", h.GetArticleAdminJSON)
+		// Admin Routes (JSON) - moved to /api/admin/blog/*
+		r.Get("/api/admin/blog/articles", h.ListArticlesAdminJSON)
+		r.Get("/api/admin/blog/articles/{slug}", h.GetArticleAdminJSON)
 	})
 }
 

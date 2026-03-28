@@ -5,10 +5,19 @@
         <a href="#main" class="text-label">Jump to main content</a>
       </li>
 
-      <template v-for="group in menu">
-        <li v-for="item in group.items">
-          <a :href="item.url">{{ item.label }}</a>
-        </li>
+      <template v-if="loggedIn">
+        <template v-for="group in menuLoggedIn">
+          <li v-for="item in group.items">
+            <a :href="item.url">{{ item.label }}</a>
+          </li>
+        </template>
+      </template>
+      <template v-else>
+        <template v-for="group in menu">
+          <li v-for="item in group.items">
+            <a :href="item.url">{{ item.label }}</a>
+          </li>
+        </template>
       </template>
     </ul>
 

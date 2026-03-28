@@ -1,0 +1,31 @@
+menu:
+  - label: Admin
+    items:
+      - label: Dashboard
+        url: /admin/
+        icon: layout-dashboard
+  - label: Blog
+    items:
+      - label: Drafts
+        url: /admin/blog/drafts
+        icon: file-edit
+      - label: Scheduled
+        url: /admin/blog/scheduled
+        icon: calendar
+      - label: Published
+        url: /admin/blog/published
+        icon: check-circle
+      - label: New Article
+        url: /admin/blog/new
+        icon: plus
+      - label: Settings
+        url: /admin/blog/settings
+        icon: settings
+  - label: Account
+    items:
+      - label: View Blog
+        url: /blog
+        icon: external-link
+      - label: Logout
+        url: /logout
+        icon: log-out

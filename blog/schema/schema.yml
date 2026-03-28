@@ -116,3 +116,90 @@
         - filename
       primary: true
       unique: true
+- name: setting
+  comment: Setting
+  columns:
+    - name: user_id
+      type: TEXT
+      key: PRI
+      comment: User ID
+      datatype: text
+    - name: meta_lang
+      type: TEXT
+      comment: Meta Lang
+      datatype: text
+    - name: meta_url
+      type: TEXT
+      comment: Meta URL
+      datatype: text
+    - name: meta_author_name
+      type: TEXT
+      comment: Meta Author Name
+      datatype: text
+    - name: meta_subtitle
+      type: TEXT
+      comment: Meta Subtitle
+      datatype: text
+    - name: meta_headshot
+      type: TEXT
+      comment: Meta Headshot
+      datatype: text
+    - name: posts_per_page
+      type: INTEGER
+      comment: Posts Per Page
+      datatype: integer
+    - name: social_github
+      type: TEXT
+      comment: Social Github
+      datatype: text
+    - name: social_twitter
+      type: TEXT
+      comment: Social Twitter
+      datatype: text
+    - name: social_linkedin
+      type: TEXT
+      comment: Social Linkedin
+      datatype: text
+    - name: feature_webmention
+      type: INTEGER
+      comment: Feature Webmention
+      datatype: integer
+    - name: feature_pingback
+      type: INTEGER
+      comment: Feature Pingback
+      datatype: integer
+    - name: feature_comments
+      type: INTEGER
+      comment: Feature Comments
+      datatype: integer
+    - name: feature_rss
+      type: INTEGER
+      comment: Feature Rss
+      datatype: integer
+    - name: seo_title_suffix
+      type: TEXT
+      comment: Seo Title Suffix
+      datatype: text
+    - name: seo_default_image
+      type: TEXT
+      comment: Seo Default Image
+      datatype: text
+    - name: analytics_id
+      type: TEXT
+      key: MUL
+      comment: Analytics ID
+      datatype: text
+    - name: created_at
+      type: DATETIME
+      comment: Created At
+      datatype: timestamp
+    - name: updated_at
+      type: DATETIME
+      comment: Updated At
+      datatype: timestamp
+  indexes:
+    - name: sqlite_autoindex_setting_1
+      columns:
+        - user_id
+      primary: true
+      unique: true

@@ -378,7 +378,7 @@ func TestListArticlesAdminJSON_Empty(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles", nil)
 	w := httptest.NewRecorder()
 
 	h.ListArticlesAdminJSON(w, req)
@@ -413,7 +413,7 @@ func TestListArticlesAdminJSON_WithData(t *testing.T) {
 		require.NoError(t, repo.InsertArticle(t.Context(), &articles[i]))
 	}
 
-	req := httptest.NewRequest("GET", "/admin/articles", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles", nil)
 	w := httptest.NewRecorder()
 
 	h.ListArticlesAdminJSON(w, req)
@@ -446,7 +446,7 @@ func TestListArticlesAdminJSON_Page1(t *testing.T) {
 		require.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
-	req := httptest.NewRequest("GET", "/admin/articles?page=1&pageSize=10", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=1&pageSize=10", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -477,7 +477,7 @@ func TestListArticlesAdminJSON_Page2(t *testing.T) {
 		require.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
-	req := httptest.NewRequest("GET", "/admin/articles?page=2&pageSize=10", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=2&pageSize=10", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -508,7 +508,7 @@ func TestListArticlesAdminJSON_LastPage(t *testing.T) {
 		require.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
-	req := httptest.NewRequest("GET", "/admin/articles?page=3&pageSize=10", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=3&pageSize=10", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -539,7 +539,7 @@ func TestListArticlesAdminJSON_CustomPageSize(t *testing.T) {
 		require.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
-	req := httptest.NewRequest("GET", "/admin/articles?pageSize=5", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=5", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -558,7 +558,7 @@ func TestListArticlesAdminJSON_InvalidPage_NonNumeric(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?page=abc", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=abc", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -575,7 +575,7 @@ func TestListArticlesAdminJSON_InvalidPage_NegativeValue(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?page=-5", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=-5", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -592,7 +592,7 @@ func TestListArticlesAdminJSON_InvalidPage_Zero(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?page=0", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=0", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -609,7 +609,7 @@ func TestListArticlesAdminJSON_InvalidPageSize_NonNumeric(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?pageSize=xyz", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=xyz", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -626,7 +626,7 @@ func TestListArticlesAdminJSON_InvalidPageSize_Negative(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?pageSize=-10", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=-10", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -643,7 +643,7 @@ func TestListArticlesAdminJSON_InvalidPageSize_Exceeds100(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?pageSize=200", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=200", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -660,7 +660,7 @@ func TestListArticlesAdminJSON_PageSize100_Valid(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles?pageSize=100", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=100", nil)
 	w := httptest.NewRecorder()
 	h.ListArticlesAdminJSON(w, req)
 
@@ -716,11 +716,11 @@ func TestGetArticleAdminJSON_Found(t *testing.T) {
 	r := chi.NewRouter()
 	var result model.Article
 
-	r.Get("/admin/articles/{slug}", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/api/admin/blog/articles/{slug}", func(w http.ResponseWriter, r *http.Request) {
 		h.GetArticleAdminJSON(w, r)
 	})
 
-	req := httptest.NewRequest("GET", "/admin/articles/admin-article", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles/admin-article", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -742,11 +742,11 @@ func TestGetArticleAdminJSON_NotFound(t *testing.T) {
 	h := NewHandlers(repo)
 
 	r := chi.NewRouter()
-	r.Get("/admin/articles/{slug}", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/api/admin/blog/articles/{slug}", func(w http.ResponseWriter, r *http.Request) {
 		h.GetArticleAdminJSON(w, r)
 	})
 
-	req := httptest.NewRequest("GET", "/admin/articles/non-existent", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles/non-existent", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -761,7 +761,7 @@ func TestGetArticleAdminJSON_EmptySlug(t *testing.T) {
 	require.NoError(t, err)
 	h := NewHandlers(repo)
 
-	req := httptest.NewRequest("GET", "/admin/articles", nil)
+	req := httptest.NewRequest("GET", "/api/admin/blog/articles", nil)
 	w := httptest.NewRecorder()
 	h.GetArticleAdminJSON(w, req)
 

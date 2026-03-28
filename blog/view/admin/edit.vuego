@@ -1,5 +1,5 @@
 ---
-layout: content
+layout: default
 ---
 <link rel="stylesheet" href="/assets/markdown/editor.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
         }
         setSlugStatus('Checking availability…', 'checking');
-        fetch('/admin/articles/' + encodeURIComponent(slug) + '/check')
+        fetch('/api/admin/blog/articles/' + encodeURIComponent(slug) + '/check')
           .then(r => r.json())
           .then(data => {
             slugAvailable = data.available;
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-          const url = isNew ? '/admin/articles' : '/admin/articles/' + currentSlug;
+          const url = isNew ? '/api/admin/blog/articles' : '/api/admin/blog/articles/' + currentSlug;
           const method = isNew ? 'POST' : 'PUT';
 
           const response = await fetch(url, {
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             showMessage('Article saved successfully!', false);
             setTimeout(() => {
-              window.location.href = '/admin/articles/' + result.slug;
+              window.location.href = '/admin/blog/articles/' + result.slug;
             }, 500);
           } else {
             const error = await response.text();
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
           deleteBtn.textContent = 'Deleting...';
 
           try {
-            const response = await fetch('/admin/articles/' + currentSlug, {
+            const response = await fetch('/api/admin/blog/articles/' + currentSlug, {
               method: 'DELETE'
             });
 

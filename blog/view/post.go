@@ -15,10 +15,11 @@ type PostData struct {
 	Content     string     `json:"content"`
 	Date        *time.Time `json:"date"`
 	Class       string     `json:"class"`
+	LoggedIn    bool       `json:"loggedIn"`
 }
 
 // NewPostData creates PostData from an Article.
-func NewPostData(article *model.Article, content string) *PostData {
+func NewPostData(article *model.Article, content string, loggedIn bool) *PostData {
 	return &PostData{
 		Slug:        article.Slug,
 		Title:       article.Title,
@@ -27,6 +28,7 @@ func NewPostData(article *model.Article, content string) *PostData {
 		Content:     content,
 		Date:        article.Date,
 		Class:       "prose",
+		LoggedIn:    loggedIn,
 	}
 }
 
@@ -41,6 +43,7 @@ func (d *PostData) Map() map[string]any {
 	m["date"] = d.Date
 	m["class"] = d.Class
 	m["module"] = "blog"
+	m["loggedIn"] = d.LoggedIn
 	m["page"] = map[string]any{
 		"url": "/blog/" + d.Slug + "/",
 	}

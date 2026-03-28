@@ -9,14 +9,16 @@ type IndexData struct {
 	Articles []model.Article
 	Data     map[string]any
 	Total    int
+	LoggedIn bool
 }
 
 // NewIndexData creates IndexData from a list of articles.
-func NewIndexData(articles []model.Article) *IndexData {
+func NewIndexData(articles []model.Article, loggedIn bool) *IndexData {
 	return &IndexData{
 		Articles: articles,
 		Data:     make(map[string]any),
 		Total:    len(articles),
+		LoggedIn: loggedIn,
 	}
 }
 
@@ -26,5 +28,6 @@ func (d *IndexData) Map() map[string]any {
 	data["articles"] = d.Articles
 	data["total"] = d.Total
 	data["module"] = "blog"
+	data["loggedIn"] = d.LoggedIn
 	return data
 }

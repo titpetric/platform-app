@@ -1,0 +1,209 @@
+---
+layout: default
+---
+<template :require="title,settings,schema">
+  <div class="flex flex-col gap-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-semibold">{{ title }}</h1>
+        <p class="text-muted-foreground">Configure your blog settings</p>
+      </div>
+    </div>
+
+    <nav class="flex gap-2 text-sm">
+      <a href="/admin/" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+      <span class="text-muted-foreground">/</span>
+      <span>Settings</span>
+    </nav>
+
+    <form id="settings-form" class="space-y-6">
+      <!-- Meta Settings -->
+      <div class="card">
+        <section class="p-4">
+          <h2 class="text-lg font-medium mb-4">Site Meta</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1" for="meta_lang">Language</label>
+              <input type="text" id="meta_lang" name="meta_lang" class="input w-full"
+                     :value="settings.MetaLang" placeholder="en" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1" for="meta_url">Site URL</label>
+              <input type="url" id="meta_url" name="meta_url" class="input w-full"
+                     :value="settings.MetaUrl" placeholder="https://example.com" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1" for="meta_author_name">Author Name</label>
+              <input type="text" id="meta_author_name" name="meta_author_name" class="input w-full"
+                     :value="settings.MetaAuthorName" placeholder="John Doe" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1" for="meta_subtitle">Subtitle</label>
+              <input type="text" id="meta_subtitle" name="meta_subtitle" class="input w-full"
+                     :value="settings.MetaSubtitle" placeholder="A blog about things" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium mb-1" for="meta_headshot">Headshot Image Path</label>
+              <input type="text" id="meta_headshot" name="meta_headshot" class="input w-full"
+                     :value="settings.MetaHeadshot" placeholder="/assets/images/headshot.jpg" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Display Settings -->
+      <div class="card">
+        <section class="p-4">
+          <h2 class="text-lg font-medium mb-4">Display</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1" for="posts_per_page">Posts Per Page</label>
+              <input type="number" id="posts_per_page" name="posts_per_page" class="input w-full"
+                     :value="settings.PostsPerPage" min="1" max="100" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Social Links -->
+      <div class="card">
+        <section class="p-4">
+          <h2 class="text-lg font-medium mb-4">Social Links</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1" for="social_github">GitHub Username</label>
+              <input type="text" id="social_github" name="social_github" class="input w-full"
+                     :value="settings.SocialGithub" placeholder="username" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1" for="social_twitter">Twitter Handle</label>
+              <input type="text" id="social_twitter" name="social_twitter" class="input w-full"
+                     :value="settings.SocialTwitter" placeholder="@username" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1" for="social_linkedin">LinkedIn Username</label>
+              <input type="text" id="social_linkedin" name="social_linkedin" class="input w-full"
+                     :value="settings.SocialLinkedin" placeholder="username" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Features -->
+      <div class="card">
+        <section class="p-4">
+          <h2 class="text-lg font-medium mb-4">Features</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="feature_rss" name="feature_rss" class="checkbox"
+                     :checked="settings.FeatureRss == 1" />
+              <span>Enable RSS Feed</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="feature_comments" name="feature_comments" class="checkbox"
+                     :checked="settings.FeatureComments == 1" />
+              <span>Enable Comments</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="feature_webmention" name="feature_webmention" class="checkbox"
+                     :checked="settings.FeatureWebmention == 1" />
+              <span>Enable Webmention</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="feature_pingback" name="feature_pingback" class="checkbox"
+                     :checked="settings.FeaturePingback == 1" />
+              <span>Enable Pingback</span>
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <!-- SEO Settings -->
+      <div class="card">
+        <section class="p-4">
+          <h2 class="text-lg font-medium mb-4">SEO</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1" for="seo_title_suffix">Title Suffix</label>
+              <input type="text" id="seo_title_suffix" name="seo_title_suffix" class="input w-full"
+                     :value="settings.SeoTitleSuffix" placeholder=" | My Blog" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1" for="seo_default_image">Default OG Image</label>
+              <input type="text" id="seo_default_image" name="seo_default_image" class="input w-full"
+                     :value="settings.SeoDefaultImage" placeholder="/assets/images/og-image.jpg" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium mb-1" for="analytics_id">Analytics ID</label>
+              <input type="text" id="analytics_id" name="analytics_id" class="input w-full"
+                     :value="settings.AnalyticsId" placeholder="G-XXXXXXXXXX" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="flex gap-4 items-center">
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+        <span id="save-status" class="text-sm"></span>
+      </div>
+    </form>
+
+    <a href="/admin/" class="text-sm text-muted-foreground hover:text-foreground">
+      &larr; Back to Dashboard
+    </a>
+  </div>
+
+  <script>
+    (function() {
+      const form = document.getElementById('settings-form');
+      const status = document.getElementById('save-status');
+
+      function showStatus(msg, isError) {
+        status.textContent = msg;
+        status.className = isError ? 'text-sm text-destructive' : 'text-sm text-green-600';
+        setTimeout(() => { status.textContent = ''; }, 3000);
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const data = {
+          user_id: 'global',
+          meta_lang: form.meta_lang.value,
+          meta_url: form.meta_url.value,
+          meta_author_name: form.meta_author_name.value,
+          meta_subtitle: form.meta_subtitle.value,
+          meta_headshot: form.meta_headshot.value,
+          posts_per_page: parseInt(form.posts_per_page.value) || 10,
+          social_github: form.social_github.value,
+          social_twitter: form.social_twitter.value,
+          social_linkedin: form.social_linkedin.value,
+          feature_rss: form.feature_rss.checked ? 1 : 0,
+          feature_comments: form.feature_comments.checked ? 1 : 0,
+          feature_webmention: form.feature_webmention.checked ? 1 : 0,
+          feature_pingback: form.feature_pingback.checked ? 1 : 0,
+          seo_title_suffix: form.seo_title_suffix.value,
+          seo_default_image: form.seo_default_image.value,
+          analytics_id: form.analytics_id.value
+        };
+
+        try {
+          const res = await fetch('/api/admin/blog/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          if (res.ok) {
+            showStatus('Settings saved!', false);
+          } else {
+            const err = await res.text();
+            showStatus('Failed: ' + err, true);
+          }
+        } catch (err) {
+          showStatus('Error: ' + err.message, true);
+        }
+      });
+    })();
+  </script>
+</template>

@@ -22,5 +22,5 @@ func AdminFS(configFS fs.FS) (fs.FS, error) {
 		return nil, err
 	}
 
-	return vuego.NewOverlayFS(configFS, adminFS, basecoat.Templates()), nil
+	return vuego.NewOverlayFS(adminFS, configFS, basecoat.Templates()), nil
 }

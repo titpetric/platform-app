@@ -12,8 +12,10 @@ import (
 	"github.com/titpetric/vuego-cli/basecoat"
 
 	"github.com/titpetric/platform-app/blog/model"
+	"github.com/titpetric/platform-app/blog/schema"
 	"github.com/titpetric/platform-app/blog/storage"
 	"github.com/titpetric/platform-app/blog/view"
+	"github.com/titpetric/platform-app/user"
 )
 
 // Handlers provides HTTP handlers for blog admin endpoints.
@@ -34,28 +36,52 @@ func NewHandlers(repo *storage.Storage, contentFS *storage.GitFS, themeFS fs.FS)
 	}
 }
 
+// requireLoginRedirect is middleware that checks for session cookie and redirects to login if missing.
+// It must run BEFORE the user middleware since that middleware short-circuits on auth failure.
+func requireLoginRedirect(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie("session_id")
+		if err != nil || cookie.Value == "" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 // Mount registers the admin routes on the given router.
 func (h *Handlers) Mount(r platform.Router) {
 	r.Group(func(r platform.Router) {
+		// Check for session cookie first and redirect if missing
+		r.Use(requireLoginRedirect)
+		// Then load session data into context
+		r.Use(user.NewMiddleware(user.AuthCookie()))
+
 		// Admin HTML Routes
 		r.Get("/admin/", h.DashboardHTML)
-		r.Get("/admin/drafts", h.ListDraftsHTML)
-		r.Get("/admin/scheduled", h.ListScheduledHTML)
-		r.Get("/admin/published", h.ListPublishedHTML)
-		r.Get("/admin/articles/{slug}", h.EditArticleHTML)
-		r.Get("/admin/articles/{slug}/edit", h.EditArticleHTML)
-		r.Get("/admin/new", h.NewArticleHTML)
+		r.Get("/admin/blog/drafts", h.ListDraftsHTML)
+		r.Get("/admin/blog/scheduled", h.ListScheduledHTML)
+		r.Get("/admin/blog/published", h.ListPublishedHTML)
+		r.Get("/admin/blog/articles/{slug}", h.EditArticleHTML)
+		r.Get("/admin/blog/articles/{slug}/edit", h.EditArticleHTML)
+		r.Get("/admin/blog/new", h.NewArticleHTML)
+		r.Get("/admin/blog/settings", h.SettingsHTML)
 
-		// Admin JSON API Routes
-		r.Get("/admin/drafts.json", h.ListDraftsJSON)
-		r.Get("/admin/scheduled.json", h.ListScheduledJSON)
-		r.Get("/admin/published.json", h.ListPublishedJSON)
-		r.Get("/admin/articles/{slug}.json", h.GetArticleJSON)
+		// Admin JSON API Routes (grouped under /api/admin)
+		r.Get("/api/admin/blog/drafts", h.ListDraftsJSON)
+		r.Get("/api/admin/blog/scheduled", h.ListScheduledJSON)
+		r.Get("/api/admin/blog/published", h.ListPublishedJSON)
+		r.Get("/api/admin/blog/articles/{slug}", h.GetArticleJSON)
+		r.Get("/api/admin/blog/articles/{slug}/check", h.CheckSlugJSON)
+		r.Post("/api/admin/blog/articles", h.CreateArticleJSON)
+		r.Put("/api/admin/blog/articles/{slug}", h.UpdateArticleJSON)
+		r.Delete("/api/admin/blog/articles/{slug}", h.DeleteArticleJSON)
+		r.Post("/api/admin/blog/articles/{slug}/publish", h.PublishArticleJSON)
 
-		r.Get("/admin/articles/{slug}/check", h.CheckSlugJSON)
-		r.Post("/admin/articles", h.CreateArticleJSON)
-		r.Put("/admin/articles/{slug}", h.UpdateArticleJSON)
-		r.Delete("/admin/articles/{slug}", h.DeleteArticleJSON)
+		// Settings API
+		r.Get("/api/admin/blog/settings", h.GetSettingsJSON)
+		r.Get("/api/admin/blog/settings/schema", h.GetSettingsSchemaJSON)
+		r.Post("/api/admin/blog/settings", h.SaveSettingsJSON)
 	})
 }
 
@@ -67,22 +93,37 @@ func (h *Handlers) DashboardHTML(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) dashboardHTML(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
-	drafts, err := h.repository.CountDraftArticles(ctx)
+	draftCount, err := h.repository.CountDraftArticles(ctx)
 	if err != nil {
 		return ErrInternal("failed to count drafts", err)
 	}
 
-	scheduled, err := h.repository.CountScheduledArticles(ctx)
+	scheduledCount, err := h.repository.CountScheduledArticles(ctx)
 	if err != nil {
 		return ErrInternal("failed to count scheduled", err)
 	}
 
-	published, err := h.repository.CountPublishedArticles(ctx)
+	publishedCount, err := h.repository.CountPublishedArticles(ctx)
 	if err != nil {
 		return ErrInternal("failed to count published", err)
 	}
 
-	data := view.NewAdminDashboardData(drafts, scheduled, published)
+	draftArticles, err := h.repository.GetDraftArticles(ctx, 0, 9999)
+	if err != nil {
+		return ErrInternal("failed to fetch drafts", err)
+	}
+
+	scheduledArticles, err := h.repository.GetScheduledArticles(ctx, 0, 9999)
+	if err != nil {
+		return ErrInternal("failed to fetch scheduled", err)
+	}
+
+	publishedArticles, err := h.repository.GetPublishedArticles(ctx, 0, 10)
+	if err != nil {
+		return ErrInternal("failed to fetch published", err)
+	}
+
+	data := view.NewAdminDashboardData(draftCount, scheduledCount, publishedCount, draftArticles, scheduledArticles, publishedArticles)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := h.views.Dashboard(data).Render(ctx, w); err != nil {
@@ -437,6 +478,28 @@ func (h *Handlers) deleteArticleJSON(w http.ResponseWriter, r *http.Request) err
 	return nil
 }
 
+// PublishArticleJSON sets draft=0 on an article, publishing it immediately or scheduling it.
+func (h *Handlers) PublishArticleJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.publishArticleJSON(w, r))
+}
+
+func (h *Handlers) publishArticleJSON(w http.ResponseWriter, r *http.Request) error {
+	slug := platform.URLParam(r, "slug")
+
+	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
+	if err != nil {
+		return ErrNotFound("article not found", err)
+	}
+
+	article.Draft = 0
+
+	if err := h.repository.UpdateArticle(r.Context(), article); err != nil {
+		return ErrInternal("failed to publish article", err)
+	}
+
+	return writeJSON(w, article)
+}
+
 func parsePagination(r *http.Request) (page, pageSize int) {
 	page = 1
 	pageSize = 10
@@ -459,4 +522,94 @@ func parsePagination(r *http.Request) (page, pageSize int) {
 func writeJSON(w http.ResponseWriter, data any) error {
 	w.Header().Set("Content-Type", "application/json")
 	return json.NewEncoder(w).Encode(data)
+}
+
+// SettingsHTML renders the settings admin page.
+func (h *Handlers) SettingsHTML(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.settingsHTML(w, r))
+}
+
+func (h *Handlers) settingsHTML(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	// Get global settings (or create default)
+	settings, err := h.repository.GetGlobalSettings(ctx)
+	if err != nil {
+		// Return empty settings if none exist
+		settings = &model.Setting{
+			UserID:       "global",
+			MetaLang:     "en",
+			PostsPerPage: 10,
+			FeatureRss:   1,
+		}
+	}
+
+	// Get schema for settings table
+	table, err := schema.GetTable("setting")
+	if err != nil {
+		return ErrInternal("failed to load schema", err)
+	}
+
+	data := map[string]any{
+		"title":    "Settings",
+		"settings": settings,
+		"schema":   table,
+		"loggedIn": true,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	return h.views.Loader.Load("settings.vuego").Fill(data).Render(ctx, w)
+}
+
+// GetSettingsJSON returns global settings as JSON.
+func (h *Handlers) GetSettingsJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.getSettingsJSON(w, r))
+}
+
+func (h *Handlers) getSettingsJSON(w http.ResponseWriter, r *http.Request) error {
+	settings, err := h.repository.GetGlobalSettings(r.Context())
+	if err != nil {
+		// Return empty settings if none exist
+		settings = &model.Setting{UserID: "global"}
+	}
+
+	return writeJSON(w, settings)
+}
+
+// GetSettingsSchemaJSON returns the schema for the settings table.
+func (h *Handlers) GetSettingsSchemaJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.getSettingsSchemaJSON(w, r))
+}
+
+func (h *Handlers) getSettingsSchemaJSON(w http.ResponseWriter, r *http.Request) error {
+	table, err := schema.GetTable("setting")
+	if err != nil {
+		return ErrInternal("failed to load schema", err)
+	}
+
+	return writeJSON(w, table)
+}
+
+// SaveSettingsJSON saves settings from JSON request.
+func (h *Handlers) SaveSettingsJSON(w http.ResponseWriter, r *http.Request) {
+	h.errorHandler(w, r, h.saveSettingsJSON(w, r))
+}
+
+func (h *Handlers) saveSettingsJSON(w http.ResponseWriter, r *http.Request) error {
+	var settings model.Setting
+
+	if err := json.NewDecoder(r.Body).Decode(&settings); err != nil {
+		return ErrBadRequest("invalid JSON", err)
+	}
+
+	// Always save as global settings for now
+	settings.UserID = "global"
+
+	if err := h.repository.SaveSetting(r.Context(), &settings); err != nil {
+		return ErrInternal("failed to save settings", err)
+	}
+
+	return writeJSON(w, map[string]any{
+		"success": true,
+	})
 }
