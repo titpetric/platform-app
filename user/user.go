@@ -59,6 +59,14 @@ func AuthCookie() MiddlewareOption {
 	}
 }
 
+// AuthOptional makes the middleware non-blocking on auth failure.
+// The request proceeds even if no valid session is found.
+func AuthOptional() MiddlewareOption {
+	return func(mw *Middleware) {
+		mw.options.Optional = true
+	}
+}
+
 // AuthQuery enables JWT-based authentication via URL query parameter.
 // Useful for headless browsers that can't set Authorization headers.
 func AuthQuery(paramName string) MiddlewareOption {

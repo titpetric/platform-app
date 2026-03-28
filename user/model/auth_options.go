@@ -18,4 +18,7 @@ type AuthOptions struct {
 
 	// This is a JWT specific option.
 	HeaderSigningKey string
+
+	// Optional if true will not block the request on auth failure.
+	Optional bool
 }

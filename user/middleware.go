@@ -32,8 +32,10 @@ func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	m.init(r.Context())
 
 	if err := m.serveHTTP(w, r); err != nil {
-		telemetry.CaptureError(r.Context(), err)
-		return
+		if !m.options.Optional {
+			telemetry.CaptureError(r.Context(), err)
+			return
+		}
 	}
 
 	m.nextHandler.ServeHTTP(w, r)
