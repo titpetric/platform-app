@@ -84,6 +84,12 @@ func GetSessionUser(ctx context.Context) (*model.User, bool) {
 	return userdata, userdata.Ok()
 }
 
+// IsLoggedIn returns true if there's an active user session.
+func IsLoggedIn(ctx context.Context) bool {
+	_, ok := GetSessionUser(ctx)
+	return ok
+}
+
 // SetSessionUser is here to aid testing, for internal use.
 func SetSessionUser(ctx context.Context, u *model.User) context.Context {
 	return userContext.SetContext(ctx, u)
