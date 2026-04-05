@@ -98,7 +98,7 @@ func catchAllValue(app string) string {
 		covered[name] = true
 	}
 
-	ignore := map[string]bool{"bin": true}
+	ignore := map[string]bool{"bin": true, ".claude": true}
 
 	subs, err := os.ReadDir(app)
 	if err != nil {
