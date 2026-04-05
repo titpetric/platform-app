@@ -2,48 +2,58 @@
 layout: default
 ---
 <template :require="title,settings,schema">
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-6 w-full">
+    <!-- Page Header -->
     <div class="flex justify-between items-center">
       <div>
         <h1 class="text-2xl font-semibold">{{ title }}</h1>
         <p class="text-muted-foreground">Configure your blog settings</p>
       </div>
+      <button type="submit" form="settings-form" class="btn btn-primary">
+        <i data-lucide="save" class="size-4"></i>
+        Save Settings
+      </button>
     </div>
 
-    <nav class="flex gap-2 text-sm">
-      <a href="/admin/" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+    <!-- Breadcrumb -->
+    <nav class="flex gap-2 text-sm" aria-label="Breadcrumb">
+      <a href="/admin" class="text-muted-foreground hover:text-foreground">Dashboard</a>
       <span class="text-muted-foreground">/</span>
-      <span>Settings</span>
+      <span class="font-medium">Settings</span>
     </nav>
 
     <form id="settings-form" class="space-y-6">
-      <!-- Meta Settings -->
-      <div class="card">
-        <section class="p-4">
-          <h2 class="text-lg font-medium mb-4">Site Meta</h2>
+      <!-- Site Meta Settings -->
+      <div class="card w-full">
+        <header>
+          <h2>Site Meta</h2>
+          <p class="text-muted-foreground text-sm">Basic site information and metadata</p>
+        </header>
+        <section>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-1" for="meta_lang">Language</label>
+            <div class="field">
+              <label class="label" for="meta_lang">Language</label>
               <input type="text" id="meta_lang" name="meta_lang" class="input w-full"
                      :value="settings.MetaLang" placeholder="en" />
+              <p class="text-xs text-muted-foreground mt-1">ISO language code (e.g., en, es, fr)</p>
             </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="meta_url">Site URL</label>
+            <div class="field">
+              <label class="label" for="meta_url">Site URL</label>
               <input type="url" id="meta_url" name="meta_url" class="input w-full"
                      :value="settings.MetaUrl" placeholder="https://example.com" />
             </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="meta_author_name">Author Name</label>
+            <div class="field">
+              <label class="label" for="meta_author_name">Author Name</label>
               <input type="text" id="meta_author_name" name="meta_author_name" class="input w-full"
                      :value="settings.MetaAuthorName" placeholder="John Doe" />
             </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="meta_subtitle">Subtitle</label>
+            <div class="field">
+              <label class="label" for="meta_subtitle">Subtitle</label>
               <input type="text" id="meta_subtitle" name="meta_subtitle" class="input w-full"
                      :value="settings.MetaSubtitle" placeholder="A blog about things" />
             </div>
-            <div class="md:col-span-2">
-              <label class="block text-sm font-medium mb-1" for="meta_headshot">Headshot Image Path</label>
+            <div class="field md:col-span-2">
+              <label class="label" for="meta_headshot">Headshot Image Path</label>
               <input type="text" id="meta_headshot" name="meta_headshot" class="input w-full"
                      :value="settings.MetaHeadshot" placeholder="/assets/images/headshot.jpg" />
             </div>
@@ -52,12 +62,15 @@ layout: default
       </div>
 
       <!-- Display Settings -->
-      <div class="card">
-        <section class="p-4">
-          <h2 class="text-lg font-medium mb-4">Display</h2>
+      <div class="card w-full">
+        <header>
+          <h2>Display</h2>
+          <p class="text-muted-foreground text-sm">Control how content is displayed</p>
+        </header>
+        <section>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-1" for="posts_per_page">Posts Per Page</label>
+            <div class="field">
+              <label class="label" for="posts_per_page">Posts Per Page</label>
               <input type="number" id="posts_per_page" name="posts_per_page" class="input w-full"
                      :value="settings.PostsPerPage" min="1" max="100" />
             </div>
@@ -66,22 +79,34 @@ layout: default
       </div>
 
       <!-- Social Links -->
-      <div class="card">
-        <section class="p-4">
-          <h2 class="text-lg font-medium mb-4">Social Links</h2>
+      <div class="card w-full">
+        <header>
+          <h2>Social Links</h2>
+          <p class="text-muted-foreground text-sm">Connect your social media profiles</p>
+        </header>
+        <section>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-1" for="social_github">GitHub Username</label>
+            <div class="field">
+              <label class="label" for="social_github">
+                <i data-lucide="github" class="size-4 inline-block mr-1"></i>
+                GitHub Username
+              </label>
               <input type="text" id="social_github" name="social_github" class="input w-full"
                      :value="settings.SocialGithub" placeholder="username" />
             </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="social_twitter">Twitter Handle</label>
+            <div class="field">
+              <label class="label" for="social_twitter">
+                <i data-lucide="twitter" class="size-4 inline-block mr-1"></i>
+                Twitter Handle
+              </label>
               <input type="text" id="social_twitter" name="social_twitter" class="input w-full"
                      :value="settings.SocialTwitter" placeholder="@username" />
             </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="social_linkedin">LinkedIn Username</label>
+            <div class="field">
+              <label class="label" for="social_linkedin">
+                <i data-lucide="linkedin" class="size-4 inline-block mr-1"></i>
+                LinkedIn Username
+              </label>
               <input type="text" id="social_linkedin" name="social_linkedin" class="input w-full"
                      :value="settings.SocialLinkedin" placeholder="username" />
             </div>
@@ -90,67 +115,87 @@ layout: default
       </div>
 
       <!-- Features -->
-      <div class="card">
-        <section class="p-4">
-          <h2 class="text-lg font-medium mb-4">Features</h2>
+      <div class="card w-full">
+        <header>
+          <h2>Features</h2>
+          <p class="text-muted-foreground text-sm">Enable or disable blog features</p>
+        </header>
+        <section>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-muted/50 transition-colors">
               <input type="checkbox" id="feature_rss" name="feature_rss" class="checkbox"
                      :checked="settings.FeatureRss == 1" />
-              <span>Enable RSS Feed</span>
+              <div>
+                <span class="font-medium">RSS Feed</span>
+                <p class="text-xs text-muted-foreground">Allow readers to subscribe via RSS</p>
+              </div>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-muted/50 transition-colors">
               <input type="checkbox" id="feature_comments" name="feature_comments" class="checkbox"
                      :checked="settings.FeatureComments == 1" />
-              <span>Enable Comments</span>
+              <div>
+                <span class="font-medium">Comments</span>
+                <p class="text-xs text-muted-foreground">Enable comments on posts</p>
+              </div>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-muted/50 transition-colors">
               <input type="checkbox" id="feature_webmention" name="feature_webmention" class="checkbox"
                      :checked="settings.FeatureWebmention == 1" />
-              <span>Enable Webmention</span>
+              <div>
+                <span class="font-medium">Webmention</span>
+                <p class="text-xs text-muted-foreground">Receive webmentions from other sites</p>
+              </div>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-muted/50 transition-colors">
               <input type="checkbox" id="feature_pingback" name="feature_pingback" class="checkbox"
                      :checked="settings.FeaturePingback == 1" />
-              <span>Enable Pingback</span>
+              <div>
+                <span class="font-medium">Pingback</span>
+                <p class="text-xs text-muted-foreground">Enable pingback notifications</p>
+              </div>
             </label>
           </div>
         </section>
       </div>
 
       <!-- SEO Settings -->
-      <div class="card">
-        <section class="p-4">
-          <h2 class="text-lg font-medium mb-4">SEO</h2>
+      <div class="card w-full">
+        <header>
+          <h2>SEO</h2>
+          <p class="text-muted-foreground text-sm">Search engine optimization settings</p>
+        </header>
+        <section>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-1" for="seo_title_suffix">Title Suffix</label>
+            <div class="field">
+              <label class="label" for="seo_title_suffix">Title Suffix</label>
               <input type="text" id="seo_title_suffix" name="seo_title_suffix" class="input w-full"
                      :value="settings.SeoTitleSuffix" placeholder=" | My Blog" />
+              <p class="text-xs text-muted-foreground mt-1">Appended to page titles</p>
             </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="seo_default_image">Default OG Image</label>
+            <div class="field">
+              <label class="label" for="seo_default_image">Default OG Image</label>
               <input type="text" id="seo_default_image" name="seo_default_image" class="input w-full"
                      :value="settings.SeoDefaultImage" placeholder="/assets/images/og-image.jpg" />
             </div>
-            <div class="md:col-span-2">
-              <label class="block text-sm font-medium mb-1" for="analytics_id">Analytics ID</label>
+            <div class="field md:col-span-2">
+              <label class="label" for="analytics_id">Analytics ID</label>
               <input type="text" id="analytics_id" name="analytics_id" class="input w-full"
                      :value="settings.AnalyticsId" placeholder="G-XXXXXXXXXX" />
+              <p class="text-xs text-muted-foreground mt-1">Google Analytics measurement ID</p>
             </div>
           </div>
         </section>
       </div>
 
+      <!-- Save Status -->
       <div class="flex gap-4 items-center">
-        <button type="submit" class="btn btn-primary">Save Settings</button>
+        <button type="submit" class="btn btn-primary">
+          <i data-lucide="save" class="size-4"></i>
+          Save Settings
+        </button>
         <span id="save-status" class="text-sm"></span>
       </div>
     </form>
-
-    <a href="/admin/" class="text-sm text-muted-foreground hover:text-foreground">
-      &larr; Back to Dashboard
-    </a>
   </div>
 
   <script>

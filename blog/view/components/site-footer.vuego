@@ -14,8 +14,8 @@
   </p>
 
   <ul class="cluster" role="list">
-    <template v-for="group in menu">
-      <li v-for="item in group.items">
+    <template v-for="item in footer">
+      <li v-if="item.Show()">
         <a :href="item.url" :target="item.target" :rel="item.target != '' ? 'noreferrer noopener' : ''">{{ item.label }}</a>
       </li>
     </template>

@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <nav class="flex gap-2 text-sm">
-      <a href="/admin/" class="text-muted-foreground hover:text-foreground">Dashboard</a>
+      <a href="/admin" class="text-muted-foreground hover:text-foreground">Dashboard</a>
       <span class="text-muted-foreground">/</span>
       <span>{{ title }}</span>
     </nav>
@@ -127,24 +127,14 @@ document.addEventListener('DOMContentLoaded', function() {
               <textarea id="description" name="description" class="textarea" rows="2" maxlength="500" placeholder="Brief description for SEO and previews">{{ description }}</textarea>
               <p class="form-hint">Used in meta tags and article previews</p>
             </div>
-          </div>
-        </section>
-      </div>
 
-      <div class="card">
-        <section>
-          <div class="form-group" id="content-group">
-            <label for="body-content">Content <span class="text-destructive">*</span></label>
-            <div id="markdown-editor"></div>
-            <textarea id="body-content" name="content" style="display:none" required>{{ bodyContent }}</textarea>
-            <p class="form-error">Content is required</p>
-          </div>
-        </section>
-      </div>
+            <div class="form-group" id="content-group">
+              <label for="body-content">Content <span class="text-destructive">*</span></label>
+              <div id="markdown-editor"></div>
+              <textarea id="body-content" name="content" style="display:none" required>{{ bodyContent }}</textarea>
+              <p class="form-error">Content is required</p>
+            </div>
 
-      <div class="card">
-        <section>
-          <div class="flex flex-col gap-4">
             <div class="form-grid">
               <div class="form-group" id="date-group">
                 <label for="date">Publication Date (UTC)</label>
@@ -162,20 +152,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
               </div>
             </div>
+
             <div class="flex items-center gap-2">
               <input type="checkbox" id="draft" name="draft" :checked="draft" class="checkbox" />
               <label for="draft" class="cursor-pointer" style="font-size:0.875rem;font-weight:500">Save as draft (unpublished)</label>
             </div>
-          </div>
-        </section>
-      </div>
 
-      <div class="card">
-        <section>
-          <div class="form-group" id="custom-yaml-group">
-            <label for="customYaml">Custom Metadata (YAML)</label>
-            <textarea id="customYaml" name="customYaml" class="textarea font-mono" rows="3">{{ customYaml }}</textarea>
-            <p class="form-hint">Additional YAML fields for frontmatter (e.g., og_image: /images/cover.jpg)</p>
+            <div class="form-group" id="custom-yaml-group">
+              <label for="customYaml">Custom Metadata (YAML)</label>
+              <textarea id="customYaml" name="customYaml" class="textarea font-mono" rows="3">{{ customYaml }}</textarea>
+              <p class="form-hint">Additional YAML fields for frontmatter (e.g., og_image: /images/cover.jpg)</p>
+            </div>
           </div>
         </section>
       </div>
@@ -185,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <template v-if="isNew">Create Article</template>
           <template v-else>Save Changes</template>
         </button>
-        <a href="/admin/" class="btn btn-secondary">Cancel</a>
+        <a href="/admin" class="btn btn-secondary">Cancel</a>
         <template v-if="!isNew">
           <button type="button" id="delete-btn" class="btn btn-destructive ml-auto">Delete</button>
         </template>
@@ -402,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
               showMessage('Article deleted successfully!', false);
               setTimeout(() => {
-                window.location.href = '/admin/';
+                window.location.href = '/admin';
               }, 500);
             } else {
               const error = await response.text();

@@ -1,10 +1,16 @@
+# Admin panel navigation - compatible with basecoat sidebar
+# Structure: groups with label and items array
+
 menu:
-  - label: Admin
+  - label: Overview
     items:
       - label: Dashboard
-        url: /admin/
+        url: /admin
         icon: layout-dashboard
-  - label: Blog
+      - label: View Blog
+        url: /blog
+        icon: external-link
+  - label: Content
     items:
       - label: Drafts
         url: /admin/blog/drafts
@@ -18,14 +24,11 @@ menu:
       - label: New Article
         url: /admin/blog/new
         icon: plus
-      - label: Settings
+  - label: Settings
+    items:
+      - label: Blog Settings
         url: /admin/blog/settings
         icon: settings
-  - label: Account
-    items:
-      - label: View Blog
-        url: /blog
-        icon: external-link
       - label: Logout
         url: /logout
         icon: log-out

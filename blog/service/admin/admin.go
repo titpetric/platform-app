@@ -58,7 +58,7 @@ func (h *Handlers) Mount(r platform.Router) {
 		r.Use(user.NewMiddleware(user.AuthCookie()))
 
 		// Admin HTML Routes
-		r.Get("/admin/", h.DashboardHTML)
+		r.Get("/admin", h.DashboardHTML)
 		r.Get("/admin/blog/drafts", h.ListDraftsHTML)
 		r.Get("/admin/blog/scheduled", h.ListScheduledHTML)
 		r.Get("/admin/blog/published", h.ListPublishedHTML)

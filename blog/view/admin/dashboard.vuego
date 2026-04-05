@@ -3,25 +3,71 @@ layout: default
 title: Blog Dashboard
 ---
 <template :require="data">
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-6 w-full">
+    <!-- Page Header -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-semibold">{{ data.title }}</h1>
+        <h1 class="text-2xl font-semibold">Dashboard</h1>
         <p class="text-muted-foreground">Manage your blog articles</p>
       </div>
       <a href="/admin/blog/new" class="btn btn-primary">New Article</a>
     </div>
 
-    <!-- Drafts -->
-    <div class="card">
-      <header class="flex justify-between items-center">
-        <div>
-          <h2>Drafts</h2>
-          <p class="text-muted-foreground text-sm">{{ data.draftsCount }} unpublished articles</p>
-        </div>
-      </header>
-      <section class="p-0">
-        <template v-if="draftArticles && len(draftArticles) > 0">
+    <!-- Statistics Card -->
+    <div class="card p-0">
+      <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+        <a href="/admin/blog/published" class="p-6 hover:bg-muted/50 transition-colors">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">Published</p>
+              <p class="text-3xl font-bold">{{ data.publishedCount }}</p>
+            </div>
+            <div class="p-3 bg-muted rounded-full">
+              <i data-lucide="check-circle" class="size-6 text-muted-foreground"></i>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mt-2">Live articles</p>
+        </a>
+
+        <a href="/admin/blog/scheduled" class="p-6 hover:bg-muted/50 transition-colors">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">Scheduled</p>
+              <p class="text-3xl font-bold">{{ data.scheduledCount }}</p>
+            </div>
+            <div class="p-3 bg-muted rounded-full">
+              <i data-lucide="calendar" class="size-6 text-muted-foreground"></i>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mt-2">Awaiting publication</p>
+        </a>
+
+        <a href="/admin/blog/drafts" class="p-6 hover:bg-muted/50 transition-colors">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">Drafts</p>
+              <p class="text-3xl font-bold">{{ data.draftsCount }}</p>
+            </div>
+            <div class="p-3 bg-muted rounded-full">
+              <i data-lucide="file-edit" class="size-6 text-muted-foreground"></i>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mt-2">Unpublished articles</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Drafts Card -->
+    <template v-if="data.draftsCount > 0">
+      <div class="card w-full">
+        <header class="flex justify-between items-center">
+          <div>
+            <h2>Drafts</h2>
+            <p class="text-muted-foreground text-sm">{{ data.draftsCount }} unpublished articles</p>
+          </div>
+          <a href="/admin/blog/drafts" class="btn btn-xs btn-ghost">View all</a>
+        </header>
+        <section class="p-0">
           <table class="table w-full">
             <thead>
               <tr>
@@ -33,7 +79,7 @@ title: Blog Dashboard
             <tbody>
               <tr v-for="article in data.draftArticles">
                 <td>
-                  <a :href="'/admin/blog/articles/' + article.Slug" class="font-medium hover:text-primary">{{ article.Title }}</a>
+                  <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="font-medium hover:text-primary">{{ article.Title }}</a>
                 </td>
                 <td class="text-muted-foreground text-sm">
                   <template v-if="article.Date">{{ article.Date | postDate }}</template>
@@ -42,32 +88,27 @@ title: Blog Dashboard
                 <td class="text-right">
                   <div class="flex gap-1 justify-end">
                     <button class="btn btn-xs btn-primary publish-btn" :data-slug="article.Slug">Publish</button>
-                    <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-xs btn-secondary">Edit</a>
+                    <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-xs btn-outline">Edit</a>
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
-        </template>
-        <template v-else>
-          <div class="p-6 text-center text-muted-foreground">No drafts</div>
-        </template>
-      </section>
-    </div>
+        </section>
+      </div>
+    </template>
 
-    <!-- Scheduled -->
-    <div class="card">
-      <header class="flex justify-between items-center">
-        <div>
-          <h2>Scheduled</h2>
-          <p class="text-muted-foreground text-sm">{{ data.scheduledCount }} articles awaiting publication</p>
-        </div>
-        <template v-if="scheduledCount > 0">
+    <!-- Scheduled Card -->
+    <template v-if="data.scheduledCount > 0">
+      <div class="card w-full">
+        <header class="flex justify-between items-center">
+          <div>
+            <h2>Scheduled</h2>
+            <p class="text-muted-foreground text-sm">{{ data.scheduledCount }} articles awaiting publication</p>
+          </div>
           <a href="/admin/blog/scheduled" class="btn btn-xs btn-ghost">View all</a>
-        </template>
-      </header>
-      <section class="p-0">
-        <template v-if="scheduledArticles && len(scheduledArticles) > 0">
+        </header>
+        <section class="p-0">
           <table class="table w-full">
             <thead>
               <tr>
@@ -85,31 +126,26 @@ title: Blog Dashboard
                   <template v-if="article.Date">{{ article.Date | postDate }}</template>
                 </td>
                 <td class="text-right">
-                  <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-xs btn-secondary">Edit</a>
+                  <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-xs btn-outline">Edit</a>
                 </td>
               </tr>
             </tbody>
           </table>
-        </template>
-        <template v-else>
-          <div class="p-6 text-center text-muted-foreground">No scheduled articles</div>
-        </template>
-      </section>
-    </div>
+        </section>
+      </div>
+    </template>
 
-    <!-- Published -->
-    <div class="card">
-      <header class="flex justify-between items-center">
-        <div>
-          <h2>Published</h2>
-          <p class="text-muted-foreground text-sm">{{ data.publishedCount }} live articles</p>
-        </div>
-        <template v-if="publishedCount > 10">
-          <a href="/admin/blog/published" id="more-published" class="btn btn-xs btn-ghost">More</a>
-        </template>
-      </header>
-      <section class="p-0">
-        <template v-if="publishedArticles && len(publishedArticles) > 0">
+    <!-- Published Card -->
+    <template v-if="data.publishedCount > 0">
+      <div class="card w-full">
+        <header class="flex justify-between items-center">
+          <div>
+            <h2>Recent Publications</h2>
+            <p class="text-muted-foreground text-sm">{{ data.publishedCount }} live articles</p>
+          </div>
+          <a href="/admin/blog/published" class="btn btn-xs btn-ghost">View all</a>
+        </header>
+        <section class="p-0">
           <table class="table w-full">
             <thead>
               <tr>
@@ -121,23 +157,34 @@ title: Blog Dashboard
             <tbody>
               <tr v-for="article in data.publishedArticles">
                 <td>
-                  <a :href="'/blog/' + article.Slug" class="font-medium hover:text-primary">{{ article.Title }}</a>
+                  <a :href="'/blog/' + article.Slug" class="font-medium hover:text-primary" target="_blank">{{ article.Title }}</a>
                 </td>
                 <td class="text-muted-foreground text-sm">
                   <template v-if="article.Date">{{ article.Date | date }}</template>
                 </td>
                 <td class="text-right">
-                  <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-xs btn-secondary">Edit</a>
+                  <a :href="'/admin/blog/articles/' + article.Slug + '/edit'" class="btn btn-xs btn-outline">Edit</a>
                 </td>
               </tr>
             </tbody>
           </table>
-        </template>
-        <template v-else>
-          <div class="p-6 text-center text-muted-foreground">No published articles</div>
-        </template>
-      </section>
-    </div>
+        </section>
+      </div>
+    </template>
+
+    <!-- Empty State -->
+    <template v-if="data.draftsCount == 0 && data.scheduledCount == 0 && data.publishedCount == 0">
+      <div class="card w-full">
+        <section class="p-12 text-center">
+          <div class="p-4 bg-muted rounded-full inline-block mb-4">
+            <i data-lucide="file-plus" class="size-8 text-muted-foreground"></i>
+          </div>
+          <h3 class="text-lg font-medium mb-2">No articles yet</h3>
+          <p class="text-muted-foreground mb-4">Get started by creating your first article.</p>
+          <a href="/admin/blog/new" class="btn btn-primary">Create Article</a>
+        </section>
+      </div>
+    </template>
   </div>
 
   <script>

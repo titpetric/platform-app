@@ -1,64 +1,28 @@
-# Menu configuration for blog module
-# menu: shown to all users
-# menuLoggedIn: shown to authenticated users instead of menu
+# Main site navigation configuration
+# Separate keys for header and footer - admin has its own config
 
-menu:
-  - type: group
-    label: Blog
-    items:
-      - label: Articles
-        url: /blog
-        icon: file-text
-      - label: RSS Feed
-        url: /feed.xml
-        icon: rss
-  - type: group
-    label: Account
-    items:
-      - label: Login
-        url: /login
-        icon: log-in
+# Header navigation - shown on all pages
+header:
+  - label: Articles
+    url: /blog
+    icon: file-text
+  - label: RSS Feed
+    url: /feed.xml
+    icon: rss
 
-menuLoggedIn:
-  - type: group
-    label: Blog
-    items:
-      - label: Articles
-        url: /blog
-        icon: file-text
-      - label: RSS Feed
-        url: /feed.xml
-        icon: rss
-  - type: group
-    label: Admin
-    items:
-      - label: Dashboard
-        url: /admin/
-        icon: layout-dashboard
-  - type: group
-    label: Blog
-    items:
-      - label: Drafts
-        url: /admin/blog/drafts
-        icon: file-edit
-      - label: Scheduled
-        url: /admin/blog/scheduled
-        icon: calendar
-      - label: Published
-        url: /admin/blog/published
-        icon: check-circle
-      - label: New Article
-        url: /admin/blog/new
-        icon: plus
-      - label: Settings
-        url: /admin/blog/settings
-        icon: settings
-  - type: group
-    label: Account
-    items:
-      - label: Profile
-        url: /profile
-        icon: user
-      - label: Logout
-        url: /logout
-        icon: log-out
+# Footer navigation - login visible when logged out, admin visible when logged in
+footer:
+  - label: Articles
+    url: /blog
+    icon: file-text
+  - label: RSS Feed
+    url: /feed.xml
+    icon: rss
+  - label: Admin
+    url: /admin
+    icon: layout-dashboard
+    loggedIn: true
+  - label: Login
+    url: /login
+    icon: log-in
+    loggedOut: true
