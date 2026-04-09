@@ -142,14 +142,26 @@ type Migrations struct {
 // GetProject will return the value of Project.
 func (m *Migrations) GetProject() string { return m.Project }
 
+// SetProject sets Project to the provided value.
+func (m *Migrations) SetProject(val string) { m.Project = val }
+
 // GetFilename will return the value of Filename.
 func (m *Migrations) GetFilename() string { return m.Filename }
+
+// SetFilename sets Filename to the provided value.
+func (m *Migrations) SetFilename(val string) { m.Filename = val }
 
 // GetStatementIndex will return the value of StatementIndex.
 func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
 
+// SetStatementIndex sets StatementIndex to the provided value.
+func (m *Migrations) SetStatementIndex(val int64) { m.StatementIndex = val }
+
 // GetStatus will return the value of Status.
 func (m *Migrations) GetStatus() string { return m.Status }
+
+// SetStatus sets Status to the provided value.
+func (m *Migrations) SetStatus(val string) { m.Status = val }
 
 // MigrationsTable is the name of the table in the DB.
 const MigrationsTable = "`migrations`"
@@ -180,8 +192,14 @@ type PulseDaily struct {
 // GetUserID will return the value of UserID.
 func (p *PulseDaily) GetUserID() string { return p.UserID }
 
+// SetUserID sets UserID to the provided value.
+func (p *PulseDaily) SetUserID(val string) { p.UserID = val }
+
 // GetHostname will return the value of Hostname.
 func (p *PulseDaily) GetHostname() string { return p.Hostname }
+
+// SetHostname sets Hostname to the provided value.
+func (p *PulseDaily) SetHostname(val string) { p.Hostname = val }
 
 // GetStamp will return the value of Stamp.
 func (p *PulseDaily) GetStamp() *time.Time { return p.Stamp }
@@ -191,6 +209,9 @@ func (p *PulseDaily) SetStamp(stamp time.Time) { p.Stamp = &stamp }
 
 // GetCount will return the value of Count.
 func (p *PulseDaily) GetCount() int64 { return p.Count }
+
+// SetCount sets Count to the provided value.
+func (p *PulseDaily) SetCount(val int64) { p.Count = val }
 
 // PulseDailyTable is the name of the table in the DB.
 const PulseDailyTable = "`pulse_daily`"
@@ -218,8 +239,14 @@ type PulseHosts struct {
 // GetUserID will return the value of UserID.
 func (p *PulseHosts) GetUserID() string { return p.UserID }
 
+// SetUserID sets UserID to the provided value.
+func (p *PulseHosts) SetUserID(val string) { p.UserID = val }
+
 // GetHostname will return the value of Hostname.
 func (p *PulseHosts) GetHostname() string { return p.Hostname }
+
+// SetHostname sets Hostname to the provided value.
+func (p *PulseHosts) SetHostname(val string) { p.Hostname = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (p *PulseHosts) GetCreatedAt() *time.Time { return p.CreatedAt }
@@ -256,8 +283,14 @@ type PulseHourly struct {
 // GetUserID will return the value of UserID.
 func (p *PulseHourly) GetUserID() string { return p.UserID }
 
+// SetUserID sets UserID to the provided value.
+func (p *PulseHourly) SetUserID(val string) { p.UserID = val }
+
 // GetHostname will return the value of Hostname.
 func (p *PulseHourly) GetHostname() string { return p.Hostname }
+
+// SetHostname sets Hostname to the provided value.
+func (p *PulseHourly) SetHostname(val string) { p.Hostname = val }
 
 // GetStamp will return the value of Stamp.
 func (p *PulseHourly) GetStamp() *time.Time { return p.Stamp }
@@ -267,6 +300,9 @@ func (p *PulseHourly) SetStamp(stamp time.Time) { p.Stamp = &stamp }
 
 // GetCount will return the value of Count.
 func (p *PulseHourly) GetCount() int64 { return p.Count }
+
+// SetCount sets Count to the provided value.
+func (p *PulseHourly) SetCount(val int64) { p.Count = val }
 
 // PulseHourlyTable is the name of the table in the DB.
 const PulseHourlyTable = "`pulse_hourly`"

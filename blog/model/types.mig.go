@@ -169,17 +169,32 @@ type Article struct {
 // GetID will return the value of ID.
 func (a *Article) GetID() string { return a.ID }
 
+// SetID sets ID to the provided value.
+func (a *Article) SetID(val string) { a.ID = val }
+
 // GetSlug will return the value of Slug.
 func (a *Article) GetSlug() string { return a.Slug }
+
+// SetSlug sets Slug to the provided value.
+func (a *Article) SetSlug(val string) { a.Slug = val }
 
 // GetTitle will return the value of Title.
 func (a *Article) GetTitle() string { return a.Title }
 
+// SetTitle sets Title to the provided value.
+func (a *Article) SetTitle(val string) { a.Title = val }
+
 // GetFilename will return the value of Filename.
 func (a *Article) GetFilename() string { return a.Filename }
 
+// SetFilename sets Filename to the provided value.
+func (a *Article) SetFilename(val string) { a.Filename = val }
+
 // GetDescription will return the value of Description.
 func (a *Article) GetDescription() string { return a.Description }
+
+// SetDescription sets Description to the provided value.
+func (a *Article) SetDescription(val string) { a.Description = val }
 
 // GetDate will return the value of Date.
 func (a *Article) GetDate() *time.Time { return a.Date }
@@ -190,17 +205,32 @@ func (a *Article) SetDate(stamp time.Time) { a.Date = &stamp }
 // GetOgImage will return the value of OgImage.
 func (a *Article) GetOgImage() string { return a.OgImage }
 
+// SetOgImage sets OgImage to the provided value.
+func (a *Article) SetOgImage(val string) { a.OgImage = val }
+
 // GetLayout will return the value of Layout.
 func (a *Article) GetLayout() string { return a.Layout }
+
+// SetLayout sets Layout to the provided value.
+func (a *Article) SetLayout(val string) { a.Layout = val }
 
 // GetSource will return the value of Source.
 func (a *Article) GetSource() string { return a.Source }
 
+// SetSource sets Source to the provided value.
+func (a *Article) SetSource(val string) { a.Source = val }
+
 // GetURL will return the value of URL.
 func (a *Article) GetURL() string { return a.URL }
 
+// SetURL sets URL to the provided value.
+func (a *Article) SetURL(val string) { a.URL = val }
+
 // GetDraft will return the value of Draft.
 func (a *Article) GetDraft() int64 { return a.Draft }
+
+// SetDraft sets Draft to the provided value.
+func (a *Article) SetDraft(val int64) { a.Draft = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (a *Article) GetCreatedAt() *time.Time { return a.CreatedAt }
@@ -241,14 +271,26 @@ type Migrations struct {
 // GetProject will return the value of Project.
 func (m *Migrations) GetProject() string { return m.Project }
 
+// SetProject sets Project to the provided value.
+func (m *Migrations) SetProject(val string) { m.Project = val }
+
 // GetFilename will return the value of Filename.
 func (m *Migrations) GetFilename() string { return m.Filename }
+
+// SetFilename sets Filename to the provided value.
+func (m *Migrations) SetFilename(val string) { m.Filename = val }
 
 // GetStatementIndex will return the value of StatementIndex.
 func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
 
+// SetStatementIndex sets StatementIndex to the provided value.
+func (m *Migrations) SetStatementIndex(val int64) { m.StatementIndex = val }
+
 // GetStatus will return the value of Status.
 func (m *Migrations) GetStatus() string { return m.Status }
+
+// SetStatus sets Status to the provided value.
+func (m *Migrations) SetStatus(val string) { m.Status = val }
 
 // MigrationsTable is the name of the table in the DB.
 const MigrationsTable = "`migrations`"
@@ -322,53 +364,104 @@ type Setting struct {
 // GetUserID will return the value of UserID.
 func (s *Setting) GetUserID() string { return s.UserID }
 
+// SetUserID sets UserID to the provided value.
+func (s *Setting) SetUserID(val string) { s.UserID = val }
+
 // GetMetaLang will return the value of MetaLang.
 func (s *Setting) GetMetaLang() string { return s.MetaLang }
+
+// SetMetaLang sets MetaLang to the provided value.
+func (s *Setting) SetMetaLang(val string) { s.MetaLang = val }
 
 // GetMetaURL will return the value of MetaURL.
 func (s *Setting) GetMetaURL() string { return s.MetaURL }
 
+// SetMetaURL sets MetaURL to the provided value.
+func (s *Setting) SetMetaURL(val string) { s.MetaURL = val }
+
 // GetMetaAuthorName will return the value of MetaAuthorName.
 func (s *Setting) GetMetaAuthorName() string { return s.MetaAuthorName }
+
+// SetMetaAuthorName sets MetaAuthorName to the provided value.
+func (s *Setting) SetMetaAuthorName(val string) { s.MetaAuthorName = val }
 
 // GetMetaSubtitle will return the value of MetaSubtitle.
 func (s *Setting) GetMetaSubtitle() string { return s.MetaSubtitle }
 
+// SetMetaSubtitle sets MetaSubtitle to the provided value.
+func (s *Setting) SetMetaSubtitle(val string) { s.MetaSubtitle = val }
+
 // GetMetaHeadshot will return the value of MetaHeadshot.
 func (s *Setting) GetMetaHeadshot() string { return s.MetaHeadshot }
+
+// SetMetaHeadshot sets MetaHeadshot to the provided value.
+func (s *Setting) SetMetaHeadshot(val string) { s.MetaHeadshot = val }
 
 // GetPostsPerPage will return the value of PostsPerPage.
 func (s *Setting) GetPostsPerPage() int64 { return s.PostsPerPage }
 
+// SetPostsPerPage sets PostsPerPage to the provided value.
+func (s *Setting) SetPostsPerPage(val int64) { s.PostsPerPage = val }
+
 // GetSocialGithub will return the value of SocialGithub.
 func (s *Setting) GetSocialGithub() string { return s.SocialGithub }
+
+// SetSocialGithub sets SocialGithub to the provided value.
+func (s *Setting) SetSocialGithub(val string) { s.SocialGithub = val }
 
 // GetSocialTwitter will return the value of SocialTwitter.
 func (s *Setting) GetSocialTwitter() string { return s.SocialTwitter }
 
+// SetSocialTwitter sets SocialTwitter to the provided value.
+func (s *Setting) SetSocialTwitter(val string) { s.SocialTwitter = val }
+
 // GetSocialLinkedin will return the value of SocialLinkedin.
 func (s *Setting) GetSocialLinkedin() string { return s.SocialLinkedin }
+
+// SetSocialLinkedin sets SocialLinkedin to the provided value.
+func (s *Setting) SetSocialLinkedin(val string) { s.SocialLinkedin = val }
 
 // GetFeatureWebmention will return the value of FeatureWebmention.
 func (s *Setting) GetFeatureWebmention() int64 { return s.FeatureWebmention }
 
+// SetFeatureWebmention sets FeatureWebmention to the provided value.
+func (s *Setting) SetFeatureWebmention(val int64) { s.FeatureWebmention = val }
+
 // GetFeaturePingback will return the value of FeaturePingback.
 func (s *Setting) GetFeaturePingback() int64 { return s.FeaturePingback }
+
+// SetFeaturePingback sets FeaturePingback to the provided value.
+func (s *Setting) SetFeaturePingback(val int64) { s.FeaturePingback = val }
 
 // GetFeatureComments will return the value of FeatureComments.
 func (s *Setting) GetFeatureComments() int64 { return s.FeatureComments }
 
+// SetFeatureComments sets FeatureComments to the provided value.
+func (s *Setting) SetFeatureComments(val int64) { s.FeatureComments = val }
+
 // GetFeatureRss will return the value of FeatureRss.
 func (s *Setting) GetFeatureRss() int64 { return s.FeatureRss }
+
+// SetFeatureRss sets FeatureRss to the provided value.
+func (s *Setting) SetFeatureRss(val int64) { s.FeatureRss = val }
 
 // GetSeoTitleSuffix will return the value of SeoTitleSuffix.
 func (s *Setting) GetSeoTitleSuffix() string { return s.SeoTitleSuffix }
 
+// SetSeoTitleSuffix sets SeoTitleSuffix to the provided value.
+func (s *Setting) SetSeoTitleSuffix(val string) { s.SeoTitleSuffix = val }
+
 // GetSeoDefaultImage will return the value of SeoDefaultImage.
 func (s *Setting) GetSeoDefaultImage() string { return s.SeoDefaultImage }
 
+// SetSeoDefaultImage sets SeoDefaultImage to the provided value.
+func (s *Setting) SetSeoDefaultImage(val string) { s.SeoDefaultImage = val }
+
 // GetAnalyticsID will return the value of AnalyticsID.
 func (s *Setting) GetAnalyticsID() string { return s.AnalyticsID }
+
+// SetAnalyticsID sets AnalyticsID to the provided value.
+func (s *Setting) SetAnalyticsID(val string) { s.AnalyticsID = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (s *Setting) GetCreatedAt() *time.Time { return s.CreatedAt }

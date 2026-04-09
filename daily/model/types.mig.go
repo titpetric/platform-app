@@ -142,14 +142,26 @@ type Migrations struct {
 // GetProject will return the value of Project.
 func (m *Migrations) GetProject() string { return m.Project }
 
+// SetProject sets Project to the provided value.
+func (m *Migrations) SetProject(val string) { m.Project = val }
+
 // GetFilename will return the value of Filename.
 func (m *Migrations) GetFilename() string { return m.Filename }
+
+// SetFilename sets Filename to the provided value.
+func (m *Migrations) SetFilename(val string) { m.Filename = val }
 
 // GetStatementIndex will return the value of StatementIndex.
 func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
 
+// SetStatementIndex sets StatementIndex to the provided value.
+func (m *Migrations) SetStatementIndex(val int64) { m.StatementIndex = val }
+
 // GetStatus will return the value of Status.
 func (m *Migrations) GetStatus() string { return m.Status }
+
+// SetStatus sets Status to the provided value.
+func (m *Migrations) SetStatus(val string) { m.Status = val }
 
 // MigrationsTable is the name of the table in the DB.
 const MigrationsTable = "`migrations`"
@@ -187,14 +199,26 @@ type Todo struct {
 // GetID will return the value of ID.
 func (t *Todo) GetID() string { return t.ID }
 
+// SetID sets ID to the provided value.
+func (t *Todo) SetID(val string) { t.ID = val }
+
 // GetUserID will return the value of UserID.
 func (t *Todo) GetUserID() string { return t.UserID }
+
+// SetUserID sets UserID to the provided value.
+func (t *Todo) SetUserID(val string) { t.UserID = val }
 
 // GetTitle will return the value of Title.
 func (t *Todo) GetTitle() string { return t.Title }
 
+// SetTitle sets Title to the provided value.
+func (t *Todo) SetTitle(val string) { t.Title = val }
+
 // GetCompleted will return the value of Completed.
 func (t *Todo) GetCompleted() bool { return t.Completed }
+
+// SetCompleted sets Completed to the provided value.
+func (t *Todo) SetCompleted(val bool) { t.Completed = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (t *Todo) GetCreatedAt() *time.Time { return t.CreatedAt }

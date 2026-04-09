@@ -142,14 +142,26 @@ type Migrations struct {
 // GetProject will return the value of Project.
 func (m *Migrations) GetProject() string { return m.Project }
 
+// SetProject sets Project to the provided value.
+func (m *Migrations) SetProject(val string) { m.Project = val }
+
 // GetFilename will return the value of Filename.
 func (m *Migrations) GetFilename() string { return m.Filename }
+
+// SetFilename sets Filename to the provided value.
+func (m *Migrations) SetFilename(val string) { m.Filename = val }
 
 // GetStatementIndex will return the value of StatementIndex.
 func (m *Migrations) GetStatementIndex() int64 { return m.StatementIndex }
 
+// SetStatementIndex sets StatementIndex to the provided value.
+func (m *Migrations) SetStatementIndex(val int64) { m.StatementIndex = val }
+
 // GetStatus will return the value of Status.
 func (m *Migrations) GetStatus() string { return m.Status }
+
+// SetStatus sets Status to the provided value.
+func (m *Migrations) SetStatus(val string) { m.Status = val }
 
 // MigrationsTable is the name of the table in the DB.
 const MigrationsTable = "`migrations`"
@@ -187,14 +199,26 @@ type User struct {
 // GetID will return the value of ID.
 func (u *User) GetID() string { return u.ID }
 
+// SetID sets ID to the provided value.
+func (u *User) SetID(val string) { u.ID = val }
+
 // GetFullName will return the value of FullName.
 func (u *User) GetFullName() string { return u.FullName }
+
+// SetFullName sets FullName to the provided value.
+func (u *User) SetFullName(val string) { u.FullName = val }
 
 // GetUsername will return the value of Username.
 func (u *User) GetUsername() string { return u.Username }
 
+// SetUsername sets Username to the provided value.
+func (u *User) SetUsername(val string) { u.Username = val }
+
 // GetSlug will return the value of Slug.
 func (u *User) GetSlug() string { return u.Slug }
+
+// SetSlug sets Slug to the provided value.
+func (u *User) SetSlug(val string) { u.Slug = val }
 
 // GetDeletedAt will return the value of DeletedAt.
 func (u *User) GetDeletedAt() *time.Time { return u.DeletedAt }
@@ -246,11 +270,20 @@ type UserAuth struct {
 // GetUserID will return the value of UserID.
 func (u *UserAuth) GetUserID() string { return u.UserID }
 
+// SetUserID sets UserID to the provided value.
+func (u *UserAuth) SetUserID(val string) { u.UserID = val }
+
 // GetEmail will return the value of Email.
 func (u *UserAuth) GetEmail() string { return u.Email }
 
+// SetEmail sets Email to the provided value.
+func (u *UserAuth) SetEmail(val string) { u.Email = val }
+
 // GetPassword will return the value of Password.
 func (u *UserAuth) GetPassword() string { return u.Password }
+
+// SetPassword sets Password to the provided value.
+func (u *UserAuth) SetPassword(val string) { u.Password = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (u *UserAuth) GetCreatedAt() *time.Time { return u.CreatedAt }
@@ -293,8 +326,14 @@ type UserGroup struct {
 // GetID will return the value of ID.
 func (u *UserGroup) GetID() string { return u.ID }
 
+// SetID sets ID to the provided value.
+func (u *UserGroup) SetID(val string) { u.ID = val }
+
 // GetTitle will return the value of Title.
 func (u *UserGroup) GetTitle() string { return u.Title }
+
+// SetTitle sets Title to the provided value.
+func (u *UserGroup) SetTitle(val string) { u.Title = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (u *UserGroup) GetCreatedAt() *time.Time { return u.CreatedAt }
@@ -334,8 +373,14 @@ type UserGroupMember struct {
 // GetUserGroupID will return the value of UserGroupID.
 func (u *UserGroupMember) GetUserGroupID() string { return u.UserGroupID }
 
+// SetUserGroupID sets UserGroupID to the provided value.
+func (u *UserGroupMember) SetUserGroupID(val string) { u.UserGroupID = val }
+
 // GetUserID will return the value of UserID.
 func (u *UserGroupMember) GetUserID() string { return u.UserID }
+
+// SetUserID sets UserID to the provided value.
+func (u *UserGroupMember) SetUserID(val string) { u.UserID = val }
 
 // GetJoinedAt will return the value of JoinedAt.
 func (u *UserGroupMember) GetJoinedAt() *time.Time { return u.JoinedAt }
@@ -384,23 +429,44 @@ type UserPasskey struct {
 // GetID will return the value of ID.
 func (u *UserPasskey) GetID() string { return u.ID }
 
+// SetID sets ID to the provided value.
+func (u *UserPasskey) SetID(val string) { u.ID = val }
+
 // GetUserID will return the value of UserID.
 func (u *UserPasskey) GetUserID() string { return u.UserID }
+
+// SetUserID sets UserID to the provided value.
+func (u *UserPasskey) SetUserID(val string) { u.UserID = val }
 
 // GetCredentialID will return the value of CredentialID.
 func (u *UserPasskey) GetCredentialID() []byte { return u.CredentialID }
 
+// SetCredentialID sets CredentialID to the provided value.
+func (u *UserPasskey) SetCredentialID(val []byte) { u.CredentialID = val }
+
 // GetPublicKey will return the value of PublicKey.
 func (u *UserPasskey) GetPublicKey() []byte { return u.PublicKey }
+
+// SetPublicKey sets PublicKey to the provided value.
+func (u *UserPasskey) SetPublicKey(val []byte) { u.PublicKey = val }
 
 // GetAttestationType will return the value of AttestationType.
 func (u *UserPasskey) GetAttestationType() string { return u.AttestationType }
 
+// SetAttestationType sets AttestationType to the provided value.
+func (u *UserPasskey) SetAttestationType(val string) { u.AttestationType = val }
+
 // GetTransport will return the value of Transport.
 func (u *UserPasskey) GetTransport() string { return u.Transport }
 
+// SetTransport sets Transport to the provided value.
+func (u *UserPasskey) SetTransport(val string) { u.Transport = val }
+
 // GetSignCount will return the value of SignCount.
 func (u *UserPasskey) GetSignCount() int64 { return u.SignCount }
+
+// SetSignCount sets SignCount to the provided value.
+func (u *UserPasskey) SetSignCount(val int64) { u.SignCount = val }
 
 // GetCreatedAt will return the value of CreatedAt.
 func (u *UserPasskey) GetCreatedAt() *time.Time { return u.CreatedAt }
@@ -437,8 +503,14 @@ type UserSession struct {
 // GetID will return the value of ID.
 func (u *UserSession) GetID() string { return u.ID }
 
+// SetID sets ID to the provided value.
+func (u *UserSession) SetID(val string) { u.ID = val }
+
 // GetUserID will return the value of UserID.
 func (u *UserSession) GetUserID() string { return u.UserID }
+
+// SetUserID sets UserID to the provided value.
+func (u *UserSession) SetUserID(val string) { u.UserID = val }
 
 // GetExpiresAt will return the value of ExpiresAt.
 func (u *UserSession) GetExpiresAt() *time.Time { return u.ExpiresAt }
