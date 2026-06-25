@@ -69,3 +69,57 @@ func TestAuth(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateWithJTI(t *testing.T) {
+	t.Parallel()
+
+	j := NewJWT(getJwtSecret())
+
+	token, jti, err := j.CreateWithJTI("user-1", time.Hour)
+	require.NoError(t, err)
+	require.True(t, token != "")
+	require.True(t, jti != "")
+
+	claims, err := j.Claims(token)
+	require.NoError(t, err)
+	require.Equal(t, "user-1", claims.UserID)
+	require.Equal(t, jti, claims.JTI)
+	require.True(t, claims.ExpiresAt > time.Now().Unix())
+}
+
+func TestCreateAlwaysEmbedsJTI(t *testing.T) {
+	t.Parallel()
+
+	j := NewJWT(getJwtSecret())
+
+	a, err := j.Create("user-a", time.Hour)
+	require.NoError(t, err)
+	b, err := j.Create("user-a", time.Hour)
+	require.NoError(t, err)
+
+	ca, err := j.Claims(a)
+	require.NoError(t, err)
+	cb, err := j.Claims(b)
+	require.NoError(t, err)
+
+	require.True(t, ca.JTI != "")
+	require.True(t, cb.JTI != "")
+	require.True(t, ca.JTI != cb.JTI)
+}
+
+func TestClaimsBackCompatNoJTI(t *testing.T) {
+	t.Parallel()
+
+	// Token generated externally (no jti, mirrors pre-rollout tokens).
+	claims := jwt.MapClaims{
+		"user_id": "legacy",
+		"exp":     time.Now().Add(time.Hour).Unix(),
+	}
+	tok, err := getJwt(claims, getJwtSecret())
+	require.NoError(t, err)
+
+	parsed, err := NewJWT(getJwtSecret()).Claims(tok)
+	require.NoError(t, err)
+	require.Equal(t, "legacy", parsed.UserID)
+	require.Equal(t, "", parsed.JTI)
+}

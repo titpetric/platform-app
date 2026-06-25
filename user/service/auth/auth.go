@@ -5,6 +5,7 @@ import (
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/titpetric/platform/pkg/ulid"
 )
 
 // JWT and Claims provide JWT token creation and validation.
@@ -16,6 +17,12 @@ type (
 
 	Claims struct {
 		UserID string `json:"user_id"`
+		// JTI is the JWT identifier, used for revocation. Tokens issued
+		// before JTI rollout will have an empty JTI; callers should treat
+		// an empty JTI as "not revocable" rather than as an error.
+		JTI string `json:"jti"`
+		// ExpiresAt is the unix timestamp from the `exp` claim, if present.
+		ExpiresAt int64 `json:"exp"`
 
 		jwt.MapClaims
 	}
@@ -63,10 +70,17 @@ func (u *JWT) Claims(tokenString string) (*Claims, error) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		if userID, ok := claims["user_id"].(string); ok && userID != "" {
-			return &Claims{
+			c := &Claims{
 				MapClaims: claims,
 				UserID:    userID,
-			}, nil
+			}
+			if jti, ok := claims["jti"].(string); ok {
+				c.JTI = jti
+			}
+			if exp, ok := claims["exp"].(float64); ok {
+				c.ExpiresAt = int64(exp)
+			}
+			return c, nil
 		}
 	}
 
@@ -88,16 +102,32 @@ func (u *JWT) IsUser(token string, userID string) bool {
 	return isUser
 }
 
-// Create generates a signed JWT token for the given userID with the specified TTL.
+// Create generates a signed JWT token for the given userID with the specified
+// TTL. A fresh JTI (JWT ID) is embedded so the token can be individually
+// revoked. Use CreateWithJTI when the caller needs to know the JTI in
+// advance (e.g. to insert it into a revocation table later).
 func (u *JWT) Create(userID string, ttl time.Duration) (string, error) {
+	token, _, err := u.CreateWithJTI(userID, ttl)
+	return token, err
+}
+
+// CreateWithJTI generates a signed JWT and returns both the encoded token
+// and its JTI claim. The JTI is a ULID, lex-sortable by issue time.
+func (u *JWT) CreateWithJTI(userID string, ttl time.Duration) (string, string, error) {
 	signingSecret := func() []byte {
 		return []byte(u.secret)
 	}
 
+	jti := ulid.String()
 	claims := jwt.MapClaims{}
 	claims["user_id"] = userID
+	claims["jti"] = jti
 	claims["exp"] = time.Now().Add(ttl).Unix()
 
 	at := jwt.NewWithClaims(u.signingMethod, claims)
-	return at.SignedString(signingSecret())
+	signed, err := at.SignedString(signingSecret())
+	if err != nil {
+		return "", "", err
+	}
+	return signed, jti, nil
 }

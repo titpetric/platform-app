@@ -25,6 +25,7 @@ type Middleware struct {
 
 	userStorage    *storage.UserStorage
 	sessionStorage *storage.SessionStorage
+	revokedStorage *storage.RevokedTokenStorage
 }
 
 // ServeHTTP authenticates the request and passes it to the next handler.
@@ -109,16 +110,7 @@ func (m *Middleware) authorizeJWT(w http.ResponseWriter, r *http.Request) error 
 	if token == "" {
 		return ErrLoginRequired
 	}
-
-	userID, err := auth.NewJWT(m.options.HeaderSigningKey).UserID(token)
-	if err != nil {
-		return err
-	}
-
-	if _, err := m.authorizeUser(w, r, userID); err != nil {
-		return err
-	}
-	return nil
+	return m.authorizeToken(w, r, token)
 }
 
 func (m *Middleware) authorizeQuery(w http.ResponseWriter, r *http.Request) error {
@@ -126,13 +118,29 @@ func (m *Middleware) authorizeQuery(w http.ResponseWriter, r *http.Request) erro
 	if token == "" {
 		return ErrLoginRequired
 	}
+	return m.authorizeToken(w, r, token)
+}
 
-	userID, err := auth.NewJWT(m.options.HeaderSigningKey).UserID(token)
+func (m *Middleware) authorizeToken(w http.ResponseWriter, r *http.Request, token string) error {
+	claims, err := auth.NewJWT(m.options.HeaderSigningKey).Claims(token)
 	if err != nil {
 		return err
 	}
 
-	if _, err := m.authorizeUser(w, r, userID); err != nil {
+	// Reject revoked tokens. An empty JTI means the token was issued
+	// before JTI rollout; let it through rather than locking out
+	// existing sessions.
+	if m.revokedStorage != nil && claims.JTI != "" {
+		revoked, rerr := m.revokedStorage.IsRevoked(r.Context(), claims.JTI)
+		if rerr != nil {
+			return rerr
+		}
+		if revoked {
+			return ErrLoginRequired
+		}
+	}
+
+	if _, err := m.authorizeUser(w, r, claims.UserID); err != nil {
 		return err
 	}
 	return nil
@@ -164,6 +172,7 @@ func (m *Middleware) init(ctx context.Context) error {
 
 		m.userStorage = storage.NewUserStorage(db)
 		m.sessionStorage = storage.NewSessionStorage(db)
+		m.revokedStorage = storage.NewRevokedTokenStorage(db)
 	})
 	return resultErr
 }

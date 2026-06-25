@@ -19,10 +19,15 @@ type UserStorage interface {
 	Get(context.Context, string) (*User, error)
 	GetByUsername(context.Context, string) (*User, error)
 	GetByStub(context.Context, string) (*User, error)
+
 	GetGroups(context.Context, string) ([]UserGroup, error)
+
 	List(context.Context) ([]User, error)
 
-	Authenticate(ctx context.Context, auth UserAuth) (*User, error)
+	Authenticate(context.Context, UserAuth) (*User, error)
+	Activate(ctx context.Context, token string) (*User, error)
+
+	ResetActivation(ctx context.Context, email string) error
 }
 
 // PasskeyStorage defines the storage operations for WebAuthn passkeys.

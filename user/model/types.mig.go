@@ -265,6 +265,15 @@ type UserAuth struct {
 
 	// Updated At
 	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
+
+	// Activated At
+	ActivatedAt *time.Time `db:"activated_at" json:"activated_at"`
+
+	// Activation Token
+	ActivationToken string `db:"activation_token" json:"activation_token"`
+
+	// Activation Sent At
+	ActivationSentAt *time.Time `db:"activation_sent_at" json:"activation_sent_at"`
 }
 
 // GetUserID will return the value of UserID.
@@ -297,11 +306,29 @@ func (u *UserAuth) GetUpdatedAt() *time.Time { return u.UpdatedAt }
 // SetUpdatedAt sets UpdatedAt to the provided value.
 func (u *UserAuth) SetUpdatedAt(stamp time.Time) { u.UpdatedAt = &stamp }
 
+// GetActivatedAt will return the value of ActivatedAt.
+func (u *UserAuth) GetActivatedAt() *time.Time { return u.ActivatedAt }
+
+// SetActivatedAt sets ActivatedAt to the provided value.
+func (u *UserAuth) SetActivatedAt(stamp time.Time) { u.ActivatedAt = &stamp }
+
+// GetActivationToken will return the value of ActivationToken.
+func (u *UserAuth) GetActivationToken() string { return u.ActivationToken }
+
+// SetActivationToken sets ActivationToken to the provided value.
+func (u *UserAuth) SetActivationToken(val string) { u.ActivationToken = val }
+
+// GetActivationSentAt will return the value of ActivationSentAt.
+func (u *UserAuth) GetActivationSentAt() *time.Time { return u.ActivationSentAt }
+
+// SetActivationSentAt sets ActivationSentAt to the provided value.
+func (u *UserAuth) SetActivationSentAt(stamp time.Time) { u.ActivationSentAt = &stamp }
+
 // UserAuthTable is the name of the table in the DB.
 const UserAuthTable = "`user_auth`"
 
 // UserAuthFields is a list of all columns in the DB table.
-var UserAuthFields = []string{"user_id", "email", "password", "created_at", "updated_at"}
+var UserAuthFields = []string{"user_id", "email", "password", "created_at", "updated_at", "activated_at", "activation_token", "activation_sent_at"}
 
 // UserAuthPrimaryFields are the primary key fields in the DB table.
 var UserAuthPrimaryFields = []string{"user_id"}
@@ -532,6 +559,56 @@ var UserSessionFields = []string{"id", "user_id", "expires_at", "created_at"}
 
 // UserSessionPrimaryFields are the primary key fields in the DB table.
 var UserSessionPrimaryFields = []string{"id"}
+
+// UserTokenRevoked generated for db table `user_token_revoked`.
+//
+// User Token Revoked.
+type UserTokenRevoked struct {
+	// Jti
+	Jti string `db:"jti" json:"jti"`
+
+	// User ID
+	UserID string `db:"user_id" json:"user_id"`
+
+	// Expires At
+	ExpiresAt *time.Time `db:"expires_at" json:"expires_at"`
+
+	// Created At
+	CreatedAt *time.Time `db:"created_at" json:"created_at"`
+}
+
+// GetJti will return the value of Jti.
+func (u *UserTokenRevoked) GetJti() string { return u.Jti }
+
+// SetJti sets Jti to the provided value.
+func (u *UserTokenRevoked) SetJti(val string) { u.Jti = val }
+
+// GetUserID will return the value of UserID.
+func (u *UserTokenRevoked) GetUserID() string { return u.UserID }
+
+// SetUserID sets UserID to the provided value.
+func (u *UserTokenRevoked) SetUserID(val string) { u.UserID = val }
+
+// GetExpiresAt will return the value of ExpiresAt.
+func (u *UserTokenRevoked) GetExpiresAt() *time.Time { return u.ExpiresAt }
+
+// SetExpiresAt sets ExpiresAt to the provided value.
+func (u *UserTokenRevoked) SetExpiresAt(stamp time.Time) { u.ExpiresAt = &stamp }
+
+// GetCreatedAt will return the value of CreatedAt.
+func (u *UserTokenRevoked) GetCreatedAt() *time.Time { return u.CreatedAt }
+
+// SetCreatedAt sets CreatedAt to the provided value.
+func (u *UserTokenRevoked) SetCreatedAt(stamp time.Time) { u.CreatedAt = &stamp }
+
+// UserTokenRevokedTable is the name of the table in the DB.
+const UserTokenRevokedTable = "`user_token_revoked`"
+
+// UserTokenRevokedFields is a list of all columns in the DB table.
+var UserTokenRevokedFields = []string{"jti", "user_id", "expires_at", "created_at"}
+
+// UserTokenRevokedPrimaryFields are the primary key fields in the DB table.
+var UserTokenRevokedPrimaryFields = []string{"jti"}
 
 // Insert starts building an INSERT INTO query.
 func (m *Migrations) Insert(opts ...QueryOption) string {
@@ -953,6 +1030,67 @@ func (u *UserSession) Update(opts ...QueryOption) string {
 // Delete starts building a DELETE query.
 func (u *UserSession) Delete(opts ...QueryOption) string {
 	cfg := (&QueryConfig{Table: UserSessionTable}).Apply(opts...)
+	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Insert starts building an INSERT INTO query.
+func (u *UserTokenRevoked) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserTokenRevokedTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := UserTokenRevokedFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	return fmt.Sprintf("%s %s (%s) VALUES (:%s)", cfg.Statement, cfg.Table, strings.Join(cols, ", "), strings.Join(cols, ", :"))
+}
+
+// Select starts building a SELECT query.
+func (u *UserTokenRevoked) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserTokenRevokedTable}).Apply(opts...)
+	cols := "*"
+	if len(cfg.Columns) > 0 {
+		cols = strings.Join(cfg.Columns, ", ")
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s", cols, cfg.Table)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	if cfg.OrderBy != "" {
+		query += " ORDER BY " + cfg.OrderBy
+	}
+	if cfg.LimitOffset > 0 {
+		query += fmt.Sprintf(" LIMIT %d, %d", cfg.LimitStart, cfg.LimitOffset)
+	}
+	return query
+}
+
+// Update starts building a UPDATE query.
+func (u *UserTokenRevoked) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserTokenRevokedTable}).Apply(opts...)
+	cols := UserTokenRevokedFields
+	if len(cfg.Columns) > 0 {
+		cols = cfg.Columns
+	}
+	setClause := ""
+	for i, col := range cols {
+		if i > 0 {
+			setClause += ", "
+		}
+		setClause += col + "=:" + col
+	}
+	query := fmt.Sprintf("UPDATE %s SET %s", cfg.Table, setClause)
+	if cfg.Where != "" {
+		query += " WHERE " + cfg.Where
+	}
+	return query
+}
+
+// Delete starts building a DELETE query.
+func (u *UserTokenRevoked) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: UserTokenRevokedTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
 	if cfg.Where != "" {
 		query += " WHERE " + cfg.Where

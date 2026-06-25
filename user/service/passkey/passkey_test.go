@@ -121,6 +121,14 @@ func (m *mockUserStorage) Authenticate(_ context.Context, _ model.UserAuth) (*mo
 	return nil, errors.New("not implemented")
 }
 
+func (m *mockUserStorage) Activate(_ context.Context, _ string) (*model.User, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (m *mockUserStorage) ResetActivation(_ context.Context, _ string) error {
+	return errors.New("not implemented")
+}
+
 func newTestWebAuthn(t *testing.T) *webauthn.WebAuthn {
 	wa, err := webauthn.New(&webauthn.Config{
 		RPID:          "localhost",

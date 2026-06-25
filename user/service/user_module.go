@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/go-webauthn/webauthn/webauthn"
@@ -55,6 +56,7 @@ func (h *UserModule) Start(ctx context.Context) error {
 	userStorage := storage.NewUserStorage(db)
 	sessionStorage := storage.NewSessionStorage(db)
 	passkeyStorage := storage.NewPasskeyStorage(db)
+	revokedStorage := storage.NewRevokedTokenStorage(db)
 
 	rpID := os.Getenv("WEBAUTHN_RP_ID")
 	if rpID == "" {
@@ -76,12 +78,26 @@ func (h *UserModule) Start(ctx context.Context) error {
 
 	passkeySvc := passkey.New(wa, passkeyStorage, userStorage)
 
+	// Loud failure when activation is enabled but no sender was wired.
+	// Activation otherwise silently degrades to "user is created
+	// pending and can never receive their token" — much harder to
+	// diagnose at runtime.
+	if h.opts.EmailActivationEnabled && h.opts.EmailSender == nil {
+		return fmt.Errorf("user module: EmailActivationEnabled requires an EmailSender (see user.WithEmailSender)")
+	}
+
 	h.web = web.NewHandlers(userStorage, sessionStorage, FS(ctx))
 	h.api = api.NewHandlers(api.Options{
-		SigningKey:     h.opts.SigningKey,
-		UserStorage:    userStorage,
-		SessionStorage: sessionStorage,
-		PasskeyService: passkeySvc,
+		SigningKey:             h.opts.SigningKey,
+		TokenTTL:               h.opts.TokenTTL,
+		UserStorage:            userStorage,
+		SessionStorage:         sessionStorage,
+		RevokedStorage:         revokedStorage,
+		PasskeyService:         passkeySvc,
+		EmailActivationEnabled: h.opts.EmailActivationEnabled,
+		EmailSender:            h.opts.EmailSender,
+		ActivationURLFormat:    h.opts.ActivationURLFormat,
+		ActivationSubject:      h.opts.ActivationSubject,
 	})
 	return nil
 }
