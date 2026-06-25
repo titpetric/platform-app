@@ -66,3 +66,15 @@ CREATE TABLE IF NOT EXISTS user_passkey (
 
 CREATE INDEX IF NOT EXISTS idx_user_passkey_user_id ON user_passkey(user_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_user_passkey_credential_id ON user_passkey(credential_id);
+
+-- user_token_revoked: Stores JTIs of revoked JWTs so middleware can reject them
+CREATE TABLE IF NOT EXISTS user_token_revoked (
+    jti TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    expires_at DATETIME,
+    created_at DATETIME
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_token_revoked_user_id ON user_token_revoked(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_token_revoked_expires_at ON user_token_revoked(expires_at);
+

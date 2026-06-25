@@ -2,23 +2,24 @@
   comment: Migrations
   columns:
     - name: project
-      type: TEXT
+      type: text
       key: PRI
       comment: Project
-      datatype: text
+      datatype: varchar
     - name: filename
-      type: TEXT
+      type: text
       key: PRI
       comment: Filename
-      datatype: text
+      datatype: varchar
     - name: statement_index
-      type: INTEGER
+      type: integer
       comment: Statement Index
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: status
-      type: TEXT
+      type: text
       comment: Status
-      datatype: text
+      datatype: varchar
   indexes:
     - name: sqlite_autoindex_migrations_1
       columns:
@@ -30,24 +31,25 @@
   comment: Pulse Daily
   columns:
     - name: user_id
-      type: CHAR(26)
+      type: text
       key: PRI
       comment: User ID
-      datatype: text
+      datatype: char(26)
     - name: hostname
-      type: TEXT
+      type: text
       key: PRI
       comment: Hostname
-      datatype: text
+      datatype: varchar
     - name: stamp
-      type: DATE
+      type: date
       key: PRI
       comment: Stamp
       datatype: date
     - name: count
-      type: INTEGER
+      type: integer
       comment: Count
-      datatype: integer
+      datatype: bigint
+      size: 8
   indexes:
     - name: sqlite_autoindex_pulse_daily_1
       columns:
@@ -60,19 +62,19 @@
   comment: Pulse Hosts
   columns:
     - name: user_id
-      type: CHAR(26)
+      type: text
       key: PRI
       comment: User ID
-      datatype: text
+      datatype: char(26)
     - name: hostname
-      type: TEXT
+      type: text
       key: PRI
       comment: Hostname
-      datatype: text
+      datatype: varchar
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_pulse_hosts_1
       columns:
@@ -84,24 +86,25 @@
   comment: Pulse Hourly
   columns:
     - name: user_id
-      type: CHAR(26)
+      type: text
       key: PRI
       comment: User ID
-      datatype: text
+      datatype: char(26)
     - name: hostname
-      type: TEXT
+      type: text
       key: PRI
       comment: Hostname
-      datatype: text
+      datatype: varchar
     - name: stamp
-      type: DATETIME
+      type: timestamp
       key: PRI
       comment: Stamp
-      datatype: timestamp
+      datatype: datetime
     - name: count
-      type: INTEGER
+      type: integer
       comment: Count
-      datatype: integer
+      datatype: bigint
+      size: 8
   indexes:
     - name: sqlite_autoindex_pulse_hourly_1
       columns:

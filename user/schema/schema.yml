@@ -2,23 +2,24 @@
   comment: Migrations
   columns:
     - name: project
-      type: TEXT
+      type: text
       key: PRI
       comment: Project
-      datatype: text
+      datatype: varchar
     - name: filename
-      type: TEXT
+      type: text
       key: PRI
       comment: Filename
-      datatype: text
+      datatype: varchar
     - name: statement_index
-      type: INTEGER
+      type: integer
       comment: Statement Index
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: status
-      type: TEXT
+      type: text
       comment: Status
-      datatype: text
+      datatype: varchar
   indexes:
     - name: sqlite_autoindex_migrations_1
       columns:
@@ -30,36 +31,36 @@
   comment: User
   columns:
     - name: id
-      type: TEXT
+      type: text
       key: PRI
       comment: ID
-      datatype: text
+      datatype: varchar
     - name: full_name
-      type: TEXT
+      type: text
       comment: Full Name
-      datatype: text
+      datatype: varchar
     - name: username
-      type: TEXT
+      type: text
       comment: Username
-      datatype: text
+      datatype: varchar
     - name: slug
-      type: TEXT
+      type: text
       key: MUL
       comment: Slug
-      datatype: text
+      datatype: varchar
     - name: deleted_at
-      type: DATETIME
+      type: timestamp
       key: MUL
       comment: Deleted At
-      datatype: timestamp
+      datatype: datetime
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
     - name: updated_at
-      type: DATETIME
+      type: timestamp
       comment: Updated At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_user_1
       columns:
@@ -77,33 +78,49 @@
   comment: User Auth
   columns:
     - name: user_id
-      type: TEXT
+      type: text
       key: PRI
       comment: User ID
-      datatype: text
+      datatype: varchar
     - name: email
-      type: TEXT
+      type: text
       key: MUL
       comment: Email
-      datatype: text
+      datatype: varchar
     - name: password
-      type: TEXT
+      type: text
       comment: Password
-      datatype: text
+      datatype: varchar
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
     - name: updated_at
-      type: DATETIME
+      type: timestamp
       comment: Updated At
-      datatype: timestamp
+      datatype: datetime
+    - name: activated_at
+      type: timestamp
+      comment: Activated At
+      datatype: datetime
+    - name: activation_token
+      type: text
+      key: MUL
+      comment: Activation Token
+      datatype: varchar
+    - name: activation_sent_at
+      type: timestamp
+      comment: Activation Sent At
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_user_auth_1
       columns:
         - user_id
       primary: true
       unique: true
+    - name: idx_user_auth_activation_token
+      columns:
+        - activation_token
     - name: idx_user_auth_email
       columns:
         - email
@@ -112,22 +129,22 @@
   comment: User Group
   columns:
     - name: id
-      type: TEXT
+      type: text
       key: PRI
       comment: ID
-      datatype: text
+      datatype: varchar
     - name: title
-      type: TEXT
+      type: text
       comment: Title
-      datatype: text
+      datatype: varchar
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
     - name: updated_at
-      type: DATETIME
+      type: timestamp
       comment: Updated At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_user_group_1
       columns:
@@ -138,19 +155,19 @@
   comment: User Group Member
   columns:
     - name: user_group_id
-      type: TEXT
+      type: text
       key: PRI
       comment: User Group ID
-      datatype: text
+      datatype: varchar
     - name: user_id
-      type: TEXT
+      type: text
       key: PRI
       comment: User ID
-      datatype: text
+      datatype: varchar
     - name: joined_at
-      type: DATETIME
+      type: timestamp
       comment: Joined At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_user_group_member_1
       columns:
@@ -165,40 +182,41 @@
   comment: User Passkey
   columns:
     - name: id
-      type: TEXT
+      type: text
       key: PRI
       comment: ID
-      datatype: text
+      datatype: varchar
     - name: user_id
-      type: TEXT
+      type: text
       key: MUL
       comment: User ID
-      datatype: text
+      datatype: varchar
     - name: credential_id
-      type: BLOB
+      type: blob
       key: MUL
       comment: Credential ID
       datatype: blob
     - name: public_key
-      type: BLOB
+      type: blob
       comment: Public Key
       datatype: blob
     - name: attestation_type
-      type: TEXT
+      type: text
       comment: Attestation Type
-      datatype: text
+      datatype: varchar
     - name: transport
-      type: TEXT
+      type: text
       comment: Transport
-      datatype: text
+      datatype: varchar
     - name: sign_count
-      type: INTEGER
+      type: integer
       comment: Sign Count
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_user_passkey_1
       columns:
@@ -216,24 +234,24 @@
   comment: User Session
   columns:
     - name: id
-      type: TEXT
+      type: text
       key: PRI
       comment: ID
-      datatype: text
+      datatype: varchar
     - name: user_id
-      type: TEXT
+      type: text
       key: MUL
       comment: User ID
-      datatype: text
+      datatype: varchar
     - name: expires_at
-      type: DATETIME
+      type: timestamp
       key: MUL
       comment: Expires At
-      datatype: timestamp
+      datatype: datetime
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_user_session_1
       columns:
@@ -244,5 +262,39 @@
       columns:
         - expires_at
     - name: idx_user_session_user_id
+      columns:
+        - user_id
+- name: user_token_revoked
+  comment: User Token Revoked
+  columns:
+    - name: jti
+      type: text
+      key: PRI
+      comment: Jti
+      datatype: varchar
+    - name: user_id
+      type: text
+      key: MUL
+      comment: User ID
+      datatype: varchar
+    - name: expires_at
+      type: timestamp
+      key: MUL
+      comment: Expires At
+      datatype: datetime
+    - name: created_at
+      type: timestamp
+      comment: Created At
+      datatype: datetime
+  indexes:
+    - name: sqlite_autoindex_user_token_revoked_1
+      columns:
+        - jti
+      primary: true
+      unique: true
+    - name: idx_user_token_revoked_expires_at
+      columns:
+        - expires_at
+    - name: idx_user_token_revoked_user_id
       columns:
         - user_id

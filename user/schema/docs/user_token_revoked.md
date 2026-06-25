@@ -1,10 +1,10 @@
-# User Session
+# User Token Revoked
 
-User Session.
+User Token Revoked.
 
 | Name       | Type     | Key | Comment    |
 |------------|----------|-----|------------|
-| id         | varchar  | PRI | ID         |
+| jti        | varchar  | PRI | Jti        |
 | user_id    | varchar  | MUL | User ID    |
 | expires_at | datetime | MUL | Expires At |
 | created_at | datetime |     | Created At |

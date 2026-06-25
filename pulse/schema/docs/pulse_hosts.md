@@ -2,8 +2,8 @@
 
 Pulse Hosts.
 
-| Name       | Type      | Key | Comment    |
-|------------|-----------|-----|------------|
-| user_id    | text      | PRI | User ID    |
-| hostname   | text      | PRI | Hostname   |
-| created_at | timestamp |     | Created At |
+| Name       | Type     | Key | Comment    |
+|------------|----------|-----|------------|
+| user_id    | char(26) | PRI | User ID    |
+| hostname   | varchar  | PRI | Hostname   |
+| created_at | datetime |     | Created At |

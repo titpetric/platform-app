@@ -2,18 +2,18 @@
 
 Article.
 
-| Name        | Type      | Key | Comment     |
-|-------------|-----------|-----|-------------|
-| id          | text      | PRI | ID          |
-| slug        | text      | MUL | Slug        |
-| title       | text      |     | Title       |
-| filename    | text      |     | Filename    |
-| description | text      |     | Description |
-| date        | timestamp | MUL | Date        |
-| og_image    | text      |     | Og Image    |
-| layout      | text      | MUL | Layout      |
-| source      | text      |     | Source      |
-| url         | text      |     | URL         |
-| draft       | integer   | MUL | Draft       |
-| created_at  | timestamp | MUL | Created At  |
-| updated_at  | timestamp |     | Updated At  |
+| Name        | Type     | Key | Comment     |
+|-------------|----------|-----|-------------|
+| id          | varchar  | PRI | ID          |
+| slug        | varchar  | MUL | Slug        |
+| title       | varchar  |     | Title       |
+| filename    | varchar  |     | Filename    |
+| description | varchar  |     | Description |
+| date        | datetime | MUL | Date        |
+| og_image    | varchar  |     | Og Image    |
+| layout      | varchar  | MUL | Layout      |
+| source      | varchar  |     | Source      |
+| url         | varchar  |     | URL         |
+| draft       | bigint   | MUL | Draft       |
+| created_at  | datetime | MUL | Created At  |
+| updated_at  | datetime |     | Updated At  |

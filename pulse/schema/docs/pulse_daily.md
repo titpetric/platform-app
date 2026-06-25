@@ -2,9 +2,9 @@
 
 Pulse Daily.
 
-| Name     | Type    | Key | Comment  |
-|----------|---------|-----|----------|
-| user_id  | text    | PRI | User ID  |
-| hostname | text    | PRI | Hostname |
-| stamp    | date    | PRI | Stamp    |
-| count    | integer |     | Count    |
+| Name     | Type     | Key | Comment  |
+|----------|----------|-----|----------|
+| user_id  | char(26) | PRI | User ID  |
+| hostname | varchar  | PRI | Hostname |
+| stamp    | date     | PRI | Stamp    |
+| count    | bigint   |     | Count    |

@@ -2,12 +2,12 @@
 
 User.
 
-| Name       | Type      | Key | Comment    |
-|------------|-----------|-----|------------|
-| id         | text      | PRI | ID         |
-| full_name  | text      |     | Full Name  |
-| username   | text      |     | Username   |
-| slug       | text      | MUL | Slug       |
-| deleted_at | timestamp | MUL | Deleted At |
-| created_at | timestamp |     | Created At |
-| updated_at | timestamp |     | Updated At |
+| Name       | Type     | Key | Comment    |
+|------------|----------|-----|------------|
+| id         | varchar  | PRI | ID         |
+| full_name  | varchar  |     | Full Name  |
+| username   | varchar  |     | Username   |
+| slug       | varchar  | MUL | Slug       |
+| deleted_at | datetime | MUL | Deleted At |
+| created_at | datetime |     | Created At |
+| updated_at | datetime |     | Updated At |

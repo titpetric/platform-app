@@ -4,7 +4,7 @@ Migrations.
 
 | Name            | Type    | Key | Comment         |
 |-----------------|---------|-----|-----------------|
-| project         | text    | PRI | Project         |
-| filename        | text    | PRI | Filename        |
-| statement_index | integer |     | Statement Index |
-| status          | text    |     | Status          |
+| project         | varchar | PRI | Project         |
+| filename        | varchar | PRI | Filename        |
+| statement_index | bigint  |     | Statement Index |
+| status          | varchar |     | Status          |

@@ -2,63 +2,64 @@
   comment: Article
   columns:
     - name: id
-      type: TEXT
+      type: text
       key: PRI
       comment: ID
-      datatype: text
+      datatype: varchar
     - name: slug
-      type: TEXT
+      type: text
       key: MUL
       comment: Slug
-      datatype: text
+      datatype: varchar
     - name: title
-      type: TEXT
+      type: text
       comment: Title
-      datatype: text
+      datatype: varchar
     - name: filename
-      type: TEXT
+      type: text
       comment: Filename
-      datatype: text
+      datatype: varchar
     - name: description
-      type: TEXT
+      type: text
       comment: Description
-      datatype: text
+      datatype: varchar
     - name: date
-      type: DATETIME
+      type: timestamp
       key: MUL
       comment: Date
-      datatype: timestamp
+      datatype: datetime
     - name: og_image
-      type: TEXT
+      type: text
       comment: Og Image
-      datatype: text
+      datatype: varchar
     - name: layout
-      type: TEXT
+      type: text
       key: MUL
       comment: Layout
-      datatype: text
+      datatype: varchar
     - name: source
-      type: TEXT
+      type: text
       comment: Source
-      datatype: text
+      datatype: varchar
     - name: url
-      type: TEXT
+      type: text
       comment: URL
-      datatype: text
+      datatype: varchar
     - name: draft
-      type: INTEGER
+      type: integer
       key: MUL
       comment: Draft
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: created_at
-      type: DATETIME
+      type: timestamp
       key: MUL
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
     - name: updated_at
-      type: DATETIME
+      type: timestamp
       comment: Updated At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_article_1
       columns:
@@ -92,23 +93,24 @@
   comment: Migrations
   columns:
     - name: project
-      type: TEXT
+      type: text
       key: PRI
       comment: Project
-      datatype: text
+      datatype: varchar
     - name: filename
-      type: TEXT
+      type: text
       key: PRI
       comment: Filename
-      datatype: text
+      datatype: varchar
     - name: statement_index
-      type: INTEGER
+      type: integer
       comment: Statement Index
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: status
-      type: TEXT
+      type: text
       comment: Status
-      datatype: text
+      datatype: varchar
   indexes:
     - name: sqlite_autoindex_migrations_1
       columns:
@@ -120,83 +122,88 @@
   comment: Setting
   columns:
     - name: user_id
-      type: TEXT
+      type: text
       key: PRI
       comment: User ID
-      datatype: text
+      datatype: varchar
     - name: meta_lang
-      type: TEXT
+      type: text
       comment: Meta Lang
-      datatype: text
+      datatype: varchar
     - name: meta_url
-      type: TEXT
+      type: text
       comment: Meta URL
-      datatype: text
+      datatype: varchar
     - name: meta_author_name
-      type: TEXT
+      type: text
       comment: Meta Author Name
-      datatype: text
+      datatype: varchar
     - name: meta_subtitle
-      type: TEXT
+      type: text
       comment: Meta Subtitle
-      datatype: text
+      datatype: varchar
     - name: meta_headshot
-      type: TEXT
+      type: text
       comment: Meta Headshot
-      datatype: text
+      datatype: varchar
     - name: posts_per_page
-      type: INTEGER
+      type: integer
       comment: Posts Per Page
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: social_github
-      type: TEXT
+      type: text
       comment: Social Github
-      datatype: text
+      datatype: varchar
     - name: social_twitter
-      type: TEXT
+      type: text
       comment: Social Twitter
-      datatype: text
+      datatype: varchar
     - name: social_linkedin
-      type: TEXT
+      type: text
       comment: Social Linkedin
-      datatype: text
+      datatype: varchar
     - name: feature_webmention
-      type: INTEGER
+      type: integer
       comment: Feature Webmention
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: feature_pingback
-      type: INTEGER
+      type: integer
       comment: Feature Pingback
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: feature_comments
-      type: INTEGER
+      type: integer
       comment: Feature Comments
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: feature_rss
-      type: INTEGER
+      type: integer
       comment: Feature Rss
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: seo_title_suffix
-      type: TEXT
+      type: text
       comment: Seo Title Suffix
-      datatype: text
+      datatype: varchar
     - name: seo_default_image
-      type: TEXT
+      type: text
       comment: Seo Default Image
-      datatype: text
+      datatype: varchar
     - name: analytics_id
-      type: TEXT
+      type: text
       key: MUL
       comment: Analytics ID
-      datatype: text
+      datatype: varchar
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
     - name: updated_at
-      type: DATETIME
+      type: timestamp
       comment: Updated At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_setting_1
       columns:

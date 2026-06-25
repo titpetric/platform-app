@@ -2,23 +2,24 @@
   comment: Migrations
   columns:
     - name: project
-      type: TEXT
+      type: text
       key: PRI
       comment: Project
-      datatype: text
+      datatype: varchar
     - name: filename
-      type: TEXT
+      type: text
       key: PRI
       comment: Filename
-      datatype: text
+      datatype: varchar
     - name: statement_index
-      type: INTEGER
+      type: integer
       comment: Statement Index
-      datatype: integer
+      datatype: bigint
+      size: 8
     - name: status
-      type: TEXT
+      type: text
       comment: Status
-      datatype: text
+      datatype: varchar
   indexes:
     - name: sqlite_autoindex_migrations_1
       columns:
@@ -30,35 +31,35 @@
   comment: Todo
   columns:
     - name: id
-      type: CHAR(26)
+      type: text
       key: PRI
       comment: ID
-      datatype: text
+      datatype: char(26)
     - name: user_id
-      type: CHAR(26)
+      type: text
       key: MUL
       comment: User ID
-      datatype: text
+      datatype: char(26)
     - name: title
-      type: TEXT
+      type: text
       comment: Title
-      datatype: text
+      datatype: varchar
     - name: completed
-      type: BOOLEAN
+      type: boolean
       comment: Completed
       datatype: boolean
     - name: created_at
-      type: DATETIME
+      type: timestamp
       comment: Created At
-      datatype: timestamp
+      datatype: datetime
     - name: updated_at
-      type: DATETIME
+      type: timestamp
       comment: Updated At
-      datatype: timestamp
+      datatype: datetime
     - name: deleted_at
-      type: DATETIME
+      type: timestamp
       comment: Deleted At
-      datatype: timestamp
+      datatype: datetime
   indexes:
     - name: sqlite_autoindex_todo_1
       columns:
