@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -9,9 +10,9 @@ import (
 	"github.com/titpetric/platform-app/blog/model"
 )
 
-// GetArticleBySlug retrieves a single article by slug.
+// GetArticleBySlug retrieves a single article by slug. Includes drafts and scheduled articles.
 func GetArticleBySlug(ctx context.Context, db *sqlx.DB, slug string) (*model.Article, error) {
-	query := `SELECT * FROM article	WHERE slug=? LIMIT 1`
+	query := `SELECT * FROM article WHERE slug=? LIMIT 1`
 
 	var article model.Article
 	err := db.GetContext(ctx, &article, query, slug)
@@ -20,6 +21,47 @@ func GetArticleBySlug(ctx context.Context, db *sqlx.DB, slug string) (*model.Art
 	}
 
 	return &article, nil
+}
+
+// GetPublishedArticleBySlug retrieves a single published article by slug.
+// Drafts and scheduled (future-dated) articles are not returned.
+func GetPublishedArticleBySlug(ctx context.Context, db *sqlx.DB, slug string) (*model.Article, error) {
+	query := `SELECT * FROM article WHERE slug=? AND draft=0 AND date<=? LIMIT 1`
+
+	var article model.Article
+	err := db.GetContext(ctx, &article, query, slug, time.Now())
+	if err != nil {
+		return nil, err
+	}
+
+	return &article, nil
+}
+
+// SearchPublishedArticles performs a case-insensitive substring search on published articles.
+// The query is escaped so user-supplied `%` and `_` are treated literally.
+func SearchPublishedArticles(ctx context.Context, db *sqlx.DB, find string) ([]model.Article, error) {
+	searchTerm := "%" + escapeLike(find) + "%"
+
+	query := `SELECT * FROM article
+		WHERE draft = 0 AND date <= ?
+		AND (title LIKE ? ESCAPE '\' OR description LIKE ? ESCAPE '\' OR slug LIKE ? ESCAPE '\')
+		ORDER BY date DESC`
+
+	var articles []model.Article
+	err := db.SelectContext(ctx, &articles, query, time.Now(), searchTerm, searchTerm, searchTerm)
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
+}
+
+// escapeLike escapes LIKE wildcard characters in a search string.
+func escapeLike(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `%`, `\%`)
+	s = strings.ReplaceAll(s, `_`, `\_`)
+	return s
 }
 
 // GetArticles retrieves all articles ordered by date descending.
@@ -36,13 +78,14 @@ func GetArticles(ctx context.Context, db *sqlx.DB, start, length int) ([]model.A
 	return articles, nil
 }
 
-// SearchArticles performs a search on articles by title, description, or content.
+// SearchArticles performs a search on articles by title, description, or slug.
+// User-supplied wildcards (`%`, `_`) are escaped.
 func SearchArticles(ctx context.Context, db *sqlx.DB, find string) ([]model.Article, error) {
-	searchTerm := "%" + find + "%"
+	searchTerm := "%" + escapeLike(find) + "%"
 
 	var article *model.Article
 	query := article.Select(
-		model.WithWhere("title LIKE ? or description LIKE ? or slug LIKE ?"),
+		model.WithWhere(`title LIKE ? ESCAPE '\' OR description LIKE ? ESCAPE '\' OR slug LIKE ? ESCAPE '\'`),
 		model.WithOrderBy("date DESC"),
 	)
 

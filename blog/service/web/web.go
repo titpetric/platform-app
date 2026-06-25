@@ -4,15 +4,29 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/titpetric/platform"
 
 	"github.com/titpetric/platform-app/blog/markdown"
+	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/storage"
 	"github.com/titpetric/platform-app/blog/view"
 	"github.com/titpetric/platform-app/user"
 )
+
+// slugPattern matches lowercase alphanumeric slugs with hyphens.
+var slugPattern = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
+
+// isValidSlug validates that a slug is well-formed.
+func isValidSlug(slug string) bool {
+	if slug == "" || len(slug) > 100 {
+		return false
+	}
+	return slugPattern.MatchString(slug)
+}
 
 // Handlers provides HTTP handlers for blog web endpoints.
 type Handlers struct {
@@ -72,7 +86,8 @@ func (h *Handlers) IndexHTML(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) indexHTML(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
-	articles, err := h.repository.GetArticles(ctx, 0, 5)
+	// Public home page must only show published articles
+	articles, err := h.repository.GetPublishedArticles(ctx, 0, 5)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}
@@ -98,7 +113,8 @@ func (h *Handlers) ListArticlesHTML(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) listArticlesHTML(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
-	articles, err := h.repository.GetArticles(ctx, 0, 9999)
+	// Public listing must only show published articles
+	articles, err := h.repository.GetPublishedArticles(ctx, 0, 9999)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}
@@ -125,16 +141,31 @@ func (h *Handlers) GetArticleHTML(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) getArticleHTML(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	slug := platform.URLParam(r, "slug")
-
-	article, err := h.repository.GetArticleBySlug(ctx, slug)
-	if err != nil {
-		return ErrNotFound("article not found", err)
+	if !isValidSlug(slug) {
+		return ErrNotFound("article not found", nil)
 	}
 
 	_, loggedIn := user.GetSessionUser(ctx)
 
+	// Logged-in admins can preview drafts and scheduled articles; others only see published
+	var article *model.Article
+	var err error
+	if loggedIn {
+		article, err = h.repository.GetArticleBySlug(ctx, slug)
+	} else {
+		article, err = h.repository.GetPublishedArticleBySlug(ctx, slug)
+	}
+	if err != nil {
+		return ErrNotFound("article not found", err)
+	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Header().Set("Cache-Control", "public, max-age=3600")
+	// Do not cache draft/scheduled previews
+	if article.Draft != 0 || (article.Date != nil && article.Date.After(time.Now())) {
+		w.Header().Set("Cache-Control", "no-store")
+	} else {
+		w.Header().Set("Cache-Control", "public, max-age=3600")
+	}
 
 	content, err := h.contentFS.ReadFile(article.Filename)
 	if err != nil {
@@ -160,7 +191,8 @@ func (h *Handlers) GetAtomFeed(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) getAtomFeed(w http.ResponseWriter, r *http.Request) error {
-	articles, err := h.repository.GetArticles(r.Context(), 0, 20)
+	// Feed must only expose published articles
+	articles, err := h.repository.GetPublishedArticles(r.Context(), 0, 20)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}

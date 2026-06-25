@@ -53,6 +53,11 @@ func ErrNotFound(message string, cause error) *Error {
 	return NewError(http.StatusNotFound, message, cause)
 }
 
+// ErrConflict creates a 409 Conflict error.
+func ErrConflict(message string, cause error) *Error {
+	return NewError(http.StatusConflict, message, cause)
+}
+
 // ErrInternal creates a 500 Internal Server Error.
 func ErrInternal(message string, cause error) *Error {
 	return NewError(http.StatusInternalServerError, message, cause)

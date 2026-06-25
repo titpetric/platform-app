@@ -3,7 +3,9 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 	"strconv"
+	"strings"
 
 	chi "github.com/go-chi/chi/v5"
 	"github.com/titpetric/platform"
@@ -11,6 +13,20 @@ import (
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/storage"
 )
+
+// slugPattern matches lowercase alphanumeric slugs with hyphens.
+var slugPattern = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
+
+// maxSlugLength is the maximum allowed slug length.
+const maxSlugLength = 100
+
+// isValidSlug validates that a slug is well-formed.
+func isValidSlug(slug string) bool {
+	if slug == "" || len(slug) > maxSlugLength {
+		return false
+	}
+	return slugPattern.MatchString(slug)
+}
 
 // Handlers provides HTTP handlers for blog API endpoints.
 type Handlers struct {
@@ -44,7 +60,8 @@ func (h *Handlers) ListArticlesJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) listArticlesJSON(w http.ResponseWriter, r *http.Request) error {
-	articles, err := h.repository.GetArticles(r.Context(), 0, 9999)
+	// Public listing returns only published articles (no drafts, no scheduled)
+	articles, err := h.repository.GetPublishedArticles(r.Context(), 0, 9999)
 	if err != nil {
 		return ErrInternal("failed to fetch articles", err)
 	}
@@ -72,8 +89,12 @@ func (h *Handlers) GetArticleJSON(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) getArticleJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlug(slug) {
+		return ErrBadRequest("invalid slug", nil)
+	}
 
-	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
+	// Public detail endpoint must not expose drafts or scheduled articles
+	article, err := h.repository.GetPublishedArticleBySlug(r.Context(), slug)
 	if err != nil {
 		return ErrNotFound("article not found", err)
 	}
@@ -92,13 +113,20 @@ func (h *Handlers) SearchArticlesJSON(w http.ResponseWriter, r *http.Request) {
 	h.errorHandler(w, r, h.searchArticlesJSON(w, r))
 }
 
+// maxSearchQueryLength is the maximum allowed length for a search query.
+const maxSearchQueryLength = 200
+
 func (h *Handlers) searchArticlesJSON(w http.ResponseWriter, r *http.Request) error {
-	query := r.URL.Query().Get("q")
+	query := strings.TrimSpace(r.URL.Query().Get("q"))
 	if query == "" {
 		return ErrBadRequest("missing 'q' query parameter", nil)
 	}
+	if len(query) > maxSearchQueryLength {
+		return ErrBadRequest("query exceeds maximum length", nil)
+	}
 
-	articles, err := h.repository.SearchArticles(r.Context(), query)
+	// Public search must not return drafts or scheduled articles
+	articles, err := h.repository.SearchPublishedArticles(r.Context(), query)
 	if err != nil {
 		return ErrInternal("search failed", err)
 	}
@@ -186,6 +214,9 @@ func (h *Handlers) getArticleAdminJSON(w http.ResponseWriter, r *http.Request) e
 	slug := chi.URLParam(r, "slug")
 	if slug == "" {
 		return ErrBadRequest("slug parameter is required", nil)
+	}
+	if !isValidSlug(slug) {
+		return ErrBadRequest("invalid slug", nil)
 	}
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)

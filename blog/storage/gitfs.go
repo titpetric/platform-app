@@ -136,8 +136,11 @@ func (g *GitFS) Remove(name string, auditMsg string) error {
 
 // Rename renames a file and commits the change.
 func (g *GitFS) Rename(oldName, newName string, auditMsg string) error {
-	oldPath := filepath.Join(g.root, oldName)
-	newPath := filepath.Join(g.root, newName)
+	oldRel := g.normalizePath(oldName)
+	newRel := g.normalizePath(newName)
+
+	oldPath := filepath.Join(g.root, oldRel)
+	newPath := filepath.Join(g.root, newRel)
 
 	// Ensure parent directory exists for new path
 	dir := filepath.Dir(newPath)
@@ -155,10 +158,10 @@ func (g *GitFS) Rename(oldName, newName string, auditMsg string) error {
 		return fmt.Errorf("failed to get worktree: %w", err)
 	}
 
-	if _, err := wt.Add(oldName); err != nil {
+	if _, err := wt.Add(oldRel); err != nil {
 		return fmt.Errorf("failed to stage old file removal: %w", err)
 	}
-	if _, err := wt.Add(newName); err != nil {
+	if _, err := wt.Add(newRel); err != nil {
 		return fmt.Errorf("failed to stage new file: %w", err)
 	}
 

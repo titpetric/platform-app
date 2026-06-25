@@ -31,9 +31,19 @@ func NewStorage(ctx context.Context, db *sqlx.DB) (*Storage, error) {
 	return &Storage{db: db}, nil
 }
 
-// GetArticleBySlug retrieves an article by its slug.
+// GetArticleBySlug retrieves an article by its slug (includes drafts and scheduled).
 func (s *Storage) GetArticleBySlug(ctx context.Context, slug string) (*model.Article, error) {
 	return GetArticleBySlug(ctx, s.db, slug)
+}
+
+// GetPublishedArticleBySlug retrieves a published article by its slug.
+func (s *Storage) GetPublishedArticleBySlug(ctx context.Context, slug string) (*model.Article, error) {
+	return GetPublishedArticleBySlug(ctx, s.db, slug)
+}
+
+// SearchPublishedArticles searches only published articles.
+func (s *Storage) SearchPublishedArticles(ctx context.Context, query string) ([]model.Article, error) {
+	return SearchPublishedArticles(ctx, s.db, query)
 }
 
 // GetArticles retrieves all articles.

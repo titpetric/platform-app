@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/titpetric/platform"
 	"github.com/titpetric/vuego"
@@ -17,6 +19,17 @@ import (
 	"github.com/titpetric/platform-app/blog/view"
 	"github.com/titpetric/platform-app/user"
 )
+
+// adminSlugPattern matches lowercase alphanumeric slugs with hyphens.
+var adminSlugPattern = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
+
+// isValidSlugAdmin validates that a slug is well-formed.
+func isValidSlugAdmin(slug string) bool {
+	if slug == "" || len(slug) > maxSlugLength {
+		return false
+	}
+	return adminSlugPattern.MatchString(slug)
+}
 
 // Handlers provides HTTP handlers for blog admin endpoints.
 type Handlers struct {
@@ -227,6 +240,9 @@ func (h *Handlers) EditArticleHTML(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) editArticleHTML(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlugAdmin(slug) {
+		return ErrNotFound("article not found", nil)
+	}
 
 	article, err := h.repository.GetArticleBySlug(ctx, slug)
 	if err != nil {
@@ -357,6 +373,9 @@ func (h *Handlers) CheckSlugJSON(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) checkSlugJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlugAdmin(slug) {
+		return ErrBadRequest("invalid slug format", nil)
+	}
 
 	_, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
@@ -373,6 +392,9 @@ func (h *Handlers) GetArticleJSON(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) getArticleJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlugAdmin(slug) {
+		return ErrBadRequest("invalid slug", nil)
+	}
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
@@ -395,6 +417,12 @@ func (h *Handlers) createArticleJSON(w http.ResponseWriter, r *http.Request) err
 
 	if err := req.Validate(); err != nil {
 		return ErrBadRequest(err.Error(), nil)
+	}
+
+	// Prevent silent overwrite: storage uses INSERT OR REPLACE so a duplicate
+	// slug would otherwise clobber the existing row.
+	if _, err := h.repository.GetArticleBySlug(r.Context(), req.Slug); err == nil {
+		return ErrConflict("article with this slug already exists", nil)
 	}
 
 	article := req.ToArticle()
@@ -424,6 +452,9 @@ func (h *Handlers) UpdateArticleJSON(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) updateArticleJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlugAdmin(slug) {
+		return ErrBadRequest("invalid slug", nil)
+	}
 
 	existing, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
@@ -433,6 +464,13 @@ func (h *Handlers) updateArticleJSON(w http.ResponseWriter, r *http.Request) err
 	var req ArticleRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return ErrBadRequest("invalid request body", err)
+	}
+
+	// Path slug overrides body slug for updates; this ensures the URL slug is authoritative
+	req.Slug = existing.Slug
+
+	if err := req.Validate(); err != nil {
+		return ErrBadRequest(err.Error(), nil)
 	}
 
 	article := req.UpdateArticle(existing)
@@ -458,15 +496,23 @@ func (h *Handlers) DeleteArticleJSON(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) deleteArticleJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlugAdmin(slug) {
+		return ErrBadRequest("invalid slug", nil)
+	}
 
 	existing, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
 		return ErrNotFound("article not found", err)
 	}
 
-	// Remove markdown file
-	if err := h.contentFS.Remove(existing.Filename, fmt.Sprintf("Delete article: %s", existing.Title)); err != nil {
-		return ErrInternal("failed to remove article file", err)
+	// Remove markdown file (best-effort: if file is already gone, continue)
+	if existing.Filename != "" {
+		if removeErr := h.contentFS.Remove(existing.Filename, fmt.Sprintf("Delete article: %s", existing.Title)); removeErr != nil {
+			// Only fail if file existed but couldn't be removed
+			if _, statErr := h.contentFS.Stat(existing.Filename); statErr == nil {
+				return ErrInternal("failed to remove article file", removeErr)
+			}
+		}
 	}
 
 	// Delete from database
@@ -485,6 +531,9 @@ func (h *Handlers) PublishArticleJSON(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) publishArticleJSON(w http.ResponseWriter, r *http.Request) error {
 	slug := platform.URLParam(r, "slug")
+	if !isValidSlugAdmin(slug) {
+		return ErrBadRequest("invalid slug", nil)
+	}
 
 	article, err := h.repository.GetArticleBySlug(r.Context(), slug)
 	if err != nil {
@@ -493,11 +542,49 @@ func (h *Handlers) publishArticleJSON(w http.ResponseWriter, r *http.Request) er
 
 	article.Draft = 0
 
+	// Update markdown frontmatter to reflect publish status (drop `draft: true`)
+	if article.Filename != "" {
+		content, readErr := h.contentFS.ReadFile(article.Filename)
+		if readErr == nil {
+			updated := removeDraftFromFrontmatter(content)
+			if writeErr := h.contentFS.WriteFile(article.Filename, updated, 0o644, fmt.Sprintf("Publish article: %s", article.Title)); writeErr != nil {
+				return ErrInternal("failed to update article file", writeErr)
+			}
+		}
+	}
+
 	if err := h.repository.UpdateArticle(r.Context(), article); err != nil {
 		return ErrInternal("failed to publish article", err)
 	}
 
 	return writeJSON(w, article)
+}
+
+// removeDraftFromFrontmatter strips a `draft: true` (or similar) line from the
+// YAML frontmatter while preserving the rest of the document.
+func removeDraftFromFrontmatter(content []byte) []byte {
+	const marker = "---"
+	str := string(content)
+	if !strings.HasPrefix(str, marker) {
+		return content
+	}
+	rest := str[len(marker):]
+	end := strings.Index(rest, marker)
+	if end < 0 {
+		return content
+	}
+	fm := rest[:end]
+	body := rest[end:]
+
+	var keep []string
+	for _, line := range strings.Split(fm, "\n") {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "draft:") {
+			continue
+		}
+		keep = append(keep, line)
+	}
+	return []byte(marker + strings.Join(keep, "\n") + body)
 }
 
 func parsePagination(r *http.Request) (page, pageSize int) {
@@ -602,6 +689,10 @@ func (h *Handlers) saveSettingsJSON(w http.ResponseWriter, r *http.Request) erro
 		return ErrBadRequest("invalid JSON", err)
 	}
 
+	if err := validateSettings(&settings); err != nil {
+		return ErrBadRequest(err.Error(), nil)
+	}
+
 	// Always save as global settings for now
 	settings.UserID = "global"
 
@@ -612,4 +703,39 @@ func (h *Handlers) saveSettingsJSON(w http.ResponseWriter, r *http.Request) erro
 	return writeJSON(w, map[string]any{
 		"success": true,
 	})
+}
+
+// validateSettings ensures settings have reasonable values.
+func validateSettings(s *model.Setting) error {
+	s.MetaLang = strings.TrimSpace(s.MetaLang)
+	s.MetaURL = strings.TrimSpace(s.MetaURL)
+	s.SocialGithub = strings.TrimSpace(s.SocialGithub)
+	s.SocialTwitter = strings.TrimSpace(s.SocialTwitter)
+	s.SocialLinkedin = strings.TrimSpace(s.SocialLinkedin)
+	s.AnalyticsID = strings.TrimSpace(s.AnalyticsID)
+
+	if s.PostsPerPage < 0 {
+		return fmt.Errorf("posts_per_page must be non-negative")
+	}
+	if s.PostsPerPage > 1000 {
+		return fmt.Errorf("posts_per_page exceeds maximum of 1000")
+	}
+
+	const maxFieldLen = 500
+	if len(s.MetaLang) > 10 {
+		return fmt.Errorf("meta_lang exceeds maximum length")
+	}
+	if len(s.MetaURL) > maxFieldLen {
+		return fmt.Errorf("meta_url exceeds maximum length")
+	}
+	if len(s.MetaAuthorName) > maxFieldLen {
+		return fmt.Errorf("meta_author_name exceeds maximum length")
+	}
+	if len(s.MetaSubtitle) > maxFieldLen {
+		return fmt.Errorf("meta_subtitle exceeds maximum length")
+	}
+	if s.MetaURL != "" && !strings.HasPrefix(s.MetaURL, "http://") && !strings.HasPrefix(s.MetaURL, "https://") {
+		return fmt.Errorf("meta_url must start with http:// or https://")
+	}
+	return nil
 }

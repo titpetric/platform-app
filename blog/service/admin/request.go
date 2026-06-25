@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"regexp"
@@ -143,8 +145,13 @@ func (r *ArticleRequest) ToArticle() *model.Article {
 		layout = "post"
 	}
 
+	// Deterministic ID derived from the slug: stable across re-imports and
+	// safe against collisions caused by second-precision timestamps.
+	sum := sha256.Sum256([]byte(r.Slug))
+	id := r.Slug + "-" + hex.EncodeToString(sum[:8])
+
 	article := &model.Article{
-		ID:          r.Slug + "-" + time.Now().Format("20060102150405"),
+		ID:          id,
 		Slug:        r.Slug,
 		Title:       r.Title,
 		Description: r.Description,
@@ -259,8 +266,14 @@ func (r *ArticleRequest) BuildMarkdownContent() string {
 	return sb.String()
 }
 
+// escapeYAML escapes a string for use inside a double-quoted YAML scalar.
+// Backslashes, double quotes, carriage returns, and newlines are all escaped
+// so the produced frontmatter stays single-line and parses correctly.
 func escapeYAML(s string) string {
 	s = strings.ReplaceAll(s, "\\", "\\\\")
 	s = strings.ReplaceAll(s, "\"", "\\\"")
+	s = strings.ReplaceAll(s, "\r", "\\r")
+	s = strings.ReplaceAll(s, "\n", "\\n")
+	s = strings.ReplaceAll(s, "\t", "\\t")
 	return s
 }

@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io/fs"
 	"os"
@@ -244,7 +246,14 @@ func (m *BlogModule) parseMarkdownFile(filePath string, relPath string) (*model.
 	return article, nil
 }
 
-// generateID creates a unique ID from slug.
+// generateID creates a deterministic ID for an article.
+//
+// The previous implementation used `slug + time.Now().Format("...")`, which
+// meant a re-scan of the same markdown file produced a different ID on every
+// startup. That made `article.id` unstable for any external reference and made
+// ID-vs-slug uniqueness inconsistent. A deterministic short hash of the slug
+// keeps the ID stable across restarts while still being unique per article.
 func generateID(slug string) string {
-	return slug + "-" + time.Now().Format("20060102150405")
+	sum := sha256.Sum256([]byte(slug))
+	return slug + "-" + hex.EncodeToString(sum[:8])
 }
