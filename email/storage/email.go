@@ -16,8 +16,20 @@ type EmailStorage struct {
 }
 
 // NewEmailStorage creates a new email storage instance
-func NewEmailStorage(db *sqlx.DB) *EmailStorage {
-	return &EmailStorage{db: db}
+func NewEmailStorage(handle *sqlx.DB) *EmailStorage {
+	return &EmailStorage{
+		db: handle,
+	}
+}
+
+// NewEmailStorageErr returns a user storage and any error creating the database.
+func NewEmailStorageErr(ctx context.Context) (*EmailStorage, error) {
+	handle, err := DB(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewEmailStorage(handle), nil
 }
 
 // Create inserts a new email into the email table
