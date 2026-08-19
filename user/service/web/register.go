@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 
 	"github.com/titpetric/platform-app/user/model"
 )
@@ -14,7 +14,7 @@ func (h *Handlers) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) register(w http.ResponseWriter, r *http.Request) error {
-	r, span := telemetry.StartRequest(r, "user.service.Register")
+	r, span := oida.StartRequest(r, "user.service.Register")
 	defer span.End()
 
 	ctx := r.Context()

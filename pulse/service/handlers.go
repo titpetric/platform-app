@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform"
-	"github.com/titpetric/platform/pkg/telemetry"
 	"github.com/titpetric/vuego"
 
 	"github.com/titpetric/platform-app/pulse/storage"
@@ -53,7 +53,7 @@ func (h *Handlers) Mount(r platform.Router) {
 func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	if err != nil {
 		ctx := r.Context()
-		telemetry.CaptureError(ctx, err)
+		oida.RecordError(ctx, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

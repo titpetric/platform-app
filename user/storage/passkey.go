@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/user/model"
@@ -26,7 +26,7 @@ func NewPasskeyStorage(db *sqlx.DB) *PasskeyStorage {
 
 // Create inserts a new passkey record.
 func (s *PasskeyStorage) Create(ctx context.Context, passkey *model.UserPasskey) (*model.UserPasskey, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Create)
+	ctx, span := oida.StartAuto(ctx, s.Create)
 	defer span.End()
 
 	passkey.ID = ulid.String()
@@ -44,7 +44,7 @@ func (s *PasskeyStorage) Create(ctx context.Context, passkey *model.UserPasskey)
 
 // Delete removes a passkey by ID.
 func (s *PasskeyStorage) Delete(ctx context.Context, id string) error {
-	ctx, span := telemetry.StartAuto(ctx, s.Delete)
+	ctx, span := oida.StartAuto(ctx, s.Delete)
 	defer span.End()
 
 	query := `DELETE FROM user_passkey WHERE id=?`
@@ -57,7 +57,7 @@ func (s *PasskeyStorage) Delete(ctx context.Context, id string) error {
 
 // ListByUser returns all passkeys for a given user.
 func (s *PasskeyStorage) ListByUser(ctx context.Context, userID string) ([]model.UserPasskey, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.ListByUser)
+	ctx, span := oida.StartAuto(ctx, s.ListByUser)
 	defer span.End()
 
 	var passkeys []model.UserPasskey
@@ -70,7 +70,7 @@ func (s *PasskeyStorage) ListByUser(ctx context.Context, userID string) ([]model
 
 // GetByCredentialID finds a passkey by its WebAuthn credential ID.
 func (s *PasskeyStorage) GetByCredentialID(ctx context.Context, credentialID []byte) (*model.UserPasskey, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.GetByCredentialID)
+	ctx, span := oida.StartAuto(ctx, s.GetByCredentialID)
 	defer span.End()
 
 	passkey := &model.UserPasskey{}
@@ -83,7 +83,7 @@ func (s *PasskeyStorage) GetByCredentialID(ctx context.Context, credentialID []b
 
 // UpdateSignCount updates the sign count for a passkey.
 func (s *PasskeyStorage) UpdateSignCount(ctx context.Context, id string, signCount int64) error {
-	ctx, span := telemetry.StartAuto(ctx, s.UpdateSignCount)
+	ctx, span := oida.StartAuto(ctx, s.UpdateSignCount)
 	defer span.End()
 
 	query := `UPDATE user_passkey SET sign_count=? WHERE id=?`

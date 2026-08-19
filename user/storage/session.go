@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/user/model"
@@ -28,7 +28,7 @@ func NewSessionStorage(db *sqlx.DB) *SessionStorage {
 
 // Create inserts a new session for the given userID.
 func (s *SessionStorage) Create(ctx context.Context, userID string) (*model.UserSession, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Create)
+	ctx, span := oida.StartAuto(ctx, s.Create)
 	defer span.End()
 
 	now := time.Now()
@@ -51,7 +51,7 @@ func (s *SessionStorage) Create(ctx context.Context, userID string) (*model.User
 // Get retrieves a session by sessionID.
 // Returns model.ErrSessionExpired if the session has expired.
 func (s *SessionStorage) Get(ctx context.Context, sessionID string) (*model.UserSession, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Get)
+	ctx, span := oida.StartAuto(ctx, s.Get)
 	defer span.End()
 
 	query := `SELECT * FROM user_session WHERE id=?`
@@ -72,7 +72,7 @@ func (s *SessionStorage) Get(ctx context.Context, sessionID string) (*model.User
 
 // Delete removes a session by sessionID.
 func (s *SessionStorage) Delete(ctx context.Context, sessionID string) error {
-	ctx, span := telemetry.StartAuto(ctx, s.Delete)
+	ctx, span := oida.StartAuto(ctx, s.Delete)
 	defer span.End()
 
 	query := `DELETE FROM user_session WHERE id=?`

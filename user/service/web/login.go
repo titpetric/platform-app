@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 
 	"github.com/titpetric/platform-app/user/model"
 )
@@ -14,7 +14,7 @@ func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) login(w http.ResponseWriter, r *http.Request) error {
-	r, span := telemetry.StartRequest(r, "user.service.Login")
+	r, span := oida.StartRequest(r, "user.service.Login")
 	defer span.End()
 
 	email := r.FormValue("email")

@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 )
 
 // Logout deletes the session cookie and optionally the session in storage.
@@ -12,7 +12,7 @@ func (h *Handlers) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) logout(w http.ResponseWriter, r *http.Request) error {
-	r, span := telemetry.StartRequest(r, "user.service.Logout")
+	r, span := oida.StartRequest(r, "user.service.Logout")
 	defer span.End()
 
 	ctx := r.Context()

@@ -6,8 +6,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform"
-	"github.com/titpetric/platform/pkg/telemetry"
 
 	"github.com/titpetric/platform-app/daily/model"
 	"github.com/titpetric/platform-app/daily/schema"
@@ -94,7 +94,7 @@ func (m *Module) Mount(_ context.Context, r platform.Router) error {
 		r.Post("/daily/complete/{id}", func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 			err := m.repository.Delete(ctx, platform.URLParam(r, "id"))
-			telemetry.CaptureError(ctx, err)
+			oida.RecordError(ctx, err)
 
 			w.WriteHeader(http.StatusOK)
 		})

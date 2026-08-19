@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 
 	"github.com/titpetric/platform-app/user/model"
 	"github.com/titpetric/platform-app/user/service/auth"
@@ -34,7 +34,7 @@ func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err := m.serveHTTP(w, r); err != nil {
 		if !m.options.Optional {
-			telemetry.CaptureError(r.Context(), err)
+			oida.RecordError(r.Context(), err)
 			return
 		}
 	}
@@ -79,7 +79,7 @@ func (m *Middleware) authorizeCookie(w http.ResponseWriter, r *http.Request) err
 
 	session, err := m.sessionStorage.Get(ctx, cookie.Value)
 	if err != nil {
-		telemetry.CaptureError(ctx, err)
+		oida.RecordError(ctx, err)
 		return ErrLoginRequired
 	}
 

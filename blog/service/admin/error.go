@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 )
 
 // Error represents an HTTP error with a status code and optional cause.
@@ -74,14 +74,14 @@ func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err erro
 	case *Error:
 		if val.Cause != nil {
 			log.Printf("error: %s (cause: %v)", val.Message, val.Cause)
-			telemetry.CaptureError(ctx, val.Cause)
+			oida.RecordError(ctx, val.Cause)
 		} else {
 			log.Printf("error: %s", val.Message)
 		}
 		http.Error(w, val.Message, val.StatusCode)
 	default:
 		log.Printf("error: %v", err)
-		telemetry.CaptureError(ctx, err)
+		oida.RecordError(ctx, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

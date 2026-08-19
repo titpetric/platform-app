@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform"
-	"github.com/titpetric/platform/pkg/telemetry"
 	"github.com/titpetric/platform/pkg/ulid"
 	"golang.org/x/crypto/bcrypt"
 
@@ -60,7 +60,7 @@ func NewUserStorageErr(ctx context.Context) (*UserStorage, error) {
 // Create inserts a new user and their authentication credentials.
 // Returns an error if authentication information is missing.
 func (s *UserStorage) Create(ctx context.Context, req *model.UserCreateRequest) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Create)
+	ctx, span := oida.StartAuto(ctx, s.Create)
 	defer span.End()
 
 	if err := s.validateCreate(req); err != nil {
@@ -73,7 +73,7 @@ func (s *UserStorage) Create(ctx context.Context, req *model.UserCreateRequest) 
 		return nil, fmt.Errorf("check username: %w", err)
 	}
 
-	_, span2 := telemetry.Start(ctx, "bcrypt.GenerateFromPassword")
+	_, span2 := oida.Start(ctx, "bcrypt.GenerateFromPassword")
 	hashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	span2.End()
 	if err != nil {
@@ -94,7 +94,7 @@ func (s *UserStorage) Create(ctx context.Context, req *model.UserCreateRequest) 
 // to the user (typically by email). The user cannot pass the activation
 // gate (see IsActivated, Activate) until the token is exchanged.
 func (s *UserStorage) CreatePending(ctx context.Context, req *model.UserCreateRequest) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.CreatePending)
+	ctx, span := oida.StartAuto(ctx, s.CreatePending)
 	defer span.End()
 
 	if err := s.validateCreate(req); err != nil {
@@ -107,7 +107,7 @@ func (s *UserStorage) CreatePending(ctx context.Context, req *model.UserCreateRe
 		return nil, fmt.Errorf("check username: %w", err)
 	}
 
-	_, span2 := telemetry.Start(ctx, "bcrypt.GenerateFromPassword")
+	_, span2 := oida.Start(ctx, "bcrypt.GenerateFromPassword")
 	hashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	span2.End()
 	if err != nil {
@@ -201,7 +201,7 @@ func (s *UserStorage) insertUserAndAuth(ctx context.Context, req *model.UserCrea
 
 // Update modifies an existing user and updates the updated_at timestamp.
 func (s *UserStorage) Update(ctx context.Context, u *model.User) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Update)
+	ctx, span := oida.StartAuto(ctx, s.Update)
 	defer span.End()
 
 	u.SetUpdatedAt(time.Now())
@@ -220,7 +220,7 @@ func (s *UserStorage) Update(ctx context.Context, u *model.User) (*model.User, e
 
 // Get retrieves a user by ULID.
 func (s *UserStorage) Get(ctx context.Context, id string) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Get)
+	ctx, span := oida.StartAuto(ctx, s.Get)
 	defer span.End()
 
 	u := &model.User{}
@@ -233,7 +233,7 @@ func (s *UserStorage) Get(ctx context.Context, id string) (*model.User, error) {
 
 // GetByUsername retrieves a user by their username.
 func (s *UserStorage) GetByUsername(ctx context.Context, username string) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.GetByUsername)
+	ctx, span := oida.StartAuto(ctx, s.GetByUsername)
 	defer span.End()
 
 	u := &model.User{}
@@ -246,7 +246,7 @@ func (s *UserStorage) GetByUsername(ctx context.Context, username string) (*mode
 
 // GetByStub retrieves a user by their slug.
 func (s *UserStorage) GetByStub(ctx context.Context, slug string) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.GetByStub)
+	ctx, span := oida.StartAuto(ctx, s.GetByStub)
 	defer span.End()
 
 	u := &model.User{}
@@ -259,7 +259,7 @@ func (s *UserStorage) GetByStub(ctx context.Context, slug string) (*model.User, 
 
 // GetGroups returns all groups the user belongs to.
 func (s *UserStorage) GetGroups(ctx context.Context, userID string) ([]model.UserGroup, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.GetGroups)
+	ctx, span := oida.StartAuto(ctx, s.GetGroups)
 	defer span.End()
 
 	query := `
@@ -277,7 +277,7 @@ func (s *UserStorage) GetGroups(ctx context.Context, userID string) ([]model.Use
 
 // Authenticate verifies a user's credentials using bcrypt and returns the user.
 func (s *UserStorage) Authenticate(ctx context.Context, userAuth model.UserAuth) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Authenticate)
+	ctx, span := oida.StartAuto(ctx, s.Authenticate)
 	defer span.End()
 
 	if !userAuth.Valid() {
@@ -293,7 +293,7 @@ func (s *UserStorage) Authenticate(ctx context.Context, userAuth model.UserAuth)
 		// outcome of this compare is discarded; we still return the
 		// original error so callers (including tests) keep getting
 		// sql.ErrNoRows when the user does not exist.
-		_, span := telemetry.Start(ctx, "bcrypt.CompareHashAndPassword.dummy")
+		_, span := oida.Start(ctx, "bcrypt.CompareHashAndPassword.dummy")
 		_ = bcrypt.CompareHashAndPassword(dummyHash, []byte(userAuth.Password))
 		span.End()
 		return nil, fmt.Errorf("authenticate lookup: %w", err)
@@ -301,7 +301,7 @@ func (s *UserStorage) Authenticate(ctx context.Context, userAuth model.UserAuth)
 
 	// instrument a cpu-heavy operation with an inner span
 	err := func() error {
-		_, span := telemetry.Start(ctx, "bcrypt.CompareHashAndPassword")
+		_, span := oida.Start(ctx, "bcrypt.CompareHashAndPassword")
 		err := bcrypt.CompareHashAndPassword([]byte(dbAuth.Password), []byte(userAuth.Password))
 		span.End()
 
@@ -330,7 +330,7 @@ func (s *UserStorage) Authenticate(ctx context.Context, userAuth model.UserAuth)
 // activated_at. The pre-feature backfill in user_activation.up.sql means
 // every user created before activation was introduced reads as activated.
 func (s *UserStorage) IsActivated(ctx context.Context, userID string) (bool, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.IsActivated)
+	ctx, span := oida.StartAuto(ctx, s.IsActivated)
 	defer span.End()
 
 	var activatedAt *time.Time
@@ -345,7 +345,7 @@ func (s *UserStorage) IsActivated(ctx context.Context, userID string) (bool, err
 // token is single-use: once consumed it is cleared from the row so
 // re-presenting it yields ErrInvalidActivationToken.
 func (s *UserStorage) Activate(ctx context.Context, token string) (*model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.Activate)
+	ctx, span := oida.StartAuto(ctx, s.Activate)
 	defer span.End()
 
 	if token == "" {
@@ -379,7 +379,7 @@ func (s *UserStorage) Activate(ctx context.Context, token string) (*model.User, 
 // if no such user exists, and ErrUserAlreadyActivated if the user has
 // already activated (callers should not resend in that case).
 func (s *UserStorage) ResetActivation(ctx context.Context, email string) error {
-	ctx, span := telemetry.StartAuto(ctx, s.ResetActivation)
+	ctx, span := oida.StartAuto(ctx, s.ResetActivation)
 	defer span.End()
 
 	var row struct {
@@ -446,7 +446,7 @@ func newActivationToken() string {
 
 // List returns all active (non-deleted) users.
 func (s *UserStorage) List(ctx context.Context) ([]model.User, error) {
-	ctx, span := telemetry.StartAuto(ctx, s.List)
+	ctx, span := oida.StartAuto(ctx, s.List)
 	defer span.End()
 
 	var users []model.User

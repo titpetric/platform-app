@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 )
 
 // RevokedTokenStorage records JWT IDs (jti) that have been explicitly
@@ -30,7 +30,7 @@ func (s *RevokedTokenStorage) Revoke(ctx context.Context, jti, userID string, ex
 	if s == nil || s.db == nil {
 		return nil
 	}
-	ctx, span := telemetry.StartAuto(ctx, s.Revoke)
+	ctx, span := oida.StartAuto(ctx, s.Revoke)
 	defer span.End()
 
 	if jti == "" {
@@ -51,7 +51,7 @@ func (s *RevokedTokenStorage) IsRevoked(ctx context.Context, jti string) (bool, 
 	if s == nil || s.db == nil || jti == "" {
 		return false, nil
 	}
-	ctx, span := telemetry.StartAuto(ctx, s.IsRevoked)
+	ctx, span := oida.StartAuto(ctx, s.IsRevoked)
 	defer span.End()
 
 	var found string
@@ -72,7 +72,7 @@ func (s *RevokedTokenStorage) PurgeExpired(ctx context.Context) (int64, error) {
 	if s == nil || s.db == nil {
 		return 0, nil
 	}
-	ctx, span := telemetry.StartAuto(ctx, s.PurgeExpired)
+	ctx, span := oida.StartAuto(ctx, s.PurgeExpired)
 	defer span.End()
 
 	res, err := s.db.ExecContext(ctx, `DELETE FROM user_token_revoked WHERE expires_at IS NOT NULL AND expires_at < ?`, time.Now())

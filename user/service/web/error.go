@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform/pkg/httpcontext"
-	"github.com/titpetric/platform/pkg/telemetry"
 )
 
 // errorMessageKey is a request context scoped value. If an error
@@ -25,7 +25,7 @@ func (h *Handlers) Error(r *http.Request, message string, err error) {
 	if err == nil {
 		err = errors.New(message)
 	}
-	telemetry.CaptureError(r.Context(), err)
+	oida.RecordError(r.Context(), err)
 }
 
 // GetError returns the error message stored in the request context.
@@ -36,7 +36,7 @@ func (h *Handlers) GetError(r *http.Request) string {
 func (h *Handlers) errorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	if err != nil {
 		ctx := r.Context()
-		telemetry.CaptureError(ctx, err)
+		oida.RecordError(ctx, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

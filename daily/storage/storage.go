@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/daily/model"
@@ -125,7 +125,7 @@ func (s *Storage) Update(ctx context.Context, t model.Todo) error {
 	n, err := res.RowsAffected()
 	if err != nil || n == 0 {
 		if err != nil {
-			telemetry.CaptureError(ctx, err)
+			oida.RecordError(ctx, err)
 		}
 		return sql.ErrNoRows
 	}
@@ -153,7 +153,7 @@ func (s *Storage) Complete(ctx context.Context, id string) error {
 	n, err := res.RowsAffected()
 	if err != nil || n == 0 {
 		if err != nil {
-			telemetry.CaptureError(ctx, err)
+			oida.RecordError(ctx, err)
 		}
 		return sql.ErrNoRows
 	}
@@ -180,7 +180,7 @@ func (s *Storage) Delete(ctx context.Context, id string) error {
 	n, err := res.RowsAffected()
 	if err != nil || n == 0 {
 		if err != nil {
-			telemetry.CaptureError(ctx, err)
+			oida.RecordError(ctx, err)
 		}
 		return sql.ErrNoRows
 	}

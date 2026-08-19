@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 )
 
 // LogoutView just wraps LoginView. The view changes based on if
@@ -13,7 +13,7 @@ func (h *Handlers) LogoutView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) logoutView(w http.ResponseWriter, r *http.Request) error {
-	r, span := telemetry.StartRequest(r, "user.service.LogoutView")
+	r, span := oida.StartRequest(r, "user.service.LogoutView")
 	defer span.End()
 
 	return h.loginView(w, r)

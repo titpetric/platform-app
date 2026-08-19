@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/titpetric/platform/pkg/telemetry"
+	"github.com/titpetric/oida"
 )
 
 // LoginView renders login.tpl when no valid session exists,
@@ -13,7 +13,7 @@ func (h *Handlers) LoginView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) loginView(w http.ResponseWriter, r *http.Request) error {
-	r, span := telemetry.StartRequest(r, "user.service.LoginView")
+	r, span := oida.StartRequest(r, "user.service.LoginView")
 	defer span.End()
 
 	ctx := r.Context()
@@ -31,10 +31,10 @@ func (h *Handlers) loginView(w http.ResponseWriter, r *http.Request) error {
 					},
 				}).Render(ctx, w)
 			} else {
-				telemetry.CaptureError(ctx, err)
+				oida.RecordError(ctx, err)
 			}
 		} else {
-			telemetry.CaptureError(ctx, err)
+			oida.RecordError(ctx, err)
 		}
 	}
 
