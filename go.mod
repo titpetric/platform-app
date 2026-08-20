@@ -19,7 +19,7 @@ require (
 	github.com/titpetric/oida v0.2.0
 	github.com/titpetric/platform v0.7.0
 	github.com/titpetric/vuego v0.10.1
-	github.com/titpetric/vuego-cli v0.2.1
+	github.com/titpetric/vuego-cli v0.2.2
 	golang.org/x/crypto v0.55.0
 	golang.org/x/term v0.45.0
 	gopkg.in/yaml.v3 v3.0.1

@@ -169,8 +169,8 @@ github.com/titpetric/platform v0.7.0 h1:lpciEiiSnL2P2l0nJep7lwXJXtEUKFenDrP/ll+O
 github.com/titpetric/platform v0.7.0/go.mod h1:hplElQN2WDMDJslJXHYwOLhOqOFb9p8/L9fiYglCdes=
 github.com/titpetric/vuego v0.10.1 h1:Wd+dMPQhkUoIWJ7yqWIeNQTFIUe1EMMwKdqI4ljxNsY=
 github.com/titpetric/vuego v0.10.1/go.mod h1:h6bJcUExpj51WopFMj8oadeuA38TDB6Fmu68zhDjKvI=
-github.com/titpetric/vuego-cli v0.2.1 h1:j5O9MtA+j+DfVkAfjkVWuV238XNZWp3X0BjWgRmf4wk=
-github.com/titpetric/vuego-cli v0.2.1/go.mod h1:vyzT1Hvp2bGAhr54g3JjJLaB5SRRT15H4ZA4AlBnN8M=
+github.com/titpetric/vuego-cli v0.2.2 h1:Aa6Feikp8mElylv473mwglubb/zJ+U3/YDANfi/Sy3k=
+github.com/titpetric/vuego-cli v0.2.2/go.mod h1:BjMz8xcGRHxufY0sshH51RxUL9YsM/1HZhs0KmJUOdQ=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/xanzy/ssh-agent v0.3.3 h1:+/15pJfg/RsTxqYcX6fHqOXZwwMP+2VyYWJeWM2qQFM=
