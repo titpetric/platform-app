@@ -58,8 +58,8 @@
         - stamp
       primary: true
       unique: true
-- name: pulse_hosts
-  comment: Pulse Hosts
+- name: pulse_host
+  comment: Pulse Host
   columns:
     - name: user_id
       type: text
@@ -76,7 +76,7 @@
       comment: Created At
       datatype: datetime
   indexes:
-    - name: sqlite_autoindex_pulse_hosts_1
+    - name: sqlite_autoindex_pulse_host_1
       columns:
         - user_id
         - hostname

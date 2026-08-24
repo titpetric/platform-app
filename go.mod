@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	github.com/alecthomas/chroma/v2 v2.27.0
-	github.com/go-bridget/mig v0.5.4
+	github.com/go-bridget/mig v0.5.5
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-git/go-git/v5 v5.19.2
 	github.com/go-webauthn/webauthn v0.17.4

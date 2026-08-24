@@ -126,7 +126,7 @@ func (s *Storage) GetUserHourlyAll(ctx context.Context, userID string) ([]DailyH
 // GetUserHosts returns all hostnames for a user.
 func (s *Storage) GetUserHosts(ctx context.Context, userID string) ([]string, error) {
 	var hosts []string
-	query := `SELECT hostname FROM pulse_hosts WHERE user_id = ? ORDER BY hostname`
+	query := `SELECT hostname FROM pulse_host WHERE user_id = ? ORDER BY hostname`
 	if err := s.db.SelectContext(ctx, &hosts, query, userID); err != nil {
 		return nil, fmt.Errorf("get user hosts: %w", err)
 	}
@@ -156,7 +156,7 @@ ON
 DO
   UPDATE SET count = count + :count`
 
-const updatePulseHosts = `INSERT OR IGNORE INTO pulse_hosts (user_id, hostname, created_at) VALUES (:user_id, :hostname, CURRENT_TIMESTAMP)`
+const updatePulseHost = `INSERT OR IGNORE INTO pulse_host (user_id, hostname, created_at) VALUES (:user_id, :hostname, CURRENT_TIMESTAMP)`
 
 func (s *Storage) pulseFn(userID string, count int64, hostname string) func(context.Context, *sqlx.Tx) error {
 	params := map[string]any{
@@ -175,7 +175,7 @@ func (s *Storage) pulseFn(userID string, count int64, hostname string) func(cont
 			return fmt.Errorf("error in %s: %w", query, err)
 		}
 
-		query = updatePulseHosts
+		query = updatePulseHost
 		if _, err := tx.NamedExecContext(ctx, query, params); err != nil {
 			return fmt.Errorf("error in %s: %w", query, err)
 		}

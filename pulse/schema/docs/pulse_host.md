@@ -1,6 +1,6 @@
-# Pulse Hosts
+# Pulse Host
 
-Pulse Hosts.
+Pulse Host.
 
 | Name       | Type     | Key | Comment    |
 |------------|----------|-----|------------|

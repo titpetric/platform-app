@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"io/fs"
+	"log/slog"
 	"path"
 
 	"github.com/go-bridget/mig/migrate"
@@ -26,13 +27,9 @@ func Migrate(ctx context.Context, schema embed.FS) error {
 		migrations[path.Base(name)] = contents
 	}
 
-	return migrate.RunWithFS(
-		ctx,
-		db,
-		migrations,
-		&migrate.Options{
-			Project: "maillist",
-			Apply:   true,
-		},
-	)
+	options := migrate.NewOptions(slog.Default())
+	options.Project = "maillist"
+	options.Apply = true
+
+	return migrate.RunWithFS(ctx, db, migrations, options)
 }

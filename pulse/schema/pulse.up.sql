@@ -23,3 +23,5 @@ CREATE TABLE IF NOT EXISTS pulse_hosts (
 
 	PRIMARY KEY (user_id, hostname)
 );
+
+ALTER TABLE pulse_hosts RENAME TO pulse_host;

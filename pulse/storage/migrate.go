@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"io/fs"
+	"log/slog"
 	"path"
 
 	"github.com/go-bridget/mig/migrate"
@@ -22,13 +23,9 @@ func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
 		migrations[path.Base(name)] = contents
 	}
 
-	return migrate.RunWithFS(
-		ctx,
-		db,
-		migrations,
-		&migrate.Options{
-			Project: "pulse",
-			Apply:   true,
-		},
-	)
+	options := migrate.NewOptions(slog.Default())
+	options.Project = "pulse"
+	options.Apply = true
+
+	return migrate.RunWithFS(ctx, db, migrations, options)
 }

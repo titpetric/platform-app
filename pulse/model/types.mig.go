@@ -222,10 +222,10 @@ var PulseDailyFields = []string{"user_id", "hostname", "stamp", "count"}
 // PulseDailyPrimaryFields are the primary key fields in the DB table.
 var PulseDailyPrimaryFields = []string{"user_id", "hostname", "stamp"}
 
-// PulseHosts generated for db table `pulse_hosts`.
+// PulseHost generated for db table `pulse_host`.
 //
-// Pulse Hosts.
-type PulseHosts struct {
+// Pulse Host.
+type PulseHost struct {
 	// User ID
 	UserID string `db:"user_id" json:"user_id"`
 
@@ -237,31 +237,31 @@ type PulseHosts struct {
 }
 
 // GetUserID will return the value of UserID.
-func (p *PulseHosts) GetUserID() string { return p.UserID }
+func (p *PulseHost) GetUserID() string { return p.UserID }
 
 // SetUserID sets UserID to the provided value.
-func (p *PulseHosts) SetUserID(val string) { p.UserID = val }
+func (p *PulseHost) SetUserID(val string) { p.UserID = val }
 
 // GetHostname will return the value of Hostname.
-func (p *PulseHosts) GetHostname() string { return p.Hostname }
+func (p *PulseHost) GetHostname() string { return p.Hostname }
 
 // SetHostname sets Hostname to the provided value.
-func (p *PulseHosts) SetHostname(val string) { p.Hostname = val }
+func (p *PulseHost) SetHostname(val string) { p.Hostname = val }
 
 // GetCreatedAt will return the value of CreatedAt.
-func (p *PulseHosts) GetCreatedAt() *time.Time { return p.CreatedAt }
+func (p *PulseHost) GetCreatedAt() *time.Time { return p.CreatedAt }
 
 // SetCreatedAt sets CreatedAt to the provided value.
-func (p *PulseHosts) SetCreatedAt(stamp time.Time) { p.CreatedAt = &stamp }
+func (p *PulseHost) SetCreatedAt(stamp time.Time) { p.CreatedAt = &stamp }
 
-// PulseHostsTable is the name of the table in the DB.
-const PulseHostsTable = "`pulse_hosts`"
+// PulseHostTable is the name of the table in the DB.
+const PulseHostTable = "`pulse_host`"
 
-// PulseHostsFields is a list of all columns in the DB table.
-var PulseHostsFields = []string{"user_id", "hostname", "created_at"}
+// PulseHostFields is a list of all columns in the DB table.
+var PulseHostFields = []string{"user_id", "hostname", "created_at"}
 
-// PulseHostsPrimaryFields are the primary key fields in the DB table.
-var PulseHostsPrimaryFields = []string{"user_id", "hostname"}
+// PulseHostPrimaryFields are the primary key fields in the DB table.
+var PulseHostPrimaryFields = []string{"user_id", "hostname"}
 
 // PulseHourly generated for db table `pulse_hourly`.
 //
@@ -436,9 +436,9 @@ func (p *PulseDaily) Delete(opts ...QueryOption) string {
 }
 
 // Insert starts building an INSERT INTO query.
-func (p *PulseHosts) Insert(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: PulseHostsTable, Statement: "INSERT INTO"}).Apply(opts...)
-	cols := PulseHostsFields
+func (p *PulseHost) Insert(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostTable, Statement: "INSERT INTO"}).Apply(opts...)
+	cols := PulseHostFields
 	if len(cfg.Columns) > 0 {
 		cols = cfg.Columns
 	}
@@ -446,8 +446,8 @@ func (p *PulseHosts) Insert(opts ...QueryOption) string {
 }
 
 // Select starts building a SELECT query.
-func (p *PulseHosts) Select(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: PulseHostsTable}).Apply(opts...)
+func (p *PulseHost) Select(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostTable}).Apply(opts...)
 	cols := "*"
 	if len(cfg.Columns) > 0 {
 		cols = strings.Join(cfg.Columns, ", ")
@@ -466,9 +466,9 @@ func (p *PulseHosts) Select(opts ...QueryOption) string {
 }
 
 // Update starts building a UPDATE query.
-func (p *PulseHosts) Update(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: PulseHostsTable}).Apply(opts...)
-	cols := PulseHostsFields
+func (p *PulseHost) Update(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostTable}).Apply(opts...)
+	cols := PulseHostFields
 	if len(cfg.Columns) > 0 {
 		cols = cfg.Columns
 	}
@@ -487,8 +487,8 @@ func (p *PulseHosts) Update(opts ...QueryOption) string {
 }
 
 // Delete starts building a DELETE query.
-func (p *PulseHosts) Delete(opts ...QueryOption) string {
-	cfg := (&QueryConfig{Table: PulseHostsTable}).Apply(opts...)
+func (p *PulseHost) Delete(opts ...QueryOption) string {
+	cfg := (&QueryConfig{Table: PulseHostTable}).Apply(opts...)
 	query := fmt.Sprintf("DELETE FROM %s", cfg.Table)
 	if cfg.Where != "" {
 		query += " WHERE " + cfg.Where

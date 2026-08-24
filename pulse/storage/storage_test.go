@@ -43,7 +43,7 @@ func seedDaily(t *testing.T, s *Storage, userID string, rows []struct {
 	}
 	for _, r := range rows {
 		_, err := s.db.Exec(
-			`INSERT OR IGNORE INTO pulse_hosts (user_id, hostname, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)`,
+			`INSERT OR IGNORE INTO pulse_host (user_id, hostname, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)`,
 			userID, r.hostname,
 		)
 		require.NoError(t, err)
