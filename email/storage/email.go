@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -78,10 +79,13 @@ func (s *EmailStorage) GetPending(ctx context.Context, limit int) ([]model.Email
 func (s *EmailStorage) Update(ctx context.Context, email *model.Email) error {
 	// If sent, insert into email_sent for audit trail
 	if email.Status == model.StatusSent && email.SentAt != nil {
-		insertSentQuery := email.Insert(model.WithTable(model.EmailSentTable).WithStatement("INSERT OR IGNORE"))
+		insertSentQuery := email.Insert(model.WithTable(model.EmailSentTable).WithStatement("INSERT OR IGNORE INTO"))
 		_, err := s.db.NamedExecContext(ctx, insertSentQuery, email)
 		if err != nil {
-			// Log but don't fail - audit trail insertion is secondary
+			// The audit trail is secondary to delivery, so a failed insert
+			// does not fail the send. It is logged rather than dropped: a
+			// discarded error here hid a malformed INSERT for a long time.
+			slog.Default().Error("email: recording sent email failed", "id", email.ID, "error", err)
 		}
 
 		// Remove from email table after successful send
@@ -92,10 +96,10 @@ func (s *EmailStorage) Update(ctx context.Context, email *model.Email) error {
 
 	// If failed, insert into email_failed for audit trail
 	if email.Status == model.StatusFailed {
-		insertFailedQuery := email.Insert(model.WithTable(model.EmailFailedTable).WithStatement("INSERT OR IGNORE"))
+		insertFailedQuery := email.Insert(model.WithTable(model.EmailFailedTable).WithStatement("INSERT OR IGNORE INTO"))
 		_, err := s.db.NamedExecContext(ctx, insertFailedQuery, email)
 		if err != nil {
-			// Log but don't fail - audit trail insertion is secondary
+			slog.Default().Error("email: recording failed email failed", "id", email.ID, "error", err)
 		}
 
 		// Remove from email table after failure recorded
