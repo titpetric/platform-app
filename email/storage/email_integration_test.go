@@ -23,7 +23,7 @@ func setupTestDB(t *testing.T, ctx context.Context) {
 		t.Skipf("skipping: database not available: %v", err)
 	}
 
-	if err := storage.Migrate(ctx, db, schema.Migrations); err != nil {
+	if err := storage.Migrate(ctx, db, schema.Migrations()); err != nil {
 		t.Fatalf("failed to migrate email tables: %v", err)
 	}
 }
@@ -138,9 +138,8 @@ func TestEmailStorageUpdateFailed(t *testing.T) {
 	err = emailStorage.Create(ctx, email)
 	require.NoError(t, err)
 
-	errMsg := "connection timeout"
 	email.Status = model.StatusFailed
-	email.Error = &errMsg
+	email.Error = "connection timeout"
 	email.RetryCount = 3
 
 	err = emailStorage.Update(ctx, email)
@@ -153,9 +152,9 @@ func TestEmailStorageUpdateFailed(t *testing.T) {
 	// Check email_failed table
 	failed, err := emailStorage.GetFailed(ctx, 10)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(failed), 1, "email should be in email_failed table")
+	require.GreaterOrEqual(t, len(failed), 1, "email should be in email_failed table")
 	assert.Equal(t, model.StatusFailed, failed[0].Status)
-	assert.Equal(t, 3, failed[0].RetryCount)
+	assert.Equal(t, int64(3), failed[0].RetryCount)
 }
 
 func TestEmailStorageGetFailed(t *testing.T) {
@@ -170,15 +169,13 @@ func TestEmailStorageGetFailed(t *testing.T) {
 	// Create and fail multiple emails
 	email1 := model.NewEmail("test1@example.com", "Subject 1", "Body 1")
 	email1.Status = model.StatusFailed
-	errMsg := "error1"
-	email1.Error = &errMsg
+	email1.Error = "error1"
 	err = emailStorage.Create(ctx, email1)
 	require.NoError(t, err)
 
 	email2 := model.NewEmail("test2@example.com", "Subject 2", "Body 2")
 	email2.Status = model.StatusFailed
-	errMsg2 := "error2"
-	email2.Error = &errMsg2
+	email2.Error = "error2"
 	err = emailStorage.Create(ctx, email2)
 	require.NoError(t, err)
 

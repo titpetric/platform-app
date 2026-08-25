@@ -5,6 +5,7 @@ package email
 import (
 	"context"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"testing"
@@ -21,6 +22,18 @@ import (
 	"github.com/titpetric/platform-app/email/storage"
 )
 
+// requireMailhog skips the test when nothing is listening on mailhog's SMTP
+// port. Every test in this file sends mail, and a machine without mailhog
+// running is not a failing build, the same way an unreachable database is a
+// skip rather than a failure in setupEmailTables.
+func requireMailhog(t *testing.T) {
+	conn, err := net.DialTimeout("tcp", "localhost:1025", time.Second)
+	if err != nil {
+		t.Skipf("skipping: mailhog not available: %v", err)
+	}
+	conn.Close()
+}
+
 // setupEmailTables runs migrations for email tables
 func setupEmailTables(t *testing.T, ctx context.Context) {
 	db, err := storage.DB(ctx)
@@ -28,13 +41,14 @@ func setupEmailTables(t *testing.T, ctx context.Context) {
 		t.Skipf("skipping: database not available: %v", err)
 	}
 
-	if err := storage.Migrate(ctx, db, schema.Migrations); err != nil {
+	if err := storage.Migrate(ctx, db, schema.Migrations()); err != nil {
 		t.Fatalf("failed to migrate email tables: %v", err)
 	}
 }
 
 // TestMailhogConnectivity verifies mailhog is running and accessible
 func TestMailhogConnectivity(t *testing.T) {
+	requireMailhog(t)
 	smtpConfig := smtp.Config{
 		Host:     "localhost",
 		Port:     1025,
@@ -56,6 +70,7 @@ func TestMailhogConnectivity(t *testing.T) {
 
 // TestSendEmailViaMailhog tests sending a simple email through mailhog
 func TestSendEmailViaMailhog(t *testing.T) {
+	requireMailhog(t)
 	smtpConfig := smtp.Config{
 		Host:     "localhost",
 		Port:     1025,
@@ -88,6 +103,7 @@ func TestSendEmailViaMailhog(t *testing.T) {
 
 // TestMultipleEmailsToMailhog tests sending multiple emails
 func TestMultipleEmailsToMailhog(t *testing.T) {
+	requireMailhog(t)
 	smtpConfig := smtp.Config{
 		Host:     "localhost",
 		Port:     1025,
@@ -119,6 +135,7 @@ func TestMultipleEmailsToMailhog(t *testing.T) {
 
 // TestServiceWithMailhog tests the service queue with mailhog
 func TestServiceWithMailhog(t *testing.T) {
+	requireMailhog(t)
 	ctx := context.Background()
 	setupEmailTables(t, ctx)
 
@@ -161,7 +178,7 @@ func TestServiceWithMailhog(t *testing.T) {
 
 	// Verify email was marked as sent
 	assert.Equal(t, model.StatusSent, email.Status)
-	assert.Nil(t, email.Error)
+	assert.Empty(t, email.Error)
 
 	// Verify it was removed from queue and stored in email_sent table
 	_, err = emailStorage.Get(ctx, email.ID)
@@ -170,12 +187,13 @@ func TestServiceWithMailhog(t *testing.T) {
 	// Check email_sent table
 	sent, err := emailStorage.GetSent(ctx, 10)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(sent), 1, "email should be in email_sent table")
+	require.GreaterOrEqual(t, len(sent), 1, "email should be in email_sent table")
 	assert.NotNil(t, sent[0].SentAt)
 }
 
 // TestServiceStartProcessesPending tests that Start() processes pending emails
 func TestServiceStartProcessesPending(t *testing.T) {
+	requireMailhog(t)
 	ctx := context.Background()
 	setupEmailTables(t, ctx)
 
@@ -227,7 +245,7 @@ func TestServiceStartProcessesPending(t *testing.T) {
 	// Check email_sent table
 	sent, err := emailStorage.GetSent(ctx, 10)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(sent), 2, "both emails should be in email_sent table")
+	require.GreaterOrEqual(t, len(sent), 2, "both emails should be in email_sent table")
 	assert.NotNil(t, sent[0].SentAt)
 }
 
@@ -285,12 +303,13 @@ func TestServiceRetryOnFailure(t *testing.T) {
 
 	require.NotNil(t, failedEmail, "email should be in failed table after max retries")
 	assert.Equal(t, model.StatusFailed, failedEmail.Status)
-	assert.GreaterOrEqual(t, failedEmail.RetryCount, 1)
-	assert.NotNil(t, failedEmail.Error)
+	assert.GreaterOrEqual(t, failedEmail.RetryCount, int64(1))
+	assert.NotEmpty(t, failedEmail.Error)
 }
 
 // TestServiceLogging verifies logging is working
 func TestServiceLogging(t *testing.T) {
+	requireMailhog(t)
 	ctx := context.Background()
 	setupEmailTables(t, ctx)
 
@@ -334,6 +353,7 @@ func TestServiceLogging(t *testing.T) {
 
 // TestServiceWithConfigFromEnv tests that config can be loaded from environment
 func TestServiceWithConfigFromEnv(t *testing.T) {
+	requireMailhog(t)
 	ctx := context.Background()
 	setupEmailTables(t, ctx)
 
