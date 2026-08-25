@@ -5,7 +5,6 @@ import (
 	"embed"
 	"io/fs"
 	"log/slog"
-	"path"
 
 	"github.com/go-bridget/mig/migrate"
 )
@@ -16,20 +15,21 @@ func Migrate(ctx context.Context, schema embed.FS) error {
 		return err
 	}
 
-	entries, err := fs.Glob(schema, "schema/*.sql")
+	// The embed holds the schema directory, and mig records the filename
+	// relative to the root it is given, so hand it the directory.
+	root, err := fs.Sub(schema, "schema")
 	if err != nil {
 		return err
 	}
 
-	migrations := make(map[string][]byte, len(entries))
-	for _, name := range entries {
-		contents, _ := schema.ReadFile(name)
-		migrations[path.Base(name)] = contents
+	m, err := migrate.NewManager(db, root, "maillist")
+	if err != nil {
+		return err
 	}
 
-	options := migrate.NewOptions(slog.Default())
-	options.Project = "maillist"
-	options.Apply = true
-
-	return migrate.RunWithFS(ctx, db, migrations, options)
+	applied, err := m.Apply(ctx)
+	for _, item := range applied {
+		slog.Default().Info("migration", "file", item.Filename, "status", item.Status)
+	}
+	return err
 }

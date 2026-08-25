@@ -4,7 +4,6 @@ import (
 	"context"
 	"io/fs"
 	"log/slog"
-	"path"
 
 	"github.com/go-bridget/mig/migrate"
 	"github.com/jmoiron/sqlx"
@@ -12,20 +11,14 @@ import (
 
 // Migrate runs database migrations from the given schema filesystem.
 func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
-	entries, err := fs.Glob(schema, "*.sql")
+	m, err := migrate.NewManager(db, schema, "blog")
 	if err != nil {
 		return err
 	}
 
-	migrations := make(map[string][]byte, len(entries))
-	for _, name := range entries {
-		contents, _ := fs.ReadFile(schema, name)
-		migrations[path.Base(name)] = contents
+	applied, err := m.Apply(ctx)
+	for _, item := range applied {
+		slog.Default().Info("migration", "file", item.Filename, "status", item.Status)
 	}
-
-	options := migrate.NewOptions(slog.Default())
-	options.Project = "blog"
-	options.Apply = true
-
-	return migrate.RunWithFS(ctx, db, migrations, options)
+	return err
 }
