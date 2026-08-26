@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	github.com/alecthomas/chroma/v2 v2.27.0
-	github.com/go-bridget/mig v0.6.0
+	github.com/go-bridget/mig v0.6.1
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-git/go-git/v5 v5.19.2
 	github.com/go-webauthn/webauthn v0.17.4
@@ -17,9 +17,9 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/titpetric/cli v0.6.0
 	github.com/titpetric/oida v0.2.0
-	github.com/titpetric/platform v0.7.0
+	github.com/titpetric/platform v0.7.1
 	github.com/titpetric/vuego v0.10.1
-	github.com/titpetric/vuego-cli v0.2.4
+	github.com/titpetric/vuego-cli v0.3.0
 	golang.org/x/crypto v0.55.0
 	golang.org/x/term v0.45.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -79,7 +79,7 @@ require (
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.41.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	modernc.org/libc v1.75.4 // indirect
+	modernc.org/libc v1.75.5 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
 )
