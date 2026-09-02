@@ -42,7 +42,7 @@ tasks:
       - task: fmt
       - go clean -cache
       - go clean -testcache
-      - rm -f ./{{.name}} pkg.cov pkg.cov.json splint-doc.json go-fsck.json
+      - rm -f ./{{.name}} pkg.cov pkg.cov.json splint.json go-fsck.json
       - docker rmi -f {{.docker_image}}
 
   migrate:
