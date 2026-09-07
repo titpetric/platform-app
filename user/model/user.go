@@ -1,6 +1,8 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // NewUser creates a new empty User.
 func NewUser() *User {

@@ -1,6 +1,8 @@
 package web
 
-import "github.com/titpetric/platform-app/user/model"
+import (
+	"github.com/titpetric/platform-app/user/model"
+)
 
 // Web view model types used for rendering templates.
 type (

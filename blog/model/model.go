@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // Metadata represents the YAML front matter of a markdown file.
 type Metadata struct {

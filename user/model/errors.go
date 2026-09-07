@@ -1,6 +1,8 @@
 package model
 
-import "errors"
+import (
+	"errors"
+)
 
 // Errors returned by user validation and storage operations.
 var (

@@ -1,6 +1,8 @@
 package keycounter
 
-import "time"
+import (
+	"time"
+)
 
 // Options holds configuration options for the keyboard counter.
 type Options struct {
