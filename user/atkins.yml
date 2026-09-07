@@ -15,9 +15,7 @@ tasks:
 
   fmt:
     cmds:
-      - goimports -w .
-      - gofumpt -w .
-      - go fmt ./...
+      - splint fix ./...
 
   test:
     depends_on: migrate
