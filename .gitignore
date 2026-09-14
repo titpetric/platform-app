@@ -2,12 +2,11 @@
 *.db
 *.cov
 *.cov.json
-go-fsck.json
 docs/.flatnotes
 /appdata
 /data
 /bin
 
 # splint writes its document beside the tree it describes, and a job that
-# fails leaves it behind. go-fsck reads it and writes its own.
+# fails leaves it behind.
 splint.json
