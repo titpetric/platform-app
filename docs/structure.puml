@@ -1,5 +1,17 @@
 @startuml
 
+interface "blog.cmd.blog.ExtendedProvider" {
+  + List: List () []string
+  + Register: Register (string, string)
+}
+
+class "blog.cmd.blog.version.Info" {
+  + Version: string
+  + Commit: string
+  + CommitTime: string
+  + Branch: string
+}
+
 class "blog.markdown.Renderer" {
   - codeBlockPattern: *regexp.Regexp
   + Render (content []byte) []byte
@@ -16,12 +28,14 @@ class "blog.model.Article" {
   + Layout: string
   + Source: string
   + URL: string
+  + Draft: int64
   + CreatedAt: *time.Time
   + UpdatedAt: *time.Time
   + Delete (opts ...QueryOption) string
   + GetCreatedAt () *time.Time
   + GetDate () *time.Time
   + GetDescription () string
+  + GetDraft () int64
   + GetFilename () string
   + GetID () string
   + GetLayout () string
@@ -32,10 +46,24 @@ class "blog.model.Article" {
   + GetURL () string
   + GetUpdatedAt () *time.Time
   + Insert (opts ...QueryOption) string
+  + IsDraft () bool
+  + IsPublished () bool
+  + IsScheduled () bool
   + Select (opts ...QueryOption) string
   + SetCreatedAt (stamp time.Time)
   + SetDate (stamp time.Time)
+  + SetDescription (val string)
+  + SetDraft (val int64)
+  + SetFilename (val string)
+  + SetID (val string)
+  + SetLayout (val string)
+  + SetOgImage (val string)
+  + SetSlug (val string)
+  + SetSource (val string)
+  + SetTitle (val string)
+  + SetURL (val string)
   + SetUpdatedAt (stamp time.Time)
+  + Status () ArticleStatus
   + Update (opts ...QueryOption) string
 }
 
@@ -53,6 +81,7 @@ class "blog.model.Metadata" {
   + Date: string
   + Layout: string
   + Source: string
+  + Draft: bool
 }
 
 class "blog.model.Migrations" {
@@ -67,6 +96,10 @@ class "blog.model.Migrations" {
   + GetStatus () string
   + Insert (opts ...QueryOption) string
   + Select (opts ...QueryOption) string
+  + SetFilename (val string)
+  + SetProject (val string)
+  + SetStatementIndex (val int64)
+  + SetStatus (val string)
   + Update (opts ...QueryOption) string
 }
 
@@ -96,26 +129,321 @@ interface "blog.model.QueryOption" {
   + WithStatement: WithStatement (stmt string) QueryOption
 }
 
+class "blog.model.Setting" {
+  + UserID: string
+  + MetaLang: string
+  + MetaURL: string
+  + MetaAuthorName: string
+  + MetaSubtitle: string
+  + MetaHeadshot: string
+  + PostsPerPage: int64
+  + SocialGithub: string
+  + SocialTwitter: string
+  + SocialLinkedin: string
+  + FeatureWebmention: int64
+  + FeaturePingback: int64
+  + FeatureComments: int64
+  + FeatureRss: int64
+  + SeoTitleSuffix: string
+  + SeoDefaultImage: string
+  + AnalyticsID: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetAnalyticsID () string
+  + GetCreatedAt () *time.Time
+  + GetFeatureComments () int64
+  + GetFeaturePingback () int64
+  + GetFeatureRss () int64
+  + GetFeatureWebmention () int64
+  + GetMetaAuthorName () string
+  + GetMetaHeadshot () string
+  + GetMetaLang () string
+  + GetMetaSubtitle () string
+  + GetMetaURL () string
+  + GetPostsPerPage () int64
+  + GetSeoDefaultImage () string
+  + GetSeoTitleSuffix () string
+  + GetSocialGithub () string
+  + GetSocialLinkedin () string
+  + GetSocialTwitter () string
+  + GetUpdatedAt () *time.Time
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetAnalyticsID (val string)
+  + SetCreatedAt (stamp time.Time)
+  + SetFeatureComments (val int64)
+  + SetFeaturePingback (val int64)
+  + SetFeatureRss (val int64)
+  + SetFeatureWebmention (val int64)
+  + SetMetaAuthorName (val string)
+  + SetMetaHeadshot (val string)
+  + SetMetaLang (val string)
+  + SetMetaSubtitle (val string)
+  + SetMetaURL (val string)
+  + SetPostsPerPage (val int64)
+  + SetSeoDefaultImage (val string)
+  + SetSeoTitleSuffix (val string)
+  + SetSocialGithub (val string)
+  + SetSocialLinkedin (val string)
+  + SetSocialTwitter (val string)
+  + SetUpdatedAt (stamp time.Time)
+  + SetUserID (val string)
+  + Update (opts ...QueryOption) string
+}
+
+class "blog.schema.Column" {
+  + Name: string
+  + Type: string
+  + Key: string
+  + Comment: string
+  + DataType: string
+}
+
+class "blog.schema.Table" {
+  + Name: string
+  + Comment: string
+  + Columns: []Column
+}
+
+class "blog.service.BlogModule" {
+  - dataDir: string
+  - repository: *storage.Storage
+  - contentFS: *storage.GitFS
+  - articles: map[string]*model.Article
+  - mountFns: []func(platform.Router)
+  + Mount (_ context.Context, r platform.Router) error
+  + Name () string
+  + ScanMarkdownFiles (ctx context.Context) (int, error)
+  + SetRepository (repo *storage.Storage)
+  + Start (ctx context.Context) error
+  + Stop (context.Context) error
+}
+
+class "blog.service.Generator" {
+  - module: *BlogModule
+  - outputDir: string
+  - themeFS: fs.FS
+  + Generate (ctx context.Context) error
+}
+
+class "blog.service.admin.ArticleRequest" {
+  + Slug: string
+  + Title: string
+  + Description: string
+  + Content: string
+  + Date: string
+  + Time: string
+  + Layout: string
+  + Draft: bool
+  + CustomYaml: string
+  + BuildMarkdownContent () string
+  + ToArticle () *model.Article
+  + UpdateArticle (existing *model.Article) *model.Article
+  + Validate () error
+}
+
+class "blog.service.admin.Error" {
+  + StatusCode: int
+  + Message: string
+  + Cause: error
+  + Error () string
+  + Unwrap () error
+}
+
+class "blog.service.admin.Handlers" {
+  - repository: *storage.Storage
+  - contentFS: *storage.GitFS
+  - views: *view.AdminViews
+  - themeFS: fs.FS
+  + CheckSlugJSON (w http.ResponseWriter, r *http.Request)
+  + CreateArticleJSON (w http.ResponseWriter, r *http.Request)
+  + DashboardHTML (w http.ResponseWriter, r *http.Request)
+  + DeleteArticleJSON (w http.ResponseWriter, r *http.Request)
+  + EditArticleHTML (w http.ResponseWriter, r *http.Request)
+  + GetArticleJSON (w http.ResponseWriter, r *http.Request)
+  + GetSettingsJSON (w http.ResponseWriter, r *http.Request)
+  + GetSettingsSchemaJSON (w http.ResponseWriter, r *http.Request)
+  + ListDraftsHTML (w http.ResponseWriter, r *http.Request)
+  + ListDraftsJSON (w http.ResponseWriter, r *http.Request)
+  + ListPublishedHTML (w http.ResponseWriter, r *http.Request)
+  + ListPublishedJSON (w http.ResponseWriter, r *http.Request)
+  + ListScheduledHTML (w http.ResponseWriter, r *http.Request)
+  + ListScheduledJSON (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + NewArticleHTML (w http.ResponseWriter, r *http.Request)
+  + PublishArticleJSON (w http.ResponseWriter, r *http.Request)
+  + SaveSettingsJSON (w http.ResponseWriter, r *http.Request)
+  + SettingsHTML (w http.ResponseWriter, r *http.Request)
+  + UpdateArticleJSON (w http.ResponseWriter, r *http.Request)
+}
+
+class "blog.service.api.Error" {
+  + StatusCode: int
+  + Message: string
+  + Cause: error
+  + Error () string
+  + Unwrap () error
+}
+
+class "blog.service.api.Handlers" {
+  - repository: *storage.Storage
+  + GetArticleAdminJSON (w http.ResponseWriter, r *http.Request)
+  + GetArticleJSON (w http.ResponseWriter, r *http.Request)
+  + ListArticlesAdminJSON (w http.ResponseWriter, r *http.Request)
+  + ListArticlesJSON (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + SearchArticlesJSON (w http.ResponseWriter, r *http.Request)
+}
+
+class "blog.service.web.Error" {
+  + StatusCode: int
+  + Message: string
+  + Cause: error
+  + Error () string
+  + Unwrap () error
+}
+
+class "blog.service.web.Handlers" {
+  - repository: *storage.Storage
+  - contentFS: *storage.GitFS
+  - views: *view.Views
+  - themeFS: fs.FS
+  + GetArticleHTML (w http.ResponseWriter, r *http.Request)
+  + GetAtomFeed (w http.ResponseWriter, r *http.Request)
+  + IndexHTML (w http.ResponseWriter, r *http.Request)
+  + ListArticlesAdminHTML (w http.ResponseWriter, r *http.Request)
+  + ListArticlesHTML (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + Repository () *storage.Storage
+  + Views () *view.Views
+}
+
+class "blog.storage.GitFS" {
+  - root: string
+  - repo: *git.Repository
+  + CopyFile (name string, src io.Reader, perm fs.FileMode, auditMsg string) error
+  + Open (name string) (fs.File, error)
+  + ReadDir (name string) ([]fs.DirEntry, error)
+  + ReadFile (name string) ([]byte, error)
+  + Remove (name string, auditMsg string) error
+  + Rename (oldName,newName string, auditMsg string) error
+  + Root () string
+  + Stat (name string) (fs.FileInfo, error)
+  + WriteFile (name string, data []byte, perm fs.FileMode, auditMsg string) error
+}
+
 class "blog.storage.Storage" {
   - db: *sqlx.DB
   + CountArticles (ctx context.Context) (int, error)
+  + CountDraftArticles (ctx context.Context) (int, error)
+  + CountPublishedArticles (ctx context.Context) (int, error)
+  + CountScheduledArticles (ctx context.Context) (int, error)
+  + DeleteArticle (ctx context.Context, slug string) error
+  + GetArticleByID (ctx context.Context, id string) (*model.Article, error)
   + GetArticleBySlug (ctx context.Context, slug string) (*model.Article, error)
   + GetArticles (ctx context.Context, start,length int) ([]model.Article, error)
+  + GetDraftArticles (ctx context.Context, start,length int) ([]model.Article, error)
+  + GetGlobalSettings (ctx context.Context) (*model.Setting, error)
+  + GetPublishedArticleBySlug (ctx context.Context, slug string) (*model.Article, error)
+  + GetPublishedArticles (ctx context.Context, start,length int) ([]model.Article, error)
+  + GetScheduledArticles (ctx context.Context, start,length int) ([]model.Article, error)
+  + GetSettingByUserID (ctx context.Context, userID string) (*model.Setting, error)
   + InsertArticle (ctx context.Context, article *model.Article) error
+  + SaveSetting (ctx context.Context, setting *model.Setting) error
   + SearchArticles (ctx context.Context, query string) ([]model.Article, error)
+  + SearchPublishedArticles (ctx context.Context, query string) ([]model.Article, error)
+  + UpdateArticle (ctx context.Context, article *model.Article) error
+}
+
+class "blog.view.AdminDashboardData" {
+  + Title: string
+  + DraftsCount: int
+  + ScheduledCount: int
+  + PublishedCount: int
+  + Drafts: []model.Article
+  + Scheduled: []model.Article
+  + Published: []model.Article
+  + LoggedIn: bool
+}
+
+class "blog.view.AdminEditData" {
+  + Title: string
+  + Article: *model.Article
+  + Content: string
+  + CustomYaml: string
+  + IsNew: bool
+  + Map () map[string]any
+}
+
+class "blog.view.AdminListData" {
+  + Title: string
+  + Articles: []model.Article
+  + Total: int
+  + Page: int
+  + PageSize: int
+  + Map () map[string]any
+  + TotalPages () int
+}
+
+class "blog.view.AdminMenuConfig" {
+  + Admin: struct
+}
+
+class "blog.view.AdminNavigation" {
+  + Top: []MenuItem
+  + Side: []MenuItem
+  + Account: []MenuItem
+  + WithActive (activeURL string) map[string]any
+}
+
+class "blog.view.Author" {
+  + Name: string
+  + Email: string
+}
+
+class "blog.view.FeedConfig" {
+  + URL: string
+  + Title: string
+  + Subtitle: string
+  + Language: string
+  + Author: Author
 }
 
 class "blog.view.IndexData" {
   + Articles: []model.Article
   + Data: map[string]any
   + Total: int
-  + Fill ()
+  + LoggedIn: bool
   + Map () map[string]any
 }
 
 class "blog.view.Loader" {
   - tpl: vuego.Template
   + Load (filename string) vuego.Template
+}
+
+class "blog.view.MenuConfig" {
+  + Header: []MenuItem
+  + Footer: []MenuItem
+}
+
+class "blog.view.MenuData" {
+  + Header: []MenuItem
+  + Footer: []MenuItem
+  + LoggedIn: bool
+  + Map () map[string]any
+}
+
+class "blog.view.MenuItem" {
+  + Label: string
+  + URL: string
+  + Icon: string
+  + Target: string
+  + LoggedOut: bool
+  + LoggedIn: bool
+  + Show (ctx *vuego.VueContext) bool
 }
 
 class "blog.view.PostData" {
@@ -126,184 +454,25 @@ class "blog.view.PostData" {
   + Content: string
   + Date: *time.Time
   + Class: string
+  + LoggedIn: bool
   + Map () map[string]any
 }
 
 class "blog.view.Views" {
   + Loader: *Loader
-  + AtomFeed (ctx context.Context, w io.Writer, articles []model.Article, meta map[string]any) error
+  + AtomFeed (ctx context.Context, w io.Writer, articles []model.Article, contentFS fs.FS) error
+  + AtomFeedWithConfig (ctx context.Context, w io.Writer, articles []model.Article, config *FeedConfig, contentFS fs.FS) error
   + Blog (data *IndexData) vuego.Template
   + Index (data *IndexData) vuego.Template
   + Post (data *PostData) vuego.Template
 }
 
-class "blog.handlers.Handlers" {
+class "daily.Module" {
   - repository: *storage.Storage
   - views: *view.Views
-  + GetArticleAdminJSON (w http.ResponseWriter, r *http.Request)
-  + GetArticleHTML (w http.ResponseWriter, r *http.Request)
-  + GetArticleJSON (w http.ResponseWriter, r *http.Request)
-  + GetAtomFeed (w http.ResponseWriter, r *http.Request)
-  + IndexHTML (w http.ResponseWriter, r *http.Request)
-  + ListArticlesAdminHTML (w http.ResponseWriter, r *http.Request)
-  + ListArticlesAdminJSON (w http.ResponseWriter, r *http.Request)
-  + ListArticlesHTML (w http.ResponseWriter, r *http.Request)
-  + ListArticlesJSON (w http.ResponseWriter, r *http.Request)
-  + Repository () *storage.Storage
-  + SearchArticlesJSON (w http.ResponseWriter, r *http.Request)
-  + Views () *view.Views
-}
-
-class "blog.Generator" {
-  - module: *Module
-  - outputDir: string
-  + Generate (ctx context.Context) error
-}
-
-class "blog.Module" {
-  - dataDir: string
-  - repository: *storage.Storage
-  - articles: map[string]*model.Article
-  - themeFS: fs.FS
   + Mount (_ context.Context, r platform.Router) error
   + Name () string
-  + ScanMarkdownFiles (ctx context.Context) (int, error)
-  + SetRepository (repo *storage.Storage)
   + Start (ctx context.Context) error
-  + Stop (context.Context) error
-}
-
-class "user.model.QueryConfig" {
-  + Table: string
-  + Columns: []string
-  + Where: string
-  + OrderBy: string
-  + LimitStart: int
-  + LimitOffset: int
-  + Statement: string
-  + Apply (opts ...QueryOption) *QueryConfig
-  + WithColumns (cols []string) QueryOption
-  + WithLimit (start,offset int) QueryOption
-  + WithOrderBy (clause string) QueryOption
-  + WithStatement (stmt string) QueryOption
-  + WithTable (name string) QueryOption
-  + WithWhere (clause string) QueryOption
-}
-
-interface "user.model.QueryOption" {
-  + WithTable: WithTable (name string) QueryOption
-  + WithColumns: WithColumns (cols []string) QueryOption
-  + WithWhere: WithWhere (clause string) QueryOption
-  + WithOrderBy: WithOrderBy (clause string) QueryOption
-  + WithLimit: WithLimit (start,offset int) QueryOption
-  + WithStatement: WithStatement (stmt string) QueryOption
-}
-
-interface "user.model.SessionStorage" {
-  + Create: Create (ctx context.Context, userID string) (*UserSession, error)
-  + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
-  + Delete: Delete (ctx context.Context, sessionID string) error
-}
-
-class "user.model.User" {
-  + ID: string
-  + FirstName: string
-  + LastName: string
-  + DeletedAt: *time.Time
-  + CreatedAt: *time.Time
-  + UpdatedAt: *time.Time
-  + Delete (opts ...QueryOption) string
-  + GetCreatedAt () *time.Time
-  + GetDeletedAt () *time.Time
-  + GetFirstName () string
-  + GetID () string
-  + GetLastName () string
-  + GetUpdatedAt () *time.Time
-  + Insert (opts ...QueryOption) string
-  + IsActive () bool
-  + Select (opts ...QueryOption) string
-  + SetCreatedAt (stamp time.Time)
-  + SetDeletedAt (stamp time.Time)
-  + SetUpdatedAt (stamp time.Time)
-  + String () string
-  + Update (opts ...QueryOption) string
-}
-
-class "user.model.UserAuth" {
-  + UserID: string
-  + Email: string
-  + Password: string
-  + CreatedAt: *time.Time
-  + UpdatedAt: *time.Time
-  + Delete (opts ...QueryOption) string
-  + GetCreatedAt () *time.Time
-  + GetEmail () string
-  + GetPassword () string
-  + GetUpdatedAt () *time.Time
-  + GetUserID () string
-  + Insert (opts ...QueryOption) string
-  + Select (opts ...QueryOption) string
-  + SetCreatedAt (stamp time.Time)
-  + SetUpdatedAt (stamp time.Time)
-  + Update (opts ...QueryOption) string
-  + Valid () bool
-}
-
-class "user.model.UserGroup" {
-  + ID: string
-  + Title: string
-  + CreatedAt: *time.Time
-  + UpdatedAt: *time.Time
-  + Delete (opts ...QueryOption) string
-  + GetCreatedAt () *time.Time
-  + GetID () string
-  + GetTitle () string
-  + GetUpdatedAt () *time.Time
-  + Insert (opts ...QueryOption) string
-  + Select (opts ...QueryOption) string
-  + SetCreatedAt (stamp time.Time)
-  + SetUpdatedAt (stamp time.Time)
-  + String () string
-  + Update (opts ...QueryOption) string
-}
-
-class "user.model.UserGroupMember" {
-  + UserGroupID: string
-  + UserID: string
-  + JoinedAt: *time.Time
-  + Delete (opts ...QueryOption) string
-  + GetJoinedAt () *time.Time
-  + GetUserGroupID () string
-  + GetUserID () string
-  + Insert (opts ...QueryOption) string
-  + Select (opts ...QueryOption) string
-  + SetJoinedAt (stamp time.Time)
-  + Update (opts ...QueryOption) string
-}
-
-class "user.model.UserSession" {
-  + ID: string
-  + UserID: string
-  + ExpiresAt: *time.Time
-  + CreatedAt: *time.Time
-  + Delete (opts ...QueryOption) string
-  + GetCreatedAt () *time.Time
-  + GetExpiresAt () *time.Time
-  + GetID () string
-  + GetUserID () string
-  + Insert (opts ...QueryOption) string
-  + Select (opts ...QueryOption) string
-  + SetCreatedAt (stamp time.Time)
-  + SetExpiresAt (stamp time.Time)
-  + Update (opts ...QueryOption) string
-}
-
-interface "user.model.UserStorage" {
-  + Create: Create (context.Context, *User, *UserAuth) (*User, error)
-  + Update: Update (context.Context, *User) (*User, error)
-  + Get: Get (context.Context, string) (*User, error)
-  + GetGroups: GetGroups (context.Context, string) ([]UserGroup, error)
-  + Authenticate: Authenticate (ctx context.Context, auth UserAuth) (*User, error)
 }
 
 class "daily.model.Migrations" {
@@ -318,6 +487,10 @@ class "daily.model.Migrations" {
   + GetStatus () string
   + Insert (opts ...QueryOption) string
   + Select (opts ...QueryOption) string
+  + SetFilename (val string)
+  + SetProject (val string)
+  + SetStatementIndex (val int64)
+  + SetStatus (val string)
   + Update (opts ...QueryOption) string
 }
 
@@ -374,90 +547,14 @@ class "daily.model.Todo" {
   + GetUserID () string
   + Insert (opts ...QueryOption) string
   + Select (opts ...QueryOption) string
+  + SetCompleted (val bool)
   + SetCreatedAt (stamp time.Time)
   + SetDeletedAt (stamp time.Time)
+  + SetID (val string)
+  + SetTitle (val string)
   + SetUpdatedAt (stamp time.Time)
+  + SetUserID (val string)
   + Update (opts ...QueryOption) string
-}
-
-class "daily.model.User" {
-  - type: model.User
-}
-
-class "user.storage.SessionStorage" {
-  - db: *sqlx.DB
-  + Create (ctx context.Context, userID string) (*model.UserSession, error)
-  + Delete (ctx context.Context, sessionID string) error
-  + Get (ctx context.Context, sessionID string) (*model.UserSession, error)
-}
-
-class "user.storage.UserStorage" {
-  - db: *sqlx.DB
-  + Authenticate (ctx context.Context, userAuth model.UserAuth) (*model.User, error)
-  + Create (ctx context.Context, u *model.User, userAuth *model.UserAuth) (*model.User, error)
-  + Get (ctx context.Context, id string) (*model.User, error)
-  + GetGroups (ctx context.Context, userID string) ([]model.UserGroup, error)
-  + Update (ctx context.Context, u *model.User) (*model.User, error)
-}
-
-class "user.view.Renderer" {
-  - root: fs.FS
-  - tpl: vuego.Template
-  - data: map[string]any
-  + Load (filename string, data any) vuego.Template
-  + Login (data LoginData) vuego.Template
-  + Logout (data LogoutData) vuego.Template
-  + Register (data RegisterData) vuego.Template
-}
-
-class "user.view.Data" {
-  + SessionUser: *model.User
-  + User: string
-  + Email: string
-  + ErrorMessage: string
-  + FirstName: string
-  + LastName: string
-class "user.view.LoginData" {
-  + SessionUser: *model.User
-  + User: string
-  + Email: string
-  + ErrorMessage: string
-  + FirstName: string
-  + LastName: string
-class "user.view.LogoutData" {
-  + SessionUser: *model.User
-  + User: string
-  + Email: string
-  + ErrorMessage: string
-  + FirstName: string
-  + LastName: string
-class "user.view.RegisterData" {
-  + SessionUser: *model.User
-  + User: string
-  + Email: string
-  + ErrorMessage: string
-  + FirstName: string
-  + LastName: string
-}
-
-class "user.service.Service" {
-  + UserStorage: *storage.UserStorage
-  + SessionStorage: *storage.SessionStorage
-  - view: *view.Renderer
-  + Error (r *http.Request, message string, err error)
-  + GetError (r *http.Request) string
-  + Login (w http.ResponseWriter, r *http.Request)
-  + LoginView (w http.ResponseWriter, r *http.Request)
-  + Logout (w http.ResponseWriter, r *http.Request)
-  + LogoutView (w http.ResponseWriter, r *http.Request)
-  + Register (w http.ResponseWriter, r *http.Request)
-  + RegisterView (w http.ResponseWriter, r *http.Request)
-}
-
-class "user.Handler" {
-  + Mount (_ context.Context, r platform.Router) error
-  + Name () string
-  + Start (ctx context.Context) error
 }
 
 class "daily.storage.Storage" {
@@ -485,12 +582,42 @@ class "daily.view.Views" {
   + Index (data Data) vuego.Template
 }
 
-class "daily.Module" {
-  - repository: *storage.Storage
-  - views: *view.Views
+interface "email.EmailStorage" {
+  + Create: Create (ctx context.Context, email *model.Email) error
+  + Get: Get (ctx context.Context, id string) (*model.Email, error)
+  + GetPending: GetPending (ctx context.Context, limit int) ([]model.Email, error)
+  + Update: Update (ctx context.Context, email *model.Email) error
+}
+
+class "email.Handler" {
+  - service: *Service
   + Mount (_ context.Context, r platform.Router) error
   + Name () string
   + Start (ctx context.Context) error
+  + Stop (ctx context.Context) error
+}
+
+class "email.Service" {
+  - emailStorage: EmailStorage
+  - sender: smtp.Sender
+  - queue: chan *model.Email
+  - wg: sync.WaitGroup
+  - ctx: context.Context
+  - cancel: context.CancelFunc
+  - ticker: *time.Ticker
+  - options: ServiceOptions
+  - logger: *slog.Logger
+  + AddEmail (ctx context.Context, email *model.Email) error
+  + Start ()
+  + Stop ()
+}
+
+class "email.ServiceOptions" {
+  + MaxRetries: int64
+  + RetryDuration: time.Duration
+  + TickerInterval: time.Duration
+  + QueueCapacity: int64
+  + Logger: *slog.Logger
 }
 
 class "email.model.Email" {
@@ -657,165 +784,6 @@ class "email.storage.EmailStorage" {
   + Update (ctx context.Context, email *model.Email) error
 }
 
-interface "email.EmailStorage" {
-  + Create: Create (ctx context.Context, email *model.Email) error
-  + Get: Get (ctx context.Context, id string) (*model.Email, error)
-  + GetPending: GetPending (ctx context.Context, limit int) ([]model.Email, error)
-  + Update: Update (ctx context.Context, email *model.Email) error
-}
-
-class "email.Handler" {
-  - service: *Service
-  + Mount (_ context.Context, r platform.Router) error
-  + Name () string
-  + Start (ctx context.Context) error
-  + Stop (ctx context.Context) error
-}
-
-class "email.Service" {
-  - emailStorage: EmailStorage
-  - sender: smtp.Sender
-  - queue: chan *model.Email
-  - wg: sync.WaitGroup
-  - ctx: context.Context
-  - cancel: context.CancelFunc
-  - ticker: *time.Ticker
-  - options: ServiceOptions
-  - logger: *slog.Logger
-  + AddEmail (ctx context.Context, email *model.Email) error
-  + Start ()
-  + Stop ()
-}
-
-class "email.ServiceOptions" {
-  + MaxRetries: int64
-  + RetryDuration: time.Duration
-  + TickerInterval: time.Duration
-  + QueueCapacity: int64
-  + Logger: *slog.Logger
-}
-
-class "expvar.Handler" {
-  + Enabled: bool
-  + Mount (_ context.Context, r platform.Router) error
-  + Name () string
-  + Start (context.Context) error
-}
-
-class "cms.Field" {
-  + Name: string
-  + Title: string
-  + Desc: string
-  + Type: string
-  + Value: any
-  + Placeholder: string
-  + Required: bool
-  + Options: []Option
-  + Attributes: map[string]string
-  + Size: string
-  + Height: int
-  + Rows: int
-  + Cols: int
-  + Link: string
-  + Sort: string
-  + Accept: string
-  + Multiple: bool
-  + Disabled: bool
-  + Readonly: bool
-  + Error: string
-  + Help: string
-}
-
-class "cms.Form" {
-  + Name: string
-  + Title: string
-  + Fields: []Field
-  + Meta: map[string]string
-  + UnmarshalYAML (node *yaml.Node) error
-}
-
-class "cms.Navigation" {
-  + Name: string
-  + Links: []NavigationLink
-}
-
-class "cms.NavigationLink" {
-  + Label: string
-  + URL: string
-  + Icon: string
-}
-
-class "cms.Option" {
-  + Value: string
-  + Label: string
-}
-
-class "cms.RenderData" {
-  + Title: string
-  + Description: string
-  + Fields: []Field
-  + Method: string
-  + Action: string
-  + SubmitLabel: string
-  + CancelURL: string
-  + CancelLabel: string
-  + Navigation: *Navigation
-  + FieldsBySize (size string) []Field
-  + FieldsWithType (fieldType string) []Field
-  + HiddenFields () []Field
-  + SetAction (action string) *RenderData
-  + SetCancelLabel (label string) *RenderData
-  + SetCancelURL (url string) *RenderData
-  + SetMethod (method string) *RenderData
-  + SetSubmitLabel (label string) *RenderData
-  + VisibleFields () []Field
-}
-
-class "cms.schema.Column" {
-  + Name: string
-  + Type: string
-  + Key: string
-  + Comment: string
-  + DataType: string
-  + Values: []string
-  + EnumValues: []string
-  + DefaultVal: string
-  + Nullable: bool
-  + Attributes: map[string]string
-  + GetFieldType () string
-  + GetLabel () string
-  + IsEnum () bool
-  + IsIndexed () bool
-  + IsPrimaryKey () bool
-  + IsTimestamp () bool
-}
-
-class "cms.schema.Index" {
-  + Name: string
-  + Columns: []string
-  + Primary: bool
-  + Unique: bool
-}
-
-class "cms.schema.Schema" {
-  + Tables: []*Table
-  + GetTable (name string) *Table
-  + GetTableNames () []string
-  + Walk (cb func(t *Table))
-}
-
-class "cms.schema.Table" {
-  + Name: string
-  + Comment: string
-  + Columns: []*Column
-  + Indexes: []*Index
-}
-
-class "maillist.storage.Permissions" {
-  + User: *usermodel.User
-  + Create: bool
-}
-
 class "maillist.MailList" {
   + Create (w http.ResponseWriter, r *http.Request)
   + Index (w http.ResponseWriter, r *http.Request)
@@ -910,25 +878,62 @@ class "maillist.model.Migrations" {
   + GetStatus () string
 }
 
-class "pulse.storage.Storage" {
-  - db: *sqlx.DB
-  + Pulse (ctx context.Context, count int64) error
+class "maillist.storage.Permissions" {
+  + User: *usermodel.User
+  + Create: bool
 }
 
-class "pulse.service.Handlers" {
-  + IndexPage (w http.ResponseWriter, r *http.Request)
-  + Mount (r platform.Router)
-  + PostIngest (w http.ResponseWriter, r *http.Request)
-  + UserPage (w http.ResponseWriter, r *http.Request)
+class "pulse.client.Client" {
+  + ServerURL: string
+  - httpClient: *http.Client
+  - token: *TokenData
+  + EnsureToken () error
+  + LoadToken () error
+  + RefreshToken () error
+  + SaveToken (token string, expiresAt time.Time) error
+  + SendPulse (count int64, hostname string) error
+  + ShouldRefresh () bool
+  + Token () string
 }
 
-class "pulse.service.Options" {
-  + Path: string
+class "pulse.client.TokenData" {
+  + Token: string
+  + ExpiresAt: time.Time
+  + SavedAt: time.Time
 }
 
-class "pulse.service.PulseModule" {
-  + Mount (ctx context.Context, r platform.Router) error
-  + Name () string
+interface "pulse.cmd.pulse.ExtendedProvider" {
+  + List: List () []string
+  + Register: Register (string, string)
+}
+
+class "pulse.cmd.pulse.login.Options" {
+  + Server: string
+  + Email: string
+  + Password: string
+  + Bind (flag *cli.FlagSet)
+}
+
+class "pulse.cmd.pulse.record.Options" {
+  + Name: string
+  + Server: string
+  + Duration: string
+  + Bind (flag *cli.FlagSet)
+}
+
+class "pulse.cmd.pulse.register.Options" {
+  + Server: string
+  + Email: string
+  + Password: string
+  + Username: string
+  + Bind (flag *cli.FlagSet)
+}
+
+class "pulse.cmd.pulse.version.Info" {
+  + Version: string
+  + Commit: string
+  + CommitTime: string
+  + Branch: string
 }
 
 class "pulse.model.Migrations" {
@@ -943,34 +948,64 @@ class "pulse.model.Migrations" {
   + GetStatus () string
   + Insert (opts ...QueryOption) string
   + Select (opts ...QueryOption) string
+  + SetFilename (val string)
+  + SetProject (val string)
+  + SetStatementIndex (val int64)
+  + SetStatus (val string)
   + Update (opts ...QueryOption) string
 }
 
 class "pulse.model.PulseDaily" {
   + UserID: string
+  + Hostname: string
   + Stamp: *time.Time
   + Count: int64
   + Delete (opts ...QueryOption) string
   + GetCount () int64
+  + GetHostname () string
   + GetStamp () *time.Time
   + GetUserID () string
   + Insert (opts ...QueryOption) string
   + Select (opts ...QueryOption) string
+  + SetCount (val int64)
+  + SetHostname (val string)
   + SetStamp (stamp time.Time)
+  + SetUserID (val string)
+  + Update (opts ...QueryOption) string
+}
+
+class "pulse.model.PulseHost" {
+  + UserID: string
+  + Hostname: string
+  + CreatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetHostname () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetHostname (val string)
+  + SetUserID (val string)
   + Update (opts ...QueryOption) string
 }
 
 class "pulse.model.PulseHourly" {
   + UserID: string
+  + Hostname: string
   + Stamp: *time.Time
   + Count: int64
   + Delete (opts ...QueryOption) string
   + GetCount () int64
+  + GetHostname () string
   + GetStamp () *time.Time
   + GetUserID () string
   + Insert (opts ...QueryOption) string
   + Select (opts ...QueryOption) string
+  + SetCount (val int64)
+  + SetHostname (val string)
   + SetStamp (stamp time.Time)
+  + SetUserID (val string)
   + Update (opts ...QueryOption) string
 }
 
@@ -1000,6 +1035,82 @@ interface "pulse.model.QueryOption" {
   + WithStatement: WithStatement (stmt string) QueryOption
 }
 
+class "pulse.service.Handlers" {
+  - storage: *storage.Storage
+  - userStorage: *userstorage.UserStorage
+  - vuego: vuego.Template
+  - fs: fs.FS
+  + IndexPage (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + PostIngest (w http.ResponseWriter, r *http.Request)
+  + UserPage (w http.ResponseWriter, r *http.Request)
+}
+
+class "pulse.service.PulseModule" {
+  - storage: *storage.Storage
+  - userStorage: *userstorage.UserStorage
+  - handlers: *Handlers
+  + Mount (ctx context.Context, r platform.Router) error
+  + Name () string
+  + Start (ctx context.Context) error
+}
+
+interface "pulse.service.keycounter.Options" {
+  + FlushFn: func(int32)
+  + FlushInterval: time.Duration
+}
+
+class "pulse.service.keycounter.inputEvent" {
+  + Sec: int64
+  + Usec: int64
+  + Type: uint16
+  + Code: uint16
+  + Value: int32
+}
+
+class "pulse.service.keycounter.reader" {
+  - b: []byte
+  - i: int
+  + Read (p []byte) (int, error)
+}
+
+class "pulse.storage.DailyHostCount" {
+  + Hostname: string
+  + Stamp: string
+  + Count: int64
+}
+
+class "pulse.storage.HourlyCount" {
+  + Hour: int
+  + Count: int64
+}
+
+class "pulse.storage.Storage" {
+  - db: *sqlx.DB
+  + GetUserDaily (ctx context.Context, userID string) ([]DailyHostCount, error)
+  + GetUserHosts (ctx context.Context, userID string) ([]string, error)
+  + GetUserHourly (ctx context.Context, userID string) ([]HourlyCount, error)
+  + GetUserHourlyAll (ctx context.Context, userID string) ([]DailyHostCount, error)
+  + GetUserHourlyByHost (ctx context.Context, userID string, hostname string) ([]DailyHostCount, error)
+  + ListUserCounts (ctx context.Context) ([]UserCount, error)
+  + Pulse (ctx context.Context, count int64, hostname string) error
+}
+
+class "pulse.storage.UserCount" {
+  + UserID: string
+  + Count: int64
+}
+
+class "user.Middleware" {
+  - nextHandler: http.Handler
+  - once: sync.Once
+  - options: model.AuthOptions
+  - userStorage: *storage.UserStorage
+  - sessionStorage: *storage.SessionStorage
+  - revokedStorage: *storage.RevokedTokenStorage
+  + ServeHTTP (w http.ResponseWriter, r *http.Request)
+}
+
 class "user.cmd.generate.Config" {
   + Features: map[string]any
   + Flows: map[string]Flow
@@ -1017,8 +1128,529 @@ class "user.cmd.generate.Step" {
   + Next: map[string]string
 }
 
+class "user.model.AuthOptions" {
+  + Cookie: bool
+  + CookieName: string
+  + Header: bool
+  + HeaderName: string
+  + Query: bool
+  + QueryName: string
+  + HeaderSigningKey: string
+  + Optional: bool
+}
 
+class "user.model.Migrations" {
+  + Project: string
+  + Filename: string
+  + StatementIndex: int64
+  + Status: string
+  + Delete (opts ...QueryOption) string
+  + GetFilename () string
+  + GetProject () string
+  + GetStatementIndex () int64
+  + GetStatus () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetFilename (val string)
+  + SetProject (val string)
+  + SetStatementIndex (val int64)
+  + SetStatus (val string)
+  + Update (opts ...QueryOption) string
+}
+
+interface "user.model.PasskeyStorage" {
+  + Create: Create (ctx context.Context, passkey *UserPasskey) (*UserPasskey, error)
+  + Delete: Delete (ctx context.Context, id string) error
+  + ListByUser: ListByUser (ctx context.Context, userID string) ([]UserPasskey, error)
+  + GetByCredentialID: GetByCredentialID (ctx context.Context, credentialID []byte) (*UserPasskey, error)
+  + UpdateSignCount: UpdateSignCount (ctx context.Context, id string, signCount int64) error
+}
+
+class "user.model.QueryConfig" {
+  + Table: string
+  + Columns: []string
+  + Where: string
+  + OrderBy: string
+  + LimitStart: int
+  + LimitOffset: int
+  + Statement: string
+  + Apply (opts ...QueryOption) *QueryConfig
+  + WithColumns (cols []string) QueryOption
+  + WithLimit (start,offset int) QueryOption
+  + WithOrderBy (clause string) QueryOption
+  + WithStatement (stmt string) QueryOption
+  + WithTable (name string) QueryOption
+  + WithWhere (clause string) QueryOption
+}
+
+interface "user.model.QueryOption" {
+  + WithTable: WithTable (name string) QueryOption
+  + WithColumns: WithColumns (cols []string) QueryOption
+  + WithWhere: WithWhere (clause string) QueryOption
+  + WithOrderBy: WithOrderBy (clause string) QueryOption
+  + WithLimit: WithLimit (start,offset int) QueryOption
+  + WithStatement: WithStatement (stmt string) QueryOption
+}
+
+interface "user.model.SessionStorage" {
+  + Create: Create (ctx context.Context, userID string) (*UserSession, error)
+  + Get: Get (ctx context.Context, sessionID string) (*UserSession, error)
+  + Delete: Delete (ctx context.Context, sessionID string) error
+}
+
+class "user.model.User" {
+  + ID: string
+  + FullName: string
+  + Username: string
+  + Slug: string
+  + DeletedAt: *time.Time
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetDeletedAt () *time.Time
+  + GetFullName () string
+  + GetID () string
+  + GetSlug () string
+  + GetUpdatedAt () *time.Time
+  + GetUsername () string
+  + Insert (opts ...QueryOption) string
+  + Ok () bool
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetDeletedAt (stamp time.Time)
+  + SetFullName (val string)
+  + SetID (val string)
+  + SetSlug (val string)
+  + SetUpdatedAt (stamp time.Time)
+  + SetUsername (val string)
+  + String () string
+  + Update (opts ...QueryOption) string
+  + Validate () error
+}
+
+class "user.model.UserAuth" {
+  + UserID: string
+  + Email: string
+  + Password: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + ActivatedAt: *time.Time
+  + ActivationToken: string
+  + ActivationSentAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetActivatedAt () *time.Time
+  + GetActivationSentAt () *time.Time
+  + GetActivationToken () string
+  + GetCreatedAt () *time.Time
+  + GetEmail () string
+  + GetPassword () string
+  + GetUpdatedAt () *time.Time
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetActivatedAt (stamp time.Time)
+  + SetActivationSentAt (stamp time.Time)
+  + SetActivationToken (val string)
+  + SetCreatedAt (stamp time.Time)
+  + SetEmail (val string)
+  + SetPassword (val string)
+  + SetUpdatedAt (stamp time.Time)
+  + SetUserID (val string)
+  + Update (opts ...QueryOption) string
+  + Valid () bool
+}
+
+class "user.model.UserCreateRequest" {
+  + FullName: string
+  + Email: string
+  + Password: string
+  + Username: string
+  + User () *User
+  + UserAuth () *UserAuth
+  + Valid () bool
+  + ValidateUsername () error
+}
+
+class "user.model.UserGroup" {
+  + ID: string
+  + Title: string
+  + CreatedAt: *time.Time
+  + UpdatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetID () string
+  + GetTitle () string
+  + GetUpdatedAt () *time.Time
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetID (val string)
+  + SetTitle (val string)
+  + SetUpdatedAt (stamp time.Time)
+  + String () string
+  + Update (opts ...QueryOption) string
+}
+
+class "user.model.UserGroupMember" {
+  + UserGroupID: string
+  + UserID: string
+  + JoinedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetJoinedAt () *time.Time
+  + GetUserGroupID () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetJoinedAt (stamp time.Time)
+  + SetUserGroupID (val string)
+  + SetUserID (val string)
+  + Update (opts ...QueryOption) string
+}
+
+class "user.model.UserPasskey" {
+  + ID: string
+  + UserID: string
+  + CredentialID: []byte
+  + PublicKey: []byte
+  + AttestationType: string
+  + Transport: string
+  + SignCount: int64
+  + CreatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetAttestationType () string
+  + GetCreatedAt () *time.Time
+  + GetCredentialID () []byte
+  + GetID () string
+  + GetPublicKey () []byte
+  + GetSignCount () int64
+  + GetTransport () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetAttestationType (val string)
+  + SetCreatedAt (stamp time.Time)
+  + SetCredentialID (val []byte)
+  + SetID (val string)
+  + SetPublicKey (val []byte)
+  + SetSignCount (val int64)
+  + SetTransport (val string)
+  + SetUserID (val string)
+  + ToCredential () webauthn.Credential
+  + Update (opts ...QueryOption) string
+}
+
+class "user.model.UserSession" {
+  + ID: string
+  + UserID: string
+  + ExpiresAt: *time.Time
+  + CreatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetExpiresAt () *time.Time
+  + GetID () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Ok () bool
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetExpiresAt (stamp time.Time)
+  + SetID (val string)
+  + SetUserID (val string)
+  + Update (opts ...QueryOption) string
+  + Validate () error
+}
+
+interface "user.model.UserStorage" {
+  + Create: Create (context.Context, *UserCreateRequest) (*User, error)
+  + Update: Update (context.Context, *User) (*User, error)
+  + Get: Get (context.Context, string) (*User, error)
+  + GetByUsername: GetByUsername (context.Context, string) (*User, error)
+  + GetByStub: GetByStub (context.Context, string) (*User, error)
+  + GetGroups: GetGroups (context.Context, string) ([]UserGroup, error)
+  + List: List (context.Context) ([]User, error)
+  + Authenticate: Authenticate (context.Context, UserAuth) (*User, error)
+  + Activate: Activate (ctx context.Context, token string) (*User, error)
+  + ResetActivation: ResetActivation (ctx context.Context, email string) error
+}
+
+class "user.model.UserTokenRevoked" {
+  + Jti: string
+  + UserID: string
+  + ExpiresAt: *time.Time
+  + CreatedAt: *time.Time
+  + Delete (opts ...QueryOption) string
+  + GetCreatedAt () *time.Time
+  + GetExpiresAt () *time.Time
+  + GetJti () string
+  + GetUserID () string
+  + Insert (opts ...QueryOption) string
+  + Select (opts ...QueryOption) string
+  + SetCreatedAt (stamp time.Time)
+  + SetExpiresAt (stamp time.Time)
+  + SetJti (val string)
+  + SetUserID (val string)
+  + Update (opts ...QueryOption) string
+}
+
+class "user.model.WebAuthnUser" {
+  + Passkeys: []UserPasskey
+  + WebAuthnCredentials () []webauthn.Credential
+  + WebAuthnDisplayName () string
+  + WebAuthnID () []byte
+  + WebAuthnName () string
+}
+
+interface "user.service.EmailSender" {
+  + Send: Send (ctx context.Context, recipient,subject,body string) error
+}
+
+class "user.service.Options" {
+  + SigningKey: string
+  + TokenTTL: time.Duration
+  + EmailActivationEnabled: bool
+  + EmailSender: EmailSender
+  + ActivationURLFormat: string
+  + ActivationSubject: string
+}
+
+class "user.service.UserModule" {
+  - opts: Options
+  - web: *web.Handlers
+  - api: *api.Handlers
+  + Mount (_ context.Context, r platform.Router) error
+  + Name () string
+  + Start (ctx context.Context) error
+}
+
+interface "user.service.api.EmailSender" {
+  + Send: Send (ctx context.Context, recipient,subject,body string) error
+}
+
+class "user.service.api.Handlers" {
+  - signingKey: string
+  - tokenTTL: time.Duration
+  - userStorage: *storage.UserStorage
+  - sessionStorage: *storage.SessionStorage
+  - revokedStorage: *storage.RevokedTokenStorage
+  - passkeySvc: *passkey.Service
+  - emailActivationEnabled: bool
+  - emailSender: EmailSender
+  - activationURLFormat: string
+  - activationSubject: string
+  + ActivateEmail (w http.ResponseWriter, r *http.Request)
+  + CreateToken (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + PasskeyLoginBegin (w http.ResponseWriter, r *http.Request)
+  + PasskeyLoginFinish (w http.ResponseWriter, r *http.Request)
+  + PasskeyRegisterBegin (w http.ResponseWriter, r *http.Request)
+  + PasskeyRegisterFinish (w http.ResponseWriter, r *http.Request)
+  + RefreshToken (w http.ResponseWriter, r *http.Request)
+  + Register (w http.ResponseWriter, r *http.Request)
+  + ResendActivation (w http.ResponseWriter, r *http.Request)
+  + RevokeToken (w http.ResponseWriter, r *http.Request)
+}
+
+class "user.service.api.Options" {
+  + SigningKey: string
+  + TokenTTL: time.Duration
+  + UserStorage: *storage.UserStorage
+  + SessionStorage: *storage.SessionStorage
+  + RevokedStorage: *storage.RevokedTokenStorage
+  + PasskeyService: *passkey.Service
+  + EmailActivationEnabled: bool
+  + EmailSender: EmailSender
+  + ActivationURLFormat: string
+  + ActivationSubject: string
+}
+
+class "user.service.api.RequestError" {
+  + StatusCode: int
+  + Err: error
+  + Error () string
+}
+
+class "user.service.auth.JWT" {
+  - secret: string
+  - signingMethod: *jwt.SigningMethodHMAC
+  + UserID: string
+  + JTI: string
+  + ExpiresAt: int64
+class "user.service.auth.Claims" {
+  - secret: string
+  - signingMethod: *jwt.SigningMethodHMAC
+  + UserID: string
+  + JTI: string
+  + ExpiresAt: int64
+}
+
+class "user.service.passkey.Error" {
+  + Status: int
+  + Err: error
+  + Error () string
+}
+
+class "user.service.passkey.LoginResult" {
+  + UserID: string
+}
+
+class "user.service.passkey.RegistrationResult" {
+  + UserID: string
+}
+
+class "user.service.passkey.Service" {
+  - webAuthn: *webauthn.WebAuthn
+  - passkeyStorage: model.PasskeyStorage
+  - userStorage: model.UserStorage
+  - mu: sync.Mutex
+  - sessions: map[string]*ceremonySession
+  + BeginLogin () (string, *protocol.CredentialAssertion, error)
+  + BeginRegistration (req *model.UserCreateRequest) (string, *protocol.CredentialCreation, error)
+  + FinishLogin (token string, r *http.Request) (*LoginResult, error)
+  + FinishRegistration (token string, r *http.Request) (*RegistrationResult, error)
+}
+
+class "user.service.passkey.ceremonySession" {
+  + SessionData: *webauthn.SessionData
+  + UserRequest: *model.UserCreateRequest
+  + ExpiresAt: time.Time
+}
+
+class "user.service.web.Handlers" {
+  - userStorage: *storage.UserStorage
+  - sessionStorage: *storage.SessionStorage
+  - view: *Renderer
+  + Error (r *http.Request, message string, err error)
+  + GetError (r *http.Request) string
+  + Login (w http.ResponseWriter, r *http.Request)
+  + LoginView (w http.ResponseWriter, r *http.Request)
+  + Logout (w http.ResponseWriter, r *http.Request)
+  + LogoutView (w http.ResponseWriter, r *http.Request)
+  + Mount (r platform.Router)
+  + Register (w http.ResponseWriter, r *http.Request)
+  + RegisterView (w http.ResponseWriter, r *http.Request)
+}
+
+class "user.service.web.Renderer" {
+  - viewFS: fs.FS
+  - vuego: vuego.Template
+  - data: map[string]any
+  + Load (filename string, data any) vuego.Template
+  + Login (data LoginData) vuego.Template
+  + Logout (data LogoutData) vuego.Template
+  + Register (data RegisterData) vuego.Template
+}
+
+class "user.service.web.Links" {
+  + Login: string
+  + Logout: string
+  + Register: string
+  + Recover: string
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + Username: string
+  + ErrorMessage: string
+  + FullName: string
+  + Links: Links
+class "user.service.web.Data" {
+  + Login: string
+  + Logout: string
+  + Register: string
+  + Recover: string
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + Username: string
+  + ErrorMessage: string
+  + FullName: string
+  + Links: Links
+class "user.service.web.LoginData" {
+  + Login: string
+  + Logout: string
+  + Register: string
+  + Recover: string
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + Username: string
+  + ErrorMessage: string
+  + FullName: string
+  + Links: Links
+class "user.service.web.LogoutData" {
+  + Login: string
+  + Logout: string
+  + Register: string
+  + Recover: string
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + Username: string
+  + ErrorMessage: string
+  + FullName: string
+  + Links: Links
+class "user.service.web.RegisterData" {
+  + Login: string
+  + Logout: string
+  + Register: string
+  + Recover: string
+  + SessionUser: *model.User
+  + User: string
+  + Email: string
+  + Username: string
+  + ErrorMessage: string
+  + FullName: string
+  + Links: Links
+}
+
+class "user.storage.PasskeyStorage" {
+  - db: *sqlx.DB
+  + Create (ctx context.Context, passkey *model.UserPasskey) (*model.UserPasskey, error)
+  + Delete (ctx context.Context, id string) error
+  + GetByCredentialID (ctx context.Context, credentialID []byte) (*model.UserPasskey, error)
+  + ListByUser (ctx context.Context, userID string) ([]model.UserPasskey, error)
+  + UpdateSignCount (ctx context.Context, id string, signCount int64) error
+}
+
+class "user.storage.RevokedTokenStorage" {
+  - db: *sqlx.DB
+  + IsRevoked (ctx context.Context, jti string) (bool, error)
+  + PurgeExpired (ctx context.Context) (int64, error)
+  + Revoke (ctx context.Context, jti,userID string, expiresAt time.Time) error
+}
+
+class "user.storage.SessionStorage" {
+  - db: *sqlx.DB
+  + Create (ctx context.Context, userID string) (*model.UserSession, error)
+  + Delete (ctx context.Context, sessionID string) error
+  + Get (ctx context.Context, sessionID string) (*model.UserSession, error)
+}
+
+class "user.storage.UserStorage" {
+  - db: *sqlx.DB
+  - activationSubject: string
+  - activationURLFormat: string
+  + Activate (ctx context.Context, token string) (*model.User, error)
+  + Authenticate (ctx context.Context, userAuth model.UserAuth) (*model.User, error)
+  + Create (ctx context.Context, req *model.UserCreateRequest) (*model.User, error)
+  + CreatePending (ctx context.Context, req *model.UserCreateRequest) (*model.User, error)
+  + Get (ctx context.Context, id string) (*model.User, error)
+  + GetByStub (ctx context.Context, slug string) (*model.User, error)
+  + GetByUsername (ctx context.Context, username string) (*model.User, error)
+  + GetGroups (ctx context.Context, userID string) ([]model.UserGroup, error)
+  + IsActivated (ctx context.Context, userID string) (bool, error)
+  + List (ctx context.Context) ([]model.User, error)
+  + ResetActivation (ctx context.Context, email string) error
+  + Update (ctx context.Context, u *model.User) (*model.User, error)
+}
+
+
+interface "Analytics"
 interface "Campaign"
+interface "Credential"
+interface "Getbycredential"
+
+
 
 
 "blog.model.ArticleList" --> "blog.model.Article" : .Articles
@@ -1027,81 +1659,100 @@ interface "Campaign"
 
 
 
+"blog.model.Setting" --> "blog.model.User" : .UserID (1:1)
+"blog.model.Setting" --> "blog.model.Analytics" : .AnalyticsID (1:1)
 
+
+"blog.schema.Table" --> "blog.schema.Column" : .Columns
+
+"blog.service.BlogModule" --> "blog.storage.Storage" : .repository
+"blog.service.BlogModule" --> "blog.storage.GitFS" : .contentFS
+"blog.service.BlogModule" --> "blog.model.Article" : .articles
+
+"blog.service.BlogModule" --> "blog.storage.Storage" : .SetRepository()
+"blog.service.BlogModule" --> "blog.model.Article" : .parseMarkdownFile()
+"blog.service.Generator" --> "blog.service.BlogModule" : .module
+
+"blog.service.Generator" --> "blog.service.web.Handlers" : .generateArticlePage()
+"blog.service.Generator" --> "blog.service.web.Handlers" : .generateFeed()
+"blog.service.Generator" --> "blog.service.web.Handlers" : .generateIndexPage()
+"blog.service.Generator" --> "blog.service.web.Handlers" : .generateStaticPages()
+"blog.service.Generator" --> "blog.service.web.Handlers" : .walkPages()
+
+"blog.service.admin.ArticleRequest" --> "blog.model.Article" : .ToArticle()
+"blog.service.admin.ArticleRequest" --> "blog.model.Article" : .UpdateArticle()
+
+"blog.service.admin.Handlers" --> "blog.storage.Storage" : .repository
+"blog.service.admin.Handlers" --> "blog.storage.GitFS" : .contentFS
+"blog.service.admin.Handlers" --> "blog.view.AdminViews" : .views
+
+
+"blog.service.api.Handlers" --> "blog.storage.Storage" : .repository
+
+
+"blog.service.web.Handlers" --> "blog.storage.Storage" : .repository
+"blog.service.web.Handlers" --> "blog.storage.GitFS" : .contentFS
+"blog.service.web.Handlers" --> "blog.view.Views" : .views
+
+"blog.service.web.Handlers" --> "blog.storage.Storage" : .Repository()
+"blog.service.web.Handlers" --> "blog.view.Views" : .Views()
+
+
+"blog.storage.Storage" --> "blog.model.Article" : .GetArticleByID()
 "blog.storage.Storage" --> "blog.model.Article" : .GetArticleBySlug()
 "blog.storage.Storage" --> "blog.model.Article" : .GetArticles()
+"blog.storage.Storage" --> "blog.model.Article" : .GetDraftArticles()
+"blog.storage.Storage" --> "blog.model.Setting" : .GetGlobalSettings()
+"blog.storage.Storage" --> "blog.model.Article" : .GetPublishedArticleBySlug()
+"blog.storage.Storage" --> "blog.model.Article" : .GetPublishedArticles()
+"blog.storage.Storage" --> "blog.model.Article" : .GetScheduledArticles()
+"blog.storage.Storage" --> "blog.model.Setting" : .GetSettingByUserID()
 "blog.storage.Storage" --> "blog.model.Article" : .InsertArticle()
+"blog.storage.Storage" --> "blog.model.Setting" : .SaveSetting()
 "blog.storage.Storage" --> "blog.model.Article" : .SearchArticles()
+"blog.storage.Storage" --> "blog.model.Article" : .SearchPublishedArticles()
+"blog.storage.Storage" --> "blog.model.Article" : .UpdateArticle()
+"blog.view.AdminDashboardData" --> "blog.model.Article" : .Drafts
+"blog.view.AdminDashboardData" --> "blog.model.Article" : .Scheduled
+"blog.view.AdminDashboardData" --> "blog.model.Article" : .Published
+
+"blog.view.AdminEditData" --> "blog.model.Article" : .Article
+
+"blog.view.AdminListData" --> "blog.model.Article" : .Articles
+
+
+"blog.view.AdminNavigation" --> "blog.view.MenuItem" : .Top
+"blog.view.AdminNavigation" --> "blog.view.MenuItem" : .Side
+"blog.view.AdminNavigation" --> "blog.view.MenuItem" : .Account
+
+
+"blog.view.FeedConfig" --> "blog.view.Author" : .Author
+
 "blog.view.IndexData" --> "blog.model.Article" : .Articles
 "blog.view.IndexData" --> "blog.view.any" : .Data
+
+
+"blog.view.MenuConfig" --> "blog.view.MenuItem" : .Header
+"blog.view.MenuConfig" --> "blog.view.MenuItem" : .Footer
+
+"blog.view.MenuData" --> "blog.view.MenuItem" : .Header
+"blog.view.MenuData" --> "blog.view.MenuItem" : .Footer
 
 
 
 "blog.view.Views" --> "blog.view.Loader" : .Loader
 
 "blog.view.Views" --> "blog.model.Article" : .AtomFeed()
-"blog.handlers.Handlers" --> "blog.storage.Storage" : .repository
-"blog.handlers.Handlers" --> "blog.view.Views" : .views
-
-"blog.handlers.Handlers" --> "blog.storage.Storage" : .Repository()
-"blog.handlers.Handlers" --> "blog.view.Views" : .Views()
-"blog.Generator" --> "blog.Module" : .module
-
-"blog.Generator" --> "blog.handlers.Handlers" : .generateArticlePage()
-"blog.Generator" --> "blog.handlers.Handlers" : .generateFeed()
-"blog.Generator" --> "blog.handlers.Handlers" : .generateIndexPage()
-"blog.Generator" --> "blog.handlers.Handlers" : .generateStaticPages()
-"blog.Generator" --> "blog.handlers.Handlers" : .walkPages()
-"blog.Module" --> "blog.storage.Storage" : .repository
-"blog.Module" --> "blog.model.Article" : .articles
-
-"blog.Module" --> "blog.storage.Storage" : .SetRepository()
-"blog.Module" --> "blog.model.Article" : .parseMarkdownFile()
-
-
-
-
-"user.model.UserAuth" --> "user.model.User" : .UserID (1:1)
-
-
-"user.model.UserGroupMember" --> "user.model.UserGroup" : .UserGroupID (1:1)
-"user.model.UserGroupMember" --> "user.model.User" : .UserID (1:1)
-
-"user.model.UserSession" --> "user.model.User" : .UserID (1:N)
-
+"blog.view.Views" --> "blog.model.Article" : .AtomFeedWithConfig()
+"blog.view.Views" --> "blog.model.Article" : .atomFeed()
+"daily.Module" --> "daily.storage.Storage" : .repository
+"daily.Module" --> "daily.view.Views" : .views
 
 
 
 
 
 "daily.model.Todo" --> "daily.model.User" : .UserID (1:N)
-
-"daily.model.User" --> "user.model.User" : .type
-
-
-"user.storage.SessionStorage" --> "user.model.UserSession" : .Create()
-"user.storage.SessionStorage" --> "user.model.UserSession" : .Get()
-
-"user.storage.UserStorage" --> "user.model.User" : .Authenticate()
-"user.storage.UserStorage" --> "user.model.User" : .Create()
-"user.storage.UserStorage" --> "user.model.User" : .Get()
-"user.storage.UserStorage" --> "user.model.UserGroup" : .GetGroups()
-"user.storage.UserStorage" --> "user.model.User" : .Update()
-"user.view.Renderer" --> "user.view.any" : .data
-
-"user.view.Data" --> "user.model.User" : .SessionUser
-
-"user.view.LoginData" --> "user.model.User" : .SessionUser
-
-"user.view.LogoutData" --> "user.model.User" : .SessionUser
-
-"user.view.RegisterData" --> "user.model.User" : .SessionUser
-
-"user.service.Service" --> "user.storage.UserStorage" : .UserStorage
-"user.service.Service" --> "user.storage.SessionStorage" : .SessionStorage
-"user.service.Service" --> "user.view.Renderer" : .view
-
-"user.Handler" --|> "user.service.Service" : embeds
 
 
 "daily.storage.Storage" --> "daily.model.Todo" : .Add()
@@ -1114,8 +1765,15 @@ interface "Campaign"
 
 "daily.view.Views" --> "daily.view.Loader" : .Loader
 
-"daily.Module" --> "daily.storage.Storage" : .repository
-"daily.Module" --> "daily.view.Views" : .views
+
+"email.Handler" --> "email.Service" : .service
+
+"email.Service" --> "email.EmailStorage" : .emailStorage
+"email.Service" --> "email.smtp.Sender" : .sender
+"email.Service" --> "email.ServiceOptions" : .options
+
+"email.Service" --> "email.model.Email" : .AddEmail()
+"email.Service" --> "email.model.Email" : .sendEmail()
 
 
 
@@ -1135,38 +1793,6 @@ interface "Campaign"
 "email.storage.EmailStorage" --> "email.model.Email" : .GetSent()
 "email.storage.EmailStorage" --> "email.model.Email" : .Update()
 
-"email.Handler" --> "email.Service" : .service
-
-"email.Service" --> "email.EmailStorage" : .emailStorage
-"email.Service" --> "email.smtp.Sender" : .sender
-"email.Service" --> "email.ServiceOptions" : .options
-
-"email.Service" --> "email.model.Email" : .AddEmail()
-"email.Service" --> "email.model.Email" : .sendEmail()
-
-
-"cms.Field" --> "cms.any" : .Value
-"cms.Field" --> "cms.Option" : .Options
-
-"cms.Form" --> "cms.Field" : .Fields
-
-"cms.Navigation" --> "cms.NavigationLink" : .Links
-
-
-
-"cms.RenderData" --> "cms.Field" : .Fields
-"cms.RenderData" --> "cms.Navigation" : .Navigation
-
-
-
-"cms.schema.Schema" --> "cms.schema.Table" : .Tables
-
-"cms.schema.Table" --> "cms.schema.Column" : .Columns
-"cms.schema.Table" --> "cms.schema.Index" : .Indexes
-
-"maillist.storage.Permissions" --> "user.model.User" : .User
-
-
 
 "maillist.model.MaillistCampaign" --> "maillist.model.Maillist" : .MaillistID (1:N)
 
@@ -1176,24 +1802,156 @@ interface "Campaign"
 "maillist.model.MaillistMemberActivity" --> "maillist.model.Campaign" : .CampaignID (1:N)
 
 
+"maillist.storage.Permissions" --> "user.model.User" : .User
 
-"pulse.service.Handlers" --|> "pulse.service.Options" : embeds
+"pulse.client.Client" --> "pulse.client.TokenData" : .token
 
 
-"pulse.service.PulseModule" --|> "pulse.service.Options" : embeds
+
+
+
+
 
 
 "pulse.model.PulseDaily" --> "pulse.model.User" : .UserID (1:1)
+
+"pulse.model.PulseHost" --> "pulse.model.User" : .UserID (1:1)
 
 "pulse.model.PulseHourly" --> "pulse.model.User" : .UserID (1:1)
 
 
 
+"pulse.service.Handlers" --> "pulse.storage.Storage" : .storage
+"pulse.service.Handlers" --> "user.storage.UserStorage" : .userStorage
+
+"pulse.service.PulseModule" --> "pulse.storage.Storage" : .storage
+"pulse.service.PulseModule" --> "user.storage.UserStorage" : .userStorage
+"pulse.service.PulseModule" --> "pulse.service.Handlers" : .handlers
+
+
+
+
+
+
+
+"pulse.storage.UserCount" --> "pulse.storage.User" : .UserID (1:1)
+
+"user.Middleware" --> "user.model.AuthOptions" : .options
+"user.Middleware" --> "user.storage.UserStorage" : .userStorage
+"user.Middleware" --> "user.storage.SessionStorage" : .sessionStorage
+"user.Middleware" --> "user.storage.RevokedTokenStorage" : .revokedStorage
+
+"user.Middleware" --> "user.model.User" : .authorizeUser()
 "user.cmd.generate.Config" --> "user.cmd.generate.any" : .Features
 "user.cmd.generate.Config" --> "user.cmd.generate.Flow" : .Flows
 
 "user.cmd.generate.Flow" --> "user.cmd.generate.Step" : .Steps
 
 
+
+
+"user.model.PasskeyStorage" --> "user.model.Getbycredential" : .GetByCredentialID (1:1)
+
+
+
+
+
+"user.model.UserAuth" --> "user.model.User" : .UserID (1:1)
+
+
+
+"user.model.UserGroupMember" --> "user.model.UserGroup" : .UserGroupID (1:1)
+"user.model.UserGroupMember" --> "user.model.User" : .UserID (1:1)
+
+"user.model.UserPasskey" --> "user.model.User" : .UserID (1:N)
+"user.model.UserPasskey" --> "user.model.Credential" : .CredentialID (1:N)
+
+"user.model.UserSession" --> "user.model.User" : .UserID (1:N)
+
+
+"user.model.UserTokenRevoked" --> "user.model.User" : .UserID (1:1)
+
+"user.model.WebAuthnUser" --|> "user.model.User" : embeds
+"user.model.WebAuthnUser" --> "user.model.UserPasskey" : .Passkeys
+
+
+"user.service.Options" --> "user.service.EmailSender" : .EmailSender
+
+"user.service.UserModule" --> "user.service.Options" : .opts
+"user.service.UserModule" --> "user.service.web.Handlers" : .web
+"user.service.UserModule" --> "user.service.api.Handlers" : .api
+
+
+"user.service.api.Handlers" --> "user.storage.UserStorage" : .userStorage
+"user.service.api.Handlers" --> "user.storage.SessionStorage" : .sessionStorage
+"user.service.api.Handlers" --> "user.storage.RevokedTokenStorage" : .revokedStorage
+"user.service.api.Handlers" --> "user.service.passkey.Service" : .passkeySvc
+"user.service.api.Handlers" --> "user.service.api.EmailSender" : .emailSender
+
+"user.service.api.Handlers" --> "user.model.UserCreateRequest" : .registerActivated()
+"user.service.api.Handlers" --> "user.model.UserCreateRequest" : .registerPending()
+"user.service.api.Options" --> "user.storage.UserStorage" : .UserStorage
+"user.service.api.Options" --> "user.storage.SessionStorage" : .SessionStorage
+"user.service.api.Options" --> "user.storage.RevokedTokenStorage" : .RevokedStorage
+"user.service.api.Options" --> "user.service.passkey.Service" : .PasskeyService
+"user.service.api.Options" --> "user.service.api.EmailSender" : .EmailSender
+
+
+
+
+
+"user.service.passkey.LoginResult" --> "user.service.passkey.User" : .UserID (1:1)
+
+"user.service.passkey.RegistrationResult" --> "user.service.passkey.User" : .UserID (1:1)
+
+"user.service.passkey.Service" --> "user.model.PasskeyStorage" : .passkeyStorage
+"user.service.passkey.Service" --> "user.model.UserStorage" : .userStorage
+"user.service.passkey.Service" --> "user.service.passkey.ceremonySession" : .sessions
+
+"user.service.passkey.Service" --> "user.model.UserCreateRequest" : .BeginRegistration()
+"user.service.passkey.ceremonySession" --> "user.model.UserCreateRequest" : .UserRequest
+
+"user.service.web.Handlers" --> "user.storage.UserStorage" : .userStorage
+"user.service.web.Handlers" --> "user.storage.SessionStorage" : .sessionStorage
+"user.service.web.Handlers" --> "user.service.web.Renderer" : .view
+
+"user.service.web.Renderer" --> "user.service.web.any" : .data
+
+"user.service.web.Links" --> "user.model.User" : .SessionUser
+"user.service.web.Links" --> "user.service.web.Links" : .Links
+
+"user.service.web.Data" --> "user.model.User" : .SessionUser
+"user.service.web.Data" --> "user.service.web.Links" : .Links
+
+"user.service.web.LoginData" --> "user.model.User" : .SessionUser
+"user.service.web.LoginData" --> "user.service.web.Links" : .Links
+
+"user.service.web.LogoutData" --> "user.model.User" : .SessionUser
+"user.service.web.LogoutData" --> "user.service.web.Links" : .Links
+
+"user.service.web.RegisterData" --> "user.model.User" : .SessionUser
+"user.service.web.RegisterData" --> "user.service.web.Links" : .Links
+
+
+"user.storage.PasskeyStorage" --> "user.model.UserPasskey" : .Create()
+"user.storage.PasskeyStorage" --> "user.model.UserPasskey" : .GetByCredentialID()
+"user.storage.PasskeyStorage" --> "user.model.UserPasskey" : .ListByUser()
+
+
+"user.storage.SessionStorage" --> "user.model.UserSession" : .Create()
+"user.storage.SessionStorage" --> "user.model.UserSession" : .Get()
+
+"user.storage.UserStorage" --> "user.model.User" : .Activate()
+"user.storage.UserStorage" --> "user.model.User" : .Authenticate()
+"user.storage.UserStorage" --> "user.model.User" : .Create()
+"user.storage.UserStorage" --> "user.model.User" : .CreatePending()
+"user.storage.UserStorage" --> "user.model.User" : .Get()
+"user.storage.UserStorage" --> "user.model.User" : .GetByStub()
+"user.storage.UserStorage" --> "user.model.User" : .GetByUsername()
+"user.storage.UserStorage" --> "user.model.UserGroup" : .GetGroups()
+"user.storage.UserStorage" --> "user.model.User" : .List()
+"user.storage.UserStorage" --> "user.model.User" : .Update()
+"user.storage.UserStorage" --> "user.model.UserCreateRequest" : .insertUserAndAuth()
+"user.storage.UserStorage" --> "user.model.UserCreateRequest" : .validateCreate()
 
 @enduml

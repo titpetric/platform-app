@@ -42,7 +42,7 @@ tasks:
       - task: fmt
       - go clean -cache
       - go clean -testcache
-      - rm -f ./{{.name}} pkg.cov pkg.cov.json splint.json go-fsck.json
+      - rm -f ./{{.name}} pkg.cov pkg.cov.json splint.json
       - docker rmi -f {{.docker_image}}
 
   migrate:
@@ -111,15 +111,10 @@ tasks:
   cover:
     desc: "Show source coverage"
     cmds:
-      - defer: rm -f splint.json
-      # The extract reads the profile itself, so the coverage is in the
-      # document splint writes rather than folded in by a second pass over a
-      # summary of it. splint exits 1 on a finding, which is not this job.
-      - splint -save --append-coverage=pkg.cov ./... || true
-      - go-fsck coverage -i splint.json --template=docs/testing-coverage.md.tpl -v > docs/testing-coverage.md
+      - splint coverage --append-coverage=pkg.cov --template=docs/testing-coverage.md.tpl -v ./... > docs/testing-coverage.md
       - perl -pi -e 's/github.com\/titpetric/titpetric/g' docs/testing-coverage.md
-      - go-fsck docs --render imports > docs/imports.puml
-      - go-fsck docs --render puml > docs/structure.puml
+      - splint docs --render imports ./... > docs/imports.puml
+      - splint docs --render puml ./... > docs/structure.puml
       - plantuml -tsvg docs/structure.puml
       - plantuml -tsvg docs/imports.puml
 
