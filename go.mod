@@ -17,8 +17,8 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/titpetric/cli v0.6.1
 	github.com/titpetric/oida v0.4.0
-	github.com/titpetric/platform v0.7.2
-	github.com/titpetric/vuego v0.10.1
+	github.com/titpetric/platform v0.7.3
+	github.com/titpetric/vuego v0.10.2
 	github.com/titpetric/vuego-cli v0.3.0
 	golang.org/x/crypto v0.57.0
 	golang.org/x/term v0.46.0
