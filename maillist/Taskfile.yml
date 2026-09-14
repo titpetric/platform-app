@@ -44,12 +44,7 @@ tasks:
   cover:
     desc: "Show source coverage"
     cmds:
-      - defer: rm -f splint.json
-      # The extract reads the profile itself, so the coverage is in the
-      # document splint writes rather than folded in by a second pass over a
-      # summary of it. splint exits 1 on a finding, which is not this job.
-      - splint -save --append-coverage=pkg.cov ./... || true
-      - go-fsck coverage -i splint.json
+      - splint coverage --append-coverage=pkg.cov ./...
 
   uncover:
     desc: "Show uncovered source"
