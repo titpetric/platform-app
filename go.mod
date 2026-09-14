@@ -4,10 +4,10 @@ go 1.27.0
 
 require (
 	github.com/alecthomas/chroma/v2 v2.27.0
-	github.com/go-bridget/mig v0.6.3
+	github.com/go-bridget/mig v0.6.5
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-git/go-git/v5 v5.19.2
-	github.com/go-webauthn/webauthn v0.18.0
+	github.com/go-webauthn/webauthn v0.18.1
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/go-cmp v0.7.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -15,8 +15,8 @@ require (
 	github.com/qri-io/jsonschema v0.2.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.12.1
-	github.com/titpetric/cli v0.6.0
-	github.com/titpetric/oida v0.3.0
+	github.com/titpetric/cli v0.6.1
+	github.com/titpetric/oida v0.4.0
 	github.com/titpetric/platform v0.7.2
 	github.com/titpetric/vuego v0.10.1
 	github.com/titpetric/vuego-cli v0.3.0
@@ -44,7 +44,7 @@ require (
 	github.com/go-git/go-billy/v5 v5.9.1 // indirect
 	github.com/go-sql-driver/mysql v1.10.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/go-webauthn/x v0.3.0 // indirect
+	github.com/go-webauthn/x v0.3.1 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/go-tpm v0.9.8 // indirect
