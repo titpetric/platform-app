@@ -16,7 +16,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.12.1
 	github.com/titpetric/cli v0.6.1
-	github.com/titpetric/oida v0.4.0
+	github.com/titpetric/oida v0.4.1
 	github.com/titpetric/platform v0.7.3
 	github.com/titpetric/vuego v0.10.2
 	github.com/titpetric/vuego-cli v0.3.0
@@ -36,7 +36,7 @@ require (
 	github.com/cloudflare/circl v1.6.5 // indirect
 	github.com/cyphar/filepath-securejoin v0.7.0 // indirect
 	github.com/dlclark/regexp2/v2 v2.8.0 // indirect
-	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/expr-lang/expr v1.17.8 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.4 // indirect
@@ -78,7 +78,7 @@ require (
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/text v0.42.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	modernc.org/libc v1.76.0 // indirect
+	modernc.org/libc v1.77.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
 )
