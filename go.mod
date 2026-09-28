@@ -15,7 +15,7 @@ require (
 	github.com/qri-io/jsonschema v0.2.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.12.1
-	github.com/titpetric/cli v0.6.1
+	github.com/titpetric/cli v0.7.0
 	github.com/titpetric/oida v0.4.1
 	github.com/titpetric/platform v0.7.4
 	github.com/titpetric/vuego v0.10.2

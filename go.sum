@@ -159,8 +159,8 @@ github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWD
 github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
 github.com/tinylib/msgp v1.6.4 h1:mOwYbyYDLPj35mkA2BjjYejgJk9BuHxDdvRnb6v2ZcQ=
 github.com/tinylib/msgp v1.6.4/go.mod h1:RSp0LW9oSxFut3KzESt5Voq4GVWyS+PSulT77roAqEA=
-github.com/titpetric/cli v0.6.1 h1:vnQz5/D+c6FJyrWXcf9jMj+DmOxIVaWMxiJWYibUGj8=
-github.com/titpetric/cli v0.6.1/go.mod h1:W14SqTVk7wJT3FWuISXN4YsL75e0vOS6ED+9IxdlEnU=
+github.com/titpetric/cli v0.7.0 h1:+fc6m6gcaQ5N05rXEj/apMjvIwCOgZ60zbnXScIJerc=
+github.com/titpetric/cli v0.7.0/go.mod h1:hsJbPqoIAFF5z1qswZ/O8AcMCl5Pk2cE2oFcPHhi3c8=
 github.com/titpetric/lessgo v0.2.0 h1:0o2vcYrwH8U6uB/Ze01ESOs2RTMGGqqS57RTbjAUEgA=
 github.com/titpetric/lessgo v0.2.0/go.mod h1:Xiw6dL/VVi9uxynx9lm5znrsKTcvmnFd8jCAnYRNkS4=
 github.com/titpetric/oida v0.4.1 h1:7ppi/MP5rxXEaoG3VqTp+j9CkdUyJ/2k/4VSTc22/tQ=
