@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/titpetric/platform/pkg/ulid"
+	ulid "github.com/oklog/ulid/v2"
 
 	"github.com/titpetric/platform-app/email/model"
 )
@@ -35,7 +35,7 @@ func NewEmailStorageErr(ctx context.Context) (*EmailStorage, error) {
 
 // Create inserts a new email into the email table
 func (s *EmailStorage) Create(ctx context.Context, email *model.Email) error {
-	email.ID = ulid.String()
+	email.ID = ulid.Make().String()
 	email.SetCreatedAt(time.Now())
 
 	query := email.Insert()

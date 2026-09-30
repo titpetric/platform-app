@@ -9,20 +9,19 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/pulse/schema"
 )
 
 func newTestStorage(t *testing.T) *Storage {
 	t.Helper()
 	db, err := sqlx.Open("sqlite", ":memory:")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() { db.Close() })
 
 	err = Migrate(context.Background(), db, schema.Migrations())
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	return NewStorage(db)
 }
@@ -39,14 +38,14 @@ func seedDaily(t *testing.T, s *Storage, userID string, rows []struct {
 			`INSERT INTO pulse_daily (user_id, hostname, stamp, count) VALUES (?, ?, ?, ?)`,
 			userID, r.hostname, r.stamp, r.count,
 		)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	}
 	for _, r := range rows {
 		_, err := s.db.Exec(
 			`INSERT OR IGNORE INTO pulse_host (user_id, hostname, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)`,
 			userID, r.hostname,
 		)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	}
 }
 
@@ -69,7 +68,7 @@ func TestGetUserDaily(t *testing.T) {
 	})
 
 	results, err := s.GetUserDaily(ctx, userID)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, results, 3)
 
 	for _, r := range results {
@@ -96,10 +95,10 @@ func TestDailyBarChartLogic(t *testing.T) {
 	})
 
 	dailyData, err := s.GetUserDaily(ctx, userID)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	hosts, err := s.GetUserHosts(ctx, userID)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, []string{"chronos", "lab"}, hosts)
 
 	// Replicate handler logic: index by host
@@ -120,7 +119,7 @@ func TestDailyBarChartLogic(t *testing.T) {
 
 	// Verify lab totals and bar heights
 	labCounts := hostDailyMap["lab"]
-	require.NotNil(t, labCounts, "lab should have daily data")
+	assert.NotNil(t, labCounts, "lab should have daily data")
 	assert.Equal(t, int64(1000), labCounts[today])
 	assert.Equal(t, int64(500), labCounts[yesterday])
 

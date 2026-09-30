@@ -3,8 +3,7 @@ package admin
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestArticleRequest_Validate(t *testing.T) {
@@ -69,10 +68,10 @@ func TestArticleRequest_Validate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.req.Validate()
 			if tt.wantErr != "" {
-				require.Error(t, err)
+				assert.Error(t, err)
 				assert.Contains(t, err.Error(), tt.wantErr)
 			} else {
-				require.NoError(t, err)
+				assert.NoError(t, err)
 			}
 		})
 	}

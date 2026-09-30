@@ -7,9 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user/service/web"
 )
 
@@ -87,7 +85,7 @@ func TestRegisterValidationRendersView(t *testing.T) {
 
 		svc.Register(w, req)
 
-		require.Equal(t, http.StatusOK, w.Code)
+		assert.Equal(t, http.StatusOK, w.Code)
 		body := w.Body.String()
 		assert.Contains(t, body, "Jane Smith")
 		assert.Contains(t, body, "jane@example.com")

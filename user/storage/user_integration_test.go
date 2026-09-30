@@ -6,10 +6,9 @@ import (
 	"database/sql"
 	"testing"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
+	_ "github.com/titpetric/platform-app/internal/drivers"
 
-	"github.com/titpetric/platform/pkg/require"
-
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user"
 	"github.com/titpetric/platform-app/user/model"
 	"github.com/titpetric/platform-app/user/schema"
@@ -23,15 +22,15 @@ func TestNewUserStorage_integration(t *testing.T) {
 	})
 
 	db := NewTestDB(t)
-	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations()))
+	assert.NoError(t, storage.Migrate(ctx, db, schema.Migrations()))
 
 	s := storage.NewUserStorage(db)
-	require.NotNil(t, s)
+	assert.NotNil(t, s)
 
 	{
 		user, err := s.Authenticate(ctx, model.UserAuth{})
-		require.Nil(t, user)
-		require.ErrorContains(t, err, "missing authentication info:")
+		assert.Nil(t, user)
+		assert.ErrorContains(t, err, "missing authentication info:")
 	}
 
 	{
@@ -39,8 +38,8 @@ func TestNewUserStorage_integration(t *testing.T) {
 			Email:    "me@titpetric.com",
 			Password: "horse battery staple",
 		})
-		require.Nil(t, user)
-		require.ErrorIs(t, err, sql.ErrNoRows)
+		assert.Nil(t, user)
+		assert.ErrorIs(t, err, sql.ErrNoRows)
 	}
 
 	{
@@ -50,8 +49,8 @@ func TestNewUserStorage_integration(t *testing.T) {
 			Password: "horse battery staple",
 			Username: "titpetric",
 		})
-		require.NoError(t, err)
-		require.NotEmpty(t, user)
+		assert.NoError(t, err)
+		assert.NotEmpty(t, user)
 	}
 
 	{
@@ -60,13 +59,13 @@ func TestNewUserStorage_integration(t *testing.T) {
 			Email:    "nousername@titpetric.com",
 			Password: "horse battery staple",
 		})
-		require.Nil(t, user)
-		require.ErrorContains(t, err, "username is required")
+		assert.Nil(t, user)
+		assert.ErrorContains(t, err, "username is required")
 	}
 
 	{
 		userlist, err := s.List(ctx)
-		require.NoError(t, err)
-		require.True(t, len(userlist) == 1)
+		assert.NoError(t, err)
+		assert.True(t, len(userlist) == 1)
 	}
 }

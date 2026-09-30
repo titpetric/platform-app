@@ -7,10 +7,10 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/stretchr/testify/require"
 
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/schema"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 // setupTestDB creates a temporary SQLite database for testing with automatic cleanup
@@ -54,15 +54,15 @@ func TestInitSchema(t *testing.T) {
 	db := setupTestDB(t)
 
 	_, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Verify tables exist (NewStorage runs migrations automatically)
 	var tableCount int
-	require.NoError(t, db.GetContext(ctx, &tableCount,
+	assert.NoError(t, db.GetContext(ctx, &tableCount,
 		"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='article'"))
 
-	require.Equal(t, 1, tableCount, "expected article table to exist")
+	assert.Equal(t, 1, tableCount, "expected article table to exist")
 }
 
 // TestInsertArticle tests inserting an article
@@ -70,7 +70,7 @@ func TestInsertArticle(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	article := &model.Article{
@@ -109,7 +109,7 @@ func TestGetArticleBySlug(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert test article
@@ -145,11 +145,11 @@ func TestGetArticleBySlugNotFound(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	_, err = storage.GetArticleBySlug(ctx, "non-existent")
-	require.Error(t, err, "expected error for non-existent article")
+	assert.Error(t, err, "expected error for non-existent article")
 }
 
 // TestGetArticles tests retrieving all articles
@@ -157,7 +157,7 @@ func TestGetArticles(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert test articles
@@ -208,7 +208,7 @@ func TestSearchArticles(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert test articles
@@ -267,7 +267,7 @@ func TestCountArticles(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Should be zero initially
@@ -306,7 +306,7 @@ func TestInsertArticleUpdate(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert initial article
@@ -342,7 +342,7 @@ func TestSchemaConstraints(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert first article
@@ -385,7 +385,7 @@ func TestSearchArticlesEmpty(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Search with no articles
@@ -512,7 +512,7 @@ func TestGetDraftArticles(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert draft and published articles
@@ -534,9 +534,9 @@ func TestGetDraftArticles(t *testing.T) {
 
 	// Get drafts
 	drafts, err := storage.GetDraftArticles(ctx, 0, 10)
-	require.NoError(t, err)
-	require.Len(t, drafts, 1)
-	require.Equal(t, "draft-article", drafts[0].Slug)
+	assert.NoError(t, err)
+	assert.Len(t, drafts, 1)
+	assert.Equal(t, "draft-article", drafts[0].Slug)
 }
 
 // TestCountDraftArticles tests counting draft articles
@@ -544,7 +544,7 @@ func TestCountDraftArticles(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert draft articles
@@ -559,8 +559,8 @@ func TestCountDraftArticles(t *testing.T) {
 	}
 
 	count, err := storage.CountDraftArticles(ctx)
-	require.NoError(t, err)
-	require.Equal(t, 3, count)
+	assert.NoError(t, err)
+	assert.Equal(t, 3, count)
 }
 
 // TestUpdateArticle tests updating an existing article
@@ -568,7 +568,7 @@ func TestUpdateArticle(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert article
@@ -582,12 +582,12 @@ func TestUpdateArticle(t *testing.T) {
 	// Update title
 	article.Title = "Updated"
 	err = storage.UpdateArticle(ctx, article)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Verify
 	retrieved, err := storage.GetArticleBySlug(ctx, "update-me")
-	require.NoError(t, err)
-	require.Equal(t, "Updated", retrieved.Title)
+	assert.NoError(t, err)
+	assert.Equal(t, "Updated", retrieved.Title)
 }
 
 // TestDeleteArticle tests deleting an article
@@ -595,7 +595,7 @@ func TestDeleteArticle(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert article
@@ -608,11 +608,11 @@ func TestDeleteArticle(t *testing.T) {
 
 	// Delete
 	err = storage.DeleteArticle(ctx, "delete-me")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Verify deleted
 	_, err = storage.GetArticleBySlug(ctx, "delete-me")
-	require.Error(t, err)
+	assert.Error(t, err)
 }
 
 // TestGetArticleByID tests retrieving an article by ID
@@ -620,7 +620,7 @@ func TestGetArticleByID(t *testing.T) {
 	db := setupTestDB(t)
 
 	storage, err := NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ctx := t.Context()
 
 	// Insert article
@@ -633,6 +633,6 @@ func TestGetArticleByID(t *testing.T) {
 
 	// Retrieve by ID
 	retrieved, err := storage.GetArticleByID(ctx, "id-test-123")
-	require.NoError(t, err)
-	require.Equal(t, "ID Test", retrieved.Title)
+	assert.NoError(t, err)
+	assert.Equal(t, "ID Test", retrieved.Title)
 }

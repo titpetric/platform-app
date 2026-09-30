@@ -6,15 +6,14 @@ import (
 	"context"
 	"testing"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
+	_ "github.com/titpetric/platform-app/internal/drivers"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/stretchr/testify/require"
-	"github.com/titpetric/platform/pkg/assert"
 
 	"github.com/titpetric/platform-app/daily/model"
 	"github.com/titpetric/platform-app/daily/schema"
 	"github.com/titpetric/platform-app/daily/storage"
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user"
 	usermodel "github.com/titpetric/platform-app/user/model"
 )
@@ -36,12 +35,12 @@ func TestStorage(t *testing.T) {
 	assert.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
 
 	repo, err := storage.NewStorage(ctx, db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	{
 		_, err := repo.Get(ctx, "test")
 
-		require.Error(t, err)
+		assert.Error(t, err)
 	}
 
 	{

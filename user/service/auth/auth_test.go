@@ -7,7 +7,8 @@ import (
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
-	"github.com/titpetric/platform/pkg/require"
+
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func getJwtSecret() string {
@@ -53,13 +54,13 @@ func TestAuth(t *testing.T) {
 	for idx, tokFn := range tokens {
 		t.Run(fmt.Sprintf("token: %d", idx), func(t *testing.T) {
 			token, err := tokFn()
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			validator := NewJWT(getJwtSecret())
-			require.True(t, validator.IsUser(token, uid))
+			assert.True(t, validator.IsUser(token, uid))
 
 			user, err := validator.Claims(token)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			t.Logf("Generated JWT: %s", token)
 			t.Logf("Claims: %d", len(user.MapClaims))
@@ -76,15 +77,15 @@ func TestCreateWithJTI(t *testing.T) {
 	j := NewJWT(getJwtSecret())
 
 	token, jti, err := j.CreateWithJTI("user-1", time.Hour)
-	require.NoError(t, err)
-	require.True(t, token != "")
-	require.True(t, jti != "")
+	assert.NoError(t, err)
+	assert.True(t, token != "")
+	assert.True(t, jti != "")
 
 	claims, err := j.Claims(token)
-	require.NoError(t, err)
-	require.Equal(t, "user-1", claims.UserID)
-	require.Equal(t, jti, claims.JTI)
-	require.True(t, claims.ExpiresAt > time.Now().Unix())
+	assert.NoError(t, err)
+	assert.Equal(t, "user-1", claims.UserID)
+	assert.Equal(t, jti, claims.JTI)
+	assert.True(t, claims.ExpiresAt > time.Now().Unix())
 }
 
 func TestCreateAlwaysEmbedsJTI(t *testing.T) {
@@ -93,18 +94,18 @@ func TestCreateAlwaysEmbedsJTI(t *testing.T) {
 	j := NewJWT(getJwtSecret())
 
 	a, err := j.Create("user-a", time.Hour)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	b, err := j.Create("user-a", time.Hour)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	ca, err := j.Claims(a)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	cb, err := j.Claims(b)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
-	require.True(t, ca.JTI != "")
-	require.True(t, cb.JTI != "")
-	require.True(t, ca.JTI != cb.JTI)
+	assert.True(t, ca.JTI != "")
+	assert.True(t, cb.JTI != "")
+	assert.True(t, ca.JTI != cb.JTI)
 }
 
 func TestClaimsBackCompatNoJTI(t *testing.T) {
@@ -116,10 +117,10 @@ func TestClaimsBackCompatNoJTI(t *testing.T) {
 		"exp":     time.Now().Add(time.Hour).Unix(),
 	}
 	tok, err := getJwt(claims, getJwtSecret())
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	parsed, err := NewJWT(getJwtSecret()).Claims(tok)
-	require.NoError(t, err)
-	require.Equal(t, "legacy", parsed.UserID)
-	require.Equal(t, "", parsed.JTI)
+	assert.NoError(t, err)
+	assert.Equal(t, "legacy", parsed.UserID)
+	assert.Equal(t, "", parsed.JTI)
 }

@@ -11,15 +11,13 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	_ "github.com/titpetric/platform-app/internal/drivers"
 
 	"github.com/titpetric/platform-app/email/model"
 	"github.com/titpetric/platform-app/email/schema"
 	"github.com/titpetric/platform-app/email/smtp"
 	"github.com/titpetric/platform-app/email/storage"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 // requireMailhog skips the test when nothing is listening on mailhog's SMTP
@@ -65,7 +63,7 @@ func TestMailhogConnectivity(t *testing.T) {
 		"Mailhog Connectivity Test",
 		"If you see this, mailhog is working!",
 	)
-	require.NoError(t, err, "failed to connect to mailhog")
+	assert.NoError(t, err, "failed to connect to mailhog")
 }
 
 // TestSendEmailViaMailhog tests sending a simple email through mailhog
@@ -88,14 +86,14 @@ func TestSendEmailViaMailhog(t *testing.T) {
 	)
 
 	err := sender.Send(email.Recipient, email.Subject, email.Body)
-	require.NoError(t, err, "failed to send email via mailhog")
+	assert.NoError(t, err, "failed to send email via mailhog")
 
 	// Give mailhog time to receive
 	time.Sleep(500 * time.Millisecond)
 
 	// Verify in mailhog API
 	resp, err := http.Get("http://localhost:8025/api/v1/messages")
-	require.NoError(t, err, "failed to query mailhog API")
+	assert.NoError(t, err, "failed to query mailhog API")
 	defer resp.Body.Close()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode, "mailhog API should be accessible")
@@ -123,7 +121,7 @@ func TestMultipleEmailsToMailhog(t *testing.T) {
 		)
 
 		err := sender.Send(email.Recipient, email.Subject, email.Body)
-		require.NoError(t, err, "failed to send email %d", i)
+		assert.NoError(t, err, "failed to send email %d", i)
 	}
 
 	// Give mailhog time to receive all
@@ -171,7 +169,7 @@ func TestServiceWithMailhog(t *testing.T) {
 	)
 
 	err = service.AddEmail(ctx, email)
-	require.NoError(t, err, "failed to add email to service")
+	assert.NoError(t, err, "failed to add email to service")
 
 	// Wait for processing
 	time.Sleep(2 * time.Second)
@@ -186,8 +184,8 @@ func TestServiceWithMailhog(t *testing.T) {
 
 	// Check email_sent table
 	sent, err := emailStorage.GetSent(ctx, 10)
-	require.NoError(t, err)
-	require.GreaterOrEqual(t, len(sent), 1, "email should be in email_sent table")
+	assert.NoError(t, err)
+	assert.GreaterOrEqual(t, len(sent), 1, "email should be in email_sent table")
 	assert.NotNil(t, sent[0].SentAt)
 }
 
@@ -209,12 +207,12 @@ func TestServiceStartProcessesPending(t *testing.T) {
 	pendingEmail1 := model.NewEmail("user1@example.com", "Subject 1", "Body 1")
 	pendingEmail1.Status = model.StatusPending
 	err = emailStorage.Create(ctx, pendingEmail1)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	pendingEmail2 := model.NewEmail("user2@example.com", "Subject 2", "Body 2")
 	pendingEmail2.Status = model.StatusPending
 	err = emailStorage.Create(ctx, pendingEmail2)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Create service with mailhog
 	smtpConfig := smtp.Config{
@@ -244,8 +242,8 @@ func TestServiceStartProcessesPending(t *testing.T) {
 
 	// Check email_sent table
 	sent, err := emailStorage.GetSent(ctx, 10)
-	require.NoError(t, err)
-	require.GreaterOrEqual(t, len(sent), 2, "both emails should be in email_sent table")
+	assert.NoError(t, err)
+	assert.GreaterOrEqual(t, len(sent), 2, "both emails should be in email_sent table")
 	assert.NotNil(t, sent[0].SentAt)
 }
 
@@ -283,14 +281,14 @@ func TestServiceRetryOnFailure(t *testing.T) {
 	email := model.NewEmail("test@example.com", "Test Subject", "Test Body")
 
 	err = service.AddEmail(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Wait for processing attempts
 	time.Sleep(500 * time.Millisecond)
 
 	// After max retries reached, email should be in email_failed table
 	failed, err := emailStorage.GetFailed(ctx, 10)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Find our email in the failed list
 	var failedEmail *model.Email
@@ -301,7 +299,7 @@ func TestServiceRetryOnFailure(t *testing.T) {
 		}
 	}
 
-	require.NotNil(t, failedEmail, "email should be in failed table after max retries")
+	assert.NotNil(t, failedEmail, "email should be in failed table after max retries")
 	assert.Equal(t, model.StatusFailed, failedEmail.Status)
 	assert.GreaterOrEqual(t, failedEmail.RetryCount, int64(1))
 	assert.NotEmpty(t, failedEmail.Error)
@@ -343,7 +341,7 @@ func TestServiceLogging(t *testing.T) {
 
 	// This should log the email being created and queued
 	err = service.AddEmail(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	time.Sleep(200 * time.Millisecond)
 
@@ -386,7 +384,7 @@ func TestServiceWithConfigFromEnv(t *testing.T) {
 	email := model.NewEmail("test@example.com", "Test Subject", "Test Body")
 
 	err = service.AddEmail(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	time.Sleep(200 * time.Millisecond)
 

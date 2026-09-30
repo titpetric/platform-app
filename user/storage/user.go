@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
 	"github.com/titpetric/platform"
-	"github.com/titpetric/platform/pkg/ulid"
 	"golang.org/x/crypto/bcrypt"
 
 	emailmodel "github.com/titpetric/platform-app/email/model"
@@ -80,7 +80,7 @@ func (s *UserStorage) Create(ctx context.Context, req *model.UserCreateRequest) 
 		return nil, fmt.Errorf("hash password: %w", err)
 	}
 
-	userID := ulid.String()
+	userID := ulid.Make().String()
 
 	if err := s.insertUserAndAuth(ctx, req, userID, string(hashed), activatedNow, ""); err != nil {
 		return nil, err
@@ -114,7 +114,7 @@ func (s *UserStorage) CreatePending(ctx context.Context, req *model.UserCreateRe
 		return nil, fmt.Errorf("hash password: %w", err)
 	}
 
-	userID := ulid.String()
+	userID := ulid.Make().String()
 	token := newActivationToken()
 
 	if err := s.insertUserAndAuth(ctx, req, userID, string(hashed), activatedNever, token); err != nil {

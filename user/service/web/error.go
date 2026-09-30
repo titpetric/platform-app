@@ -6,7 +6,8 @@ import (
 	"net/http"
 
 	"github.com/titpetric/oida"
-	"github.com/titpetric/platform/pkg/httpcontext"
+
+	"github.com/titpetric/platform-app/internal/httpcontext"
 )
 
 // errorMessageKey is a request context scoped value. If an error

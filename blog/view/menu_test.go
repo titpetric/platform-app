@@ -5,8 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestLoadMenuConfig(t *testing.T) {
@@ -26,10 +25,10 @@ footer:
     loggedOut: true
 `
 	err := os.WriteFile(menuFile, []byte(content), 0o644)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	config, err := LoadMenuConfig(menuFile)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.Len(t, config.Header, 1)
 	assert.Len(t, config.Footer, 2)
@@ -40,7 +39,7 @@ footer:
 
 func TestLoadMenuConfig_FileNotFound(t *testing.T) {
 	_, err := LoadMenuConfig("/nonexistent/menu.yml")
-	require.Error(t, err)
+	assert.Error(t, err)
 }
 
 func TestLoadAdminMenuConfig(t *testing.T) {
@@ -63,10 +62,10 @@ admin:
       icon: bi-box-arrow-right
 `
 	err := os.WriteFile(menuFile, []byte(content), 0o644)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	config, err := LoadAdminMenuConfig(menuFile)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.Len(t, config.Admin.Top, 1)
 	assert.Len(t, config.Admin.Side, 1)

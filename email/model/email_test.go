@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/titpetric/platform/pkg/require"
+
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 // TestEmail ensures that the email tables match.
@@ -19,13 +20,13 @@ func TestEmail(t *testing.T) {
 	diff2, err2 := CompareStructShape(b, c)
 	diff3, err3 := CompareStructShape(c, a)
 
-	require.NoError(t, err1)
-	require.NoError(t, err2)
-	require.NoError(t, err3)
+	assert.NoError(t, err1)
+	assert.NoError(t, err2)
+	assert.NoError(t, err3)
 
-	require.Empty(t, diff1)
-	require.Empty(t, diff2)
-	require.Empty(t, diff3)
+	assert.Empty(t, diff1)
+	assert.Empty(t, diff2)
+	assert.Empty(t, diff3)
 }
 
 type FieldInfo struct {

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
-	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/daily/model"
 	"github.com/titpetric/platform-app/daily/schema"
@@ -89,7 +89,7 @@ func (s *Storage) Add(ctx context.Context, t model.Todo) (model.Todo, error) {
 	}
 
 	now := time.Now().UTC()
-	t.ID = ulid.String()
+	t.ID = ulid.Make().String()
 	t.UserID = u.ID
 	t.SetCreatedAt(now)
 	t.SetUpdatedAt(now)

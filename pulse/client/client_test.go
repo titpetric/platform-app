@@ -6,8 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestTokenFileOperations(t *testing.T) {
@@ -25,15 +24,15 @@ func TestTokenFileOperations(t *testing.T) {
 	token := "test-jwt-token"
 	expiresAt := time.Now().Add(24 * time.Hour)
 	err = c.SaveToken(token, expiresAt)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	tokenPath := filepath.Join(tmpDir, ".config", "pulse", "token.json")
 	_, err = os.Stat(tokenPath)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	c2 := New("http://localhost:8080")
 	err = c2.LoadToken()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, token, c2.Token())
 }
 

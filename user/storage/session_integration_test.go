@@ -6,10 +6,9 @@ import (
 	"database/sql"
 	"testing"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
+	_ "github.com/titpetric/platform-app/internal/drivers"
 
-	"github.com/titpetric/platform/pkg/require"
-
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user"
 	"github.com/titpetric/platform-app/user/model"
 	"github.com/titpetric/platform-app/user/schema"
@@ -23,19 +22,19 @@ func TestNewSessionStorage_integration(t *testing.T) {
 	})
 
 	db := NewTestDB(t)
-	require.NoError(t, storage.Migrate(ctx, db, schema.Migrations()))
+	assert.NoError(t, storage.Migrate(ctx, db, schema.Migrations()))
 
 	s := storage.NewSessionStorage(db)
-	require.NotNil(t, s)
+	assert.NotNil(t, s)
 
 	{
 		err := s.Delete(ctx, "non-existant")
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	}
 
 	{
 		user, err := s.Get(ctx, "non-existant")
-		require.Nil(t, user)
-		require.ErrorIs(t, err, sql.ErrNoRows)
+		assert.Nil(t, user)
+		assert.ErrorIs(t, err, sql.ErrNoRows)
 	}
 }

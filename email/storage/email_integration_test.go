@@ -7,14 +7,12 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	_ "github.com/titpetric/platform-app/internal/drivers"
 
 	"github.com/titpetric/platform-app/email/model"
 	"github.com/titpetric/platform-app/email/schema"
 	"github.com/titpetric/platform-app/email/storage"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func setupTestDB(t *testing.T, ctx context.Context) {
@@ -33,13 +31,13 @@ func TestEmailStorageCreate(t *testing.T) {
 	setupTestDB(t, ctx)
 
 	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	emailStorage := storage.NewEmailStorage(db)
 
 	email := model.NewEmail("test@example.com", "Subject", "Body")
 	err = emailStorage.Create(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.NotEmpty(t, email.ID)
 	assert.Equal(t, "test@example.com", email.Recipient)
@@ -51,18 +49,18 @@ func TestEmailStorageGet(t *testing.T) {
 	setupTestDB(t, ctx)
 
 	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	emailStorage := storage.NewEmailStorage(db)
 
 	// Create an email
 	email := model.NewEmail("test@example.com", "Subject", "Body")
 	err = emailStorage.Create(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Retrieve it
 	retrieved, err := emailStorage.Get(ctx, email.ID)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, email.ID, retrieved.ID)
 	assert.Equal(t, email.Recipient, retrieved.Recipient)
@@ -73,7 +71,7 @@ func TestEmailStorageGetPending(t *testing.T) {
 	setupTestDB(t, ctx)
 
 	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	emailStorage := storage.NewEmailStorage(db)
 
@@ -82,13 +80,13 @@ func TestEmailStorageGetPending(t *testing.T) {
 	email2 := model.NewEmail("test2@example.com", "Subject 2", "Body 2")
 
 	err = emailStorage.Create(ctx, email1)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = emailStorage.Create(ctx, email2)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Retrieve pending emails
 	pending, err := emailStorage.GetPending(ctx, 10)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.GreaterOrEqual(t, len(pending), 2)
 }
@@ -98,21 +96,21 @@ func TestEmailStorageUpdate(t *testing.T) {
 	setupTestDB(t, ctx)
 
 	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	emailStorage := storage.NewEmailStorage(db)
 
 	// Create and update an email
 	email := model.NewEmail("test@example.com", "Subject", "Body")
 	err = emailStorage.Create(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	now := time.Now()
 	email.Status = model.StatusSent
 	email.SentAt = &now
 
 	err = emailStorage.Update(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Verify email was removed from queue and stored in email_sent table
 	_, err = emailStorage.Get(ctx, email.ID)
@@ -120,7 +118,7 @@ func TestEmailStorageUpdate(t *testing.T) {
 
 	// Check email_sent table
 	sent, err := emailStorage.GetSent(ctx, 10)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.GreaterOrEqual(t, len(sent), 1, "email should be in email_sent table")
 }
 
@@ -129,21 +127,21 @@ func TestEmailStorageUpdateFailed(t *testing.T) {
 	setupTestDB(t, ctx)
 
 	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	emailStorage := storage.NewEmailStorage(db)
 
 	// Create and mark as failed
 	email := model.NewEmail("test@example.com", "Subject", "Body")
 	err = emailStorage.Create(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	email.Status = model.StatusFailed
 	email.Error = "connection timeout"
 	email.RetryCount = 3
 
 	err = emailStorage.Update(ctx, email)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Verify email was removed from queue and stored in email_failed table
 	_, err = emailStorage.Get(ctx, email.ID)
@@ -151,8 +149,8 @@ func TestEmailStorageUpdateFailed(t *testing.T) {
 
 	// Check email_failed table
 	failed, err := emailStorage.GetFailed(ctx, 10)
-	require.NoError(t, err)
-	require.GreaterOrEqual(t, len(failed), 1, "email should be in email_failed table")
+	assert.NoError(t, err)
+	assert.GreaterOrEqual(t, len(failed), 1, "email should be in email_failed table")
 	assert.Equal(t, model.StatusFailed, failed[0].Status)
 	assert.Equal(t, int64(3), failed[0].RetryCount)
 }
@@ -162,7 +160,7 @@ func TestEmailStorageGetFailed(t *testing.T) {
 	setupTestDB(t, ctx)
 
 	db, err := storage.DB(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	emailStorage := storage.NewEmailStorage(db)
 
@@ -171,13 +169,13 @@ func TestEmailStorageGetFailed(t *testing.T) {
 	email1.Status = model.StatusFailed
 	email1.Error = "error1"
 	err = emailStorage.Create(ctx, email1)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	email2 := model.NewEmail("test2@example.com", "Subject 2", "Body 2")
 	email2.Status = model.StatusFailed
 	email2.Error = "error2"
 	err = emailStorage.Create(ctx, email2)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Move to failed table
 	emailStorage.Update(ctx, email1)
@@ -185,6 +183,6 @@ func TestEmailStorageGetFailed(t *testing.T) {
 
 	// Retrieve failed emails
 	failed, err := emailStorage.GetFailed(ctx, 10)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.GreaterOrEqual(t, len(failed), 2)
 }

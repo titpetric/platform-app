@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
-	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/user/model"
 )
@@ -33,7 +33,7 @@ func (s *SessionStorage) Create(ctx context.Context, userID string) (*model.User
 
 	now := time.Now()
 	session := &model.UserSession{
-		ID:     ulid.String(),
+		ID:     ulid.Make().String(),
 		UserID: userID,
 	}
 	session.SetCreatedAt(now)

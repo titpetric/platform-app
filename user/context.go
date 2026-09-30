@@ -1,8 +1,7 @@
 package user
 
 import (
-	"github.com/titpetric/platform/pkg/httpcontext"
-
+	"github.com/titpetric/platform-app/internal/httpcontext"
 	"github.com/titpetric/platform-app/user/model"
 )
 

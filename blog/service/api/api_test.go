@@ -11,12 +11,11 @@ import (
 
 	chi "github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/schema"
 	"github.com/titpetric/platform-app/blog/storage"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 // setupTestDB creates a temporary SQLite database for testing
@@ -24,13 +23,13 @@ func setupTestDB(t *testing.T) *sqlx.DB {
 	tmpDir := t.TempDir()
 	dbPath := tmpDir + "/test.db"
 	db, err := sqlx.Open("sqlite", dbPath)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	db.SetConnMaxLifetime(0)
 	db.SetMaxIdleConns(1)
 	db.SetMaxOpenConns(1)
 
-	require.NoError(t, storage.Migrate(t.Context(), db, schema.Migrations))
+	assert.NoError(t, storage.Migrate(t.Context(), db, schema.Migrations))
 
 	return db
 }
@@ -39,7 +38,7 @@ func setupTestDB(t *testing.T) *sqlx.DB {
 func TestListArticlesJSON_Empty(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/blog/articles", nil)
@@ -62,7 +61,7 @@ func TestListArticlesJSON_Empty(t *testing.T) {
 func TestListArticlesJSON_MultipleArticles(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -75,7 +74,7 @@ func TestListArticlesJSON_MultipleArticles(t *testing.T) {
 			Date:  &now,
 		}
 		err = repo.InsertArticle(ctx, article)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	}
 
 	req := httptest.NewRequest("GET", "/api/blog/articles", nil)
@@ -96,7 +95,7 @@ func TestListArticlesJSON_MultipleArticles(t *testing.T) {
 func TestListArticlesJSON_HeadersPresent(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/blog/articles", nil)
@@ -112,7 +111,7 @@ func TestListArticlesJSON_HeadersPresent(t *testing.T) {
 func TestGetArticleJSON_Found(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -127,7 +126,7 @@ func TestGetArticleJSON_Found(t *testing.T) {
 	}
 
 	err = repo.InsertArticle(ctx, article)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	r := chi.NewRouter()
 	r.Get("/api/blog/articles/{slug}", func(w http.ResponseWriter, r *http.Request) {
@@ -154,7 +153,7 @@ func TestGetArticleJSON_Found(t *testing.T) {
 func TestGetArticleJSON_NotFound(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	r := chi.NewRouter()
@@ -174,7 +173,7 @@ func TestGetArticleJSON_NotFound(t *testing.T) {
 func TestGetArticleJSON_CacheHeaders(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -186,7 +185,7 @@ func TestGetArticleJSON_CacheHeaders(t *testing.T) {
 		Date:  &now,
 	}
 	err = repo.InsertArticle(ctx, article)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	r := chi.NewRouter()
 	r.Get("/api/blog/articles/{slug}", func(w http.ResponseWriter, r *http.Request) {
@@ -205,7 +204,7 @@ func TestGetArticleJSON_CacheHeaders(t *testing.T) {
 func TestSearchArticlesJSON_MissingQuery(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/blog/search", nil)
@@ -221,7 +220,7 @@ func TestSearchArticlesJSON_MissingQuery(t *testing.T) {
 func TestSearchArticlesJSON_EmptyResults(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -233,7 +232,7 @@ func TestSearchArticlesJSON_EmptyResults(t *testing.T) {
 		Date:  &now,
 	}
 	err = repo.InsertArticle(ctx, article)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	req := httptest.NewRequest("GET", "/api/blog/search?q=python", nil)
 	w := httptest.NewRecorder()
@@ -253,7 +252,7 @@ func TestSearchArticlesJSON_EmptyResults(t *testing.T) {
 func TestSearchArticlesJSON_SingleMatch(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -277,7 +276,7 @@ func TestSearchArticlesJSON_SingleMatch(t *testing.T) {
 
 	for i := range articles {
 		err = repo.InsertArticle(ctx, &articles[i])
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	}
 
 	req := httptest.NewRequest("GET", "/api/blog/search?q=Go", nil)
@@ -297,7 +296,7 @@ func TestSearchArticlesJSON_SingleMatch(t *testing.T) {
 func TestSearchArticlesJSON_MultipleMatches(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -309,7 +308,7 @@ func TestSearchArticlesJSON_MultipleMatches(t *testing.T) {
 	}
 
 	for i := range articles {
-		require.NoError(t, repo.InsertArticle(ctx, &articles[i]))
+		assert.NoError(t, repo.InsertArticle(ctx, &articles[i]))
 	}
 
 	req := httptest.NewRequest("GET", "/api/blog/search?q=Go", nil)
@@ -328,7 +327,7 @@ func TestSearchArticlesJSON_MultipleMatches(t *testing.T) {
 func TestSearchArticlesJSON_CacheHeaders(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/blog/search?q=test", nil)
@@ -344,7 +343,7 @@ func TestSearchArticlesJSON_CacheHeaders(t *testing.T) {
 func TestSearchArticlesJSON_CaseInsensitive(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 	ctx := t.Context()
 
@@ -357,7 +356,7 @@ func TestSearchArticlesJSON_CaseInsensitive(t *testing.T) {
 		Date:        &now,
 	}
 	err = repo.InsertArticle(ctx, article)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	req := httptest.NewRequest("GET", "/api/blog/search?q=programming", nil)
 	w := httptest.NewRecorder()
@@ -375,7 +374,7 @@ func TestSearchArticlesJSON_CaseInsensitive(t *testing.T) {
 func TestListArticlesAdminJSON_Empty(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles", nil)
@@ -399,7 +398,7 @@ func TestListArticlesAdminJSON_Empty(t *testing.T) {
 func TestListArticlesAdminJSON_WithData(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	now := time.Now()
@@ -410,7 +409,7 @@ func TestListArticlesAdminJSON_WithData(t *testing.T) {
 	}
 
 	for i := range articles {
-		require.NoError(t, repo.InsertArticle(t.Context(), &articles[i]))
+		assert.NoError(t, repo.InsertArticle(t.Context(), &articles[i]))
 	}
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles", nil)
@@ -432,7 +431,7 @@ func TestListArticlesAdminJSON_WithData(t *testing.T) {
 func TestListArticlesAdminJSON_Page1(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	now := time.Now()
@@ -443,7 +442,7 @@ func TestListArticlesAdminJSON_Page1(t *testing.T) {
 			Title: "Article " + string(rune(i)),
 			Date:  &now,
 		}
-		require.NoError(t, repo.InsertArticle(t.Context(), article))
+		assert.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=1&pageSize=10", nil)
@@ -463,7 +462,7 @@ func TestListArticlesAdminJSON_Page1(t *testing.T) {
 func TestListArticlesAdminJSON_Page2(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	now := time.Now()
@@ -474,7 +473,7 @@ func TestListArticlesAdminJSON_Page2(t *testing.T) {
 			Title: "Article " + string(rune(i)),
 			Date:  &now,
 		}
-		require.NoError(t, repo.InsertArticle(t.Context(), article))
+		assert.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=2&pageSize=10", nil)
@@ -494,7 +493,7 @@ func TestListArticlesAdminJSON_Page2(t *testing.T) {
 func TestListArticlesAdminJSON_LastPage(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	now := time.Now()
@@ -505,7 +504,7 @@ func TestListArticlesAdminJSON_LastPage(t *testing.T) {
 			Title: "Article " + string(rune(i)),
 			Date:  &now,
 		}
-		require.NoError(t, repo.InsertArticle(t.Context(), article))
+		assert.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=3&pageSize=10", nil)
@@ -525,7 +524,7 @@ func TestListArticlesAdminJSON_LastPage(t *testing.T) {
 func TestListArticlesAdminJSON_CustomPageSize(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	now := time.Now()
@@ -536,7 +535,7 @@ func TestListArticlesAdminJSON_CustomPageSize(t *testing.T) {
 			Title: "Article " + string(rune(i)),
 			Date:  &now,
 		}
-		require.NoError(t, repo.InsertArticle(t.Context(), article))
+		assert.NoError(t, repo.InsertArticle(t.Context(), article))
 	}
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=5", nil)
@@ -555,7 +554,7 @@ func TestListArticlesAdminJSON_CustomPageSize(t *testing.T) {
 func TestListArticlesAdminJSON_InvalidPage_NonNumeric(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=abc", nil)
@@ -572,7 +571,7 @@ func TestListArticlesAdminJSON_InvalidPage_NonNumeric(t *testing.T) {
 func TestListArticlesAdminJSON_InvalidPage_NegativeValue(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=-5", nil)
@@ -589,7 +588,7 @@ func TestListArticlesAdminJSON_InvalidPage_NegativeValue(t *testing.T) {
 func TestListArticlesAdminJSON_InvalidPage_Zero(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?page=0", nil)
@@ -606,7 +605,7 @@ func TestListArticlesAdminJSON_InvalidPage_Zero(t *testing.T) {
 func TestListArticlesAdminJSON_InvalidPageSize_NonNumeric(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=xyz", nil)
@@ -623,7 +622,7 @@ func TestListArticlesAdminJSON_InvalidPageSize_NonNumeric(t *testing.T) {
 func TestListArticlesAdminJSON_InvalidPageSize_Negative(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=-10", nil)
@@ -640,7 +639,7 @@ func TestListArticlesAdminJSON_InvalidPageSize_Negative(t *testing.T) {
 func TestListArticlesAdminJSON_InvalidPageSize_Exceeds100(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=200", nil)
@@ -657,7 +656,7 @@ func TestListArticlesAdminJSON_InvalidPageSize_Exceeds100(t *testing.T) {
 func TestListArticlesAdminJSON_PageSize100_Valid(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles?pageSize=100", nil)
@@ -698,7 +697,7 @@ func TestListArticlesAdminJSON_OffsetCalculation(t *testing.T) {
 func TestGetArticleAdminJSON_Found(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	now := time.Now()
@@ -711,7 +710,7 @@ func TestGetArticleAdminJSON_Found(t *testing.T) {
 	}
 
 	err = repo.InsertArticle(t.Context(), article)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	r := chi.NewRouter()
 	var result model.Article
@@ -738,7 +737,7 @@ func TestGetArticleAdminJSON_Found(t *testing.T) {
 func TestGetArticleAdminJSON_NotFound(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	r := chi.NewRouter()
@@ -758,7 +757,7 @@ func TestGetArticleAdminJSON_NotFound(t *testing.T) {
 func TestGetArticleAdminJSON_EmptySlug(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	h := NewHandlers(repo)
 
 	req := httptest.NewRequest("GET", "/api/admin/blog/articles", nil)

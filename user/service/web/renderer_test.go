@@ -5,11 +5,10 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"github.com/titpetric/vuego"
 	"github.com/titpetric/vuego-cli/basecoat"
 
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user/service/web"
 	"github.com/titpetric/platform-app/user/view"
 )
@@ -28,11 +27,11 @@ func TestRendererLogin(t *testing.T) {
 		}
 
 		tpl := renderer.Login(data)
-		require.NotNil(t, tpl)
+		assert.NotNil(t, tpl)
 
 		var buf bytes.Buffer
 		err := tpl.Render(ctx, &buf)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		output := buf.String()
 		assert.Contains(t, output, "test@example.com")
 	})
@@ -45,11 +44,11 @@ func TestRendererLogin(t *testing.T) {
 		}
 
 		tpl := renderer.Login(data)
-		require.NotNil(t, tpl)
+		assert.NotNil(t, tpl)
 
 		var buf bytes.Buffer
 		err := tpl.Render(ctx, &buf)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		output := buf.String()
 		assert.Contains(t, output, "user@example.com")
 		assert.Contains(t, output, "Invalid credentials")
@@ -65,7 +64,7 @@ func TestRendererLogout(t *testing.T) {
 		}
 
 		tpl := renderer.Logout(data)
-		require.NotNil(t, tpl)
+		assert.NotNil(t, tpl)
 	})
 }
 
@@ -80,11 +79,11 @@ func TestRendererRegister(t *testing.T) {
 		}
 
 		tpl := renderer.Register(data)
-		require.NotNil(t, tpl)
+		assert.NotNil(t, tpl)
 
 		var buf bytes.Buffer
 		err := tpl.Render(ctx, &buf)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		output := buf.String()
 		assert.Contains(t, output, "newuser@example.com")
 		assert.Contains(t, output, "John Doe")
@@ -99,11 +98,11 @@ func TestRendererRegister(t *testing.T) {
 		}
 
 		tpl := renderer.Register(data)
-		require.NotNil(t, tpl)
+		assert.NotNil(t, tpl)
 
 		var buf bytes.Buffer
 		err := tpl.Render(ctx, &buf)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		output := buf.String()
 		assert.Contains(t, output, "jane@example.com")
 		assert.Contains(t, output, "Jane")

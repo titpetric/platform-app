@@ -5,7 +5,7 @@ import (
 	"os"
 	"slices"
 
-	_ "github.com/titpetric/platform/pkg/drivers"
+	_ "github.com/titpetric/platform-app/internal/drivers"
 
 	"github.com/titpetric/cli"
 	"github.com/titpetric/platform"

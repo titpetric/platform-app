@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
-	"github.com/titpetric/platform/pkg/ulid"
 
 	"github.com/titpetric/platform-app/user/model"
 )
@@ -29,7 +29,7 @@ func (s *PasskeyStorage) Create(ctx context.Context, passkey *model.UserPasskey)
 	ctx, span := oida.StartAuto(ctx, s.Create)
 	defer span.End()
 
-	passkey.ID = ulid.String()
+	passkey.ID = ulid.Make().String()
 	now := time.Now()
 	passkey.SetCreatedAt(now)
 

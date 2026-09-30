@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/titpetric/platform/pkg/require"
+
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestUserPasskeyToCredential(t *testing.T) {
@@ -19,10 +20,10 @@ func TestUserPasskeyToCredential(t *testing.T) {
 	}
 
 	cred := passkey.ToCredential()
-	require.Equal(t, passkey.CredentialID, cred.ID)
-	require.Equal(t, passkey.PublicKey, cred.PublicKey)
-	require.Equal(t, passkey.AttestationType, cred.AttestationType)
-	require.Equal(t, uint32(5), cred.Authenticator.SignCount)
+	assert.Equal(t, passkey.CredentialID, cred.ID)
+	assert.Equal(t, passkey.PublicKey, cred.PublicKey)
+	assert.Equal(t, passkey.AttestationType, cred.AttestationType)
+	assert.Equal(t, uint32(5), cred.Authenticator.SignCount)
 }
 
 func TestUserPasskeyToCredentialInvalidJSON(t *testing.T) {
@@ -32,7 +33,7 @@ func TestUserPasskeyToCredentialInvalidJSON(t *testing.T) {
 
 	// Should not panic, just return empty transports
 	cred := passkey.ToCredential()
-	require.Equal(t, 0, len(cred.Transport))
+	assert.Equal(t, 0, len(cred.Transport))
 }
 
 func TestTransportJSON(t *testing.T) {
@@ -42,10 +43,10 @@ func TestTransportJSON(t *testing.T) {
 	}
 
 	json := TransportJSON(transports)
-	require.Equal(t, `["internal","usb"]`, json)
+	assert.Equal(t, `["internal","usb"]`, json)
 }
 
 func TestTransportJSONEmpty(t *testing.T) {
 	json := TransportJSON(nil)
-	require.Equal(t, "null", json)
+	assert.Equal(t, "null", json)
 }

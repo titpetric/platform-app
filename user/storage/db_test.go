@@ -6,7 +6,8 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/titpetric/platform/pkg/assert"
+
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func NewTestDB(t *testing.T) *sqlx.DB {

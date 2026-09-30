@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/titpetric/platform/pkg/require"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestUser(t *testing.T) {
@@ -18,7 +18,7 @@ func TestUser(t *testing.T) {
 	s1 := m1.String()
 	s2 := m2.String()
 
-	require.NotEqual(t, s1, s2)
-	require.Equal(t, s1, "Tit Petric")
-	require.Equal(t, s2, "Deleted user")
+	assert.NotEqual(t, s1, s2)
+	assert.Equal(t, s1, "Tit Petric")
+	assert.Equal(t, s2, "Deleted user")
 }

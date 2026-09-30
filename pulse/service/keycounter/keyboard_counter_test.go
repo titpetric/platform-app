@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestKeyboardCounter_CancelsCleanly(t *testing.T) {

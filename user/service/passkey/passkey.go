@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/titpetric/platform/pkg/ulid"
+	ulid "github.com/oklog/ulid/v2"
 
 	"github.com/titpetric/platform-app/user/model"
 )
@@ -51,7 +51,7 @@ type LoginResult struct {
 
 // BeginRegistration starts the WebAuthn registration ceremony for a new user.
 func (s *Service) BeginRegistration(req *model.UserCreateRequest) (token string, options *protocol.CredentialCreation, err error) {
-	tempID := ulid.String()
+	tempID := ulid.Make().String()
 	waUser := &model.WebAuthnUser{
 		User: &model.User{
 			ID:       tempID,
@@ -67,7 +67,7 @@ func (s *Service) BeginRegistration(req *model.UserCreateRequest) (token string,
 		return "", nil, fmt.Errorf("begin registration: %w", err)
 	}
 
-	token = ulid.String()
+	token = ulid.Make().String()
 	s.mu.Lock()
 	s.sessions[token] = &ceremonySession{
 		SessionData: sessionData,
@@ -103,7 +103,7 @@ func (s *Service) FinishRegistration(token string, r *http.Request) (*Registrati
 
 	// Create the user (password not required for passkey registration).
 	createReq := cs.UserRequest
-	createReq.Password = ulid.String()
+	createReq.Password = ulid.Make().String()
 	user, err := s.userStorage.Create(ctx, createReq)
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
@@ -132,7 +132,7 @@ func (s *Service) BeginLogin() (token string, options *protocol.CredentialAssert
 		return "", nil, fmt.Errorf("begin login: %w", err)
 	}
 
-	token = ulid.String()
+	token = ulid.Make().String()
 	s.mu.Lock()
 	s.sessions[token] = &ceremonySession{
 		SessionData: sessionData,

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
-	"github.com/titpetric/platform/pkg/ulid"
+	ulid "github.com/oklog/ulid/v2"
 )
 
 // JWT and Claims provide JWT token creation and validation.
@@ -118,7 +118,7 @@ func (u *JWT) CreateWithJTI(userID string, ttl time.Duration) (string, string, e
 		return []byte(u.secret)
 	}
 
-	jti := ulid.String()
+	jti := ulid.Make().String()
 	claims := jwt.MapClaims{}
 	claims["user_id"] = userID
 	claims["jti"] = jti

@@ -3,7 +3,7 @@ package model
 import (
 	"testing"
 
-	"github.com/titpetric/platform/pkg/require"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestWebAuthnUser(t *testing.T) {
@@ -37,14 +37,14 @@ func TestWebAuthnUser(t *testing.T) {
 		Passkeys: passkeys,
 	}
 
-	require.Equal(t, []byte("user-123"), waUser.WebAuthnID())
-	require.Equal(t, "testuser", waUser.WebAuthnName())
-	require.Equal(t, "Test User", waUser.WebAuthnDisplayName())
+	assert.Equal(t, []byte("user-123"), waUser.WebAuthnID())
+	assert.Equal(t, "testuser", waUser.WebAuthnName())
+	assert.Equal(t, "Test User", waUser.WebAuthnDisplayName())
 
 	creds := waUser.WebAuthnCredentials()
-	require.Equal(t, 2, len(creds))
-	require.Equal(t, []byte("cred-1"), creds[0].ID)
-	require.Equal(t, []byte("cred-2"), creds[1].ID)
+	assert.Equal(t, 2, len(creds))
+	assert.Equal(t, []byte("cred-1"), creds[0].ID)
+	assert.Equal(t, []byte("cred-2"), creds[1].ID)
 }
 
 func TestWebAuthnUserNoPasskeys(t *testing.T) {
@@ -60,5 +60,5 @@ func TestWebAuthnUserNoPasskeys(t *testing.T) {
 	}
 
 	creds := waUser.WebAuthnCredentials()
-	require.Equal(t, 0, len(creds))
+	assert.Equal(t, 0, len(creds))
 }

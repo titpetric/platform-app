@@ -6,8 +6,9 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/titpetric/vuego"
+
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 //go:embed all:testdata

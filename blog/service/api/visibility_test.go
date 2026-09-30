@@ -10,11 +10,10 @@ import (
 	_ "modernc.org/sqlite"
 
 	chi "github.com/go-chi/chi/v5"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/storage"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 // seedVisibilityArticles inserts one published, one draft, and one scheduled article.
@@ -24,13 +23,13 @@ func seedVisibilityArticles(t *testing.T, repo *storage.Storage) {
 	past := time.Now().Add(-24 * time.Hour)
 	future := time.Now().Add(24 * time.Hour)
 
-	require.NoError(t, repo.InsertArticle(ctx, &model.Article{
+	assert.NoError(t, repo.InsertArticle(ctx, &model.Article{
 		ID: "vis-pub", Slug: "published-post", Title: "Public", Date: &past, Draft: 0,
 	}))
-	require.NoError(t, repo.InsertArticle(ctx, &model.Article{
+	assert.NoError(t, repo.InsertArticle(ctx, &model.Article{
 		ID: "vis-draft", Slug: "draft-post", Title: "Secret Draft", Date: &past, Draft: 1,
 	}))
-	require.NoError(t, repo.InsertArticle(ctx, &model.Article{
+	assert.NoError(t, repo.InsertArticle(ctx, &model.Article{
 		ID: "vis-sched", Slug: "scheduled-post", Title: "Future Post", Date: &future, Draft: 0,
 	}))
 }
@@ -38,7 +37,7 @@ func seedVisibilityArticles(t *testing.T, repo *storage.Storage) {
 func TestListArticlesJSON_ExcludesDraftsAndScheduled(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	seedVisibilityArticles(t, repo)
 
 	h := NewHandlers(repo)
@@ -46,18 +45,18 @@ func TestListArticlesJSON_ExcludesDraftsAndScheduled(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ListArticlesJSON(w, r)
 
-	require.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 
 	var list model.ArticleList
-	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &list))
-	require.Equal(t, 1, list.Total, "only published article should be listed")
-	require.Equal(t, "published-post", list.Articles[0].Slug)
+	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &list))
+	assert.Equal(t, 1, list.Total, "only published article should be listed")
+	assert.Equal(t, "published-post", list.Articles[0].Slug)
 }
 
 func TestGetArticleJSON_DraftReturns404(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	seedVisibilityArticles(t, repo)
 
 	h := NewHandlers(repo)
@@ -68,20 +67,20 @@ func TestGetArticleJSON_DraftReturns404(t *testing.T) {
 		r := httptest.NewRequest(http.MethodGet, "/api/blog/articles/"+slug, nil)
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, r)
-		require.Equal(t, http.StatusNotFound, w.Code, "slug %s should be 404", slug)
+		assert.Equal(t, http.StatusNotFound, w.Code, "slug %s should be 404", slug)
 	}
 
 	// Published article is reachable
 	r := httptest.NewRequest(http.MethodGet, "/api/blog/articles/published-post", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, r)
-	require.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestGetArticleJSON_InvalidSlug(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	h := NewHandlers(repo)
 	router := chi.NewRouter()
@@ -91,13 +90,13 @@ func TestGetArticleJSON_InvalidSlug(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, r)
 
-	require.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
 func TestSearchArticlesJSON_ExcludesDrafts(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	seedVisibilityArticles(t, repo)
 
 	h := NewHandlers(repo)
@@ -105,17 +104,17 @@ func TestSearchArticlesJSON_ExcludesDrafts(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.SearchArticlesJSON(w, r)
 
-	require.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 
 	var result map[string]any
-	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &result))
-	require.Equal(t, float64(1), result["total"], "search should only return published")
+	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &result))
+	assert.Equal(t, float64(1), result["total"], "search should only return published")
 }
 
 func TestSearchArticlesJSON_QueryLengthValidation(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	h := NewHandlers(repo)
 	long := make([]byte, maxSearchQueryLength+1)
@@ -126,21 +125,21 @@ func TestSearchArticlesJSON_QueryLengthValidation(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.SearchArticlesJSON(w, r)
 
-	require.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Contains(t, w.Body.String(), "exceeds maximum length")
 }
 
 func TestSearchArticlesJSON_LikeWildcardsEscaped(t *testing.T) {
 	db := setupTestDB(t)
 	repo, err := storage.NewStorage(t.Context(), db)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Insert two articles where one would match a wildcard literal and one would not.
 	past := time.Now().Add(-time.Hour)
-	require.NoError(t, repo.InsertArticle(t.Context(), &model.Article{
+	assert.NoError(t, repo.InsertArticle(t.Context(), &model.Article{
 		ID: "lk-1", Slug: "post-50-pct", Title: "Discount 50%", Date: &past, Draft: 0,
 	}))
-	require.NoError(t, repo.InsertArticle(t.Context(), &model.Article{
+	assert.NoError(t, repo.InsertArticle(t.Context(), &model.Article{
 		ID: "lk-2", Slug: "post-plain", Title: "Plain Post", Date: &past, Draft: 0,
 	}))
 
@@ -150,11 +149,11 @@ func TestSearchArticlesJSON_LikeWildcardsEscaped(t *testing.T) {
 	r := httptest.NewRequest(http.MethodGet, "/api/blog/search?q=50%25", nil) // %25 == "%"
 	w := httptest.NewRecorder()
 	h.SearchArticlesJSON(w, r)
-	require.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 
 	var result map[string]any
-	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &result))
-	require.Equal(t, float64(1), result["total"], "wildcard '%%' must be escaped, only one article should match")
+	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &result))
+	assert.Equal(t, float64(1), result["total"], "wildcard '%%' must be escaped, only one article should match")
 }
 
 func TestIsValidSlug(t *testing.T) {

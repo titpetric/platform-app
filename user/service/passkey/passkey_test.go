@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/titpetric/platform/pkg/require"
 
+	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user/model"
 )
 
@@ -135,7 +135,7 @@ func newTestWebAuthn(t *testing.T) *webauthn.WebAuthn {
 		RPDisplayName: "Test App",
 		RPOrigins:     []string{"http://localhost:3000"},
 	})
-	require.Nil(t, err)
+	assert.Nil(t, err)
 	return wa
 }
 
@@ -145,7 +145,7 @@ func TestNew(t *testing.T) {
 	us := newMockUserStorage()
 
 	svc := New(wa, ps, us)
-	require.NotNil(t, svc)
+	assert.NotNil(t, svc)
 }
 
 func TestBeginRegistration(t *testing.T) {
@@ -160,10 +160,10 @@ func TestBeginRegistration(t *testing.T) {
 	}
 
 	token, options, err := svc.BeginRegistration(req)
-	require.Nil(t, err)
-	require.NotEmpty(t, token)
-	require.NotNil(t, options)
-	require.NotNil(t, options.Response.Challenge)
+	assert.Nil(t, err)
+	assert.NotEmpty(t, token)
+	assert.NotNil(t, options)
+	assert.NotNil(t, options.Response.Challenge)
 }
 
 func TestFinishRegistrationInvalidToken(t *testing.T) {
@@ -174,11 +174,11 @@ func TestFinishRegistrationInvalidToken(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodPost, "/", nil)
 	_, err := svc.FinishRegistration("invalid-token", req)
-	require.NotNil(t, err)
+	assert.NotNil(t, err)
 
 	var passkeyErr *Error
-	require.True(t, errors.As(err, &passkeyErr))
-	require.Equal(t, http.StatusBadRequest, passkeyErr.Status)
+	assert.True(t, errors.As(err, &passkeyErr))
+	assert.Equal(t, http.StatusBadRequest, passkeyErr.Status)
 }
 
 func TestBeginLogin(t *testing.T) {
@@ -188,10 +188,10 @@ func TestBeginLogin(t *testing.T) {
 	svc := New(wa, ps, us)
 
 	token, options, err := svc.BeginLogin()
-	require.Nil(t, err)
-	require.NotEmpty(t, token)
-	require.NotNil(t, options)
-	require.NotNil(t, options.Response.Challenge)
+	assert.Nil(t, err)
+	assert.NotEmpty(t, token)
+	assert.NotNil(t, options)
+	assert.NotNil(t, options.Response.Challenge)
 }
 
 func TestFinishLoginInvalidToken(t *testing.T) {
@@ -202,11 +202,11 @@ func TestFinishLoginInvalidToken(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodPost, "/", nil)
 	_, err := svc.FinishLogin("invalid-token", req)
-	require.NotNil(t, err)
+	assert.NotNil(t, err)
 
 	var passkeyErr *Error
-	require.True(t, errors.As(err, &passkeyErr))
-	require.Equal(t, http.StatusBadRequest, passkeyErr.Status)
+	assert.True(t, errors.As(err, &passkeyErr))
+	assert.Equal(t, http.StatusBadRequest, passkeyErr.Status)
 }
 
 func TestConsumeSessionExpired(t *testing.T) {
@@ -217,11 +217,11 @@ func TestConsumeSessionExpired(t *testing.T) {
 
 	// Try to consume a session that doesn't exist
 	_, err := svc.consumeSession("nonexistent")
-	require.NotNil(t, err)
+	assert.NotNil(t, err)
 
 	var passkeyErr *Error
-	require.True(t, errors.As(err, &passkeyErr))
-	require.Equal(t, http.StatusBadRequest, passkeyErr.Status)
+	assert.True(t, errors.As(err, &passkeyErr))
+	assert.Equal(t, http.StatusBadRequest, passkeyErr.Status)
 }
 
 func TestError(t *testing.T) {
@@ -229,5 +229,5 @@ func TestError(t *testing.T) {
 		Status: http.StatusBadRequest,
 		Err:    errors.New("test error"),
 	}
-	require.Equal(t, "test error", err.Error())
+	assert.Equal(t, "test error", err.Error())
 }

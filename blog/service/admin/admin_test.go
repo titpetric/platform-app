@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestParsePagination(t *testing.T) {

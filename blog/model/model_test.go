@@ -4,9 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/titpetric/platform-app/blog/model"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestArticle_IsDraft(t *testing.T) {

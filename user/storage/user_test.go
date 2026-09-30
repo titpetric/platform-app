@@ -3,11 +3,11 @@ package storage
 import (
 	"testing"
 
-	"github.com/titpetric/platform/pkg/require"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestNewUserStorage(t *testing.T) {
 	s := NewUserStorage(nil)
 
-	require.NotNil(t, s)
+	assert.NotNil(t, s)
 }

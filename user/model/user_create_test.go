@@ -3,7 +3,7 @@ package model
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/titpetric/platform-app/internal/assert"
 )
 
 func TestValidateUsername(t *testing.T) {
