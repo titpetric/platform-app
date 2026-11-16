@@ -1,8 +1,6 @@
 # Pulse
 
-A key counting docker server/client. The server will ingest key counts
-from authenticated clients. Clients allow registration and login against
-the server. Multiple clients can be added to a single user.
+A key counting docker server/client. The server will ingest key counts from authenticated clients. Clients allow registration and login against the server. Multiple clients can be added to a single user.
 
 ## Configuring the client
 
@@ -30,13 +28,9 @@ Note that reading from keyboard uses:
 - `privileged: true` - ability to read from devices,
 - `user: root` - the filesystem permissions for dev/input
 
-
 ## Starting the client
 
-A client first needs to authenticate to a server, and store it's
-configuration. First, create a `data/` folder and give it write
-permissions. This is used to store authentication details for the pulse
-client. It stores no other data.
+A client first needs to authenticate to a server, and store it's configuration. First, create a `data/` folder and give it write permissions. This is used to store authentication details for the pulse client. It stores no other data.
 
 ```bash
 mkdir -p data

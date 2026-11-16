@@ -18,7 +18,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/titpetric/cli v0.7.0
 	github.com/titpetric/oida v0.5.0
-	github.com/titpetric/platform v0.9.1
+	github.com/titpetric/platform v0.9.2
 	github.com/titpetric/vuego v0.11.0
 	github.com/titpetric/vuego-cli v0.3.0
 	golang.org/x/crypto v0.59.0

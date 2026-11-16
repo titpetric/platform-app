@@ -154,8 +154,8 @@ github.com/titpetric/lessgo v0.2.0 h1:0o2vcYrwH8U6uB/Ze01ESOs2RTMGGqqS57RTbjAUEg
 github.com/titpetric/lessgo v0.2.0/go.mod h1:Xiw6dL/VVi9uxynx9lm5znrsKTcvmnFd8jCAnYRNkS4=
 github.com/titpetric/oida v0.5.0 h1:f5rH/UojyO+uuth+72TdQOeOQeCxy858lZs0ytLuLa8=
 github.com/titpetric/oida v0.5.0/go.mod h1:XDHVisUIFklSl+EGGef+pkLVTqt9OoUZwJpCB+eNROE=
-github.com/titpetric/platform v0.9.1 h1:g6lEJHtjeI9qSmmmz8rTDmJd30mbJVKtqIJj4VhqOP8=
-github.com/titpetric/platform v0.9.1/go.mod h1:48yijMDEqHZD1ZJs4TDTKlXMutiktwhw7wbkIv/N2/Y=
+github.com/titpetric/platform v0.9.2 h1:HCXidHBNjlIJBPXuum434S6wRvirvxOYCSaQorcUMyY=
+github.com/titpetric/platform v0.9.2/go.mod h1:3v8Dm7he3dQ6OSmzTPtbGZA6nO2Wz1rK48gArzZPAOU=
 github.com/titpetric/vuego v0.11.0 h1:MxsKcQd+9uIR+S4okj4gJtC5C1HFpBo6+fLOE/26uEc=
 github.com/titpetric/vuego v0.11.0/go.mod h1:vobivzYa+KtfAX18gKkUg5i3gSywLUKYdywnKFoXDZk=
 github.com/titpetric/vuego-cli v0.3.0 h1:FgYW070uGUIJxs2Z2WhSmHcvQgg0fg4orNsmXE8HqlE=

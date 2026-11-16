@@ -4,16 +4,13 @@ This is an example platform application.
 
 ## About
 
-While the module isn't implemented, this demonstrates structure, and
-handles some typical concerns for modules like migrating SQL schema.
+While the module isn't implemented, this demonstrates structure, and handles some typical concerns for modules like migrating SQL schema.
 
 - `schema/` and `schema.go` handle migrations,
 - `main.go` registers a new module and runs migrations,
 - `model/types.mig.go` is generated from database schema (`task migrate`)
 
-The database connection for the maillist is set up separately to the
-default connection. Requests against the platform user module use a
-different connection, as defined in Taskfile.yml.
+The database connection for the maillist is set up separately to the default connection. Requests against the platform user module use a different connection, as defined in Taskfile.yml.
 
 ```yaml
     env:
@@ -21,8 +18,7 @@ different connection, as defined in Taskfile.yml.
       PLATFORM_DB_MAILLIST: "mysql://platform:platform@tcp(127.0.0.1:3306)/platform_maillist"
 ```
 
-This allows the maillist project to work on maillist schema, while
-integrating with the platform for database access and authentication.
+This allows the maillist project to work on maillist schema, while integrating with the platform for database access and authentication.
 
 ## Integrations
 

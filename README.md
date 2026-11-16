@@ -8,8 +8,7 @@ It is built with:
 - [MIG - schema migration tooling](https://github.com/go-bridget/mig)
 - [Atkins runner](https://github.com/titpetric/atkins)
 
-It implements full applications to deploy via docker. The code here has
-been used to provide:
+It implements full applications to deploy via docker. The code here has been used to provide:
 
 - https://vuego.incubator.to
 - https://pulse.incubator.to
@@ -30,7 +29,7 @@ go run ./internal/cmd/structurelint
 It will print the following output, giving a rudimentary maturity score.
 
 | folder   | README.md | docs | compose.yml | docker | cmd/*          | config | model | schema | storage | service | service/*               | view | *                               |
-| -------- | --------- | ---- | ----------- | ------ | -------------- | ------ | ----- | ------ | ------- | ------- | ----------------------- | ---- | ------------------------------- |
+|----------|-----------|------|-------------|--------|----------------|--------|-------|--------|---------|---------|-------------------------|------|---------------------------------|
 | blog     | [x]       | [x]  | [ ]         | [ ]    | blog, generate | [ ]    | [x]   | [x]    | [x]     | [ ]     |                         | [x]  | data, handlers, markdown, theme |
 | cms      | [ ]       | [ ]  | [ ]         | [ ]    |                | [ ]    | [ ]   | [x]    | [ ]     | [ ]     |                         | [ ]  | templates, testdata             |
 | daily    | [ ]       | [x]  | [ ]         | [ ]    |                | [ ]    | [x]   | [x]    | [x]     | [ ]     |                         | [x]  | templates                       |
@@ -72,10 +71,7 @@ Experimental:
 - `./themes` - experimental code for themes via go packages
 - `./cms` - experimental code for a cms, non functional
 
-The deprecated and experimental options are meant to be removed over
-time. No packages here are intended for use outside of the platform-app
-repository, and the tendency is to only keep the module packages in the
-root of the repo.
+The deprecated and experimental options are meant to be removed over time. No packages here are intended for use outside of the platform-app repository, and the tendency is to only keep the module packages in the root of the repo.
 
 ## Docs
 

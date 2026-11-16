@@ -4,21 +4,21 @@ Email service for sending transactional emails via SMTP with persistent queue, r
 
 ## TODO List
 
-- [x] Create modules/email directory structure with model/, storage/, and smtp/ subpackages
-- [x] Create Email model with ID, recipient, subject, body, status, created_at fields
-- [x] Create email storage (Create, Get, Update methods for database operations)
-- [x] Create Sender interface and SMTP implementation in smtp/ subpackage
-- [x] Create Service struct with Start() method for in-memory queue consumer
-- [x] Implement email queue consumer that sends emails via SMTP
-- [x] Add mailhog service to docker-compose.yml
-- [x] Configure PLATFORM_EMAIL_* environment variables for SMTP
-- [x] Create integration tests for email sending to mailhog
-- [x] Create modules/email/README.md with TODO list and usage examples
-- [x] Implement configurable retry logic with max retries and duration
-- [x] Add structured logging for email operations
-- [x] Test Start() processes pending emails on startup
-- [x] Test database updates with sent status
-- [x] Make smtp.Config optional parameter with env fallback
+- [X] Create modules/email directory structure with model/, storage/, and smtp/ subpackages
+- [X] Create Email model with ID, recipient, subject, body, status, created_at fields
+- [X] Create email storage (Create, Get, Update methods for database operations)
+- [X] Create Sender interface and SMTP implementation in smtp/ subpackage
+- [X] Create Service struct with Start() method for in-memory queue consumer
+- [X] Implement email queue consumer that sends emails via SMTP
+- [X] Add mailhog service to docker-compose.yml
+- [X] Configure PLATFORM_EMAIL_* environment variables for SMTP
+- [X] Create integration tests for email sending to mailhog
+- [X] Create modules/email/README.md with TODO list and usage examples
+- [X] Implement configurable retry logic with max retries and duration
+- [X] Add structured logging for email operations
+- [X] Test Start() processes pending emails on startup
+- [X] Test database updates with sent status
+- [X] Make smtp.Config optional parameter with env fallback
 
 ## Architecture
 
@@ -75,14 +75,14 @@ The `smtp.Config` is optional when creating a Service. If `nil`, configuration i
 ```go
 // Option 1: Explicit config
 smtpConfig := &smtp.Config{
-    Host: "smtp.example.com",
-    Port: 587,
-    From: "noreply@example.com",
+	Host: "smtp.example.com",
+	Port: 587,
+	From: "noreply@example.com",
 }
 service := NewService(storage, smtpConfig)
 
 // Option 2: From environment
-service := NewService(storage, nil)  // Uses PLATFORM_EMAIL_* env vars
+service := NewService(storage, nil) // Uses PLATFORM_EMAIL_* env vars
 ```
 
 ### Development with Mailhog
@@ -105,19 +105,19 @@ Mailhog services:
 package mypackage
 
 import (
-    "context"
-    "github.com/titpetric/platform-app/modules/email"
-    "github.com/titpetric/platform-app/modules/email/model"
+	"context"
+	"github.com/titpetric/platform-app/modules/email"
+	"github.com/titpetric/platform-app/modules/email/model"
 )
 
 func SendWelcomeEmail(ctx context.Context, emailService *email.Service, userEmail string) error {
-    email := model.NewEmail(
-        userEmail,
-        "Welcome to Platform App",
-        "Thank you for signing up! Your account is ready to use.",
-    )
-    
-    return emailService.AddEmail(ctx, email)
+	email := model.NewEmail(
+		userEmail,
+		"Welcome to Platform App",
+		"Thank you for signing up! Your account is ready to use.",
+	)
+
+	return emailService.AddEmail(ctx, email)
 }
 ```
 
@@ -152,25 +152,25 @@ defer service.Stop()
 package user
 
 import (
-    "net/http"
-    "github.com/titpetric/platform-app/modules/email/model"
+	"github.com/titpetric/platform-app/modules/email/model"
+	"net/http"
 )
 
 func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
-    // ... registration logic ...
-    
-    // Send welcome email (non-blocking)
-    email := model.NewEmail(
-        user.Email,
-        "Welcome!",
-        "Your account has been created successfully.",
-    )
-    
-    if err := h.EmailService.AddEmail(r.Context(), email); err != nil {
-        h.Error(r, "Failed to queue welcome email", err)
-    }
-    
-    // ... rest of handler ...
+	// ... registration logic ...
+
+	// Send welcome email (non-blocking)
+	email := model.NewEmail(
+		user.Email,
+		"Welcome!",
+		"Your account has been created successfully.",
+	)
+
+	if err := h.EmailService.AddEmail(r.Context(), email); err != nil {
+		h.Error(r, "Failed to queue welcome email", err)
+	}
+
+	// ... rest of handler ...
 }
 ```
 
@@ -178,17 +178,17 @@ func (h *Service) Register(w http.ResponseWriter, r *http.Request) {
 
 ```go
 type Email struct {
-    ID         string     // ULID identifier
-    Recipient  string     // Email address
-    Subject    string     // Email subject
-    Body       string     // Email body
-    Status     string     // pending, sent, or failed (in-memory, not persisted)
-    CreatedAt  time.Time  // Creation timestamp
-    SentAt     *time.Time // Sent timestamp (if sent)
-    Error      *string    // Final error (if failed)
-    RetryCount int        // Number of retry attempts
-    LastError  *string    // Last send attempt error
-    LastRetry  *time.Time // Last retry attempt timestamp
+	ID         string     // ULID identifier
+	Recipient  string     // Email address
+	Subject    string     // Email subject
+	Body       string     // Email body
+	Status     string     // pending, sent, or failed (in-memory, not persisted)
+	CreatedAt  time.Time  // Creation timestamp
+	SentAt     *time.Time // Sent timestamp (if sent)
+	Error      *string    // Final error (if failed)
+	RetryCount int        // Number of retry attempts
+	LastError  *string    // Last send attempt error
+	LastRetry  *time.Time // Last retry attempt timestamp
 }
 ```
 
@@ -201,6 +201,7 @@ type Email struct {
 ## Database Schema
 
 ### email_queue Table
+
 Stores emails pending to be sent. Emails are removed upon successful send or failure.
 
 ```sql
@@ -217,6 +218,7 @@ CREATE TABLE email_queue (
 ```
 
 ### email_sent Table
+
 Audit trail for successfully sent emails.
 
 ```sql
@@ -230,6 +232,7 @@ CREATE TABLE email_sent (
 ```
 
 ### email_failed Table
+
 Audit trail for emails that failed to send.
 
 ```sql
@@ -293,6 +296,7 @@ The service uses Go's standard `log/slog` package for structured logging:
 - **ERROR**: Permanent failures or fatal conditions
 
 Example log output:
+
 ```
 level=info msg="email sent successfully" email_id=01ARZ3NDEKTSV4RRFFQ69G5FAV recipient=user@example.com subject="Welcome!"
 level=warn msg="email send failed, will retry" email_id=01ARZ3NDEKTSV4RRFFQ69G5FAV retry_count=1 max_retries=3 error="connection refused"
