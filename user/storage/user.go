@@ -9,20 +9,20 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
-	"github.com/titpetric/platform"
 	"golang.org/x/crypto/bcrypt"
 
 	emailmodel "github.com/titpetric/platform-app/email/model"
 	emailstorage "github.com/titpetric/platform-app/email/storage"
 	"github.com/titpetric/platform-app/user/model"
+
+	"github.com/titpetric/pdo/client"
 )
 
-// UserStorage implements the model.Storage interface using MySQL via sqlx.
+// UserStorage implements the model.Storage interface using MySQL through pdo.
 type UserStorage struct {
-	db *sqlx.DB
+	db *sql.DB
 
 	activationSubject   string
 	activationURLFormat string
@@ -38,8 +38,8 @@ func init() {
 	dummyHash, _ = bcrypt.GenerateFromPassword([]byte("dummy-password-for-timing"), bcrypt.DefaultCost)
 }
 
-// NewUserStorage returns a new UserStorage backed by the given sqlx.DB.
-func NewUserStorage(handle *sqlx.DB) *UserStorage {
+// NewUserStorage returns a new UserStorage backed by the given pool.
+func NewUserStorage(handle *sql.DB) *UserStorage {
 	return &UserStorage{
 		activationSubject:   "Activate your user",
 		activationURLFormat: "https://{SITE_DOMAIN}/activation/%s",
@@ -160,7 +160,13 @@ func (s *UserStorage) validateCreate(req *model.UserCreateRequest) error {
 // Keeping these in a single transaction means a partial failure cannot
 // leave a user without credentials or an orphan user_auth row.
 func (s *UserStorage) insertUserAndAuth(ctx context.Context, req *model.UserCreateRequest, userID, hashedPassword string, state activationState, activationToken string) error {
-	return platform.Transaction(ctx, s.db, func(ctx context.Context, tx *sqlx.Tx) error {
+	db := client.NewClient(s.db)
+	if err := db.Begin(ctx); err != nil {
+		return fmt.Errorf("begin transaction: %w", err)
+	}
+	defer db.Rollback()
+
+	{
 		now := time.Now()
 
 		userData := *req.User()
@@ -168,7 +174,7 @@ func (s *UserStorage) insertUserAndAuth(ctx context.Context, req *model.UserCrea
 		userData.SetCreatedAt(now)
 		userData.SetUpdatedAt(now)
 
-		if _, err := tx.NamedExecContext(ctx, userData.Insert(), userData); err != nil {
+		if err := db.Exec(ctx, userData.Insert(), userData); err != nil {
 			return fmt.Errorf("create user: %w", err)
 		}
 
@@ -178,7 +184,7 @@ func (s *UserStorage) insertUserAndAuth(ctx context.Context, req *model.UserCrea
 		userAuth.SetCreatedAt(now)
 		userAuth.SetUpdatedAt(now)
 
-		if _, err := tx.NamedExecContext(ctx, userAuth.Insert(), userAuth); err != nil {
+		if err := db.Exec(ctx, userAuth.Insert(), userAuth); err != nil {
 			return fmt.Errorf("create user_auth: %w", err)
 		}
 
@@ -187,16 +193,20 @@ func (s *UserStorage) insertUserAndAuth(ctx context.Context, req *model.UserCrea
 		// we patch them in with raw SQL instead of relying on Insert().
 		switch state {
 		case activatedNow:
-			if _, err := tx.ExecContext(ctx, `UPDATE user_auth SET activated_at = ? WHERE user_id = ?`, now, userID); err != nil {
+			if err := db.Exec(ctx, `UPDATE user_auth SET activated_at = ? WHERE user_id = ?`, now, userID); err != nil {
 				return fmt.Errorf("activate user_auth: %w", err)
 			}
 		case activatedNever:
-			if _, err := tx.ExecContext(ctx, `UPDATE user_auth SET activation_token = ?, activation_sent_at = ? WHERE user_id = ?`, activationToken, now, userID); err != nil {
+			if err := db.Exec(ctx, `UPDATE user_auth SET activation_token = ?, activation_sent_at = ? WHERE user_id = ?`, activationToken, now, userID); err != nil {
 				return fmt.Errorf("set activation token: %w", err)
 			}
 		}
-		return nil
-	})
+	}
+
+	if err := db.Commit(); err != nil {
+		return fmt.Errorf("commit transaction: %w", err)
+	}
+	return nil
 }
 
 // Update modifies an existing user and updates the updated_at timestamp.
@@ -225,7 +235,7 @@ func (s *UserStorage) Get(ctx context.Context, id string) (*model.User, error) {
 
 	u := &model.User{}
 	query := `SELECT * FROM user WHERE id=?`
-	if err := s.db.GetContext(ctx, u, query, id); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, u, query, id); err != nil {
 		return nil, fmt.Errorf("get user id=%s: %w", id, err)
 	}
 	return u, nil
@@ -238,7 +248,7 @@ func (s *UserStorage) GetByUsername(ctx context.Context, username string) (*mode
 
 	u := &model.User{}
 	query := `SELECT * FROM user WHERE username=?`
-	if err := s.db.GetContext(ctx, u, query, username); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, u, query, username); err != nil {
 		return nil, err
 	}
 	return u, nil
@@ -251,7 +261,7 @@ func (s *UserStorage) GetByStub(ctx context.Context, slug string) (*model.User, 
 
 	u := &model.User{}
 	query := `SELECT * FROM user WHERE slug=?`
-	if err := s.db.GetContext(ctx, u, query, slug); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, u, query, slug); err != nil {
 		return nil, fmt.Errorf("get user slug=%s: %w", slug, err)
 	}
 	return u, nil
@@ -269,7 +279,7 @@ func (s *UserStorage) GetGroups(ctx context.Context, userID string) ([]model.Use
 		WHERE m.user_id = ?
 	`
 	var groups []model.UserGroup
-	if err := s.db.SelectContext(ctx, &groups, query, userID); err != nil {
+	if err := client.NewClient(s.db).Select(ctx, &groups, query, userID); err != nil {
 		return nil, fmt.Errorf("get user groups: %w", err)
 	}
 	return groups, nil
@@ -287,7 +297,7 @@ func (s *UserStorage) Authenticate(ctx context.Context, userAuth model.UserAuth)
 	query := `SELECT user_id, password FROM user_auth WHERE email=? LIMIT 1`
 
 	dbAuth := &model.UserAuth{}
-	if err := s.db.GetContext(ctx, dbAuth, query, userAuth.Email); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, dbAuth, query, userAuth.Email); err != nil {
 		// Spend bcrypt time on the not-found path so the response
 		// duration does not reveal whether the email exists. The
 		// outcome of this compare is discarded; we still return the
@@ -334,7 +344,7 @@ func (s *UserStorage) IsActivated(ctx context.Context, userID string) (bool, err
 	defer span.End()
 
 	var activatedAt *time.Time
-	err := s.db.GetContext(ctx, &activatedAt, `SELECT activated_at FROM user_auth WHERE user_id=?`, userID)
+	err := client.NewClient(s.db).Get(ctx, &activatedAt, `SELECT activated_at FROM user_auth WHERE user_id=?`, userID)
 	if err != nil {
 		return false, fmt.Errorf("is activated: %w", err)
 	}
@@ -356,7 +366,7 @@ func (s *UserStorage) Activate(ctx context.Context, token string) (*model.User, 
 		UserID      string     `db:"user_id"`
 		ActivatedAt *time.Time `db:"activated_at"`
 	}
-	err := s.db.GetContext(ctx, &row, `SELECT user_id, activated_at FROM user_auth WHERE activation_token=? AND activation_token<>'' LIMIT 1`, token)
+	err := client.NewClient(s.db).Get(ctx, &row, `SELECT user_id, activated_at FROM user_auth WHERE activation_token=? AND activation_token<>'' LIMIT 1`, token)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, model.ErrInvalidActivationToken
 	}
@@ -386,7 +396,7 @@ func (s *UserStorage) ResetActivation(ctx context.Context, email string) error {
 		UserID      string     `db:"user_id"`
 		ActivatedAt *time.Time `db:"activated_at"`
 	}
-	if err := s.db.GetContext(ctx, &row, `SELECT user_id, activated_at FROM user_auth WHERE email=? LIMIT 1`, email); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, &row, `SELECT user_id, activated_at FROM user_auth WHERE email=? LIMIT 1`, email); err != nil {
 		return err
 	}
 	if row.ActivatedAt != nil {
@@ -451,7 +461,7 @@ func (s *UserStorage) List(ctx context.Context) ([]model.User, error) {
 
 	var users []model.User
 	query := `SELECT * FROM user WHERE deleted_at IS NULL ORDER BY username`
-	if err := s.db.SelectContext(ctx, &users, query); err != nil {
+	if err := client.NewClient(s.db).Select(ctx, &users, query); err != nil {
 		return nil, fmt.Errorf("list users: %w", err)
 	}
 	return users, nil

@@ -6,10 +6,11 @@ import (
 	"log/slog"
 
 	"github.com/go-bridget/mig/migrate"
-	"github.com/jmoiron/sqlx"
+
+	"database/sql"
 )
 
-func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
+func Migrate(ctx context.Context, db *sql.DB, schema fs.FS) error {
 	m, err := migrate.NewManager(db, schema, "email")
 	if err != nil {
 		return err

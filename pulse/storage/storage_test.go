@@ -8,15 +8,15 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/pulse/schema"
+
+	"database/sql"
 )
 
 func newTestStorage(t *testing.T) *Storage {
 	t.Helper()
-	db, err := sqlx.Open("sqlite", ":memory:")
+	db, err := sql.Open("sqlite", ":memory:")
 	assert.NoError(t, err)
 	t.Cleanup(func() { db.Close() })
 

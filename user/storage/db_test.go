@@ -5,13 +5,13 @@ package storage_test
 import (
 	"testing"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/titpetric/platform-app/internal/assert"
+
+	"database/sql"
 )
 
-func NewTestDB(t *testing.T) *sqlx.DB {
-	dbh, err := sqlx.Connect("sqlite", ":memory:")
+func NewTestDB(t *testing.T) *sql.DB {
+	dbh, err := sql.Open("sqlite", ":memory:")
 	assert.NoError(t, err)
 
 	t.Cleanup(func() {

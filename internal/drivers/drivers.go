@@ -1,6 +1,6 @@
 // Package drivers registers the database/sql drivers this application opens.
 //
-// The platform speaks to database/sql through sqlx and registers nothing, so
+// The platform speaks to database/sql directly and registers nothing, so
 // the driver set is the choice of whoever builds the binary. Blank import this
 // package from a main or a test that opens a DSN.
 //

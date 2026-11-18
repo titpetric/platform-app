@@ -7,20 +7,20 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
 
+	"github.com/titpetric/pdo/client"
 	"github.com/titpetric/platform-app/user/model"
 )
 
 // SessionStorage implements session persistence using MySQL.
 type SessionStorage struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
 // NewSessionStorage creates a new SessionStorage.
-func NewSessionStorage(db *sqlx.DB) *SessionStorage {
+func NewSessionStorage(db *sql.DB) *SessionStorage {
 	return &SessionStorage{
 		db: db,
 	}
@@ -56,7 +56,7 @@ func (s *SessionStorage) Get(ctx context.Context, sessionID string) (*model.User
 
 	query := `SELECT * FROM user_session WHERE id=?`
 	session := &model.UserSession{}
-	if err := s.db.GetContext(ctx, session, query, sessionID); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, session, query, sessionID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, err
 		}

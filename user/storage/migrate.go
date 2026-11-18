@@ -6,11 +6,12 @@ import (
 	"log/slog"
 
 	"github.com/go-bridget/mig/migrate"
-	"github.com/jmoiron/sqlx"
+
+	"database/sql"
 )
 
 // Migrate applies SQL migrations from the given filesystem to the database.
-func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
+func Migrate(ctx context.Context, db *sql.DB, schema fs.FS) error {
 	m, err := migrate.NewManager(db, schema, "user")
 	if err != nil {
 		return err

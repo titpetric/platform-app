@@ -6,11 +6,12 @@ import (
 	"log/slog"
 
 	"github.com/go-bridget/mig/migrate"
-	"github.com/jmoiron/sqlx"
+
+	"database/sql"
 )
 
 // Migrate runs SQL migrations for the pulse database.
-func Migrate(ctx context.Context, db *sqlx.DB, schema fs.FS) error {
+func Migrate(ctx context.Context, db *sql.DB, schema fs.FS) error {
 	m, err := migrate.NewManager(db, schema, "pulse")
 	if err != nil {
 		return err

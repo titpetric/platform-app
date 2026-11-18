@@ -5,20 +5,22 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
 
+	"github.com/titpetric/pdo/client"
 	"github.com/titpetric/platform-app/user/model"
+
+	"database/sql"
 )
 
 // PasskeyStorage implements passkey persistence using the database.
 type PasskeyStorage struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
 // NewPasskeyStorage creates a new PasskeyStorage.
-func NewPasskeyStorage(db *sqlx.DB) *PasskeyStorage {
+func NewPasskeyStorage(db *sql.DB) *PasskeyStorage {
 	return &PasskeyStorage{
 		db: db,
 	}
@@ -62,7 +64,7 @@ func (s *PasskeyStorage) ListByUser(ctx context.Context, userID string) ([]model
 
 	var passkeys []model.UserPasskey
 	query := `SELECT * FROM user_passkey WHERE user_id=?`
-	if err := s.db.SelectContext(ctx, &passkeys, query, userID); err != nil {
+	if err := client.NewClient(s.db).Select(ctx, &passkeys, query, userID); err != nil {
 		return nil, fmt.Errorf("list passkeys: %w", err)
 	}
 	return passkeys, nil
@@ -75,7 +77,7 @@ func (s *PasskeyStorage) GetByCredentialID(ctx context.Context, credentialID []b
 
 	passkey := &model.UserPasskey{}
 	query := `SELECT * FROM user_passkey WHERE credential_id=?`
-	if err := s.db.GetContext(ctx, passkey, query, credentialID); err != nil {
+	if err := client.NewClient(s.db).Get(ctx, passkey, query, credentialID); err != nil {
 		return nil, fmt.Errorf("get passkey by credential_id: %w", err)
 	}
 	return passkey, nil

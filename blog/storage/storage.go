@@ -3,15 +3,15 @@ package storage
 import (
 	"context"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/schema"
+
+	"database/sql"
 )
 
 // Storage provides database operations for the blog module.
 type Storage struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
 // New creates a new Storage instance, runs migrations.
@@ -24,7 +24,7 @@ func New(ctx context.Context) (*Storage, error) {
 }
 
 // NewStorage creates a new Storage instance, runs migrations.
-func NewStorage(ctx context.Context, db *sqlx.DB) (*Storage, error) {
+func NewStorage(ctx context.Context, db *sql.DB) (*Storage, error) {
 	if err := Migrate(ctx, db, schema.Migrations); err != nil {
 		return nil, err
 	}
