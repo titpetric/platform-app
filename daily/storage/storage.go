@@ -6,10 +6,10 @@ import (
 	"errors"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	ulid "github.com/oklog/ulid/v2"
 	"github.com/titpetric/oida"
 
+	"github.com/titpetric/pdo/client"
 	"github.com/titpetric/platform-app/daily/model"
 	"github.com/titpetric/platform-app/daily/schema"
 	"github.com/titpetric/platform-app/user"
@@ -17,7 +17,7 @@ import (
 
 // Storage implements model.Storage backed by sqlite
 type Storage struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
 // New creates a new Storage instance, runs migrations.
@@ -30,7 +30,7 @@ func New(ctx context.Context) (*Storage, error) {
 }
 
 // NewStorage creates a new Storage instance, rungs migrations.
-func NewStorage(ctx context.Context, db *sqlx.DB) (*Storage, error) {
+func NewStorage(ctx context.Context, db *sql.DB) (*Storage, error) {
 	if err := Migrate(ctx, db, schema.Migrations); err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (s *Storage) List(ctx context.Context) ([]model.Todo, error) {
 	}
 
 	var todos []model.Todo
-	err := s.db.SelectContext(ctx, &todos, `
+	err := client.NewClient(s.db).Select(ctx, &todos, `
 		SELECT id, title, completed, created_at, updated_at, deleted_at
 		FROM `+model.TodoTable+`
 		WHERE user_id=? AND deleted_at IS NULL
@@ -68,7 +68,7 @@ func (s *Storage) Get(ctx context.Context, id string) (model.Todo, error) {
 	}
 
 	var todo model.Todo
-	err := s.db.GetContext(ctx, &todo, `
+	err := client.NewClient(s.db).Get(ctx, &todo, `
 		SELECT id, title, completed, created_at, updated_at, deleted_at
 		FROM `+model.TodoTable+`
 		WHERE id=? AND user_id=? AND deleted_at IS NULL

@@ -335,7 +335,7 @@ class "blog.storage.GitFS" {
 }
 
 class "blog.storage.Storage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + CountArticles (ctx context.Context) (int, error)
   + CountDraftArticles (ctx context.Context) (int, error)
   + CountPublishedArticles (ctx context.Context) (int, error)
@@ -558,7 +558,7 @@ class "daily.model.Todo" {
 }
 
 class "daily.storage.Storage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + Add (ctx context.Context, t model.Todo) (model.Todo, error)
   + Complete (ctx context.Context, id string) error
   + Delete (ctx context.Context, id string) error
@@ -775,7 +775,7 @@ interface "email.smtp.Sender" {
 }
 
 class "email.storage.EmailStorage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + Create (ctx context.Context, email *model.Email) error
   + Get (ctx context.Context, id string) (*model.Email, error)
   + GetFailed (ctx context.Context, limit int) ([]model.Email, error)
@@ -1086,7 +1086,7 @@ class "pulse.storage.HourlyCount" {
 }
 
 class "pulse.storage.Storage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + GetUserDaily (ctx context.Context, userID string) ([]DailyHostCount, error)
   + GetUserHosts (ctx context.Context, userID string) ([]string, error)
   + GetUserHourly (ctx context.Context, userID string) ([]HourlyCount, error)
@@ -1604,7 +1604,7 @@ class "user.service.web.RegisterData" {
 }
 
 class "user.storage.PasskeyStorage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + Create (ctx context.Context, passkey *model.UserPasskey) (*model.UserPasskey, error)
   + Delete (ctx context.Context, id string) error
   + GetByCredentialID (ctx context.Context, credentialID []byte) (*model.UserPasskey, error)
@@ -1613,21 +1613,21 @@ class "user.storage.PasskeyStorage" {
 }
 
 class "user.storage.RevokedTokenStorage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + IsRevoked (ctx context.Context, jti string) (bool, error)
   + PurgeExpired (ctx context.Context) (int64, error)
   + Revoke (ctx context.Context, jti,userID string, expiresAt time.Time) error
 }
 
 class "user.storage.SessionStorage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   + Create (ctx context.Context, userID string) (*model.UserSession, error)
   + Delete (ctx context.Context, sessionID string) error
   + Get (ctx context.Context, sessionID string) (*model.UserSession, error)
 }
 
 class "user.storage.UserStorage" {
-  - db: *sqlx.DB
+  - db: *sql.DB
   - activationSubject: string
   - activationURLFormat: string
   + Activate (ctx context.Context, token string) (*model.User, error)

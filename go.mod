@@ -4,21 +4,21 @@ go 1.27.0
 
 require (
 	github.com/alecthomas/chroma/v2 v2.27.0
-	github.com/go-bridget/mig v0.6.6
+	github.com/go-bridget/mig v0.7.0
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/go-git/go-git/v5 v5.19.3
 	github.com/go-sql-driver/mysql v1.10.1
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/go-cmp v0.7.0
-	github.com/jmoiron/sqlx v1.4.0
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/oklog/ulid/v2 v2.1.2
 	github.com/qri-io/jsonschema v0.2.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/titpetric/cli v0.7.0
 	github.com/titpetric/oida v0.5.0
-	github.com/titpetric/platform v0.9.2
+	github.com/titpetric/pdo v0.3.0
+	github.com/titpetric/platform v0.10.0
 	github.com/titpetric/vuego v0.11.0
 	github.com/titpetric/vuego-cli v0.3.0
 	golang.org/x/crypto v0.59.0

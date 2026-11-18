@@ -12,19 +12,20 @@ import (
 	_ "modernc.org/sqlite"
 
 	chi "github.com/go-chi/chi/v5"
-	"github.com/jmoiron/sqlx"
 
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/schema"
 	"github.com/titpetric/platform-app/blog/storage"
 	"github.com/titpetric/platform-app/internal/assert"
+
+	"database/sql"
 )
 
 // setupTestDB creates a temporary SQLite database for testing.
-func setupTestDB(t *testing.T) *sqlx.DB {
+func setupTestDB(t *testing.T) *sql.DB {
 	tmpDir := t.TempDir()
 	dbPath := tmpDir + "/test.db"
-	db, err := sqlx.Open("sqlite", dbPath)
+	db, err := sql.Open("sqlite", dbPath)
 	assert.NoError(t, err)
 
 	db.SetConnMaxLifetime(0)

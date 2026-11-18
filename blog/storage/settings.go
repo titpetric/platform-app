@@ -4,17 +4,18 @@ import (
 	"context"
 	"time"
 
-	"github.com/jmoiron/sqlx"
-
+	"github.com/titpetric/pdo/client"
 	"github.com/titpetric/platform-app/blog/model"
+
+	"database/sql"
 )
 
 // GetSettingByUserID retrieves settings for a specific user.
-func GetSettingByUserID(ctx context.Context, db *sqlx.DB, userID string) (*model.Setting, error) {
+func GetSettingByUserID(ctx context.Context, db *sql.DB, userID string) (*model.Setting, error) {
 	var setting model.Setting
 	query := setting.Select(model.WithWhere("user_id = ?"), model.WithLimit(0, 1))
 
-	err := db.GetContext(ctx, &setting, query, userID)
+	err := client.NewClient(db).Get(ctx, &setting, query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -23,18 +24,18 @@ func GetSettingByUserID(ctx context.Context, db *sqlx.DB, userID string) (*model
 }
 
 // GetGlobalSettings retrieves the global settings (user_id = 'global').
-func GetGlobalSettings(ctx context.Context, db *sqlx.DB) (*model.Setting, error) {
+func GetGlobalSettings(ctx context.Context, db *sql.DB) (*model.Setting, error) {
 	return GetSettingByUserID(ctx, db, "global")
 }
 
 // SaveSetting inserts or updates settings for a user.
-func SaveSetting(ctx context.Context, db *sqlx.DB, setting *model.Setting) error {
+func SaveSetting(ctx context.Context, db *sql.DB, setting *model.Setting) error {
 	now := time.Now()
 	setting.SetUpdatedAt(now)
 	setting.SetCreatedAt(now)
 
 	query := setting.Insert(model.WithStatement("INSERT OR REPLACE INTO"))
-	_, err := db.NamedExecContext(ctx, query, setting)
+	err := client.NewClient(db).Exec(ctx, query, setting)
 	return err
 }
 

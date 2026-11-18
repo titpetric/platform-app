@@ -8,14 +8,14 @@ import (
 
 	_ "github.com/titpetric/platform-app/internal/drivers"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/titpetric/platform-app/daily/model"
 	"github.com/titpetric/platform-app/daily/schema"
 	"github.com/titpetric/platform-app/daily/storage"
 	"github.com/titpetric/platform-app/internal/assert"
 	"github.com/titpetric/platform-app/user"
 	usermodel "github.com/titpetric/platform-app/user/model"
+
+	"database/sql"
 )
 
 func Must[T any](t *testing.T, ctor func(context.Context) (T, error)) T {
@@ -30,7 +30,7 @@ func TestStorage(t *testing.T) {
 		ID: "test",
 	})
 
-	db := Must[*sqlx.DB](t, storage.DB)
+	db := Must[*sql.DB](t, storage.DB)
 
 	assert.NoError(t, storage.Migrate(ctx, db, schema.Migrations))
 

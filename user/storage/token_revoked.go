@@ -7,19 +7,19 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/titpetric/oida"
+	"github.com/titpetric/pdo/client"
 )
 
 // RevokedTokenStorage records JWT IDs (jti) that have been explicitly
 // revoked before their natural expiry. It is consulted by the auth
 // middleware and the refresh-token endpoint.
 type RevokedTokenStorage struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
 // NewRevokedTokenStorage returns a new RevokedTokenStorage.
-func NewRevokedTokenStorage(db *sqlx.DB) *RevokedTokenStorage {
+func NewRevokedTokenStorage(db *sql.DB) *RevokedTokenStorage {
 	return &RevokedTokenStorage{db: db}
 }
 
@@ -55,7 +55,7 @@ func (s *RevokedTokenStorage) IsRevoked(ctx context.Context, jti string) (bool, 
 	defer span.End()
 
 	var found string
-	err := s.db.GetContext(ctx, &found, `SELECT jti FROM user_token_revoked WHERE jti=? LIMIT 1`, jti)
+	err := client.NewClient(s.db).Get(ctx, &found, `SELECT jti FROM user_token_revoked WHERE jti=? LIMIT 1`, jti)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}

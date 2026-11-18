@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/titpetric/pdo/client"
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/internal/assert"
 )
@@ -28,7 +29,7 @@ func TestStorageIntegration_FullLifecycle(t *testing.T) {
 
 	// 1. Verify schema was initialized
 	var tableCount int
-	assert.NoError(t, db.GetContext(ctx, &tableCount,
+	assert.NoError(t, client.NewClient(db).Get(ctx, &tableCount,
 		"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='article'"))
 	assert.Equal(t, 1, tableCount)
 

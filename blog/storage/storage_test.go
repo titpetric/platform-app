@@ -6,19 +6,20 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/jmoiron/sqlx"
-
+	"github.com/titpetric/pdo/client"
 	"github.com/titpetric/platform-app/blog/model"
 	"github.com/titpetric/platform-app/blog/schema"
 	"github.com/titpetric/platform-app/internal/assert"
+
+	"database/sql"
 )
 
 // setupTestDB creates a temporary SQLite database for testing with automatic cleanup
-func setupTestDB(t *testing.T) *sqlx.DB {
+func setupTestDB(t *testing.T) *sql.DB {
 	// Use temporary file for each test to ensure isolation
 	tmpDir := t.TempDir()
 	dbPath := tmpDir + "/test.db"
-	db, err := sqlx.Open("sqlite", dbPath)
+	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		t.Fatalf("failed to open test database: %v", err)
 	}
@@ -45,7 +46,7 @@ func setupTestDB(t *testing.T) *sqlx.DB {
 }
 
 // cleanupTestDB is a no-op since setupTestDB handles cleanup via t.Cleanup()
-func cleanupTestDB(t *testing.T, db *sqlx.DB) {
+func cleanupTestDB(t *testing.T, db *sql.DB) {
 	// Cleanup is handled by t.Cleanup() in setupTestDB
 }
 
@@ -59,7 +60,7 @@ func TestInitSchema(t *testing.T) {
 
 	// Verify tables exist (NewStorage runs migrations automatically)
 	var tableCount int
-	assert.NoError(t, db.GetContext(ctx, &tableCount,
+	assert.NoError(t, client.NewClient(db).Get(ctx, &tableCount,
 		"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='article'"))
 
 	assert.Equal(t, 1, tableCount, "expected article table to exist")
@@ -401,7 +402,7 @@ func TestSearchArticlesEmpty(t *testing.T) {
 
 // BenchmarkInsertArticle benchmarks article insertion
 func BenchmarkInsertArticle(b *testing.B) {
-	db, _ := sqlx.Open("sqlite", ":memory:")
+	db, _ := sql.Open("sqlite", ":memory:")
 	defer db.Close()
 
 	storage, err := NewStorage(b.Context(), db)
@@ -427,7 +428,7 @@ func BenchmarkInsertArticle(b *testing.B) {
 
 // BenchmarkGetArticleBySlug benchmarks article retrieval by slug
 func BenchmarkGetArticleBySlug(b *testing.B) {
-	db, _ := sqlx.Open("sqlite", ":memory:")
+	db, _ := sql.Open("sqlite", ":memory:")
 	defer db.Close()
 
 	storage, err := NewStorage(b.Context(), db)
@@ -454,7 +455,7 @@ func BenchmarkGetArticleBySlug(b *testing.B) {
 
 // BenchmarkGetArticles benchmarks retrieving 20% of articles
 func BenchmarkGetAllArticles(b *testing.B) {
-	db, _ := sqlx.Open("sqlite", ":memory:")
+	db, _ := sql.Open("sqlite", ":memory:")
 	defer db.Close()
 
 	storage, err := NewStorage(b.Context(), db)
@@ -481,7 +482,7 @@ func BenchmarkGetAllArticles(b *testing.B) {
 
 // BenchmarkSearchArticles benchmarks searching articles
 func BenchmarkSearchArticles(b *testing.B) {
-	db, _ := sqlx.Open("sqlite", ":memory:")
+	db, _ := sql.Open("sqlite", ":memory:")
 	defer db.Close()
 
 	storage, err := NewStorage(b.Context(), db)
